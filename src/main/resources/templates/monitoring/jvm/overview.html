@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>JVM<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
+    <div id="main_contents">
+        <div class="row">
+            <div class="main_title_top col-xs-12"><i class="feather icon-chevrons-right"></i> 보험코어 JVM 현황 <span class="main_stitle">[Version 1.8.9_241-b07]</span></div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px;">
+                <div class="col-xs-12 box1">
+                    <div class="title">JVM</div>
+                    <div class="b_txt text-center">102</div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-10 " style="padding-left:0px; padding-right:0px;">
+                <div class="col-md-12 col-lg-3" style="padding-right:0px;">
+
+                    <div class="col-md-12 box_normal"><!-- normal box -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="title">JVM Avg.CPU</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="b_txt">Normal<span class="b_stxt"></span></div>
+                            </div>
+                            <div class="col-xs-7 text-right" style="vertical-align: bottom;">
+                                <input class="knob" data-width="90" data-height="90" data-angleoffset="0" data-thickness=".2" data-fgcolor="#007219"  data-bgcolor="#7cb78a"  value="35" >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12 col-lg-3" style="padding-right:0px;">
+
+                    <div class="col-md-12 box_danger"><!-- danger box -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="title">Avg.Heap Memory</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="b_txt">Danger<span class="b_stxt"></span></div>
+                            </div>
+                            <div class="col-xs-7 text-right" style="vertical-align: bottom;">
+                                <input class="knob" data-width="90" data-height="90" data-angleoffset="0" data-thickness=".2" data-fgcolor="#cd2b30"  data-bgcolor="#e88071"  value="92" >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12 col-lg-3" style="padding-right:0px;">
+
+                    <div class="col-md-12 box_warning"><!-- warning box -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="title">Active Thread</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="b_txt">warning<span class="b_stxt"></span></div>
+                            </div>
+                            <div class="col-xs-7 text-right" style="vertical-align: bottom;">
+                                <input class="knob" data-width="90" data-height="90" data-angleoffset="0" data-thickness=".2" data-fgcolor="#e08e00"  data-bgcolor="#f9d390"  value="68" >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12 col-lg-3" style="padding-right:0px;">
+
+                    <div class="col-md-12 box_normal"><!-- normal box -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="title">Avg.GC Time</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="b_txt">Normal<span class="b_stxt"></span></div>
+                            </div>
+                            <div class="col-xs-7 text-right" style="vertical-align: bottom;">
+                                <input class="knob" data-width="90" data-height="90" data-angleoffset="0" data-thickness=".2" data-fgcolor="#007219"  data-bgcolor="#7cb78a"  value="35" >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- [보험코어 JVM 현황] END -->
+
+
+        <!-- [보험코어 JVM Inspector] start -->
+        <div class="row">
+            <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> 보험코어 JVM Inspector</div>
+        </div>
+        <div class="row row_scroll"  style="padding-bottom:0px;">
+            <div class="row" style="padding-bottom:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Heap Used [Memory bytes]</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Non Heap Usage [Memory bytes]</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">PS Dden [Memory bytes]</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">PS Old Gen [Memory bytes]</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="padding-bottom:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Thread used</div>
+                        <div class="box_panel-body" >
+                            <img th:src="@{/assets/img/chart5.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">GC Count</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart6.jpg}" class="img-responsive" alt="" style="width:100%; ">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="padding-bottom:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">GC Time / 1 min.rate</div>
+                        <div class="box_panel-body" >
+                            <img th:src="@{/assets/img/chart6.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Class loading</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart5.jpg}" class="img-responsive" alt="" style="width:100%; ">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [보험코어 JVM Inspector] END -->
+
+
+        <!-- [EVENT] start -->
+        <div class="row">
+            <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> 보험코어 JVM 이벤트</div>
+        </div>
+        <div class="row" >
+
+
+            <div class="col-xs-12 col-md-12 col-lg-5" style="padding-right:0px;">
+                <div class="box_panel col-xs-12"  style="height:225px;">
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <div class="box_panel-text text-center">Open Events</div>
+                    </div>
+                    <div class="row">
+                        <div class="box_panel-text">
+                            <input class="knob" data-linecap="round" data-width="115"  data-height="116" data-angleoffset="0" data-thickness=".4" data-fgcolor="#02a499"  data-bgcolor="#eeeeee"  value="68" style="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="box_panel-stext"><div class="circle c_oe"></div>Open system event <span class="c_oe_t">142</span>/205</div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="row">
+                        <div class="box_panel-text">Closed Events</div>
+                    </div>
+                    <div class="row">
+                        <div class="box_panel-text">
+                            <input class="knob" data-linecap="round" data-width="115"  data-height="116" data-angleoffset="0" data-thickness=".4" data-fgcolor="#4554d1"  data-bgcolor="#eeeeee"  value="42" style="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="box_panel-stext"><div class="circle c_ce"></div>Closed system event <span class="c_ce_t">88</span>/193</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-12 col-lg-7" style="padding-right:0px;">
+            <div class="box_panel"  style="padding-bottom:5px;">
+                <div class="box_panel-heading2"><div class="circle c_normal"></div>Normal&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_warning"></div>Warning&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_danger"></div>Danger</div>
+                <div class="box_table-body">
+                    <table class="list_system">
+                        <thead>
+                        <tr>
+                            <th>JVM</th>
+                            <th>Event</th>
+                            <th>Time</th>
+                            <th style="padding-right:25px;">Level</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>VM001</td>
+                            <td>///</td>
+                            <td>2020-03-24   12:34:05</td>
+                            <td><div class="circle c_normal"></div></td>
+                        </tr>
+                        <tr>
+                            <td>VM002</td>
+                            <td>///</td>
+                            <td>2020-03-24   12:34:05</td>
+                            <td><div class="circle c_warning"></div></td>
+                        </tr>
+                        <tr>
+                            <td>VM003</td>
+                            <td>///</td>
+                            <td>2020-03-24   12:34:05</td>
+                            <td><div class="circle c_danger"></div></td>
+                        </tr>
+                        <tr>
+                            <td>VM004</td>
+                            <td>///</td>
+                            <td>2020-03-24   12:34:05</td>
+                            <td><div class="circle c_normal"></div></td>
+                        </tr>
+                        <tr>
+                            <td>VM005</td>
+                            <td>///</td>
+                            <td>2020-03-24   12:34:05</td>
+                            <td><div class="circle c_normal"></div></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>
+</body>
+</html>

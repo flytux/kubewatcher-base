@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <!--    <meta name="_csrf" th:content="${_csrf.token}">-->
+        <!--    <meta name="_csrf_header" th:content="${_csrf.headerName}">-->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title layout:title-pattern="$LAYOUT_TITLE">한화생명 통합관리시스템</title>
+
+        <!-- lee -->
+        <!-- 부트스트랩 -->
+        <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+        <!-- 기본 -->
+        <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+
+        <!-- IE8 에서 HTML5 요소와 미디어 쿼리를 위한 HTML5 shim 와 Respond.js -->
+        <!-- WARNING: Respond.js 는 당신이 file:// 을 통해 페이지를 볼 때는 동작하지 않습니다. -->
+        <!-- [if lt IE 9]
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        [endif] -->
+
+        <!-- 좌측 메뉴 위해 필요합니다)-->
+        <script th:src="@{/assets/js/jquery-3.2.1.min.js}"></script>
+
+        <script th:src="@{/assets/js/bootstrap-multiselect.js}"></script>
+        <script>
+            //if(sessionStorage.getItem('sidebarStatus') === 'fold')   console.log('fold');
+            (function ($) {
+                let lnbUI = {
+                    click: function (target) {
+                        let _self = this,
+                            $target = $(target);
+
+                        $target.each(function () {
+                            if (findChildren($(this))) {
+                                return;
+                            }
+                            $(this).addClass('noDepth');
+                        });
+
+                        function findChildren(obj) {
+                            return obj.find('> ul').length > 0;
+                        }
+
+                        $target.on('click', 'a', function (e) {
+                            e.stopPropagation();
+                            fnAccordion($(this));
+                        })
+                    }
+                };
+
+                // Call lnbUI
+                $(function () {
+                    //1depth
+                    lnbUI.click('#lnb li');
+
+                    //2depth : dropdown func
+                    $('[data-toggle="side-dropdown"]').on('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        fnDropdown($(this));
+                    });
+
+                    //3depth : dropdown-accordion func
+                    $('.dropdown-accordion').on('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        fnDropdownAccordion($(this));
+                    });
+
+                    //sidebar fold button click했을 때
+                    $("#sidebarToggle").on('click', function(e) {
+                        fnFold($(this));
+                    });
+
+                    //sidebar가 아닌 곳을 click했을 때
+                    $('#content').on('click', function(){
+                        $('.toggled #lnb li').removeClass('open'); //fold일 때 모든 1depth 닫기
+                        $('.dropdown-menu').removeClass('open');   //모든 2depth 닫기
+                    });
+
+                    //multiselect 동작
+                    $('.multi-select').multiselect();
+                });
+
+            }(jQuery));
+
+            //full : 1depth / fold : 1depth
+            function fnAccordion(target) {
+                let $this = $(target),
+                    $depthTarget = $this.next(),
+                    $siblings = $this.parent().siblings(),
+                    isToggled = $(".lef-nav").hasClass("toggled");
+
+                $siblings.removeClass('on').removeClass('open');
+                $('#lnb .dropdown-menu').removeClass('open');                  //모든 2depth 닫기
+                $('.dropdown-accordion').next().attr('aria-expanded', false);  //모든 4depth 닫기
+
+                if($depthTarget.css('display') === 'none') {
+                    $this.parent().addClass('on').addClass('open');
+                } else {
+                    $this.parent().removeClass('on').removeClass('open');
+                }
+
+                if(isToggled)   fnDropdown($this);              //fold 상태 체크
+            }
+
+            //full : 2depth / fold : 1depth
+            function fnDropdown(target) {
+                let $this = $(target),
+                    $menu = $('.dropdown-menu[aria-labelledby="' + $this.attr('id') + '"]');
+
+                $('#lnb .dropdown-accordion').next().attr('aria-expanded', false);  //모든 4depth 닫기
+
+                if($this.hasClass('fold-dropdown-button')) {    //fold 상태 체크
+                    fnDropdownAccordion($this);
+                } else {
+                    if($menu.css("display") === "none"){
+                        $('#lnb .dropdown-menu').removeClass('open');
+                        $menu.addClass('open');
+                    } else {
+                        $menu.removeClass('open');
+                    }
+                }
+            }
+
+            //full : 3depth / fold : 2depth
+            function fnDropdownAccordion(target) {
+                let $this = $('#' + $(target).attr('aria-controls'));
+                $this.attr('aria-expanded', $this.css('display') == 'none');
+            }
+
+            function fnFold(target) {
+                $(".lef-nav").toggleClass("toggled");
+                $("#lnb").toggleClass("fold");
+                $(".lef-sidebar-brand-text").toggleClass("fold");
+                $(".lef-sidebar-brand-sub-text").toggleClass("fold");
+
+                $('#lnb ul li.open').removeClass('open')                //1depth 닫기
+                $(target).find('i').toggleClass('icon-chevrons-left').toggleClass('icon-chevrons-right');   //toggle fold 버튼 class 변경
+
+                let isToggled = $(".lef-nav").hasClass("toggled"),
+                    homeTitle = $('.icon-home').next().text(),
+                    $menu;
+                if(isToggled) {
+                    $('.icon-home').attr('title', homeTitle);
+                    $('.icon-home').parent().attr('title', homeTitle);
+
+                    $menu = $('#lnb ul li:not(.noDepth, .dropright)').find('a:first:not(.dropdown-accordion)');
+                    $menu.each(function( idx ){
+                        $(this).parent('li').addClass('dropright');
+
+                        $(this).attr('id', 'fold-dropdown-' + idx);
+                        $(this).attr('title', $(this).text());
+                        $(this).addClass('fold-dropdown-button');
+
+                        $(this).next().addClass('dropdown-menu');
+                        $(this).next().attr('aria-labelledby', 'fold-dropdown-' + idx);
+                    });
+                } else {
+                    $('.icon-home').removeAttr('title');
+                    $('.icon-home').parent().removeAttr('title');
+
+                    $menu = $('#lnb a[id^=fold-dropdown-]');
+                    $menu.each(function( idx ){
+                        $(this).parent('li').removeClass('dropright');
+
+                        $(this).removeAttr('id');
+                        $(this).removeAttr('title');
+                        $(this).removeClass('fold-dropdown-button');
+
+                        $(this).next().removeClass('dropdown-menu').removeClass('open');//open된 dropdown box 닫기
+                        $(this).next().removeAttr('aria-labelledby');
+                    });
+                }
+            }
+        </script>
+        <!-- lee -->
+
+    </head>
+    <body>
+        <div id="wrapper">
+            <th:block th:replace="layout/menu :: menu" />
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <th:block layout:fragment="content" />
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
+        <script th:src="@{/assets/js/bootstrap.min.js}"></script>
+        <!-- jQuery chart scripts (차트 그래프 위해 필요합니다)-->
+        <script th:src="@{/assets/js/jquery.chart.min.js}"></script>
+        <script th:src="@{/assets/js/jquery-chart.init.js}"></script>
+        <script>
+            const /*header = $("meta[name='_csrf_header']").attr("content"),*/
+                signOut = $('#sign-out'),
+                signOutForm = $('#sign-out-form');
+
+            signOut.on('click', function (event) {
+                signOutForm.submit();
+            });
+        </script>
+
+    </body>
+</html>

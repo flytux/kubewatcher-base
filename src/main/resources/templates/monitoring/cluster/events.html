@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Events')"/>
+    <div id="main_contents">
+        <div class="row">
+            <div class="main_title_top col-xs-12" ><i class="feather icon-chevrons-right"></i> Events</div>
+        </div>
+        <div class="col-xs-12" style="padding-right:0px; padding-bottom:0px;">
+            <div class="box_panel">
+                <div class="box_table-heading">
+                    <div class="form-group has-feedback d_ib">
+                        <input type="text" placeholder="Search" class="search_table">
+                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                    </div>
+                    <div class="dropdown d_ib">
+                        <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                            All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
+                        </button>
+                        <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box_panel-body">
+                    <img th:src="@{/assets/img/chart7.jpg}" class="img-responsive" alt="" style="width:100%;">
+                </div>
+            </div>
+        </div>
+        <!-- 테이블 width css -->
+        <style>
+            .list_table155 > thead > tr > th:last-child { width:25%;}
+            .list_table155 > tbody > tr > td:last-child { width:24%;}
+        </style>
+        <div class="col-xs-12" style="padding-right:0px; padding-bottom:0px;">
+            <div class="box_panel">
+                <div class="box_table-body">
+                    <table class="list_table155">
+                        <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Message</th>
+                            <th>Namespace</th>
+                            <th>Object Type</th>
+                            <th>Involved Object</th>
+                            <th>Source</th>
+                            <th>Count</th>
+                            <th>Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Warning</td>
+                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">Error creating ///</a>
+
+                                <!-- [Modal] start -->
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg"style="width:765px;">
+                                        <div class="modal-content">
+                                            <div class="modal-title_box">
+                                                <div class="modal-title">
+                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <span id="myModalLabel">Event : Event Message</span>
+                                                </div>
+                                            </div>
+                                            <div class="modal-nbody">
+                                                <div class="table-title">
+                                                    Overview
+                                                </div>
+
+                                                <table class="table-nt">
+                                                    <tr>
+                                                        <th>Ctrated</th>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <td>Event ID</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Namespace</th>
+                                                        <td>default</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Message</th>
+                                                        <td>Error creating///</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Reason</th>
+                                                        <td>Unhealthy</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Source</th>
+                                                        <td>kublet</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>First seen</th>
+                                                        <td>00d ago(2020-05-20 15:23:11)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Last seen</th>
+                                                        <td>00d ago(2020-05-20 15:23:11)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Count</th>
+                                                        <td>000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Type</th>
+                                                        <td>Warning</td>
+                                                    </tr>
+                                                </table>
+
+                                                <div class="table-title">
+                                                    Involved Object
+                                                </div>
+                                                <table class="list_mtable_100">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Namespace</th>
+                                                        <th>Kind</th>
+                                                        <th>Field Path</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>Object name</td>
+                                                        <td>kube-system</td>
+                                                        <td>pod</td>
+                                                        <td>spec.containers(coredns)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Object name</td>
+                                                        <td>kube-system</td>
+                                                        <td>pod</td>
+                                                        <td>spec.containers(coredns)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Object name</td>
+                                                        <td>kube-system</td>
+                                                        <td>pod</td>
+                                                        <td>spec.containers(coredns)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Object name</td>
+                                                        <td>kube-system</td>
+                                                        <td>pod</td>
+                                                        <td>spec.containers(coredns)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Object name</td>
+                                                        <td>kube-system</td>
+                                                        <td>pod</td>
+                                                        <td>spec.containers(coredns)</td>
+                                                    </tr>
+                                                    <tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [Modal] End -->
+                            </td>
+                            <td>default</td>
+                            <td>Node</td>
+                            <td>Kube-controller</td>
+                            <td>default-controller</td>
+                            <td>000</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tr>
+                            <td>Warning</td>
+                            <td>Error creating ///</td>
+                            <td>default</td>
+                            <td>Node</td>
+                            <td>Kube-controller</td>
+                            <td>default-controller</td>
+                            <td>000</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tr>
+                            <td>Warning</td>
+                            <td>Error creating ///</td>
+                            <td>default</td>
+                            <td>Node</td>
+                            <td>Kube-controller</td>
+                            <td>default-controller</td>
+                            <td>000</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tr>
+                            <td>Warning</td>
+                            <td>Error creating ///</td>
+                            <td>default</td>
+                            <td>Node</td>
+                            <td>Kube-controller</td>
+                            <td>default-controller</td>
+                            <td>000</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tr>
+                            <td>Warning</td>
+                            <td>Error creating ///</td>
+                            <td>default</td>
+                            <td>Node</td>
+                            <td>Kube-controller</td>
+                            <td>default-controller</td>
+                            <td>000</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Storages')"/>
+    <div id="main_contents">
+        <div class="row">
+            <div class="main_title_top col-xs-12 mb_0 pr_0"><i class="feather icon-chevrons-right"></i> Persistent Volume Claims
+
+                <!--#### [수정 2020-07-21] 시작 #######-->
+                <!-- 드롭박스 시작 -->
+                <div class="dropdown d_ib f_r">
+                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                        All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
+                    </button>
+                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                    </ul>
+                </div>
+                <!-- 드롭박스 끝 -->
+                <!-- search 박스 시작 -->
+                <div class="dropdown d_ib f_r mr_5">
+                    <div class="form-group has-feedback d_ib">
+                        <input type="text" placeholder="Search" class="search_table">
+                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                    </div>
+                </div>
+                <!-- search 박스 끝 -->
+                <!--#### [수정 2020-07-21] 끝 ########-->
+
+            </div>
+        </div>
+
+        <div class="col-xs-12" style="padding-right:0px;">
+            <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : 3, Page : 1/1
+                </div>
+                <div class="box_table-body">
+                    <table class="list_table155">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Namespace</th>
+                            <th>Storage class</th>
+                            <th>Size</th>
+                            <th>Pods</th>
+                            <th>Age</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">CLAIM-XXXX</a>
+
+                                <!-- [Modal] start -->
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg"style="width:765px;">
+                                        <div class="modal-content">
+                                            <div class="modal-title_box">
+                                                <div class="modal-title">
+                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <span id="myModalLabel">Persistent Volume Claim : PVC 명</span>
+                                                </div>
+                                            </div>
+                                            <div class="modal-nbody">
+                                                <div class="table-title">
+                                                    Overview
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-md-12 col-lg-5" style="padding-left:0px;">
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">Disk</div>
+                                                            <div class="box_modal-body">
+                                                                <img src="assets/img/chart3.jpg" class="img-responsive" alt="" style="width:100%; height:70%;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-12 col-md-12 col-lg-7" style="padding:0px;">
+                                                        <table class="table-nt">
+                                                            <tr>
+                                                                <th>Ctrated</th>
+                                                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <td>CLAIM-XXXX</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Namespace</th>
+                                                                <td>kube-system</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Labels</th>
+                                                                <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Annotations</th>
+                                                                <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Finalizers</th>
+                                                                <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Access Modes</th>
+                                                                <td>ReadWriteOnce</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Storage class name</th>
+                                                                <td>Standard</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Storage</th>
+                                                                <td>000G</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Pods</th>
+                                                                <td>pod-XXX</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Status</th>
+                                                                <td>Bound</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                                <div class="table-title">
+                                                    Selector
+                                                </div>
+                                                <table class="table-nt">
+                                                    <tr>
+                                                        <th>Match Labels</th>
+                                                        <td> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Match Expressions</th>
+                                                        <td></td>
+                                                    </tr>
+                                                </table>
+                                                <div class="table-title">
+                                                    Events
+                                                </div>
+                                                <table class="list_mtable_100">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Event</th>
+                                                        <th>Source</th>
+                                                        <th>Count</th>
+                                                        <th>Sub-Object</th>
+                                                        <th>Last</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [Modal] End -->
+                            </td>
+                            <td>defaul</td>
+                            <td>standard</td>
+                            <td>000G</td>
+                            <td>Pod name</td>
+                            <td>99d24h00mm</td>
+                            <td>Bound</td>
+                        </tr>
+                        <tr>
+                            <td>CLAIM-XXXX</td>
+                            <td>standard</td>
+                            <td>defaul</td>
+                            <td>000G</td>
+                            <td>Pod name</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        <tr>
+                            <td>CLAIM-XXXX</td>
+                            <td>standard</td>
+                            <td>defaul</td>
+                            <td>000G</td>
+                            <td>Pod name</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        <tr>
+                            <td>CLAIM-XXXX</td>
+                            <td>standard</td>
+                            <td>defaul</td>
+                            <td>000G</td>
+                            <td>Pod name</td>
+                            <td>99d24h00mm</td>
+                            <td>Bound</td>
+                        </tr>
+                        <tr>
+                            <td>CLAIM-XXXX</td>
+                            <td>standard</td>
+                            <td>defaul</td>
+                            <td>000G</td>
+                            <td>Pod name</td>
+                            <td>99d24h00mm</td>
+                            <td>Bound</td>
+                        </tr>
+                        <tr>
+                            <td>CLAIM-XXXX</td>
+                            <td>standard</td>
+                            <td>defaul</td>
+                            <td>000G</td>
+                            <td>Pod name</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        <tr>
+                            <td>CLAIM-XXXX</td>
+                            <td>standard</td>
+                            <td>defaul</td>
+                            <td>000G</td>
+                            <td>Pod name</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- [Persistent Volume Claims] End-->
+        <!-- [Persistent Volume] start -->
+        <div class="row">
+            <div class="main_title col-xs-12" ><i class="feather icon-chevrons-right"></i> Persistent Volume</div>
+        </div>
+
+        <div class="col-xs-12" style="padding-right:0px;">
+            <div class="box_panel">
+                <div class="box_table-body">
+                    <table class="list_table155">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Storage class</th>
+                            <th>Capacity</th>
+                            <th>Claim</th>
+                            <th>Age</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal2">pvc-xxx1</a>
+
+                                <!-- [Modal] start -->
+                                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg"style="width:765px;">
+                                        <div class="modal-content">
+                                            <div class="modal-title_box">
+                                                <div class="modal-title">
+                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <span id="myModalLabel">Persistent Volume : PV 명</span>
+                                                </div>
+                                            </div>
+                                            <div class="modal-nbody">
+                                                <div class="table-title">
+                                                    Overview
+                                                </div>
+
+                                                <table class="table-nt">
+                                                    <tr>
+                                                        <th>Ctrated</th>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <td>CLAIM-XXXX</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Namespace</th>
+                                                        <td>kube-system</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Labels</th>
+                                                        <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Annotations</th>
+                                                        <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Finalizers</th>
+                                                        <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Access Modes</th>
+                                                        <td>ReadWriteOnce</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Reclaim Policy</th>
+                                                        <td>Delete</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Storage Class Name</th>
+                                                        <td>Standard</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status</th>
+                                                        <td>Bound</td>
+                                                    </tr>
+                                                </table>
+
+                                                <div class="table-title">
+                                                    Claim
+                                                </div>
+                                                <table class="table-nt">
+                                                    <tr>
+                                                        <th>Type</th>
+                                                        <td>PersistentVolumeClaim</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <td>CLAIM-XXX</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Namespace</th>
+                                                        <td>default</td>
+                                                    </tr>
+                                                </table>
+                                                <div class="table-title">
+                                                    Events
+                                                </div>
+                                                <table class="list_mtable_100">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Event</th>
+                                                        <th>Source</th>
+                                                        <th>Count</th>
+                                                        <th>Sub-Object</th>
+                                                        <th>Last</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [Modal] End -->
+                            </td>
+                            <td>standard</td>
+                            <td>000G</td>
+                            <td>CLAIM-XXXX</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        <tr>
+                            <td>pvc-xxx1</td>
+                            <td>standard</td>
+                            <td>000G</td>
+                            <td>CLAIM-XXXX</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        <tr>
+                            <td>pvc-xxx1</td>
+                            <td>standard</td>
+                            <td>000G</td>
+                            <td>CLAIM-XXXX</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        <tr>
+                            <td>pvc-xxx1</td>
+                            <td>standard</td>
+                            <td>000G</td>
+                            <td>CLAIM-XXXX</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        <tr>
+                            <td>pvc-xxx1</td>
+                            <td>standard</td>
+                            <td>000G</td>
+                            <td>CLAIM-XXXX</td>
+                            <td>99d24h00mm</td>
+                            <td>Released</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- [Persistent Volume] End-->
+        <!-- [Storage Classes] start -->
+        <div class="row">
+            <div class="main_title col-xs-12" ><i class="feather icon-chevrons-right"></i> Storage Classes</div>
+        </div>
+
+        <div class="col-xs-12" style="padding-right:0px;">
+            <div class="box_panel">
+                <div class="box_table-body">
+                    <table class="list_table155">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Provisioner</th>
+                            <th>Reclaim Policy</th>
+                            <th>Age</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal3">standard</a>
+
+                                <!-- [Modal] start -->
+                                <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg"style="width:765px;">
+                                        <div class="modal-content">
+                                            <div class="modal-title_box">
+                                                <div class="modal-title">
+                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <span id="myModalLabel">Storage Class : SC 명</span>
+                                                </div>
+                                            </div>
+                                            <div class="modal-nbody">
+                                                <div class="table-title">
+                                                    Overview
+                                                </div>
+
+                                                <table class="table-nt">
+                                                    <tr>
+                                                        <th>Ctrated</th>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <td>Standard</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Namespace</th>
+                                                        <td>kube-system</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Labels</th>
+                                                        <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Annotations</th>
+                                                        <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Provisioner</th>
+                                                        <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Volume Binding Mode</th>
+                                                        <td>Immediate</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Reclaim Policy</th>
+                                                        <td>Delete</td>
+                                                    </tr>
+                                                </table>
+
+                                                <div class="table-title">
+                                                    Events
+                                                </div>
+                                                <table class="list_mtable_100">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Event</th>
+                                                        <th>Source</th>
+                                                        <th>Count</th>
+                                                        <th>Sub-Object</th>
+                                                        <th>Last</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Event Message</td>
+                                                        <td>///</td>
+                                                        <td>00</td>
+                                                        <td>Object name</td>
+                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                    </tr>
+                                                    <tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [Modal] End -->
+                            </td>
+                            <td>k8s.io/hostpath</td>
+                            <td>Delete</td>
+                            <td>99d24h00mm</td>
+                        </tr>
+                        <tr>
+                            <td>standard</td>
+                            <td>k8s.io/hostpath</td>
+                            <td>Delete</td>
+                            <td>99d24h00mm</td>
+                        </tr>
+                        <tr>
+                            <td>standard</td>
+                            <td>k8s.io/hostpath</td>
+                            <td>Delete</td>
+                            <td>99d24h00mm</td>
+                        </tr>
+                        <tr>
+                            <td>standard</td>
+                            <td>k8s.io/hostpath</td>
+                            <td>Delete</td>
+                            <td>99d24h00mm</td>
+                        </tr>
+                        <tr>
+                            <td>standard</td>
+                            <td>k8s.io/hostpath</td>
+                            <td>Delete</td>
+                            <td>99d24h00mm</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

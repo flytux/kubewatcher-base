@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Alarm<i class=&quot;feather icon-chevron-right&quot; ></i>List')"/>
+    <div id="main_contents">
+        <div class="row">
+            <div class="main_title_top col-xs-12 mb_0 pr_0" ><i class="feather icon-chevrons-right"></i> 보험코어 Alarm List
+                <div class="dropdown d_ib f_r">
+                    <div class="form-group has-feedback d_ib">
+                        <input type="text" placeholder="Search" class="search_table">
+                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12" style="padding-right:0px;">
+            <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
+                </div>
+                <div class="box_table-body">
+                    <table class="list_table">
+                        <thead>
+                        <tr>
+                            <th>Alarm명</th>
+                            <th>Message</th>
+                            <th>Severity</th>
+                            <th>Category</th>
+                            <th>System</th>
+                            <th>Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>CPU High</td>
+                            <td>HLI000 CPU 80%</td>
+                            <td><span class="madal_label_danger">경고</span></td>
+                            <td>VM</td>
+                            <td>HLI000</td>
+                            <td>2020-06-29 14:21:05</td>
+                        </tr>
+                        <tr>
+                            <td>File system full</td>
+                            <td>Root file system 95%</td>
+                            <td><span class="madal_label_warning">심각</span></td>
+                            <td>VM</td>
+                            <td>HLI001</td>
+                            <td>2020-06-29 14:21:05</td>
+                        </tr>
+                        <tr>
+                            <td>HPA Autosacale</td>
+                            <td>ReplicaSet scaling</td>
+                            <td><span class="madal_label_normal">정보</span></td>
+                            <td>CLUSTER</td>
+                            <td>HLI002</td>
+                            <td>2020-06-29 14:21:05</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-center"><!-- 페이지넘버 -->
+                <nav>
+                    <ul class="pagination" >
+                        <li>
+                            <a href="#" aria-label="Previous">
+                                <span aria-hidden="true"  class="feather icon-chevron-left"></span>
+                            </a>
+                        </li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li>
+                            <a href="#" aria-label="Next">
+                                <span aria-hidden="true"  class="feather icon-chevron-right"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

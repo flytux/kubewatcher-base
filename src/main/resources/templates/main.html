@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot;></i>Monitoring')"/>
+
+    <div id="main_contents">
+        <!-- [보험코어 클러스터] start -->
+        <div class="row">
+            <div class="main_title_top col-xs-12" ><i class="feather icon-chevrons-right"></i> 보험코어 클러스터</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading">NODE</div>
+                    <div class="box_panel-text">
+                        <input class="knob" data-linecap="round" data-width="151"  data-height="151" data-angleoffset="0" data-thickness=".3" data-fgcolor="#37d8ae"  data-bgcolor="#eeeeee"  value="50" style="">
+                    </div>
+                    <div class="box_panel-stext text-center mt_10  mb_10" >
+                        <div class="circle c_chart2"></div>Allocate <span class="c_chart2_t font_w6">100</span><br><span class="ml_12">Capacity 202</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading">POD</div>
+                    <div class="box_panel-text">
+                        <input class="knob" data-linecap="round" data-width="151"  data-height="151" data-angleoffset="0" data-thickness=".3" data-fgcolor="#50bee3"  data-bgcolor="#eeeeee"  value="58" style="">
+                    </div>
+                    <div class="box_panel-stext text-center mt_10  mb_10">
+                        <div class="circle c_chart3"></div>Allocate <span class="c_chart3_t font_w6">100</span><br><span class="ml_12">Capacity 202</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading">CPU <span class="st">(cores)</span></div>
+                    <div class="box_panel-text">
+                        <div id="canvas-holder" style="width:319.337px; height: 158.200px; margin: 0 auto">
+                            <canvas id="chart-area"></canvas>
+                        </div>
+                    </div>
+                    <div class="box_panel-stext text-center mt_10  mb_10" >
+                        <div class="circle c_chart4"></div>Request <span class="c_chart4_t font_w6">10.2</span> <div class="circle c_chart5 ml_15"></div>Limit <span class="c_chart5_t font_w6">40.2</span><br>
+                        <div class="ml_12">Capacity 50</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading">MEM <span class="st">(bytes)</span></div>
+                    <div class="box_panel-text text-center">
+                        <div id="canvas-holder" style="width:319.337px; height: 158.200px; margin: 0 auto">
+                            <canvas id="chart-area2"></canvas>
+                        </div>
+                    </div>
+                    <div class="box_panel-stext text-center mt_10  mb_10" >
+                        <div class="circle c_chart4"></div>Request <span class="c_chart4_t font_w6">100.1M</span> <div class="circle c_chart5 ml_15"></div>Limit <span class="c_chart5_t font_w6">202.2M</span><br>
+                        <div class="ml_12">Capacity 500M</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="padding-bottom:0px;">
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Controller</div>
+                    <div class="box_panel-text4">
+                        <div class="box_big_g mb_10 mt_10 w70">UP</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">ETCD</div>
+                    <div class="box_panel-text4">
+                        <div class="box_big_d mb_10 mt_10 w70">DOWN</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Scheduler</div>
+                    <div class="box_panel-text4">
+                        <div class="box_big_g mb_10 mt_10 w70">UP</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Node</div>
+                    <div class="box_panel-text4">
+                        <span class="color_g">21</span><span class="st"> / 55</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Namespace</div>
+                    <div class="box_panel-text4">
+                        <span class="color_g">18</span><span class="st"> / 55</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Event</div>
+                    <div class="box_panel-text4">
+                        15
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="padding-bottom:0px;">
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Deployment</div>
+                    <div class="box_panel-text4">
+                        <span class="color_g">5</span><span class="st"> / 55</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Pod</div>
+                    <div class="box_panel-text4">
+                        <span class="color_g">11</span><span class="st"> / 55</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">ReplicaSet</div>
+                    <div class="box_panel-text4">
+                        <span class="color_g">2</span><span class="st"> / 55</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">SatefulSet</div>
+                    <div class="box_panel-text4">
+                        <span class="color_g">12</span><span class="st"> / 55</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">DaemonSet</div>
+                    <div class="box_panel-text4">
+                        <span class="color_g">11</span><span class="st"> / 55</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Job</div>
+                    <div class="box_panel-text4">
+                        <span class="color_g">8</span><span class="st"> / 55</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [보험코어 클러스터] End-->
+
+        <!-- [보험코어 어플리케이션] start -->
+        <div class="row">
+            <div class="main_title col-xs-12 mt_20" ><i class="feather icon-chevrons-right"></i> 보험코어 어플리케이션</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4"  style="padding-right:0px;">
+
+                <div class="col-xs-12 box1" style="padding-left:0px; padding-right:5px;">
+                    <div class="row col-xs-12">
+                        <div class="title_chart_c col-xs-12">보험코어 어플리케이션</div>
+                    </div>
+                    <div class="row col-xs-12">
+                        <table class="table_mini">
+                            <tr>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_y"></div></td>
+                                <td><div class="box_mini_r"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                                <td><div class="box_mini_g"></div></td>
+                            </tr>
+                        </table>
+
+                        <table class="table_mini mt_10">
+                            <tr>
+                                <td>전체 : 30</td>
+                                <td><div class="circle c_normal"></div> 정상 : 28</td>
+                                <td><div class="circle c_danger"></div>오류 : 1</td>
+                                <td><div class="circle c_warning"></div>느림 : 1</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8" style="padding-left:0px; padding-right:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-4"  style=" padding-right:0px;">
+                    <div class="col-xs-12 box_chart">
+                        <div class="title_chart_c">정상거래</div>
+                        <div class="t_chart text-center pt_35 mb_30">99.9<span class="t_sstxt2">%</span></div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-4"  style=" padding-right:0px;">
+                    <div class="col-xs-12 box_chart">
+                        <div class="title_chart_c">평균응답시간</div>
+                        <div class="t_chart text-center pt_35 mb_30">1.2<span class="t_sstxt2">S</span></div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-4"  style=" padding-right:0px;">
+                    <div class="col-xs-12 box_chart3">
+                        <div class="title_chart_c">트랜잭션 볼룸</div>
+                        <div class="t_chart text-center pt_35 mb_30">123.4<span class="t_sstxt2">K</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [보험코어 어플리케이션] End-->
+
+
+        <!-- [보험코어 시스템] start -->
+        <div class="row">
+            <div class="main_title col-xs-12 mt_20" ><i class="feather icon-chevrons-right"></i> 보험코어 시스템</div>
+        </div>
+        <div class="row" style="padding-bottom:0px;">
+            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">CPU</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">LOAD</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">MEM</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">DISK I/O</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- [보험코어 시스템] End-->
+    </div>
+
+    <script th:src="@{/assets/js/DoughnutChart.min.js}"></script>
+    <script th:src="@{/assets/js/DoughnutUtils.js}"></script>
+    <script>
+        var randomScalingFactor = function() {
+            return Math.round(Math.random() * 100);
+        };
+
+        var config = {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [
+                        randomScalingFactor(),
+                        randomScalingFactor()
+                    ],
+                    backgroundColor: [
+                        window.chartColors.purple,
+                        window.chartColors.gray
+                    ],
+                    label: 'Dataset 1'
+                }],
+                labels: [
+                    '',
+                    ''
+                ]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                legend: { display: false },
+                title: {
+                    display: false,
+                    text: ''
+                },
+                animation: {
+                    animateScale: false,
+                    animateRotate: false
+                },
+
+            }
+        };
+
+        window.onload = function() {
+            var ctx = document.getElementById('chart-area').getContext('2d');
+            window.myDoughnut = new Chart(ctx, config);
+
+
+            FnaddRing();
+
+            var ctx2 = document.getElementById('chart-area2').getContext('2d');
+            window.myDoughnut = new Chart(ctx2, config);
+
+
+            // var ctx3 = document.getElementById('chart-area3').getContext('2d');
+            // window.myDoughnut = new Chart(ctx3, config);
+
+        };
+
+        function FnaddRing() {
+            var newDataset = {
+                backgroundColor: [],
+                data: [],
+                label: 'New dataset ' + config.data.datasets.length,
+            };
+
+            for (var index = 0; index < config.data.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());
+
+                var colorName = colorNames[index % colorNames.length];
+                var newColor = window.chartColors[colorName];
+                newDataset.backgroundColor.push(newColor);
+            }
+
+            config.data.datasets.push(newDataset);
+            window.myDoughnut.update();
+
+        }
+
+        var colorNames = Object.keys(window.chartColors);
+
+    </script>
+
+</div>
+</body>
+</html>

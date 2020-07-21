@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>보안<i class=&quot;feather icon-chevron-right&quot; ></i>Roles<i class=&quot;feather icon-chevron-right&quot; ></i>사용자 Role 관리')"/>
+    <div id="main_contents">
+
+        <!-- [Groups] start -->
+        <div class="row">
+            <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Roles
+
+                <div class="dropdown d_ib f_r">
+                    <a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
+                    <!-- [Modal] start -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                        <div class="modal-dialog modal-lg" style="width:765px;">
+                            <div class="modal-content">
+                                <div class="modal-title_box">
+                                    <div class="modal-title">
+                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <span id="myModalLabel">Roles : Roles 명</span>
+                                    </div>
+                                </div>
+                                <div class="modal-nbody">
+                                    <div class="table-title">
+                                        Overview
+                                    </div>
+                                    <div class="row">
+                                        <table class="table-nt">
+                                            <tr>
+                                                <th>Role</th>
+                                                <td>Operator</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Description</th>
+                                                <td>보험코어 하이브리드 클라우드 통합관리 시스템의 Dashboard 운영 역할. 통합 Dashboard 및 Grafana 솔루션 실행 담당</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Role binding user</th>
+                                                <td>4</td>
+                                            </tr>
+                                            <tr>
+                                                <th>최종변경일</th>
+                                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [Modal] End -->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12" style="padding-right:0px;">
+            <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
+                </div>
+                <div class="box_table-body">
+                    <table class="role_table">
+                        <thead>
+                        <tr>
+                            <th>화면번호</th>
+                            <th>화면명</th>
+                            <th>통합관리 admin</th>
+                            <th>보험코어 monitor</th>
+                            <th>Cluster monitor</th>
+                            <th>Cluster log viewer</th>
+                            <th>On-premise monitor</th>
+                            <th>Cluster admin</th>
+                            <th>Dashboard operator</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>000</td>
+                            <td>보험코어 클라우드 종합 대쉬보드</td>
+                            <td><div class="checkbox"><input type="checkbox" value="" ></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>100</td>
+                            <td>보험코어 어플리케이션 현황</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>101</td>
+                            <td>보험코어 어플리케이션 Topology</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>110</td>
+                            <td>보험코어 클러스터 현황</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>111</td>
+                            <td>보험코어 클러스터 Nodes</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>112</td>
+                            <td>보험코어 클러스터 Workloads</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>112-1</td>
+                            <td>보험코어 클러스터 Pods</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>112-2</td>
+                            <td>보험코어 클러스터 Deployments</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>112-3</td>
+                            <td>보험코어 클러스터 DaemonSets</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>112-4</td>
+                            <td>보험코어 클러스터 StatefuSets</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>112-5</td>
+                            <td>보험코어 클러스터 Jobs</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>112-6</td>
+                            <td>보험코어 클러스터 CronJobs</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>113</td>
+                            <td>보험코어 클러스터 Storage</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>114</td>
+                            <td>보험코어 클러스터 Events</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>120</td>
+                            <td>보험코어 어플리케이션 JVM 현황</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>121</td>
+                            <td>보험코어 어플리케이션 JVM</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>130</td>
+                            <td>보험코어 Database 현황</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>140</td>
+                            <td>보험코어 VM(virtual Machine) 현황</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>141</td>
+                            <td>보험코어 VM(virtual Machine) 상세</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>150</td>
+                            <td>보험코어 Alam List</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>151</td>
+                            <td>보험코어 Alam 상세</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>보험코어 어플리케이션 카탈로그</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>201</td>
+                            <td>보험코어 어플리케이션 릴리즈 목록</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>202</td>
+                            <td>보험코어 어플리케이션 릴리즈 이력</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>210</td>
+                            <td>보험코어 어플리케이션 사용 현황</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>211</td>
+                            <td>보험코어 어플리케이션 사용 상세</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>클러스터 Configmaps</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>301</td>
+                            <td>클러스터 Secrets</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>302</td>
+                            <td>클러스터 Resource Quotas</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>313</td>
+                            <td>클러스터 네트워크 Polices</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>320</td>
+                            <td>클러스터 Service Accounts</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>321</td>
+                            <td>클러스터 Role Bindings</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>322</td>
+                            <td>클러스터 Roles</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>323</td>
+                            <td>클러스터 Pod Security Polices</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>400</td>
+                            <td>사용자 Group 관리</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>410</td>
+                            <td>사용자 관리</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>420</td>
+                            <td>사용자 Role 관리</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>440</td>
+                            <td>클러스터 Key 관리</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>500</td>
+                            <td>Alarm 설정 목록</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>510</td>
+                            <td>Alarm 설정</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        <tr>
+                            <td>520</td>
+                            <td>Preference</td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                            <td><div class="checkbox"><input type="checkbox" value=""></div></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
+        </div>
+        <!-- [Groups] End-->
+    </div>
+</div>
+</body>
+</html>

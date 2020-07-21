@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: kube-watcher
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      indent-output: false
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-ignored-properties: false
+      fail-on-unknown-properties: false
+    property-naming-strategy: SNAKE_CASE
+    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
+  thymeleaf:
+    cache: false
+  main:
+    allow-bean-definition-overriding: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+
+application:
+  properties:
+    root-domain: ''
+    auth:
+      users:
+        - user-name: "test"
+          password: "test"
+          role: "USER"
+    dependencies:
+      grafana:
+        url: "http://10.142.11.170:3000"
+        api-token: "eyJrIjoiQVNMZGI1WTNGTW5veVAzNlJqNjBLN1RYWE9CUm5pOXIiLCJuIjoiMSIsImlkIjoxfQ=="
+        login-cookie-name: "grafana_session"
+      prometheus:
+        url: "http://10.142.11.170:30089"
+

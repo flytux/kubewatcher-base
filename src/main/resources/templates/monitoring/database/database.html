@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Database')"/>
+    <div id="main_contents">
+        <div class="row">
+            <div class="main_title_top col-xs-12"><i class="feather icon-chevrons-right"></i> 보험코어 데이터베이스 [Oracle ver x.x]</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-12 col-lg-4"  style=" padding-right:0px;">
+                <div class="col-xs-12 box1_pb15">
+                    <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                        <div class="title col-xs-12">RAC Node#1</div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                        <div class="col-xs-12 box_up">UP</div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                        <div class="col-xs-12 box_chart">
+                            <div class="title_chart">CPU</div>
+                            <div class="t_chart text-center">86<span class="t_sstxt2">%</span></div>
+                        </div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                        <div class="col-xs-12 box_chart">
+                            <div class="title_chart">Memory</div>
+                            <div class="t_chart text-center">35<span class="t_sstxt2">%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-4"  style="padding-right:0px;">
+                <div class="col-xs-12 box1_down">
+                    <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                        <div class="title col-xs-12">RAC Node#2</div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                        <div class="box_down col-xs-12">DOWN</div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                        <div class="col-xs-12 box_chart">
+                            <div class="title_chart">CPU</div>
+                            <div class="t_chart text-center">86<span class="t_sstxt2">%</span></div>
+                        </div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                        <div class="col-xs-12 box_chart">
+                            <div class="title_chart">Memory</div>
+                            <div class="t_chart text-center">35<span class="t_sstxt2">%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-4"  style=" padding-right:0px;">
+                <div class="col-xs-12 box1_pb15">
+                    <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                        <div class="title col-xs-12">RAC Node#3</div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                        <div class="col-xs-12 box_up">UP</div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                        <div class="col-xs-12 box_chart">
+                            <div class="title_chart">CPU</div>
+                            <div class="t_chart text-center">86<span class="t_sstxt2">%</span></div>
+                        </div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                        <div class="col-xs-12 box_chart">
+                            <div class="title_chart">Memory</div>
+                            <div class="t_chart text-center">35<span class="t_sstxt2">%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-7" style="padding:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-4"  style="padding-right:0px;">
+                    <div class="col-xs-12 box_chart">
+                        <div class="title_chart_c">Exeute Count</div>
+                        <div class="t_chart text-center">000<span class="t_sstxt2">k</span></div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-4"  style="padding-right:0px;">
+                    <div class="col-xs-12 box_chart">
+                        <div class="title_chart_c">Number of Commit</div>
+                        <div class="t_chart text-center">000</div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-4"  style="padding-right:0px;">
+                    <div class="col-xs-12 box_chart">
+                        <div class="title_chart_c">Active Session</div>
+                        <div class="t_chart text-center">000</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5"style="padding:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-6"  style="padding-right:0px;">
+                    <div class="col-xs-12 box_chart">
+                        <div class="title_chart_c">Process count</div>
+                        <div class="t_chart text-center">000</div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-6"  style="padding-right:0px;">
+                    <div class="col-xs-12 box_chart">
+                        <div class="title_chart_c">User Rollback</div>
+                        <div class="t_chart text-center">000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="main_title col-xs-12 mt_30"><i class="feather icon-chevrons-right"></i> 보험코어 데이터베이스 Status</div>
+        </div>
+        <div class="row row_scroll"  style="padding-bottom:0px;">
+
+            <div class="row" style="padding-bottom:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Concurrent wait time</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Commit wait time</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Application waiting</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Network waiting</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-bottom:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">System I/O wait</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">User I/O wait</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Configuring wait</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Scheduler wait</div>
+                        <div class="box_panel-body">
+                            <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-bottom:0px;">
+                <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Resource utilization</div>
+                        <div class="box_panel-body" >
+                            <img th:src="@{/assets/img/chart5.jpg}" class="img-responsive" alt="" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [보험코어 데이터베이스 [Oracle ver x.x]] END -->
+
+        <!-- [Table spaces] Start -->
+        <div class="row" >
+            <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Table spaces</div>
+                    <div class="box_panel-body">
+                        <table class="table table-striped text-center">
+                            <thead>
+                            <tr>
+                                <th>Table name</th>
+                                <th>Alloc.space</th>
+                                <th>Free space</th>
+                                <th>Used</th>
+                                <th>Max size Autoextend</th>
+                                <th>Percent used Extend</th>
+                                <th>Time</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>SYSTEM</td>
+                                <td>000.00MB</td>
+                                <td>000.00MB</td>
+                                <td>00%</td>
+                                <td>000.00MB</td>
+                                <td>00%</td>
+                                <td>2020-05-22 12:42:13</td>
+                            </tr>
+                            <tr>
+                                <td>SYSTEM</td>
+                                <td>000.00MB</td>
+                                <td>000.00MB</td>
+                                <td>00%</td>
+                                <td>000.00MB</td>
+                                <td>00%</td>
+                                <td>2020-05-22 12:42:13</td>
+                            </tr>
+                            <tr>
+                                <td>SYSTEM</td>
+                                <td>000.00MB</td>
+                                <td>000.00MB</td>
+                                <td>00%</td>
+                                <td>000.00MB</td>
+                                <td>00%</td>
+                                <td>2020-05-22 12:42:13</td>
+                            </tr>
+                            <tr>
+                                <td>SYSTEM</td>
+                                <td>000.00MB</td>
+                                <td>000.00MB</td>
+                                <td>00%</td>
+                                <td>000.00MB</td>
+                                <td>00%</td>
+                                <td>2020-05-22 12:42:13</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- [Table spaces] END -->
+
+            <!-- [Errors] Start -->
+            <div class="row" >
+                <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
+                    <div class="box_panel">
+                        <div class="box_panel-heading">Errors</div>
+                        <div class="box_panel-body">
+                            <table class="table table-striped text-center">
+                                <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Error code</th>
+                                    <th>Insatance</th>
+                                    <th>Description</th>
+                                    <th>Host</th>
+                                    <th>Count</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>2020-05-22 12:42:13</td>
+                                    <td>ORA-0000</td>
+                                    <td>XXXX</td>
+                                    <td>ORA-0000:////</td>
+                                    <td>HLIXXX</td>
+                                    <td>000</td>
+                                </tr>
+                                <tr>
+                                    <td>2020-05-22 12:42:13</td>
+                                    <td>ORA-0000</td>
+                                    <td>XXXX</td>
+                                    <td>ORA-0000:////</td>
+                                    <td>HLIXXX</td>
+                                    <td>000</td>
+                                </tr>
+                                <tr>
+                                    <td>2020-05-22 12:42:13</td>
+                                    <td>ORA-0000</td>
+                                    <td>XXXX</td>
+                                    <td>ORA-0000:////</td>
+                                    <td>HLIXXX</td>
+                                    <td>000</td>
+                                </tr>
+                                <tr>
+                                    <td>2020-05-22 12:42:13</td>
+                                    <td>ORA-0000</td>
+                                    <td>XXXX</td>
+                                    <td>ORA-0000:////</td>
+                                    <td>HLIXXX</td>
+                                    <td>000</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- [Table spaces] END -->
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

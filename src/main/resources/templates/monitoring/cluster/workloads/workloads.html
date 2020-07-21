@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
+    <div id="main_contents">
+        <div class="row">
+            <div class="main_title_top col-xs-12" style="padding-right:0px;">
+                <i class="feather icon-chevrons-right"></i> 클러스터 Workloads
+                <!--#### [수정 2020-07-21] 시작 #######-->
+                <!-- 드롭박스 시작 -->
+                <div class="dropdown d_ib f_r">
+                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                        All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
+                    </button>
+                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                    </ul>
+                </div>
+                <!-- 드롭박스 끝 -->
+                <!--#### [수정 2020-07-21] 끝 ########-->
+            </div>
+        </div>
+        <!-- [chart 6EA] start-->
+        <div class="row">
+
+            <div class="col-xs-12 col-md-4 col-lg-2" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading3">
+                        <a th:href="@{/monitoring/cluster/workloads/pods}">Pods</a><span class="st">(000)</span>
+                    </div>
+                    <div class="box_panel-text">
+                        <input class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
+                               data-thickness=".35" data-fgcolor="#a4df5d" data-bgcolor="#eeeeee" value="58" style="">
+                    </div>
+                    <div class="box_panel-stext ml_20">
+                        <div class="circle_s"></div>
+                        Running 00<br>
+                        <div class="circle_s"></div>
+                        Pending <br>
+                        <div class="circle_s"></div>
+                        Failed 00
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4 col-lg-2" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading3">
+                        <a th:href="@{/monitoring/cluster/workloads/deployments}">Deployments</a>
+                        <span class="st">(000)</span>
+                    </div>
+                    <div class="box_panel-text">
+                        <input class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
+                               data-thickness=".35" data-fgcolor="#37d8ae" data-bgcolor="#eeeeee" value="68" style="">
+                    </div>
+                    <div class="box_panel-stext ml_20">
+                        <div class="circle_s"></div>
+                        Running 00<br>
+                        <div class="circle_s"></div>
+                        Pending <br>
+                        <div class="circle_s"></div>
+                        Failed 00
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4 col-lg-2" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading3">
+                        <a th:href="@{/monitoring/cluster/workloads/statefulsets}">StatefulSets</a>
+                        <span class="st">(000)</span>
+                    </div>
+                    <div class="box_panel-text">
+                        <input class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
+                               data-thickness=".35" data-fgcolor="#50bee3" data-bgcolor="#eeeeee" value="68" style="">
+                    </div>
+                    <div class="box_panel-stext ml_20">
+                        <div class="circle_s"></div>
+                        Running 00<br>Pods
+                        <div class="circle_s"></div>
+                        Pending <br>
+                        <div class="circle_s"></div>
+                        Failed 00
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4 col-lg-2" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading3">
+                        <a th:href="@{/monitoring/cluster/workloads/daemonsets}">DaemonSet</a>
+                        <span class="st">(000)</span>
+                    </div>
+                    <div class="box_panel-text">
+                        <input class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
+                               data-thickness=".35" data-fgcolor="#5da2e5" data-bgcolor="#eeeeee" value="78" style="">
+                    </div>
+                    <div class="box_panel-stext ml_20">
+                        <div class="circle_s"></div>
+                        Running 00<br>
+                        <div class="circle_s"></div>
+                        Pending <br>
+                        <div class="circle_s"></div>
+                        Failed 00
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4 col-lg-2" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading3">
+                        <a th:href="@{/monitoring/cluster/workloads/jobs}">Jobs</a>
+                        <span class="st">(000)</span>
+                    </div>
+                    <div class="box_panel-text">
+                        <input class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
+                               data-thickness=".35" data-fgcolor="#7392ed" data-bgcolor="#eeeeee" value="65" style="">
+                    </div>
+                    <div class="box_panel-stext ml_20">
+                        <div class="circle_s"></div>
+                        Running 00<br>
+                        <div class="circle_s"></div>
+                        Pending <br>
+                        <div class="circle_s"></div>
+                        Failed 00
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4 col-lg-2" style="padding-right:0px;">
+                <div class="col-xs-12 box_panel" style="padding:0px;">
+                    <div class="box_panel-heading3">
+                        <a th:href="@{/monitoring/cluster/workloads/cronjobs}">CronJobs</a>
+                        <span class="st">(000)</span>
+                    </div>
+                    <div class="box_panel-text">
+                        <input class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
+                               data-thickness=".35" data-fgcolor="#be7fc6" data-bgcolor="#eeeeee" value="74" style="">
+                    </div>
+                    <div class="box_panel-stext ml_20">
+                        <div class="circle_s"></div>
+                        Running 00<br>
+                        <div class="circle_s"></div>
+                        Pending <br>
+                        <div class="circle_s"></div>
+                        Failed 00
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- [chart 6EA] end-->
+        <div class="row">
+            <div class="main_title col-xs-12" style="padding-right:0px;"><i class="feather icon-chevrons-right"></i>
+                Events
+            </div>
+            <!-- 테이블 width css -->
+            <style>
+                .list_table235 > thead > tr > th:first-child {
+                    width: 23%;
+                }
+
+                .list_table235 > tbody > tr > td:first-child {
+                    width: 23%;
+                }
+            </style>
+            <div class="col-xs-12" style="padding-right:0px; padding-left:10px;">
+                <div class="box_panel">
+                    <div class="box_table-body">
+                        <table class="list_table235">
+                            <thead>
+                            <tr>
+                                <th>Message</th>
+                                <th>Namespace</th>
+                                <th>Type</th>
+                                <th>Involved Object</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Age</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><a href="" class="table2-link" data-toggle="modal" data-target="#myModal">Back-off
+                                    restarting failed container</a>
+
+                                    <!-- [Modal] start -->
+                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                                         aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" style="width:765px;">
+                                            <div class="modal-content">
+                                                <div class="modal-title_box">
+                                                    <div class="modal-title">
+                                                        <button type="button" class="close px-3" data-dismiss="modal"
+                                                                aria-label="Close"><span
+                                                                aria-hidden="true">&times;</span></button>
+                                                        <span id="myModalLabel">Node/Pod/ReplicaSet/Deployment/...</span>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-nbody">
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>"Cluster Object type별 상세 보기화면"
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- [Modal] End -->
+                                </td>
+                                <td>Kube-system</td>
+                                <td>Pod</td>
+                                <td>Object name</td>
+                                <td>node-controler</td>
+                                <td>000</td>
+                                <td>99d24h00mm</td>
+                            </tr>
+                            <tr>
+                                <td>Back-off restarting failed container</td>
+                                <td>Kube-system</td>
+                                <td>Pod</td>
+                                <td>Object name</td>
+                                <td>node-controler</td>
+                                <td>000</td>
+                                <td>99d24h00mm</td>
+                            </tr>
+                            <tr>
+                                <td>Back-off restarting failed container</td>
+                                <td>Kube-system</td>
+                                <td>Pod</td>
+                                <td>Object name</td>
+                                <td>node-controler</td>
+                                <td>000</td>
+                                <td>99d24h00mm</td>
+                            </tr>
+                            <tr>
+                                <td>Back-off restarting failed container</td>
+                                <td>Kube-system</td>
+                                <td>Pod</td>
+                                <td>Object name</td>
+                                <td>node-controler</td>
+                                <td>000</td>
+                                <td>99d24h00mm</td>
+                            </tr>
+                            <tr>
+                                <td>Back-off restarting failed container</td>
+                                <td>Kube-system</td>
+                                <td>Pod</td>
+                                <td>Object name</td>
+                                <td>node-controler</td>
+                                <td>000</td>
+                                <td>99d24h00mm</td>
+                            </tr>
+                            <tr>
+                                <td>Back-off restarting failed container</td>
+                                <td>Kube-system</td>
+                                <td>Pod</td>
+                                <td>Object name</td>
+                                <td>node-controler</td>
+                                <td>000</td>
+                                <td>99d24h00mm</td>
+                            </tr>
+                            <tr>
+                                <td>Back-off restarting failed container</td>
+                                <td>Kube-system</td>
+                                <td>Pod</td>
+                                <td>Object name</td>
+                                <td>node-controler</td>
+                                <td>000</td>
+                                <td>99d24h00mm</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

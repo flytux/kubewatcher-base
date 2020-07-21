@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <th:block th:fragment="menu">
+
+            <!-- [Left Sidebar] Start -->
+            <div class="lef-nav bg-gradient-hanwha">
+                <div class="row d-flex lef-sidebar-brand" >
+                    <div class="logo-img ">
+                        <img src="" alt="">
+                    </div>
+                    <div class="lef-sidebar-brand-text">한화생명<br>통합관리시스템</div>
+                </div>
+                <div id="lnb">
+                    <ul>
+                        <li class="heading lef-sidebar-brand-sub-text">NAVIGATION</li>
+                        <li class="noDepth on">
+                            <a th:href="@{/main}"><i class="feather icon-home"></i> <span class="lef-sidebar-brand-sub-text">Dashboard</span></a>
+                        </li>
+                        <li class="heading lef-sidebar-brand-sub-text">CLOUD</li>
+                        <li>
+                            <a href="#none" role="button">
+                                <i class="feather icon-bar-chart-2"></i>  <span class="lef-sidebar-brand-sub-text">Monitoring</span>
+                            </a>
+                            <ul>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownApplication">Application</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownApplication">
+                                        <li><a th:href="@{/monitoring/application/overview}">Overview</a></li>
+                                        <li><a th:href="@{/monitoring/application/topologies}">Topologies</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownCluster">Cluster</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownCluster">
+                                        <li><a th:href="@{/monitoring/cluster/overview}">Overview</a></li>
+                                        <li><a th:href="@{/monitoring/cluster/nodes}">Nodes</a></li>
+                                        <li>
+                                            <a href="#none"class="dropdown-accordion" aria-controls="dropdownAccrdionWorkloads">Workloads</a>
+                                            <ul id="dropdownAccrdionWorkloads" class="panel-collapse" aria-expanded="false">
+                                                <li><a th:href="@{/monitoring/cluster/workloads/overview}">Overview</a></li>
+                                                <li><a th:href="@{/monitoring/cluster/workloads/pods}">Pods</a></li>
+                                                <li><a th:href="@{/monitoring/cluster/workloads/deployments}">Deployments</a></li>
+                                                <li><a th:href="@{/monitoring/cluster/workloads/daemonsets}">DeamonSets</a></li>
+                                                <li><a th:href="@{/monitoring/cluster/workloads/statefulsets}">StatefulSets</a></li>
+                                                <li><a th:href="@{/monitoring/cluster/workloads/jobs}">Jobs</a></li>
+                                                <li><a th:href="@{/monitoring/cluster/workloads/cronjobs}">CronJobs</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a th:href="@{/monitoring/cluster/storages}">Storages</a></li>
+                                        <li><a th:href="@{/monitoring/cluster/events}">Events</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownJvm">JVM</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownJvm">
+                                        <li><a th:href="@{/monitoring/jvm/overview}">Overview</a></li>
+                                        <li><a th:href="@{/monitoring/jvm/application}">Application</a></li>
+                                    </ul>
+                                </li>
+                                <li><a th:href="@{/monitoring/database}">Database</a></li>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownVm">Virtual Machine</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownVm">
+                                        <li><a th:href="@{/monitoring/vm/overview}">Overview</a></li>
+                                        <li><a th:href="@{/monitoring/vm/monitoring}">Monitoring</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownAlarm">Alarm</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownAlarm">
+                                        <li><a th:href="@{/monitoring/alarm/list}">List</a></li>
+                                        <li><a href="javascript:alert('준비중 입니다.');">Detailed View</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#none" role="button">
+                                <i class="feather icon-server"></i> <span class="lef-sidebar-brand-sub-text">Application</span>
+                            </a>
+                            <ul>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownCatalog">Catalog</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownCatalog">
+                                        <li><a th:href="@{/application/catalog/applications}">Application List</a></li>
+                                        <li><a th:href="@{/application/catalog/releases}">Release List</a></li>
+                                        <li><a href="javascript:alert('준비중 입니다.');">Release History</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownUsage">Usage</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownUsage">
+                                        <li><a th:href="@{/application/usage/usage-overview}">Usage Overview</a></li>
+                                        <li><a href="javascript:alert('준비중 입니다.');">Detailed View</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#none" role="button">
+                                <i class="feather icon-box"></i> <span class="lef-sidebar-brand-sub-text">Cluster</span>
+                            </a>
+                            <ul>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownConfig">Config</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownConfig">
+                                        <li><a th:href="@{/cluster/config/configmaps}">Configmaps</a></li>
+                                        <li><a th:href="@{/cluster/config/secrets}">Secrets</a></li>
+                                        <li><a th:href="@{/cluster/config/resource-quotas}">Resource Quotas</a></li>
+                                        <li><a th:href="@{/cluster/config/hpa}">HPA</a></li>
+                                        <li><a th:href="@{/cluster/config/namespaces}">Namespaces</a></li>
+                                        <li><a th:href="@{/cluster/config/custom-resources}">Custom Resources</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownNetwork">Network</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownNetwork">
+                                        <li><a th:href="@{/cluster/network/services}">Services</a></li>
+                                        <li><a th:href="@{/cluster/network/ingress}">Ingresses</a></li>
+                                        <li><a th:href="@{/cluster/network/endpoints}">Endpoints</a></li>
+                                        <li><a th:href="@{/cluster/network/policies}">Network Policies</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownAc">Access Control</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownAc">
+                                        <li><a th:href="@{/cluster/acl/service-accounts}">Service Accounts</a></li>
+                                        <li><a th:href="@{/cluster/acl/role-bindings}">Role Bindings</a></li>
+                                        <li><a th:href="@{/cluster/acl/roles}">Roles</a></li>
+                                        <li><a th:href="@{/cluster/acl/pod-security-policies}">Pod Security Policies</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="heading lef-sidebar-brand-sub-text">SETTING</li>
+                        <li>
+                            <a href="#none" role="button">
+                                <i class="feather icon-lock"></i> <span class="lef-sidebar-brand-sub-text">보안</span>
+                            </a>
+                            <ul>
+                                <li><a th:href="@{/security/groups}">Groups</a></li>
+                                <li><a th:href="@{/security/users}">Users</a></li>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownSecurityRoles">Roles</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownSecurityRoles">
+                                        <li><a th:href="@{/security/roles/user-role-management}">사용자 Role 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a th:href="@{/security/keys}">Keys</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#none" role="button">
+                                <i class="feather icon-settings"></i> <span class="lef-sidebar-brand-sub-text">설정</span>
+                            </a>
+                            <ul>
+                                <li class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownSettingAlarm">Alarm</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownSettingAlarm">
+                                        <li><a th:href="@{/setting/alarm/list}">List</a></li>
+                                        <li><a href="javascript:alert('준비중 입니다.');">Config</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="javascript:alert('준비중 입니다.')">Preference</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="text-center d-none d-md-inline">
+                    <button id="sidebarToggle" class="rounded-circle_l border-0"><i class="feather icon-chevrons-left"></i></button>
+                </div>
+
+            </div>
+            <!-- [Left Sidebar] End -->
+
+        </th:block>
+    </body>
+</html>

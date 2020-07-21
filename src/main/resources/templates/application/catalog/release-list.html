@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Application<i class=&quot;feather icon-chevron-right&quot; ></i>Catalog<i class=&quot;feather icon-chevron-right&quot; ></i>Release List')"/>
+    <div id="main_contents">
+
+        <!-- [Alarm 설정 목록] start -->
+        <div class="row">
+            <div class="main_title_top col-xs-12 mb_0  pr_0" ><i class="feather icon-chevrons-right"></i> Application release list
+                <!--#### [수정 2020-07-21] 시작 #######-->
+                <!-- 드롭박스 시작 -->
+                <div class="dropdown d_ib f_r">
+                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                        All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
+                    </button>
+                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                    </ul>
+                </div>
+                <!-- 드롭박스 끝 -->
+                <!-- search 박스 시작 -->
+                <div class="dropdown d_ib f_r mr_5">
+                    <div class="form-group has-feedback d_ib">
+                        <input type="text" placeholder="Search" class="search_table">
+                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                    </div>
+                </div>
+                <!-- search 박스 끝 -->
+                <!--#### [수정 2020-07-21] 끝 ########-->
+            </div>
+        </div>
+
+        <div class="col-xs-12" style="padding-right:0px;">
+            <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : <span class="point pr_10">10</span>  Page : <span class="point">1</span>/1
+                </div>
+                <div class="box_table-body">
+                    <table class="list_table">
+                        <thead>
+                        <tr>
+                            <th>Application</th>
+                            <th>Namespace</th>
+                            <th>Image</th>
+                            <th>Tag</th>
+                            <th>Node</th>
+                            <th>Status</th>
+                            <th>Age</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a  href="" data-toggle="modal" data-target="#myModal">라이프플러스</a>
+                                <!-- [Modal] start -->
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg" style="width:765px;">
+                                        <div class="modal-content">
+                                            <div class="modal-title_box">
+                                                <div class="modal-title">
+                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <span id="myModalLabel">Application release detail</span>
+                                                </div>
+                                            </div>
+                                            <div class="modal-nbody">
+                                                <div class="table-title">
+                                                    Overview
+                                                </div>
+                                                <div class="row">
+                                                    <table class="table-nt">
+                                                        <tr>
+                                                            <th>논리명</th>
+                                                            <td>라이프플러스</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>물리명</th>
+                                                            <td>HLI_APP_LIFEPLUS</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>담당자</th>
+                                                            <td>홍길동</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>현재버전</th>
+                                                            <td>V2.1.4</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>최종 배포일시</th>
+                                                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="table-title">
+                                                    Release History
+                                                </div>
+                                                <div class="row">
+                                                    <table class="list_mtable_200">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th class="w20">Time</th>
+                                                            <th>Strategy</th>
+                                                            <th>Version</th>
+                                                            <th>Result</th>
+                                                            <th>Target</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td class="w20">2020-05-21 17:45:22</td>
+                                                            <td>Canary</td>
+                                                            <td>2.1.4</td>
+                                                            <td>Success</td>
+                                                            <td>HLI001</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td class="w20">2020-05-21 17:45:22</td>
+                                                            <td>Canary</td>
+                                                            <td>2.1.4</td>
+                                                            <td>Success</td>
+                                                            <td>HLI001</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td class="w20">2020-05-21 17:45:22</td>
+                                                            <td>Canary</td>
+                                                            <td>2.1.4</td>
+                                                            <td>Success</td>
+                                                            <td>HLI001</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td class="w20">2020-05-21 17:45:22</td>
+                                                            <td>Canary</td>
+                                                            <td>2.1.4</td>
+                                                            <td>Success</td>
+                                                            <td>HLI001</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td class="w20">2020-05-21 17:45:22</td>
+                                                            <td>Canary</td>
+                                                            <td>2.1.4</td>
+                                                            <td>Success</td>
+                                                            <td>HLI001</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td class="w20">2020-05-21 17:45:22</td>
+                                                            <td>Canary</td>
+                                                            <td>2.1.4</td>
+                                                            <td>Success</td>
+                                                            <td>HLI001</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td class="w20">2020-05-21 17:45:22</td>
+                                                            <td>Canary</td>
+                                                            <td>2.1.4</td>
+                                                            <td>Success</td>
+                                                            <td>HLI001</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td class="w20">2020-05-21 17:45:22</td>
+                                                            <td>Canary</td>
+                                                            <td>2.1.4</td>
+                                                            <td>Success</td>
+                                                            <td>HLI001</td>
+                                                        </tr>
+                                                        <tbody>
+                                                    </table>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [Modal] End -->
+                            </td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_false">DOWN</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        <tr>
+                            <td>라이프플러스</td>
+                            <td>HLI_BIZ</td>
+                            <td>hli-registry/Lifeplus-app</td>
+                            <td>2.1.4</td>
+                            <td>HLI000</td>
+                            <td><span class="madal_label_active">UP</span></td>
+                            <td>29d 14h 24mm</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="text-center"><!-- 페이지넘버 -->
+            <nav>
+                <ul class="pagination" >
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>
+                        </a>
+                    </li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- [Alarm 설정 목록] End-->
+    </div>
+</div>
+</body>
+</html>
