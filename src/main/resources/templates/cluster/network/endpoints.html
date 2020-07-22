@@ -5,6 +5,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script>
+
+        $(function () {
+            //아래 부분은 th:each로 대체 예정 / index = th:text="${objectName + Stat.index}"
+            let $selector = $('.list_table tbody');
+            let html = '';
+            $selector.find('tr').remove();
+
+            for (let i = 0; i < 10; i ++) {
+                html += '<tr data-toggle="modal" data-target="#myModal' + i + '" onclick="openModal(' + i + ')">';
+                html += '   <td>test</td>';
+                html += '   <td>defaut</td>';
+                html += '   <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>';
+                html += '   <td>000d</td>';
+                html += '</tr>';
+            }
+
+            $selector.append(html);
+        });
+
+        function openModal(idx) {
+            $('.modal').attr('id', 'myModal' + idx);
+            $('#myModalLabel').text('Endpoints : Endpoints(' + idx + ')명');
+        }
+
+    </script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -46,275 +73,274 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">test</a>
-
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">Endpoints : Endpoints명</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody">
-                                                <div class="table-title">
-                                                    Overview
-                                                </div>
-                                                <table class="table-nt">
-                                                    <tr>
-                                                        <th>Ctrated</th>
-                                                        <td>24일 15시 32분 (2020-05-24 15:32:08) </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <td>test</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Namespace</th>
-                                                        <td>default</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>labels</th>
-                                                        <td><span class="madal_label">service.kubernets.io/headless=</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Annotations</th>
-                                                        <td><span class="madal_label"> /// </span></td>
-                                                    </tr>
-                                                </table>
-
-                                                <div class="table-title">
-                                                    Subsets
-                                                </div>
-                                                <table class="list_mtable_100">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>IP</th>
-                                                        <th>Hostname</th>
-                                                        <th>Target</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>000.000.000.000</td>
-                                                        <td>///</td>
-                                                        <td>coredns-xxx</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>000.000.000.000</td>
-                                                        <td>///</td>
-                                                        <td>coredns-xxx</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>000.000.000.000</td>
-                                                        <td>///</td>
-                                                        <td>coredns-xxx</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>000.000.000.000</td>
-                                                        <td>///</td>
-                                                        <td>coredns-xxx</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>000.000.000.000</td>
-                                                        <td>///</td>
-                                                        <td>coredns-xxx</td>
-                                                    </tr>
-                                                    <tbody>
-                                                </table>
-                                                <table class="list_mtable_100">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Port</th>
-                                                        <th>Nname</th>
-                                                        <th>Target</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>0000</td>
-                                                        <td>dns-tcp</td>
-                                                        <td>TCP</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>0000</td>
-                                                        <td>dns-tcp</td>
-                                                        <td>TCP</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>0000</td>
-                                                        <td>dns-tcp</td>
-                                                        <td>TCP</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>0000</td>
-                                                        <td>dns-tcp</td>
-                                                        <td>TCP</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>0000</td>
-                                                        <td>dns-tcp</td>
-                                                        <td>TCP</td>
-                                                    </tr>
-                                                    <tbody>
-                                                </table>
-
-                                                <div class="table-title">
-                                                    Events
-                                                </div>
-                                                <table class="list_mtable_100">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Event</th>
-                                                        <th>Source</th>
-                                                        <th>Count</th>
-                                                        <th>Sub-Object</th>
-                                                        <th>Last</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>2020-06-23 (13:45:13)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>2020-06-23 (13:45:13)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>2020-06-23 (13:45:13)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>2020-06-23 (13:45:13)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>2020-06-23 (13:45:13)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>2020-06-23 (13:45:13)</td>
-                                                    </tr>
-                                                    <tbody>
-                                                </table>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End -->
-                            </td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>test</td>
-                            <td>defaut</td>
-                            <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
-                            <td>000d</td>
-                        </tr>
+                            <tr>
+                                <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">test</a></td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>defaut</td>
+                                <td>000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                                <td>000d</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- [Modal] start -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg"style="width:765px;">
+            <div class="modal-content">
+                <div class="modal-title_box">
+                    <div class="modal-title">
+                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span id="myModalLabel">Endpoints : Endpoints명</span>
+                    </div>
+                </div>
+                <div class="modal-nbody">
+                    <div class="table-title">
+                        Overview
+                    </div>
+                    <table class="table-nt">
+                        <tr>
+                            <th>Ctrated</th>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08) </td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>test</td>
+                        </tr>
+                        <tr>
+                            <th>Namespace</th>
+                            <td>default</td>
+                        </tr>
+                        <tr>
+                            <th>labels</th>
+                            <td><span class="madal_label">service.kubernets.io/headless=</span></td>
+                        </tr>
+                        <tr>
+                            <th>Annotations</th>
+                            <td><span class="madal_label"> /// </span></td>
+                        </tr>
+                    </table>
+
+                    <div class="table-title">
+                        Subsets
+                    </div>
+                    <table class="list_mtable_100">
+                        <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Hostname</th>
+                            <th>Target</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>000.000.000.000</td>
+                            <td>///</td>
+                            <td>coredns-xxx</td>
+                        </tr>
+                        <tr>
+                            <td>000.000.000.000</td>
+                            <td>///</td>
+                            <td>coredns-xxx</td>
+                        </tr>
+                        <tr>
+                            <td>000.000.000.000</td>
+                            <td>///</td>
+                            <td>coredns-xxx</td>
+                        </tr>
+                        <tr>
+                            <td>000.000.000.000</td>
+                            <td>///</td>
+                            <td>coredns-xxx</td>
+                        </tr>
+                        <tr>
+                            <td>000.000.000.000</td>
+                            <td>///</td>
+                            <td>coredns-xxx</td>
+                        </tr>
+                        <tbody>
+                    </table>
+                    <table class="list_mtable_100">
+                        <thead>
+                        <tr>
+                            <th>Port</th>
+                            <th>Nname</th>
+                            <th>Target</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>0000</td>
+                            <td>dns-tcp</td>
+                            <td>TCP</td>
+                        </tr>
+                        <tr>
+                            <td>0000</td>
+                            <td>dns-tcp</td>
+                            <td>TCP</td>
+                        </tr>
+                        <tr>
+                            <td>0000</td>
+                            <td>dns-tcp</td>
+                            <td>TCP</td>
+                        </tr>
+                        <tr>
+                            <td>0000</td>
+                            <td>dns-tcp</td>
+                            <td>TCP</td>
+                        </tr>
+                        <tr>
+                            <td>0000</td>
+                            <td>dns-tcp</td>
+                            <td>TCP</td>
+                        </tr>
+                        <tbody>
+                    </table>
+
+                    <div class="table-title">
+                        Events
+                    </div>
+                    <table class="list_mtable_100">
+                        <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Source</th>
+                            <th>Count</th>
+                            <th>Sub-Object</th>
+                            <th>Last</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>2020-06-23 (13:45:13)</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>2020-06-23 (13:45:13)</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>2020-06-23 (13:45:13)</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>2020-06-23 (13:45:13)</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>2020-06-23 (13:45:13)</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>2020-06-23 (13:45:13)</td>
+                        </tr>
+                        <tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [Modal] End -->
 
 </div>
 </body>
