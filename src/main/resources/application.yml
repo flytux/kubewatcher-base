@@ -41,9 +41,9 @@ application:
           role: "USER"
     dependencies:
       grafana:
-        url: "http://10.142.11.170:3000"
-        api-token: "eyJrIjoiQVNMZGI1WTNGTW5veVAzNlJqNjBLN1RYWE9CUm5pOXIiLCJuIjoiMSIsImlkIjoxfQ=="
+        url: "http://grafana.kw-mgmt-dev"
+        api-token: "eyJrIjoiaGo5WkREWjBOWGNCNDRhNnp4YW9wQmdkTUdwRVR6MTkiLCJuIjoia3ViZS13YXRjaGVyIiwiaWQiOjF9"
         login-cookie-name: "grafana_session"
       prometheus:
-        url: "http://10.142.11.170:30089"
+        url: "http://prometheus.kw-mgmt-dev"
 

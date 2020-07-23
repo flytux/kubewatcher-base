@@ -66,6 +66,7 @@
             let panelQueryMap = new Map();
             let variableMap;
             let dashboardUrl;
+            let promUrl;
 
             const $dashboardSelect = $('#dashboard-select'),
                 $panelSelect = $('#panel-select'),
@@ -94,6 +95,7 @@
                     })
                     .always(function (data) {
                         dashboardUrl = data.meta.host + data.meta.panel_url;
+                        promUrl = data.meta.prom_host;
                         $panelSelect.empty();
                         let panels = data.dashboard.panels;
                         let templating = data.dashboard.templating;
@@ -217,7 +219,7 @@
                         console.log(query);
                     }
                     let timestamp = new Date().getTime() / 1000;
-                    let url = "http://10.142.11.170:30089" + query + "&start=" + (timestamp - 60) + "&end=" + timestamp + "&step=15";
+                    let url = promUrl + query + "&start=" + (timestamp - 60) + "&end=" + timestamp + "&step=15";
                     console.log(url);
                     $.get(url)
                         .done(function (data) {
@@ -253,7 +255,7 @@
                         query = query.replace(new RegExp("\\"+"$"+refField, "g"), targetValue);
                     }
                     if (query.indexOf("$") < 0) {
-                        let url = "http://10.142.11.170:30089/api/v1/query?query=" + query;
+                        let url = promUrl + "/api/v1/query?query=" + query;
                         let currentTime = new Date().getTime() / 1000;
                         url += `&start=${currentTime - 300}&end=${currentTime}`;
                         console.log("prometheus api url : " + url);

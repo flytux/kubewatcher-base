@@ -36,6 +36,7 @@ public class DashboardMeta {
 
     String host;
     String panelUrl;
+    String promHost;
 
     public void setUrl(String url) {
         this.url = url;
