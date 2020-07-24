@@ -42,7 +42,7 @@ application:
     dependencies:
       grafana:
         url: "http://grafana.kw-mgmt-dev"
-        api-token: "eyJrIjoiaGo5WkREWjBOWGNCNDRhNnp4YW9wQmdkTUdwRVR6MTkiLCJuIjoia3ViZS13YXRjaGVyIiwiaWQiOjF9"
+        api-token: "eyJrIjoiQTJkQWREM0xwS254ZXM3bG5uQzNQako5SmFSd0RQMjQiLCJuIjoia3ViZS13YXRjaGVyIiwiaWQiOjF9"
         login-cookie-name: "grafana_session"
       prometheus:
         url: "http://prometheus.kw-mgmt-dev"
