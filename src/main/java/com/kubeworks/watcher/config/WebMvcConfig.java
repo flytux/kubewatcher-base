@@ -44,8 +44,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /*      > database */
         registry.addViewController("/monitoring/database").setViewName("monitoring/database/database");
         /*      > vm */
-        registry.addViewController("/monitoring/vm/overview").setViewName("monitoring/vm/vm-overview");
-        registry.addViewController("/monitoring/vm/monitoring").setViewName("monitoring/vm/vm-monitoring");
+//        registry.addViewController("/monitoring/vm/overview").setViewName("monitoring/vm/vm-overview");
+//        registry.addViewController("/monitoring/vm/monitoring").setViewName("monitoring/vm/vm-monitoring");
         /*      > alarm */
         registry.addViewController("/monitoring/alarm/list").setViewName("monitoring/alarm/alarm-list");
 

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring')"/>
+    <div id="main_contents">
+        <div class="row">
+            <div class="main_title03 col-xs-12">
+                <div id="namespace" th:text="${defaultNamespace}" class="text-center d-none d-md-inline">
+                    VM#1 [HLIXXX-01]
+                </div>
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle_p border-0"><i class="feather icon-file-text"></i></button>
+                </div>
+                <!--#### [수정 2020-07-21] 시작 #######-->
+                <!-- 드롭박스 시작 -->
+                <div th:each="tempate : ${templating}" class="dropdown d_ib f_r">
+                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                        Select Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
+                    </button>
+                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
+                        <li role="presentation" th:each="value : ${tempate}">
+                            <a role="menuitem" tabindex="-1"
+                               th:href="${'javascript:changeNamespace(''' + value + ''')'}"
+                               th:text="${value}">Action</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 드롭박스 끝 -->
+                <!-- search 박스 시작 -->
+                <div class="dropdown d_ib f_r mr_5">
+                    <div class="form-group has-feedback d_ib">
+                        <input type="text" placeholder="Search" class="search_table">
+                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                    </div>
+                </div>
+                <!-- search 박스 끝 -->
+                <!--#### [수정 2020-07-21] 끝 ########-->
+            </div>
+        </div>
+        <!-- [CPU] start -->
+        <div class="row">
+            <div class="main_title02 col-xs-12"><i class="feather icon-chevrons-right"></i> CPU</div>
+        </div>
+        <div class="row" style="padding-bottom:0px;">
+            <div th:switch="${panelMap.get(1L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'" class="box_panel">
+                    <div class="box_panel-heading">CPU Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(1L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">CPU Basic</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(2L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">CPU</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(2L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">CPU</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(3L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">System Load</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(3L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">System Load</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(4L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Process Status</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(4L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Process Status</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [CPU] END -->
+
+
+        <!-- [Memory] start -->
+        <div class="row">
+            <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Memory</div>
+        </div>
+        <div class="row" style="padding-bottom:0px;">
+            <div th:switch="${panelMap.get(5L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(5L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Basic</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(6L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Stack</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(6L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Stack</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(7L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Active/Inactive</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(7L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Active/Inactive</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(8L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Pages In/Out</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(8L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Pages In/Out</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [Memory] END -->
+
+        <!-- [Disk] start -->
+        <div class="row">
+            <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Disk</div>
+        </div>
+        <div class="row" style="padding-bottom:0px;">
+            <div th:switch="${panelMap.get(9L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(9L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used Basic</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(10L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(10L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(11L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk I/O (Read/Write bytes)</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(11L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk I/O (Read/Write bytes)</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(12L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(12L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [Disk] END -->
+
+
+        <!-- [Network] start -->
+        <div class="row">
+            <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Network</div>
+        </div>
+        <div class="row" style="padding-bottom:0px;">
+            <div th:switch="${panelMap.get(13L).getDataType()}" class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(13L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Network (In/Out bps)</div>
+                    <div class="box_panel-body" >
+                        <img th:src="@{/assets/img/chart5.jpg}" class="img-responsive" alt="" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+            <div th:switch="${panelMap.get(14L).getDataType()}" class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(14L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Network (In/Out bps)</div>
+                    <div class="box_panel-body">
+                        <img th:src="@{/assets/img/chart6.jpg}" class="img-responsive" alt="" style="width:100%; ">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [Network] END -->
+
+
+        <!-- [File System] start -->
+        <div class="row">
+            <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> File System</div>
+        </div>
+        <div class="row" >
+            <div th:switch="${panelMap.get(15L).getDataType()}" class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-xxs">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(15L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_table-body">
+                        <table class="list_system">
+                            <thead>
+                            <tr>
+                                <th>File system</th>
+                                <th>Size (MB)</th>
+                                <th>Used (MB)</th>
+                                <th>Avai (MB)</th>
+                                <th>Used (%)</th>
+                                <th>Mount)</th>
+                                <th>Time</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>System01</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>999%</td>
+                                <td>/sys/fs/group</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>System01</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>999%</td>
+                                <td>/sys/fs/group</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>System01</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>999%</td>
+                                <td>/sys/fs/group</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>System01</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>999%</td>
+                                <td>/sys/fs/group</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>System01</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>999%</td>
+                                <td>/sys/fs/group</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>System01</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>9,999</td>
+                                <td>999%</td>
+                                <td>/sys/fs/group</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [File System] End -->
+        <!-- [Process] start -->
+        <div class="row">
+            <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Process</div>
+        </div>
+        <div class="row" >
+            <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
+                <div class="box_panel">
+                    <div class="box_table-body">
+                        <table class="list_system">
+                            <thead>
+                            <tr>
+                                <th>Process</th>
+                                <th>PID</th>
+                                <th>CPU (%)</th>
+                                <th>MEM (%)</th>
+                                <th>Prior</th>
+                                <th>Thread</th>
+                                <th>CPU time</th>
+                                <th>Time</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>kworker01</td>
+                                <td>99,999</td>
+                                <td>99%</td>
+                                <td>99%</td>
+                                <td>99</td>
+                                <td>99</td>
+                                <td>9,999</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>kworker01</td>
+                                <td>99,999</td>
+                                <td>99%</td>
+                                <td>99%</td>
+                                <td>99</td>
+                                <td>99</td>
+                                <td>9,999</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>kworker01</td>
+                                <td>99,999</td>
+                                <td>99%</td>
+                                <td>99%</td>
+                                <td>99</td>
+                                <td>99</td>
+                                <td>9,999</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>kworker01</td>
+                                <td>99,999</td>
+                                <td>99%</td>
+                                <td>99%</td>
+                                <td>99</td>
+                                <td>99</td>
+                                <td>9,999</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            <tr>
+                                <td>kworker01</td>
+                                <td>99,999</td>
+                                <td>99%</td>
+                                <td>99%</td>
+                                <td>99</td>
+                                <td>99</td>
+                                <td>9,999</td>
+                                <td>2020-05-21 (13:52:21)</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [Process] End -->
+
+        <!-- [EVENT] start -->
+        <div class="row">
+            <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Event</div>
+        </div>
+        <div class="row" >
+            <div class="col-xs-12 col-md-12 col-lg-7" style="padding-right:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading2"><div class="circle c_normal"></div>Normal&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_warning"></div>Warning&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_danger"></div>Danger</div>
+                    <div class="box_table-body">
+                        <table class="list_system2">
+                            <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Time</th>
+                                <th style="padding-right:20px;">Level</th>
+                                <th>Closed</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>System Architect</td>
+                                <td>2020-03-24   12:34:05</td>
+                                <td><div class="circle c_normal"></div></td>
+                                <td><div class="radio_new figure ">
+                                    <input type="radio" name="ex_rds" id="ex_rd"  checked><label for="ex_rd"> Yes</label>&nbsp;&nbsp;
+                                    <input type="radio" name="ex_rds" id="ex_rd1"><label for="ex_rd1"> No</label>
+                                </div>
+                            </tr>
+                            <tr>
+                                <td>System Architect</td>
+                                <td>2020-03-24   12:34:05</td>
+                                <td><div class="circle c_warning"></div></td>
+                                <td><div class="radio_new figure">
+                                    <input type="radio" name="ex_rds2" id="ex_rd2" checked><label for="ex_rd2"> Yes</label>&nbsp;&nbsp;
+                                    <input type="radio" name="ex_rds2" id="ex_rd3"><label for="ex_rd3"> No</label>
+                                </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>System Architect</td>
+                                <td>2020-03-24   12:34:05</td>
+                                <td><div class="circle c_normal"></div></td>
+                                <td><div class="radio_new figure ">
+                                    <input type="radio" name="ex_rds3" id="ex_rd4"  checked><label for="ex_rd4"> Yes</label>&nbsp;&nbsp;
+                                    <input type="radio" name="ex_rds3" id="ex_rd5"><label for="ex_rd5"> No</label>
+                                </div>
+                            </tr>
+                            <tr>
+                                <td>System Architect</td>
+                                <td>2020-03-24   12:34:05</td>
+                                <td><div class="circle c_normal"></div></td>
+                                <td><div class="radio_new figure ">
+                                    <input type="radio" name="ex_rds4" id="ex_rd6"  checked><label for="ex_rd6"> Yes</label>&nbsp;&nbsp;
+                                    <input type="radio" name="ex_rds4" id="ex_rd7"><label for="ex_rd7"> No</label>
+                                </div>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-md-12 col-lg-5" style="padding-right:0px; padding-bottom:10px;">
+                <div class="box_panel col-xs-12"  style="height:235px; padding-right:0px; padding-left:0px;">
+                    <div class="box_panel-body">
+                        내용이 들어갑니다. 내용이 들어갑니다. 내용이 들어갑니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [EVENT] End-->
+    </div>
+    <script>
+        function changeNamespace(namespace) {
+            $('#namespace').text(namespace);
+            $(document).find('iframe').map(function(){
+                let src = $(this).attr('src');
+                let varIndex = src.indexOf('&var-Node=');
+                if (varIndex > 0) {
+                    src = src.slice(0, varIndex);
+                }
+                $(this).attr('src', src + "&var-Node=" + namespace);
+            });
+        }
+
+    </script>
+</div>
+</body>
+</html>

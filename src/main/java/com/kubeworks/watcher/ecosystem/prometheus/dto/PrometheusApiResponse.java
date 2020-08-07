@@ -29,7 +29,7 @@ public class PrometheusApiResponse {
         public static class PrometheusApiResult {
 
             Map<String, String> metric;
-            List<List<Object>> values;
+            List<Object> value;
 
         }
 

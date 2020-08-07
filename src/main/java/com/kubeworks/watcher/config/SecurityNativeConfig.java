@@ -14,9 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.security.web.header.writers.frameoptions.WhiteListedAllowFromStrategy;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
+
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +34,7 @@ public class SecurityNativeConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-            .antMatchers("/assets/**", "/vendor/bootstrap/**", "/css/**", "/webssh/**").permitAll()
+            .antMatchers("/assets/**", "/vendor/bootstrap/**", "/css/**", "/webssh/**", "/h2-console/**").permitAll()
             .anyRequest()
             .authenticated()
             .and()
@@ -44,7 +45,14 @@ public class SecurityNativeConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .and()
             .httpBasic().and()
-            .csrf()
+            .csrf().ignoringAntMatchers("/h2-console/**")
+            .and()
+            .headers()
+            .addHeaderWriter(
+                new XFrameOptionsHeaderWriter(
+                    new WhiteListedAllowFromStrategy(Collections.singletonList("localhost"))
+                )
+            ).frameOptions().sameOrigin()
             .and()
             .logout()
             .invalidateHttpSession(true)
