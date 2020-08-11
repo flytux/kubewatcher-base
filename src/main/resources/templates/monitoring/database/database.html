@@ -5,6 +5,282 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script>
+        let datas = {
+            "menu_id": "140",
+            "rows": [
+                {
+                    "row_id": 0,
+                    "is_divider": false,
+                    "title": "RAC Node",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 0,
+                            "title": ['CPU', 'Memory'],
+                            "panel_type": "updown-card",
+                            "data_type": "text",
+                            "src": "",
+                            "item": ['83%', '15%'],
+                            "closed": false
+                        },
+                        {
+                            "panel_id": 1,
+                            "title": ['CPU', 'Memory'],
+                            "panel_type": "updown-card",
+                            "data_type": "text",
+                            "src": "",
+                            "item": ['86%', '35%'],
+                            "closed": true
+                        },
+                        {
+                            "panel_id": 2,
+                            "title": ['CPU', 'Memory'],
+                            "panel_type": "updown-card",
+                            "data_type": "text",
+                            "src": "",
+                            "item": ['86%', '35%'],
+                            "closed": false
+                        }
+                    ]
+                },
+                {
+                    "row_id": 1,
+                    "is_divider": false,
+                    "title": "RAC Node Sub",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 3,
+                            "title": "Exeute Count",
+                            "panel_type": "back-chart",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "000"
+                        },
+                        {
+                            "panel_id": 4,
+                            "title": "Number of Commit",
+                            "panel_type": "back-chart",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "000"
+                        },
+                        {
+                            "panel_id": 5,
+                            "title": "Active Session",
+                            "panel_type": "back-chart",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "000"
+                        },
+                        {
+                            "panel_id": 6,
+                            "title": "Process count",
+                            "panel_type": "back-chart",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "000"
+                        },
+                        {
+                            "panel_id": 7,
+                            "title": "User Rollback",
+                            "panel_type": "back-chart",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "000"
+                        }
+                    ]
+                },
+                {
+                    "row_id": 2,
+                    "is_divider": false,
+                    "title": "보험코어 데이터베이스 Status",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 8,
+                            "title": "Concurrent wait time",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart4.jpg"
+                        },
+                        {
+                            "panel_id": 9,
+                            "title": "Commit wait time",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart3.jpg"
+                        },
+                        {
+                            "panel_id": 10,
+                            "title": "Application waiting",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart2.jpg"
+                        },
+                        {
+                            "panel_id": 11,
+                            "title": "Network waiting",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart1.jpg"
+                        }
+                    ]
+                },
+                {
+                    "row_id": 3,
+                    "is_divider": false,
+                    "title": "보험코어 데이터베이스 Status",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 12,
+                            "title": "System I/O wait",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart4.jpg"
+                        },
+                        {
+                            "panel_id": 13,
+                            "title": "User I/O wait",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart3.jpg"
+                        },
+                        {
+                            "panel_id": 14,
+                            "title": "Configuring wait",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart2.jpg"
+                        },
+                        {
+                            "panel_id": 15,
+                            "title": "Scheduler wait",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart1.jpg"
+                        }
+                    ]
+                },
+                {
+                    "row_id": 4,
+                    "is_divider": false,
+                    "title": "보험코어 데이터베이스 Status",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 16,
+                            "title": "Resource utilization",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart5.jpg"
+                        }
+                    ]
+                },
+                {
+                    "row_id": 5,
+                    "is_divider": false,
+                    "title": "Table spaces, Errors",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 17,
+                            "title": "Table spaces",
+                            "panel_type": "table-col",
+                            "data_type": "text",
+                            "src": "",
+                            "item": {
+                                head:['itemId', 'Table name', 'Alloc.space', 'Free space', 'Used', 'Max size Autoextend', 'Percent used Extend', 'Time'],
+                                body:[
+                                    {'itemId':'0', 'Table name': 'SYSTEM1', 'Alloc.space': '000.00MB', 'Free space': '000.00MB', 'Used': '00%', 'Max size Autoextend': '000.00MB', 'Percent used Extend': '00%', 'Time': '2020-05-22 12:42:13'},
+                                    {'itemId':'1', 'Table name': 'SYSTEM1', 'Alloc.space': '000.00MB', 'Free space': '000.00MB', 'Used': '00%', 'Max size Autoextend': '000.00MB', 'Percent used Extend': '00%', 'Time': '2020-05-22 12:42:13'},
+                                    {'itemId':'2', 'Table name': 'SYSTEM1', 'Alloc.space': '000.00MB', 'Free space': '000.00MB', 'Used': '00%', 'Max size Autoextend': '000.00MB', 'Percent used Extend': '00%', 'Time': '2020-05-22 12:42:13'},
+                                    {'itemId':'3', 'Table name': 'SYSTEM1', 'Alloc.space': '000.00MB', 'Free space': '000.00MB', 'Used': '00%', 'Max size Autoextend': '000.00MB', 'Percent used Extend': '00%', 'Time': '2020-05-22 12:42:13'},
+                                    {'itemId':'4', 'Table name': 'SYSTEM1', 'Alloc.space': '000.00MB', 'Free space': '000.00MB', 'Used': '00%', 'Max size Autoextend': '000.00MB', 'Percent used Extend': '00%', 'Time': '2020-05-22 12:42:13'}
+                                ]
+                            }
+                        },
+                        {
+                            "panel_id": 18,
+                            "title": "Errors",
+                            "panel_type": "table-col",
+                            "data_type": "text",
+                            "src": "",
+                            "item": {
+                                head:['itemId', 'Time', 'Error code', 'Insatance', 'Description', 'Host', 'Count'],
+                                body:[
+                                    {'itemId':'0', 'Time': '2020-05-22 12:42:13', 'Error code': 'ORA-0000', 'Insatance': 'XXXX', 'Description': 'ORA-0000:////', 'Host': 'HLIXXX', 'Count': '000'},
+                                    {'itemId':'1', 'Time': '2020-05-22 12:42:13', 'Error code': 'ORA-0000', 'Insatance': 'XXXX', 'Description': 'ORA-0000:////', 'Host': 'HLIXXX', 'Count': '000'},
+                                    {'itemId':'2', 'Time': '2020-05-22 12:42:13', 'Error code': 'ORA-0000', 'Insatance': 'XXXX', 'Description': 'ORA-0000:////', 'Host': 'HLIXXX', 'Count': '000'},
+                                    {'itemId':'3', 'Time': '2020-05-22 12:42:13', 'Error code': 'ORA-0000', 'Insatance': 'XXXX', 'Description': 'ORA-0000:////', 'Host': 'HLIXXX', 'Count': '000'},
+                                    {'itemId':'4', 'Time': '2020-05-22 12:42:13', 'Error code': 'ORA-0000', 'Insatance': 'XXXX', 'Description': 'ORA-0000:////', 'Host': 'HLIXXX', 'Count': '000'}
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        $().ready(function(){
+            let rtnHtml = pTempJs.generatePanelList(datas.rows);
+            for(let html of rtnHtml) {
+                let idx = html.rowId,
+                    $this = $('#main_contents .append').eq(idx),
+                    $target;
+
+                $this.children().remove();
+                $this.append(html.panels);
+
+                //예외처리
+                if(idx === 0){
+                    $this.children().css('padding-right', '0px');
+
+                    $target = $this.children().children();
+                    $target.children(':even').css({'padding-left': '0px', 'padding-right': '5px'});//짝수 노드
+                    $target.children(':odd').css({'padding-left': '5px', 'padding-right': '0px'});//홀수 노드
+
+                    let className = $target.children().eq(2).children().children().eq(0).attr('class');
+                    pTempJs.changeClass($target.find('.' + className), className, 'title_chart');
+                } else if (idx === 1) {
+                    let clone = pTempJs.clone($this),
+                        tagArray = [clone.children(':lt(3)'), clone.children(':gt(2)')],
+                        sizeArray = [7,5];
+
+                    $this.children().remove();
+                    $target = tagArray[0].children().eq(0).children().eq(1);
+                    $target.text($.trim($target.text()));
+                    $target.append('<span class="t_sstxt2">k</span>');
+
+                    for(let key in tagArray){
+                        let tag = tagArray[key],
+                            resize = key == 0 ? 4 : 6;
+
+                        pTempJs.resize(tag, 2.4, resize);
+                        tag = tag.css('padding-right', '0px').wrapAll('<div class="col-lg-' + sizeArray[key] + '" style="padding:0px;"/>').parent();
+                        $this.append(tag);
+                    }
+                } else if (idx === 4) {
+                    pTempJs.resize($this.children(), 12, 6);
+                    $this.children().css('padding-bottom', '0px');
+                } else if (idx === 5) {
+                    pTempJs.resize($this.children(), 6, 12);
+                }
+            }
+        });
+    </script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -14,7 +290,7 @@
         <div class="row">
             <div class="main_title_top col-xs-12"><i class="feather icon-chevrons-right"></i> 보험코어 데이터베이스 [Oracle ver x.x]</div>
         </div>
-        <div class="row">
+        <div class="row append">
             <div class="col-xs-12 col-md-12 col-lg-4"  style=" padding-right:0px;">
                 <div class="col-xs-12 box1_pb15">
                     <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
@@ -83,7 +359,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row append">
             <div class="col-lg-7" style="padding:0px;">
                 <div class="col-xs-12 col-md-12 col-lg-4"  style="padding-right:0px;">
                     <div class="col-xs-12 box_chart">
@@ -126,7 +402,7 @@
         </div>
         <div class="row row_scroll"  style="padding-bottom:0px;">
 
-            <div class="row" style="padding-bottom:0px;">
+            <div class="row append" style="padding-bottom:0px;">
                 <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
                     <div class="box_panel">
                         <div class="box_panel-heading">Concurrent wait time</div>
@@ -160,7 +436,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="padding-bottom:0px;">
+            <div class="row append" style="padding-bottom:0px;">
                 <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
                     <div class="box_panel">
                         <div class="box_panel-heading">System I/O wait</div>
@@ -194,7 +470,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="padding-bottom:0px;">
+            <div class="row append" style="padding-bottom:0px;">
                 <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
                     <div class="box_panel">
                         <div class="box_panel-heading">Resource utilization</div>
@@ -208,7 +484,7 @@
         <!-- [보험코어 데이터베이스 [Oracle ver x.x]] END -->
 
         <!-- [Table spaces] Start -->
-        <div class="row" >
+        <div class="row append">
             <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
                 <div class="box_panel">
                     <div class="box_panel-heading">Table spaces</div>
@@ -270,62 +546,60 @@
             <!-- [Table spaces] END -->
 
             <!-- [Errors] Start -->
-            <div class="row" >
-                <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
-                    <div class="box_panel">
-                        <div class="box_panel-heading">Errors</div>
-                        <div class="box_panel-body">
-                            <table class="table table-striped text-center">
-                                <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Error code</th>
-                                    <th>Insatance</th>
-                                    <th>Description</th>
-                                    <th>Host</th>
-                                    <th>Count</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>2020-05-22 12:42:13</td>
-                                    <td>ORA-0000</td>
-                                    <td>XXXX</td>
-                                    <td>ORA-0000:////</td>
-                                    <td>HLIXXX</td>
-                                    <td>000</td>
-                                </tr>
-                                <tr>
-                                    <td>2020-05-22 12:42:13</td>
-                                    <td>ORA-0000</td>
-                                    <td>XXXX</td>
-                                    <td>ORA-0000:////</td>
-                                    <td>HLIXXX</td>
-                                    <td>000</td>
-                                </tr>
-                                <tr>
-                                    <td>2020-05-22 12:42:13</td>
-                                    <td>ORA-0000</td>
-                                    <td>XXXX</td>
-                                    <td>ORA-0000:////</td>
-                                    <td>HLIXXX</td>
-                                    <td>000</td>
-                                </tr>
-                                <tr>
-                                    <td>2020-05-22 12:42:13</td>
-                                    <td>ORA-0000</td>
-                                    <td>XXXX</td>
-                                    <td>ORA-0000:////</td>
-                                    <td>HLIXXX</td>
-                                    <td>000</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Errors</div>
+                    <div class="box_panel-body">
+                        <table class="table table-striped text-center">
+                            <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Error code</th>
+                                <th>Insatance</th>
+                                <th>Description</th>
+                                <th>Host</th>
+                                <th>Count</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>2020-05-22 12:42:13</td>
+                                <td>ORA-0000</td>
+                                <td>XXXX</td>
+                                <td>ORA-0000:////</td>
+                                <td>HLIXXX</td>
+                                <td>000</td>
+                            </tr>
+                            <tr>
+                                <td>2020-05-22 12:42:13</td>
+                                <td>ORA-0000</td>
+                                <td>XXXX</td>
+                                <td>ORA-0000:////</td>
+                                <td>HLIXXX</td>
+                                <td>000</td>
+                            </tr>
+                            <tr>
+                                <td>2020-05-22 12:42:13</td>
+                                <td>ORA-0000</td>
+                                <td>XXXX</td>
+                                <td>ORA-0000:////</td>
+                                <td>HLIXXX</td>
+                                <td>000</td>
+                            </tr>
+                            <tr>
+                                <td>2020-05-22 12:42:13</td>
+                                <td>ORA-0000</td>
+                                <td>XXXX</td>
+                                <td>ORA-0000:////</td>
+                                <td>HLIXXX</td>
+                                <td>000</td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <!-- [Table spaces] END -->
             </div>
+            <!-- [Table spaces] END -->
         </div>
     </div>
 

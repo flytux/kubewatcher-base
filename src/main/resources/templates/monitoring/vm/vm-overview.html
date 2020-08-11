@@ -5,6 +5,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script>
+        /*보험코어 VM 현황 > VM, Core의 div.col-xs-6에 잡혀있는 style은
+        * 공통-패널템플릿으로 document 그리지 말고 html return 받은 다음
+        * 마지막에 append 하고 예외처리로 $(selector).css() 해주는 수밖에 없을듯.
+        * 그외에 비슷한 경우 전부 예외처리로 돌릴 것.
+        * 즉 구조를 공통JS에서 append하지 않고 화면까지 return 받아오는 방식으로 구성할 것.
+        * 이때 return 받는 데이터는 array 형식으로 0번부터 for문 돌려서 각 위치에 세팅할 것
+        * 세팅되는 위치는 id="panel-area-0"식으로 해서 $('#panel-area-' + i + ').remove().append(arr[i]); 하면 될듯
+        *
+        * ***** 예외상황 정리
+        *
+        * let $selector = $('#main_contents .row').eq(1).children();
+        * $selector.eq(0).children().eq(0).css({'padding-right':'5px', 'padding-left':'0px'});
+        * $selector.eq(0).children().eq(1).css({'padding-right':'0px', 'padding-left':'5px'});
+        * $selector.eq(1).find('input').eq(0).parent().parent().css('vertical-align', 'bottom');
+        * $('#main_contents .row').eq(6).children().eq(0).css('padding-bottom', '0px');
+        * $('#main_contents .box_panel-body2').css('height', '217px');
+        * */
+
+    </script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">

@@ -16,8 +16,40 @@
         <div class="row">
             <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Groups
 
+                <div class="row">
+                    <div class="main_title03 col-xs-12">VM#1 [HLIXXX-01]
+                        <div class="text-center d-none d-md-inline">
+                            <button class="rounded-circle_p border-0"><i class="feather icon-file-text"></i></button>
+                        </div>
+                        <!--#### [수정 2020-07-21] 시작 #######-->
+                        <!-- 드롭박스 시작 -->
+                        <div class="dropdown d_ib f_r">
+                            <select id="multi-select" multiple="multiple">
+                                <option value="통합관리환경 admin">통합관리환경 admin</option>
+                                <option value="보험코어 monitor">보험코어 monitor</option>
+                                <option value="Cluster monitor">Cluster monitor</option>
+                                <option value="Cluster log viewer">Cluster log viewer</option>
+                                <option value="On-premise monitor">On-premise monitor</option>
+                                <option value="Cluster admin">Cluster admin</option>
+                                <option value="Dashboard operator">Dashboard operator</option>
+                            </select>
+                        </div>
+                        <!-- 드롭박스 끝 -->
+                        <!-- search 박스 시작 -->
+                        <div class="dropdown d_ib f_r mr_5">
+                            <div class="form-group has-feedback d_ib">
+                                <input type="text" placeholder="Search" class="search_table">
+                                <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                            </div>
+                        </div>
+                        <!-- search 박스 끝 -->
+                        <!--#### [수정 2020-07-21] 끝 ########-->
+                    </div>
+                </div>
+
                 <div class="dropdown d_ib f_r">
                     <a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
+
                     <!-- [Modal] start -->
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
                         <div class="modal-dialog modal-lg" style="width:765px;">
