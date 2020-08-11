@@ -5,6 +5,174 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <!-- 테이블 width css -->
+    <style>
+        .list_table235 > thead > tr > th:first-child {
+            width: 23%;
+        }
+
+        .list_table235 > tbody > tr > td:first-child {
+            width: 23%;
+        }
+    </style>
+
+    <script>
+        let datas = {
+            "menu_id": "140",
+            "rows": [
+                {
+                    "row_id": 0,
+                    "is_divider": false,
+                    "title": "",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 0,
+                            "title": '<a th:href="/monitoring/cluster/workloads/pods">Pods</a>',
+                            "panel_type": "card-round",
+                            "data_type": "text",
+                            "src": "",
+                            "item": [
+                                '<span class="st">(000)</span>',
+                                58,
+                                {
+                                    'Running':'00',
+                                    'Pending':'01',
+                                    'Failed':'00'
+                                }
+                            ]
+                        },
+                        {
+                            "panel_id": 1,
+                            "title": '<a th:href="/monitoring/cluster/workloads/deployments">Deployments</a>',
+                            "panel_type": "card-round",
+                            "data_type": "text",
+                            "src": "",
+                            "item": [
+                                '<span class="st">(000)</span>',
+                                68,
+                                {
+                                    'Running':'00',
+                                    'Pending':'01',
+                                    'Failed':'00'
+                                }
+                            ]
+                        },
+                        {
+                            "panel_id": 2,
+                            "title": '<a th:href="/monitoring/cluster/workloads/statefulsets">StatefulSets</a>',
+                            "panel_type": "card-round",
+                            "data_type": "text",
+                            "src": "",
+                            "item": [
+                                '<span class="st">(000)</span>',
+                                48,
+                                {
+                                    'Running':'00',
+                                    'Pending':'01',
+                                    'Failed':'00'
+                                }
+                            ]
+                        },
+                        {
+                            "panel_id": 3,
+                            "title": '<a th:href="/monitoring/cluster/workloads/daemonsets">DaemonSet</a>',
+                            "panel_type": "card-round",
+                            "data_type": "text",
+                            "src": "",
+                            "item": [
+                                '<span class="st">(000)</span>',
+                                78,
+                                {
+                                    'Running':'00',
+                                    'Pending':'01',
+                                    'Failed':'00'
+                                }
+                            ]
+                        },
+                        {
+                            "panel_id": 4,
+                            "title": '<a th:href="/monitoring/cluster/workloads/jobs">Jobs</a>',
+                            "panel_type": "card-round",
+                            "data_type": "text",
+                            "src": "",
+                            "item": [
+                                '<span class="st">(000)</span>',
+                                65,
+                                {
+                                    'Running':'00',
+                                    'Pending':'01',
+                                    'Failed':'00'
+                                }
+                            ]
+                        },
+                        {
+                            "panel_id": 5,
+                            "title": '<a th:href="/monitoring/cluster/workloads/cronjobs">CronJobs</a>',
+                            "panel_type": "card-round",
+                            "data_type": "text",
+                            "src": "",
+                            "item": [
+                                '<span class="st">(000)</span>',
+                                74,
+                                {
+                                    'Running':'00',
+                                    'Pending':'01',
+                                    'Failed':'00'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "row_id": 1,
+                    "is_divider": false,
+                    "title": "",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 6,
+                            "title": "",
+                            "panel_type": "table-col",
+                            "data_type": "text",
+                            "src": "",
+                            "modal": true,
+                            "item": {
+                                head:['itemId', 'Message', 'Namespace', 'Type', 'Involved Object', 'Source', 'Count', 'Age'],
+                                body:[
+                                    {'itemId':'0', 'Message':'Back-off restarting failed container', 'Namespace':'Kube-system', 'Type':'Pod', 'Involved Object':'Object name', 'Source':'node-controler', 'Count':'000', 'Age':'2020-05-22 12:42:13'},
+                                    {'itemId':'1', 'Message':'Back-off restarting failed container', 'Namespace':'Kube-system', 'Type':'Pod', 'Involved Object':'Object name', 'Source':'node-controler', 'Count':'000', 'Age':'2020-05-22 12:42:13'},
+                                    {'itemId':'2', 'Message':'Back-off restarting failed container', 'Namespace':'Kube-system', 'Type':'Pod', 'Involved Object':'Object name', 'Source':'node-controler', 'Count':'000', 'Age':'2020-05-22 12:42:13'},
+                                    {'itemId':'3', 'Message':'Back-off restarting failed container', 'Namespace':'Kube-system', 'Type':'Pod', 'Involved Object':'Object name', 'Source':'node-controler', 'Count':'000', 'Age':'2020-05-22 12:42:13'},
+                                    {'itemId':'4', 'Message':'Back-off restarting failed container', 'Namespace':'Kube-system', 'Type':'Pod', 'Involved Object':'Object name', 'Source':'node-controler', 'Count':'000', 'Age':'2020-05-22 12:42:13'},
+                                    {'itemId':'5', 'Message':'Back-off restarting failed container', 'Namespace':'Kube-system', 'Type':'Pod', 'Involved Object':'Object name', 'Source':'node-controler', 'Count':'000', 'Age':'2020-05-22 12:42:13'},
+                                    {'itemId':'6', 'Message':'Back-off restarting failed container', 'Namespace':'Kube-system', 'Type':'Pod', 'Involved Object':'Object name', 'Source':'node-controler', 'Count':'000', 'Age':'2020-05-22 12:42:13'},
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        $().ready(function(){
+            let rtnHtml = pTempJs.generatePanelList(datas.rows);
+
+            for(let html of rtnHtml) {
+                let idx = html.rowId,
+                    $this = $('#main_contents .append').eq(idx);
+
+                $this.children().remove();
+                $this.append(html.panels);
+
+                //예외처리
+                if(idx === 1){
+                    $this.find('table').removeClass('list_system').addClass('list_table235');
+                }
+            }
+        });
+    </script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -32,8 +200,7 @@
             </div>
         </div>
         <!-- [chart 6EA] start-->
-        <div class="row">
-
+        <div class="row append">
             <div class="col-xs-12 col-md-4 col-lg-2" style="padding-right:0px;">
                 <div class="col-xs-12 box_panel" style="padding:0px;">
                     <div class="box_panel-heading3">
@@ -160,16 +327,8 @@
             <div class="main_title col-xs-12" style="padding-right:0px;"><i class="feather icon-chevrons-right"></i>
                 Events
             </div>
-            <!-- 테이블 width css -->
-            <style>
-                .list_table235 > thead > tr > th:first-child {
-                    width: 23%;
-                }
-
-                .list_table235 > tbody > tr > td:first-child {
-                    width: 23%;
-                }
-            </style>
+        </div>
+        <div class="row append">
             <div class="col-xs-12" style="padding-right:0px; padding-left:10px;">
                 <div class="box_panel">
                     <div class="box_table-body">
@@ -187,49 +346,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td><a href="" class="table2-link" data-toggle="modal" data-target="#myModal">Back-off
-                                    restarting failed container</a>
-
-                                    <!-- [Modal] start -->
-                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-                                         aria-labelledby="myModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg" style="width:765px;">
-                                            <div class="modal-content">
-                                                <div class="modal-title_box">
-                                                    <div class="modal-title">
-                                                        <button type="button" class="close px-3" data-dismiss="modal"
-                                                                aria-label="Close"><span
-                                                                aria-hidden="true">&times;</span></button>
-                                                        <span id="myModalLabel">Node/Pod/ReplicaSet/Deployment/...</span>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-nbody">
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>"Cluster Object type별 상세 보기화면"
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- [Modal] End -->
-                                </td>
+                                <td><a href="" class="table2-link" data-toggle="modal" data-target="#myModal">Back-off restarting failed container</a></td>
                                 <td>Kube-system</td>
                                 <td>Pod</td>
                                 <td>Object name</td>
@@ -297,6 +414,45 @@
                 </div>
             </div>
         </div>
+
+        <!-- [Modal] start -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" style="width:765px;">
+                <div class="modal-content">
+                    <div class="modal-title_box">
+                        <div class="modal-title">
+                            <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <span id="myModalLabel">Node/Pod/ReplicaSet/Deployment/...</span>
+                        </div>
+                    </div>
+                    <div class="modal-nbody">
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>"Cluster Object type별 상세 보기화면"
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [Modal] End -->
 
     </div>
 </body>

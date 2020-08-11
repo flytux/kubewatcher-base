@@ -5,6 +5,306 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script>
+        let datas = {
+            "menu_id": "140",
+            "rows": [
+                {
+                    "row_id": 0,
+                    "is_divider": false,
+                    "title": "CPU",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 0,
+                            "title": "CPU Used",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart1.jpg"
+                        },
+                        {
+                            "panel_id": 1,
+                            "title": "CPU System",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart2.jpg"
+                        },
+                        {
+                            "panel_id": 2,
+                            "title": "CPU User",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart3.jpg"
+                        },
+                        {
+                            "panel_id": 3,
+                            "title": "CPU Idle",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart4.jpg"
+                        }
+                    ]
+                },
+                {
+                    "row_id": 1,
+                    "is_divider": false,
+                    "title": "Memory",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 4,
+                            "title": "Memory Used %",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart4.jpg"
+                        },
+                        {
+                            "panel_id": 5,
+                            "title": "Memory Used",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart3.jpg"
+                        },
+                        {
+                            "panel_id": 6,
+                            "title": "Memory Free",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart2.jpg"
+                        },
+                        {
+                            "panel_id": 7,
+                            "title": "Swap",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart1.jpg"
+                        }
+                    ]
+                },
+                {
+                    "row_id": 2,
+                    "is_divider": false,
+                    "title": "Disk",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 8,
+                            "title": "Disk Used %",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart1.jpg"
+                        },
+                        {
+                            "panel_id": 9,
+                            "title": "Disk Used Space",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart2.jpg"
+                        },
+                        {
+                            "panel_id": 10,
+                            "title": "Disk I/O (Read/Write byte)",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart3.jpg"
+                        },
+                        {
+                            "panel_id": 11,
+                            "title": "Disk I/O (Read/Write count)",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart4.jpg"
+                        }
+                    ]
+                },
+                {
+                    "row_id": 3,
+                    "is_divider": false,
+                    "title": "Network",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 12,
+                            "title": "Network (In/Out bps)",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart5.jpg"
+                        },
+                        {
+                            "panel_id": 13,
+                            "title": "Network (In/Out bps)",
+                            "panel_type": "box",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "chart6.jpg"
+                        }
+                    ]
+                },
+                {
+                    "row_id": 4,
+                    "is_divider": false,
+                    "title": "File System",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 14,
+                            "title": "",
+                            "panel_type": "table-col",
+                            "data_type": "text",
+                            "src": "",
+                            "item": {
+                                head:['itemId', 'File System', 'Size (MB)', 'Used (MB)', 'Avai (MB)', 'Used (%)', 'Mount', 'Time'],
+                                body:[
+                                    {'itemId': '1', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)'},
+                                    {'itemId': '2', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)'},
+                                    {'itemId': '3', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)'},
+                                    {'itemId': '4', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)'},
+                                    {'itemId': '5', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)}'}
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "row_id": 5,
+                    "is_divider": false,
+                    "title": "Process",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 15,
+                            "title": "",
+                            "panel_type": "table-col",
+                            "data_type": "text",
+                            "src": "",
+                            "item": {
+                                head:['itemId', 'Process', 'PID', 'CPU (%)', 'MEM (%)', 'Prior', 'Thread', 'CPU Time', 'Time'],
+                                body:[
+                                    {'itemId': '0', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)'},
+                                    {'itemId': '1', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)'},
+                                    {'itemId': '2', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)'},
+                                    {'itemId': '3', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)'},
+                                    {'itemId': '4', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)}'}
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "row_id": 6,
+                    "is_divider": false,
+                    "title": "Event",
+                    "order": "",
+                    "panels": [
+                        {
+                            "panel_id": 16,
+                            "title": "",
+                            "panel_type": "table-level",
+                            "data_type": "text",
+                            "src": "",
+                            "item": {
+                                head:['itemId', 'Event', 'Time', 'Level', 'Closed'],
+                                body:[
+                                    {
+                                        'itemId': '0',
+                                        'Event': 'System Architect',
+                                        'Time': '2020-05-21 13:52:21',
+                                        'Level': 'warning',
+                                        'Closed': 'Y'
+                                    },
+                                    {
+                                        'itemId': '0',
+                                        'Event': 'System Architect',
+                                        'Time': '2020-05-21 13:52:21',
+                                        'Level': 'normal',
+                                        'Closed': 'N'
+                                    },
+                                    {
+                                        'itemId': '0',
+                                        'Event': 'System Architect',
+                                        'Time': '2020-05-21 13:52:21',
+                                        'Level': 'danger',
+                                        'Closed': 'Y'
+                                    },
+                                    {
+                                        'itemId': '0',
+                                        'Event': 'System Architect',
+                                        'Time': '2020-05-21 13:52:21',
+                                        'Level': 'warning',
+                                        'Closed': 'N'
+                                    },
+                                    {
+                                        'itemId': '0',
+                                        'Event': 'System Architect',
+                                        'Time': '2020-05-21 13:52:21',
+                                        'Level': 'warning',
+                                        'Closed': 'Y'
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "panel_id": 17,
+                            "title": "",
+                            "panel_type": "box-blank",
+                            "data_type": "text",
+                            "src": "",
+                            "item": "내용이 들어갑니다.<br>내용이 들어갑니다.<br>내용이 들어갑니다."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        $().ready(function(){
+            let rtnHtml = pTempJs.generatePanelList(datas.rows);
+            for(let html of rtnHtml) {
+                let idx = html.rowId,
+                $this = $('#main_contents .append').eq(idx);
+
+                $this.children().remove();
+                $this.append(html.panels);
+
+                //예외처리
+                if(idx < 4){
+                    $this.children().css('padding-right', '0px');
+                    $this.children().eq(0).css('padding-bottom', '0px');
+                } else if (idx === 6) {
+                    let clone = pTempJs.clone($this).children(),
+                        tagArray = [
+                            '<div class="col-xs-12 col-md-12 col-lg-7 " style="padding-right:0px;"/>',
+                            '<div class="col-xs-12 col-md-12 col-lg-5" style="padding-right:0px; padding-bottom:10px;"/>'
+                        ],
+                        tag;
+
+                    $this.children().remove();
+                    clone.each(function(i, value){
+                        if(i === (clone.length - 1)){
+                            $(value).css({'height': '235px', 'padding-right': '0px', 'padding-bottom' :'10px'});
+                        }
+                        tag = $(value).wrapAll(tagArray[i]).parent();
+                        $this.append(tag);
+                    });
+
+                    pTempJs.changeClass($this.find('.list_system'), 'list_system', 'list_system2');
+                }
+            }
+        });
+    </script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -45,7 +345,7 @@
         <div class="row">
             <div class="main_title02 col-xs-12"><i class="feather icon-chevrons-right"></i> CPU</div>
         </div>
-        <div class="row" style="padding-bottom:0px;">
+        <div class="row append" style="padding-bottom:0px;">
             <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
                 <div class="box_panel">
                     <div class="box_panel-heading">CPU Used</div>
@@ -86,7 +386,7 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Memory</div>
         </div>
-        <div class="row" style="padding-bottom:0px;">
+        <div class="row append" style="padding-bottom:0px;">
             <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
                 <div class="box_panel">
                     <div class="box_panel-heading">Memory Used %</div>
@@ -126,7 +426,7 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Disk</div>
         </div>
-        <div class="row" style="padding-bottom:0px;">
+        <div class="row append" style="padding-bottom:0px;">
             <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
                 <div class="box_panel">
                     <div class="box_panel-heading">Disk Used %</div>
@@ -167,7 +467,7 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Network</div>
         </div>
-        <div class="row" style="padding-bottom:0px;">
+        <div class="row append" style="padding-bottom:0px;">
             <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
                 <div class="box_panel">
                     <div class="box_panel-heading">Network (In/Out bps)</div>
@@ -192,7 +492,7 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> File System</div>
         </div>
-        <div class="row" >
+        <div class="row append">
             <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
                 <div class="box_panel">
                     <div class="box_table-body">
@@ -274,7 +574,7 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Process</div>
         </div>
-        <div class="row" >
+        <div class="row append">
             <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
                 <div class="box_panel">
                     <div class="box_table-body">
@@ -354,8 +654,8 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Event</div>
         </div>
-        <div class="row" >
-            <div class="col-xs-12 col-md-12 col-lg-7" style="padding-right:0px;">
+        <div class="row append">
+            <div class="col-xs-12 col-md-12 col-lg-7 " style="padding-right:0px;">
                 <div class="box_panel">
                     <div class="box_panel-heading2"><div class="circle c_normal"></div>Normal&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_warning"></div>Warning&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_danger"></div>Danger</div>
                     <div class="box_table-body">
