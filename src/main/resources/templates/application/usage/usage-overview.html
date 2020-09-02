@@ -15,30 +15,29 @@
         <!-- [Groups] start -->
         <div class="row">
             <div class="main_title_top col-xs-12 pr_0 mb_0" ><i class="feather icon-chevrons-right"></i> Application usage <span class="main_stitle">[2020.07.07 15 00:00~24:00]</span>
-                <!--#### [수정 2020-07-21] 시작 #######-->
-                <!-- 드롭박스 시작 --><div class="dropdown d_ib f_r">
-                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                        All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
-                    </button>
-                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                    </ul>
-                    <!-- 드롭박스 끝 --></div>
-                <!-- search 박스 시작 --><div class="dropdown d_ib f_r mr_5">
-                    <div class="form-group has-feedback d_ib">
-                        <input type="text" placeholder="Search" class="search_table">
-                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                <div class="f_r">
+                    <div class=" d_ib">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="text" placeholder="Search" class="search_table">
+                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        </div>
                     </div>
-                    <!-- search 박스 끝 --></div>
-                <!--#### [수정 2020-07-21] 끝 ########-->
-
+                    <div class="dropdown d_ib">
+                        <select id="multi-select-box">
+                            <option value="통합관리환경 admin">통합관리환경 admin</option>
+                            <option value="보험코어 monitor">보험코어 monitor</option>
+                            <option value="Cluster monitor">Cluster monitor</option>
+                            <option value="Cluster log viewer">Cluster log viewer</option>
+                            <option value="On-premise monitor">On-premise monitor</option>
+                            <option value="Cluster admin">Cluster admin</option>
+                            <option value="Dashboard operator">Dashboard operator</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-xs-12" style="padding-right:0px;">
+        <div class="row" >
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
@@ -55,7 +54,6 @@
                             <th>CPU avg.</th>
                             <th>MEM avg.</th>
                             <th>Filesystem avg.</th>
-                            <th>Network I/O avg.</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -82,7 +80,27 @@
                                                         <label>
                                                             <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">Monthly
                                                         </label>
+                                                        <div class="dropdown d_ib">
+                                                            <!-- [single select box] start-->
+                                                            <select id="modal-slingle-select-box" >
+                                                                <option value="1월">1월</option>
+                                                                <option value="2월">2월</option>
+                                                                <option value="3월">3월</option>
+                                                                <option value="4월">4월</option>
+                                                                <option value="5월">5월</option>
+                                                                <option value="6월">6월</option>
+                                                                <option value="7월">7월</option>
+                                                                <option value="8월">8월</option>
+                                                                <option value="9월">9월</option>
+                                                                <option value="10월">10월</option>
+                                                                <option value="11월">11월</option>
+                                                                <option value="12월">12월</option>
+                                                            </select>
+                                                            <!-- [single select box] end-->
+                                                        </div>
+
                                                     </div>
+
                                                 </div>
                                                 <div class="row">
                                                     <div class="box_panel">
@@ -105,13 +123,6 @@
                                                         <img th:src="@{/assets/img/chart7.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
                                                     </div>
                                                 </div>
-                                            </div>	 <div class="row">
-                                                <div class="box_panel">
-                                                    <div class="box_modal-heading">Network I/O (Baud)</div>
-                                                    <div class="box_modal-body">
-                                                        <img th:src="@{/assets/img/chart7.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                                    </div>
-                                                </div>
                                             </div>
                                             </div>
 
@@ -127,7 +138,6 @@
                             <td>1.2 core</td>
                             <td>299.11MiB</td>
                             <td>78.1Ki</td>
-                            <td>15.9B</td>
                         </tr>
                         <tr>
                             <td>신계약</td>
@@ -138,7 +148,6 @@
                             <td>1.2 core</td>
                             <td>299.11MiB</td>
                             <td>78.1Ki</td>
-                            <td>15.9B</td>
                         </tr>
                         <tr>
                             <td>신계약</td>
@@ -149,7 +158,6 @@
                             <td>1.2 core</td>
                             <td>299.11MiB</td>
                             <td>78.1Ki</td>
-                            <td>15.9B</td>
                         </tr>
                         <tr>
                             <td>신계약</td>
@@ -160,7 +168,6 @@
                             <td>1.2 core</td>
                             <td>299.11MiB</td>
                             <td>78.1Ki</td>
-                            <td>15.9B</td>
                         </tr>
                         </tbody>
                     </table>
@@ -187,6 +194,7 @@
         </div>
         <!-- [Groups] End-->
     </div>
+
 </div>
 </body>
 </html>

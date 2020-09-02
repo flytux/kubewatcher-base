@@ -67,8 +67,24 @@ application:
           role: "USER"
     dependencies:
       grafana:
-        url: "http://grafana.kw-mgmt-dev"
-        api-token: "eyJrIjoiQTJkQWREM0xwS254ZXM3bG5uQzNQako5SmFSd0RQMjQiLCJuIjoia3ViZS13YXRjaGVyIiwiaWQiOjF9"
+        url: "http://grafana.kw-management-dev"
+        api-token: "eyJrIjoiUUpiVFlPVjhidmxtNlZxTnRGZ0lDd3p6bXg3MnhQY3IiLCJuIjoia3ViZS13YXRjaGVyIiwiaWQiOjF9"
         login-cookie-name: "grafana_session"
       prometheus:
-        url: "http://prometheus.kw-mgmt-dev"
+        url: "http://prometheus.kw-management-dev"
+
+---
+spring:
+  profiles: local
+  jpa:
+    show-sql: true
+
+application:
+  properties:
+    dependencies:
+      grafana:
+        url: "http://10.142.11.248:30300"
+        api-token: "eyJrIjoiUUpiVFlPVjhidmxtNlZxTnRGZ0lDd3p6bXg3MnhQY3IiLCJuIjoia3ViZS13YXRjaGVyIiwiaWQiOjF9"
+        login-cookie-name: "grafana_session"
+      prometheus:
+        url: "http://10.142.11.170:30909"

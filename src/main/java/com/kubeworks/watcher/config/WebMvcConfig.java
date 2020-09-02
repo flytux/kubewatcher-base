@@ -39,10 +39,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/monitoring/cluster/storages").setViewName("monitoring/cluster/storages");
         registry.addViewController("/monitoring/cluster/events").setViewName("monitoring/cluster/events");
         /*      > jvm */
-        registry.addViewController("/monitoring/jvm/overview").setViewName("monitoring/jvm/overview");
-        registry.addViewController("/monitoring/jvm/application").setViewName("monitoring/jvm/application");
+//        registry.addViewController("/monitoring/jvm/overview").setViewName("monitoring/jvm/overview");
+//        registry.addViewController("/monitoring/jvm/application").setViewName("monitoring/jvm/application");
         /*      > database */
-        registry.addViewController("/monitoring/database").setViewName("monitoring/database/database");
+//        registry.addViewController("/monitoring/database").setViewName("monitoring/database/database");
         /*      > vm */
 //        registry.addViewController("/monitoring/vm/overview").setViewName("monitoring/vm/vm-overview");
 //        registry.addViewController("/monitoring/vm/monitoring").setViewName("monitoring/vm/vm-monitoring");
@@ -85,5 +85,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /* setting */
         /*      > alarm */
         registry.addViewController("/setting/alarm/list").setViewName("setting/alarm/setting-alarm-list");
+        registry.addViewController("/setting/preference").setViewName("setting/preference/preference");
     }
 }

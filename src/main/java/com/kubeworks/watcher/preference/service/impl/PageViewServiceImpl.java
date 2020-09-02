@@ -42,4 +42,5 @@ public class PageViewServiceImpl implements PageViewService {
             .flatMap(Collection::stream)
             .collect(Collectors.toMap(PageRowPanel::getSort, pageRowPanel -> pageRowPanel));
     }
+
 }

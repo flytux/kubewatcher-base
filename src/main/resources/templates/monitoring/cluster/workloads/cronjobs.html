@@ -11,35 +11,33 @@
 
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>CronJobs')"/>
     <div id="main_contents">
+
+        <!-- [클러스터 Cron Jobs] start -->
         <div class="row">
-            <div class="main_title_top col-xs-12 mb_0 pr_0"><i class="feather icon-chevrons-right"></i> 클러스터 Cron Jobs
-                <!--#### [수정 2020-07-21] 시작 #######-->
-                <!-- 드롭박스 시작 -->
-                <div class="dropdown d_ib f_r">
-                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                        All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
-                    </button>
-                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                    </ul>
-                </div>
-                <!-- 드롭박스 끝 -->
-                <!-- search 박스 시작 -->
-                <div class="dropdown d_ib f_r mr_5">
-                    <div class="form-group has-feedback d_ib">
-                        <input type="text" placeholder="Search" class="search_table">
-                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Cron Jobs
+                <div class="f_r">
+                    <div class=" d_ib">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="text" placeholder="Search" class="search_table">
+                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        </div>
+                    </div>
+                    <div class="dropdown d_ib">
+                        <select id="multi-select-box">
+                            <option value="통합관리환경 admin">통합관리환경 admin</option>
+                            <option value="보험코어 monitor">보험코어 monitor</option>
+                            <option value="Cluster monitor">Cluster monitor</option>
+                            <option value="Cluster log viewer">Cluster log viewer</option>
+                            <option value="On-premise monitor">On-premise monitor</option>
+                            <option value="Cluster admin">Cluster admin</option>
+                            <option value="Dashboard operator">Dashboard operator</option>
+                        </select>
                     </div>
                 </div>
-                <!-- search 박스 끝 -->
-                <!--#### [수정 2020-07-21] 끝 ########-->
             </div>
         </div>
 
-        <div class="col-xs-12" style="padding-right:0px;">
+        <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span class="point pr_10">6</span>  Page : <span class="point">1</span>/6
@@ -245,7 +243,9 @@
                 </ul>
             </nav>
         </div>
+        <!-- [클러스터 Cron Jobs] End-->
     </div>
+
 </div>
 </body>
 </html>

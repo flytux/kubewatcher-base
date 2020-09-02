@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,9 @@ public class ProxyApiServiceImpl implements ProxyApiService {
         return response.getData().getResult().stream()
             .map(PrometheusApiResponse.PrometheusApiData.PrometheusApiResult::getMetric)
             .map(metric -> metric.get(metricName))
+            .filter(Objects::nonNull)
             .distinct()
+            .sorted(String::compareTo)
             .collect(Collectors.toList());
     }
 
@@ -78,17 +81,6 @@ public class ProxyApiServiceImpl implements ProxyApiService {
         return String.valueOf(result.get(0).getValue().get(1));
     }
 
-//    private String multipleValue(PrometheusApiResponse prometheusApiResponse) {
-//        List<PrometheusApiResponse.PrometheusApiData.PrometheusApiResult> result = prometheusApiResponse.getData().getResult();
-//        if (result.isEmpty()) {
-//            return ExternalConstants.NONE_STR;
-//        }
-//        if (result.get(0).getValue().isEmpty()) {
-//            return ExternalConstants.NONE_STR;
-//        }
-//
-//        return String.valueOf(result.get(0).getValue().get(1));
-//    }
 
 
 }

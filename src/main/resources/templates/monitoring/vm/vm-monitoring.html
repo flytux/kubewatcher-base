@@ -5,306 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
-    <script>
-        let datas = {
-            "menu_id": "140",
-            "rows": [
-                {
-                    "row_id": 0,
-                    "is_divider": false,
-                    "title": "CPU",
-                    "order": "",
-                    "panels": [
-                        {
-                            "panel_id": 0,
-                            "title": "CPU Used",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart1.jpg"
-                        },
-                        {
-                            "panel_id": 1,
-                            "title": "CPU System",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart2.jpg"
-                        },
-                        {
-                            "panel_id": 2,
-                            "title": "CPU User",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart3.jpg"
-                        },
-                        {
-                            "panel_id": 3,
-                            "title": "CPU Idle",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart4.jpg"
-                        }
-                    ]
-                },
-                {
-                    "row_id": 1,
-                    "is_divider": false,
-                    "title": "Memory",
-                    "order": "",
-                    "panels": [
-                        {
-                            "panel_id": 4,
-                            "title": "Memory Used %",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart4.jpg"
-                        },
-                        {
-                            "panel_id": 5,
-                            "title": "Memory Used",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart3.jpg"
-                        },
-                        {
-                            "panel_id": 6,
-                            "title": "Memory Free",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart2.jpg"
-                        },
-                        {
-                            "panel_id": 7,
-                            "title": "Swap",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart1.jpg"
-                        }
-                    ]
-                },
-                {
-                    "row_id": 2,
-                    "is_divider": false,
-                    "title": "Disk",
-                    "order": "",
-                    "panels": [
-                        {
-                            "panel_id": 8,
-                            "title": "Disk Used %",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart1.jpg"
-                        },
-                        {
-                            "panel_id": 9,
-                            "title": "Disk Used Space",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart2.jpg"
-                        },
-                        {
-                            "panel_id": 10,
-                            "title": "Disk I/O (Read/Write byte)",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart3.jpg"
-                        },
-                        {
-                            "panel_id": 11,
-                            "title": "Disk I/O (Read/Write count)",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart4.jpg"
-                        }
-                    ]
-                },
-                {
-                    "row_id": 3,
-                    "is_divider": false,
-                    "title": "Network",
-                    "order": "",
-                    "panels": [
-                        {
-                            "panel_id": 12,
-                            "title": "Network (In/Out bps)",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart5.jpg"
-                        },
-                        {
-                            "panel_id": 13,
-                            "title": "Network (In/Out bps)",
-                            "panel_type": "box",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "chart6.jpg"
-                        }
-                    ]
-                },
-                {
-                    "row_id": 4,
-                    "is_divider": false,
-                    "title": "File System",
-                    "order": "",
-                    "panels": [
-                        {
-                            "panel_id": 14,
-                            "title": "",
-                            "panel_type": "table-col",
-                            "data_type": "text",
-                            "src": "",
-                            "item": {
-                                head:['itemId', 'File System', 'Size (MB)', 'Used (MB)', 'Avai (MB)', 'Used (%)', 'Mount', 'Time'],
-                                body:[
-                                    {'itemId': '1', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)'},
-                                    {'itemId': '2', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)'},
-                                    {'itemId': '3', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)'},
-                                    {'itemId': '4', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)'},
-                                    {'itemId': '5', 'File System': 'System01', 'Size (MB)': '9.999', 'Used (MB)': '9.999', 'Avai (MB)': '9.999', 'Used (%)': '999', 'Mount': '/sys/fs/group', 'Time': '2020-05-21 (13:52:21)}'}
-                                ]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "row_id": 5,
-                    "is_divider": false,
-                    "title": "Process",
-                    "order": "",
-                    "panels": [
-                        {
-                            "panel_id": 15,
-                            "title": "",
-                            "panel_type": "table-col",
-                            "data_type": "text",
-                            "src": "",
-                            "item": {
-                                head:['itemId', 'Process', 'PID', 'CPU (%)', 'MEM (%)', 'Prior', 'Thread', 'CPU Time', 'Time'],
-                                body:[
-                                    {'itemId': '0', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)'},
-                                    {'itemId': '1', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)'},
-                                    {'itemId': '2', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)'},
-                                    {'itemId': '3', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)'},
-                                    {'itemId': '4', 'Process': 'kworker01', 'PID': '99.999', 'CPU (%)': '99', 'MEM (%)': '99', 'Prior': '99', 'Thread': '99', 'CPU Time': '9.999', 'Time': '2020-05-21 (13:52:21)}'}
-                                ]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "row_id": 6,
-                    "is_divider": false,
-                    "title": "Event",
-                    "order": "",
-                    "panels": [
-                        {
-                            "panel_id": 16,
-                            "title": "",
-                            "panel_type": "table-level",
-                            "data_type": "text",
-                            "src": "",
-                            "item": {
-                                head:['itemId', 'Event', 'Time', 'Level', 'Closed'],
-                                body:[
-                                    {
-                                        'itemId': '0',
-                                        'Event': 'System Architect',
-                                        'Time': '2020-05-21 13:52:21',
-                                        'Level': 'warning',
-                                        'Closed': 'Y'
-                                    },
-                                    {
-                                        'itemId': '0',
-                                        'Event': 'System Architect',
-                                        'Time': '2020-05-21 13:52:21',
-                                        'Level': 'normal',
-                                        'Closed': 'N'
-                                    },
-                                    {
-                                        'itemId': '0',
-                                        'Event': 'System Architect',
-                                        'Time': '2020-05-21 13:52:21',
-                                        'Level': 'danger',
-                                        'Closed': 'Y'
-                                    },
-                                    {
-                                        'itemId': '0',
-                                        'Event': 'System Architect',
-                                        'Time': '2020-05-21 13:52:21',
-                                        'Level': 'warning',
-                                        'Closed': 'N'
-                                    },
-                                    {
-                                        'itemId': '0',
-                                        'Event': 'System Architect',
-                                        'Time': '2020-05-21 13:52:21',
-                                        'Level': 'warning',
-                                        'Closed': 'Y'
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "panel_id": 17,
-                            "title": "",
-                            "panel_type": "box-blank",
-                            "data_type": "text",
-                            "src": "",
-                            "item": "내용이 들어갑니다.<br>내용이 들어갑니다.<br>내용이 들어갑니다."
-                        }
-                    ]
-                }
-            ]
-        };
-
-        $().ready(function(){
-            let rtnHtml = pTempJs.generatePanelList(datas.rows);
-            for(let html of rtnHtml) {
-                let idx = html.rowId,
-                $this = $('#main_contents .append').eq(idx);
-
-                $this.children().remove();
-                $this.append(html.panels);
-
-                //예외처리
-                if(idx < 4){
-                    $this.children().css('padding-right', '0px');
-                    $this.children().eq(0).css('padding-bottom', '0px');
-                } else if (idx === 6) {
-                    let clone = pTempJs.clone($this).children(),
-                        tagArray = [
-                            '<div class="col-xs-12 col-md-12 col-lg-7 " style="padding-right:0px;"/>',
-                            '<div class="col-xs-12 col-md-12 col-lg-5" style="padding-right:0px; padding-bottom:10px;"/>'
-                        ],
-                        tag;
-
-                    $this.children().remove();
-                    clone.each(function(i, value){
-                        if(i === (clone.length - 1)){
-                            $(value).css({'height': '235px', 'padding-right': '0px', 'padding-bottom' :'10px'});
-                        }
-                        tag = $(value).wrapAll(tagArray[i]).parent();
-                        $this.append(tag);
-                    });
-
-                    pTempJs.changeClass($this.find('.list_system'), 'list_system', 'list_system2');
-                }
-            }
-        });
-    </script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -312,67 +12,97 @@
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring')"/>
     <div id="main_contents">
         <div class="row">
-            <div class="main_title03 col-xs-12">VM#1 [HLIXXX-01]
-                <div class="text-center d-none d-md-inline">
+            <div class="main_title03">
+                <div id="namespace"
+                     th:classappend="${#strings.isEmpty(defaultNamespace) ? 'd-none' : 'd-inline'}"
+                     th:text="${defaultNamespace}">
+                    VM#1 [HLIXXX-01]
+                </div>
+                <div th:classappend="${#strings.isEmpty(defaultNamespace) ? 'd-none' : 'd-inline'}">
                     <button class="rounded-circle_p border-0"><i class="feather icon-file-text"></i></button>
                 </div>
-                <!--#### [수정 2020-07-21] 시작 #######-->
-                <!-- 드롭박스 시작 -->
-                <div class="dropdown d_ib f_r">
-                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                        All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
-                    </button>
-                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                    </ul>
-                </div>
-                <!-- 드롭박스 끝 -->
-                <!-- search 박스 시작 -->
-                <div class="dropdown d_ib f_r mr_5">
-                    <div class="form-group has-feedback d_ib">
-                        <input type="text" placeholder="Search" class="search_table">
-                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                <div class="f_r">
+                    <div class=" d_ib">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="text" placeholder="Search" class="search_table">
+                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        </div>
+                    </div>
+                    <div th:each="template : ${templating.values()}" class="dropdown d_ib">
+                        <select th:name="|var-${template?.name}|" th:id="|var-${template?.name}|"
+                                th:disabled="${template?.values == null ? 'true' : 'false'}" class="custom-select">
+                            <option value="" selected disabled hidden> -- select variable -- </option>
+                            <option th:each="value : ${template?.values}"
+                                    th:value="${value}" th:text="${value}" value="">value</option>
+                        </select>
                     </div>
                 </div>
-                <!-- search 박스 끝 -->
-                <!--#### [수정 2020-07-21] 끝 ########-->
             </div>
         </div>
         <!-- [CPU] start -->
         <div class="row">
             <div class="main_title02 col-xs-12"><i class="feather icon-chevrons-right"></i> CPU</div>
         </div>
-        <div class="row append" style="padding-bottom:0px;">
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">CPU Used</div>
+        <div class="row" style="padding-bottom:0px;">
+            <div th:switch="${panelMap.get(1L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'" class="box_panel">
+                    <div class="box_panel-heading">CPU Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(1L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">CPU Basic</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">CPU System </div>
+            <div th:switch="${panelMap.get(2L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">CPU</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(2L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">CPU</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">CPU User</div>
+            <div th:switch="${panelMap.get(3L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">System Load</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(3L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">System Load</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">CPU idle</div>
+            <div th:switch="${panelMap.get(4L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Process Status</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(4L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Process Status</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
@@ -386,34 +116,66 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Memory</div>
         </div>
-        <div class="row append" style="padding-bottom:0px;">
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Memory Used %</div>
+        <div class="row" style="padding-bottom:0px;">
+            <div th:switch="${panelMap.get(5L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(5L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Basic</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Memory Used</div>
+            <div th:switch="${panelMap.get(6L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Stack</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(6L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Stack</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Memory Free</div>
+            <div th:switch="${panelMap.get(7L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Active/Inactive</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(7L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Active/Inactive</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Swap</div>
+            <div th:switch="${panelMap.get(8L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Pages In/Out</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(8L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Pages In/Out</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
@@ -426,34 +188,66 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Disk</div>
         </div>
-        <div class="row append" style="padding-bottom:0px;">
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Disk Used %</div>
+        <div class="row" style="padding-bottom:0px;">
+            <div th:switch="${panelMap.get(9L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(9L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used Basic</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Disk used space</div>
+            <div th:switch="${panelMap.get(10L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(10L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Disk I/O (Read/Write byte)</div>
+            <div th:switch="${panelMap.get(11L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk I/O (Read/Write bytes)</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(11L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk I/O (Read/Write bytes)</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Disk I/O (Read/Write count)</div>
+            <div th:switch="${panelMap.get(12L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(12L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
@@ -467,17 +261,33 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Network</div>
         </div>
-        <div class="row append" style="padding-bottom:0px;">
-            <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
-                <div class="box_panel">
+        <div class="row" style="padding-bottom:0px;">
+            <div th:switch="${panelMap.get(13L).getDataType()}" class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(13L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
                     <div class="box_panel-heading">Network (In/Out bps)</div>
                     <div class="box_panel-body" >
                         <img th:src="@{/assets/img/chart5.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px;">
-                <div class="box_panel">
+            <div th:switch="${panelMap.get(14L).getDataType()}" class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(14L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
                     <div class="box_panel-heading">Network (In/Out bps)</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart6.jpg}" class="img-responsive" alt="" style="width:100%; ">
@@ -492,9 +302,16 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> File System</div>
         </div>
-        <div class="row append">
-            <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
-                <div class="box_panel">
+        <div class="row" >
+            <div th:switch="${panelMap.get(15L).getDataType()}" class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-xxs">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(15L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
                     <div class="box_table-body">
                         <table class="list_system">
                             <thead>
@@ -574,7 +391,7 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Process</div>
         </div>
-        <div class="row append">
+        <div class="row" >
             <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
                 <div class="box_panel">
                     <div class="box_table-body">
@@ -654,8 +471,8 @@
         <div class="row">
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Event</div>
         </div>
-        <div class="row append">
-            <div class="col-xs-12 col-md-12 col-lg-7 " style="padding-right:0px;">
+        <div class="row" >
+            <div class="col-xs-12 col-md-12 col-lg-7" style="padding-right:0px;">
                 <div class="box_panel">
                     <div class="box_panel-heading2"><div class="circle c_normal"></div>Normal&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_warning"></div>Warning&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_danger"></div>Danger</div>
                     <div class="box_table-body">
@@ -719,14 +536,34 @@
                     </div>
                 </div>
             </div>
-
-
-
-
         </div>
         <!-- [EVENT] End-->
+    </div>
+    <script th:src="@{/assets/js/variables.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var templating = new Map(Object.entries([[${templating}]])),
+            optionTitle = "<option value=\"\" selected disabled hidden> -- select variable -- </option>";
+        /*]]>*/
 
+        $(function() {
+            $("select[name^='var-']").change(function () {
+                const selectId = comnJs.replace($(this).attr('id'), 'var-', '');
+
+                let edgeFields = templating.get(selectId).edgeFields;
+                if (edgeFields.length) {
+                    // template-variable 데이터 채우기
+                    for (const edgeField of edgeFields) {
+                        variablesJs.setEdgeFieldValue(selectId, edgeField);
+                    }
+                } else {
+                    // 페이지 reloading
+                    console.log("reloading!!!");
+                    variablesJs.reloadPanel()
+                }
+            });
+        });
+    </script>
 </div>
-
 </body>
 </html>

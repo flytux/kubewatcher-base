@@ -26,9 +26,12 @@ public class Page extends BaseEntity {
     @Column(length = 500)
     String description;
 
-    @OneToMany(targetEntity = PageRow.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "page_id", foreignKey = @ForeignKey(name = "PAGE_FK01"))
+    @OneToMany(targetEntity = PageRow.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "page")
     @OrderBy("sort ASC")
     List<PageRow> rows;
+
+    @OneToMany(targetEntity = PageVariable.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "page")
+    @OrderBy("sort ASC")
+    List<PageVariable> variables;
 
 }

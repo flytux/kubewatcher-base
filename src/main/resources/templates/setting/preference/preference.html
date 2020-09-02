@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>설정<i class=&quot;feather icon-chevron-right&quot; ></i>Alarm<i class=&quot;feather icon-chevron-right&quot; ></i>List')"/>
+    <div id="main_contents">
+
+        <!-- [Preference] start -->
+        <div class="row">
+            <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Preference	 </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-lg-4">
+                <div class="box_panel">
+                    <div class="box_panel-heading">My Account</div>
+                    <div class="box_table-body">
+                        <table class="table-my">
+                            <tr>
+                                <th>ID</th>
+                                <td>cloudpia</td>
+                            </tr>
+                            <tr>
+                                <th>성명</th>
+                                <td>홍길동</td>
+                            </tr>
+                            <tr>
+                                <th>부서</th>
+                                <td>클라우드 운영부</td>
+                            </tr>
+                            <tr>
+                                <th>E-mail</th>
+                                <td>hli-cloud@test.com</td>
+                            </tr>
+                            <tr>
+                                <th>Username</th>
+                                <td>cloudadmin</td>
+                            </tr>
+                            <tr>
+                                <th>Password</th>
+                                <td><a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-edit"></i> 패스워드 변경</button></a>
+                                    <!-- [Modal] start -->
+                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                                        <div class="modal-dialog modal-lg" style="width:450px;">
+                                            <div class="modal-content">
+                                                <div class="modal-title_box">
+                                                    <div class="modal-title">
+                                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <span id="myModalLabel">패스워드 변경</span>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-nbody">
+                                                    <div class="row">
+                                                        <table class="table-nt mt_20">
+                                                            <tr>
+                                                                <th>Old password</th>
+                                                                <td><input type="password"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>New password</th>
+                                                                <td><input type="password"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Confirm password</th>
+                                                                <td><input type="password"></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- [Modal] End --></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-lg-8">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Custom Dashboard</div>
+                    <div class="box_table-body">
+                        <div class="row">
+                            <div class="col-xs-4 col-md-15">
+                                <div class="box_custom custom_img"><a href="#"><img th:src="@{/assets/img/board.png}" class="img-responsive" alt=""></a><br>custom-board1</div>
+                            </div>
+                            <div class="col-xs-4 col-md-15">
+                                <div class="box_custom custom_img"><a href="#"><img th:src="@{/assets/img/board.png}" class="img-responsive" alt=""></a><br>custom-board2</div>
+                            </div>
+                            <div class="col-xs-4 col-md-15">
+                                <div class="box_custom custom_img"><a href="#"><img th:src="@{/assets/img/board.png}" class="img-responsive" alt=""></a><br>custom-board3</div>
+                            </div>
+                            <div class="col-xs-4 col-md-15">
+                                <div class="box_custom custom_img"><a href="#"><img th:src="@{/assets/img/board.png}" class="img-responsive" alt=""></a><br>custom-board4</div>
+                            </div>
+                            <div class="col-xs-4 col-md-15">
+                                <div class="box_custom_add custom_img"><a  href="" data-toggle="modal" data-target="#myModal2"><img th:src="@{/assets/img/board_add.png}" class="img-responsive" alt=""></a><br>New Board
+                                    <!-- [Modal] start -->
+                                    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                                        <div class="modal-dialog modal-lg" style="width:765px;">
+                                            <div class="modal-content">
+                                                <div class="modal-title_box">
+                                                    <div class="modal-title">
+                                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <span id="myModalLabel">Custom Dashboard</span>
+                                                        <div class="dropdown d_ib">
+                                                            <div class="has-feedback d_ib">
+                                                                <input type="text" placeholder="대시보드명을 입력하세요" class="custom_input">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-nbody">
+                                                    <div class="row">
+                                                        <div class="mb_10 f_r">
+                                                            모니터링 영역별 대시보드 구성 판넬을 선택하세요
+
+                                                            <div class="dropdown d_ib">
+                                                                <select id="modal-slingle-select-box" >
+                                                                    <option value="Cluster">Cluster</option>
+                                                                    <option value="VM">VM</option>
+                                                                    <option value="Node">Node</option>
+                                                                    <option value="Pod">Pod</option>
+                                                                    <option value="JVM">JVM</option>
+                                                                    <option value="Oracle">Oracle</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row row_scroll_290">
+                                                        <!-- Cluster start -->
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">Cluster</div>
+                                                            <div class="box_modal-body ">
+
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- Cluster end -->
+                                                        <!-- VM start -->
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">VM</div>
+                                                            <div class="box_modal-body ">
+
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- VM end -->
+
+                                                        <!-- Node start -->
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">Node</div>
+                                                            <div class="box_modal-body ">
+
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- Node end -->
+                                                        <!-- pod start -->
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">Pod</div>
+                                                            <div class="box_modal-body ">
+
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- pod end -->
+                                                        <!-- JVM start -->
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">JVM</div>
+                                                            <div class="box_modal-body ">
+
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- JVM end -->
+                                                        <!-- Oracle start -->
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">Oracle</div>
+                                                            <div class="box_modal-body ">
+
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15 text-center">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                        <div class="checkbox"><input type="checkbox" value="" ></div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- Oracle end -->
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="box_panel mt_10">
+                                                            <table class="table-custom">
+                                                                <tr>
+                                                                    <th>Selected</th>
+                                                                    <td>Clusster <span class="badge badge-danger badge-pill">4</span></td>
+                                                                    <td>VM <span class="badge badge-secondary badge-pill">0</span></td>
+                                                                    <td>Node <span class="badge badge-danger badge-pill">4</span></td>
+                                                                    <td>Pod <span class="badge badge-secondary badge-pill">0</span></td>
+                                                                    <td>JVM <span class="badge badge-secondary badge-pill">0</span></td>
+                                                                    <td>Oracle <span class="badge badge-secondary badge-pill">0</span></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row text-center pt_15"><button class="btn btn-outline-white">다 음</button></div>
+
+
+                                                </div>
+                                            </div>
+
+                                            <!--######### 다음화면 시작#########  -->
+                                            <div class="modal-content">
+                                                <div class="modal-title_box">
+                                                    <div class="modal-title">
+                                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <span id="myModalLabel">Custom Dashboard Layout : 대시보드 명</span>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-nbody pt_20">
+                                                    <!-- cluster start -->
+                                                    <div class="row">
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">Cluster</div>
+                                                            <div class="box_modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- cluster end -->
+                                                    <!-- Nod starat -->
+                                                    <div class="row">
+                                                        <div class="box_panel">
+                                                            <div class="box_modal-heading">Nod</div>
+                                                            <div class="box_modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-xs-4 col-md-15">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-4 col-md-15">
+                                                                        <div class="box_custom">
+                                                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Nod end -->
+
+                                                    <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
+
+                                                </div>
+                                            </div>
+                                            <!--######### 다음화면 끝#########  -->
+
+
+                                        </div>
+                                    </div>
+                                    <!-- [Modal] End -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-lg-4">
+                <div class="box_panel">
+                    <div class="box_panel-heading">Theme</div>
+                    <div class="box_table-body">
+                        <ul class="nav nav-pills">
+                            <li class="box_theme theme_img mr_10 active">
+                                <a href="#"> <img th:src="@{/assets/img/light.png}" class="img-responsive" alt=""> Light</a>
+                            </li>
+                            <li class="box_theme theme_img mr_10">
+                                <a href="#"> <img th:src="@{/assets/img/dark.png}" class="img-responsive" alt="">  Dark</a>
+                            </li>
+                            <li class="box_theme theme_img">
+                                <a href="#"> <img th:src="@{/assets/img/tv.png}" class="img-responsive" alt=""> TV</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [Preference] End-->
+    </div>
+
+</div>
+</body>
+</html>

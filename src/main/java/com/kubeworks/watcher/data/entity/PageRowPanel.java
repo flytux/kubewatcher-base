@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,11 @@ public class PageRowPanel extends BaseEntity {
     @Column(columnDefinition = "bigint unsigned", nullable = false)
     long panelId;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "page_row_id", foreignKey = @ForeignKey(name = "PAGE_ROW_PANEL_FK01"))
+    PageRow pageRow;
+
     @Column(length = 200, nullable = false)
     String title;
 
@@ -32,5 +38,7 @@ public class PageRowPanel extends BaseEntity {
 
     @Column(columnDefinition = "bigint unsigned default 0", nullable = false)
     long sort;
+
+
 
 }
