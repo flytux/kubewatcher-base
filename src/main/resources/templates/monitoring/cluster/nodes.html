@@ -11,24 +11,21 @@
 
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Nodes')"/>
     <div id="main_contents">
+
+        <!-- [Events] start -->
         <div class="row">
-            <div class="main_title_top col-xs-12 mb_0" style="padding-right:0px;"><i
-                    class="feather icon-chevrons-right"></i> 클러스터 Nodes
-                <!--#### [수정 2020-07-21] 시작 #######-->
-                <!-- search 박스 시작 -->
-                <div class="dropdown d_ib f_r mr_5">
-                    <div class="form-group has-feedback d_ib">
-                        <input type="text" placeholder="Search" class="search_table">
-                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Nodes
+                <div class="f_r">
+                    <div class=" d_ib">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="text" placeholder="Search" class="search_table">
+                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        </div>
                     </div>
                 </div>
-                <!-- search 박스 끝 -->
-                <!--#### [수정 2020-07-21] 끝 ########-->
             </div>
         </div>
-
-
-        <div class="col-xs-12" style="padding-right:0px; padding-left:10px;">
+        <div class="row">
             <div class="box_panel">
                 <div class="box_table-body">
                     <table class="list_table">
@@ -46,18 +43,15 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td><a href="" class="table2-link" data-toggle="modal" data-target="#myModal">XXX [신계약]</a>
+                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">XXX [신계약]</a>
 
                                 <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-                                     aria-labelledby="myModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg" style="width:765px;">
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg"style="width:765px;">
                                         <div class="modal-content">
                                             <div class="modal-title_box">
                                                 <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal"
-                                                            aria-label="Close"><span aria-hidden="true">&times;</span>
-                                                    </button>
+                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                                     <span id="myModalLabel">Node : XXX [신계약]</span>
                                                 </div>
                                             </div>
@@ -67,187 +61,118 @@
                                                 </div>
 
                                                 <div class="row">
-                                                    <div class="col-xs-12 col-md-3 col-lg-3"
-                                                         style="padding-left:0px; padding-right:0px;">
-                                                        <div class="col-xs-12 box_panel" style="padding:0px;">
+                                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                                                        <div class="box_panel">
                                                             <div class="box_panel-heading_madal">CPU</div>
                                                             <div class="box_panel-text">
-                                                                <input class="knob" data-linecap="round"
-                                                                       data-width="100" data-height="100"
-                                                                       data-angleoffset="0" data-thickness=".2"
-                                                                       data-fgcolor="#a4df5d" data-bgcolor="#eeeeee"
-                                                                       value="58" style="">
+                                                                <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".2" data-fgcolor="#a4df5d"  data-bgcolor="#eeeeee"  value="58" style="">
                                                             </div>
                                                             <table class="mini-table ">
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Cpapcity
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Cpapcity</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Request
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Request</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Usage
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Usage</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Limit
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Limit</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100
-                                                                    </td>
+                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100</td>
                                                                 </tr>
                                                             </table>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-3 col-lg-3" style="padding-right:0px;">
-                                                        <div class="col-xs-12 box_panel" style="padding:0px;">
+                                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                                                        <div class="box_panel">
                                                             <div class="box_panel-heading_madal">Memory</div>
                                                             <div class="box_panel-text">
-                                                                <input class="knob" data-linecap="round"
-                                                                       data-width="100" data-height="100"
-                                                                       data-angleoffset="0" data-thickness=".2"
-                                                                       data-fgcolor="#37d8ae" data-bgcolor="#eeeeee"
-                                                                       value="38" style="">
+                                                                <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".2" data-fgcolor="#37d8ae"  data-bgcolor="#eeeeee"  value="38" style="">
                                                             </div>
                                                             <table class="mini-table ">
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Cpapcity
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Cpapcity</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Request
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Request</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Usage
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Usage</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Limit
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Limit</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100
-                                                                    </td>
+                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100</td>
                                                                 </tr>
                                                             </table>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-3 col-lg-3" style="padding-right:0px;">
-                                                        <div class="col-xs-12 box_panel" style="padding:0px;">
+                                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                                                        <div class="box_panel">
                                                             <div class="box_panel-heading_madal">Disk</div>
                                                             <div class="box_panel-text">
-                                                                <input class="knob" data-linecap="round"
-                                                                       data-width="100" data-height="100"
-                                                                       data-angleoffset="0" data-thickness=".2"
-                                                                       data-fgcolor="#50bee3" data-bgcolor="#eeeeee"
-                                                                       value="77" style="">
+                                                                <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".2" data-fgcolor="#50bee3"  data-bgcolor="#eeeeee"  value="77" style="">
                                                             </div>
                                                             <table class="mini-table ">
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Cpapcity
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Cpapcity</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Request
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Request</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Usage
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Usage</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Limit
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Limit</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100
-                                                                    </td>
+                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100</td>
                                                                 </tr>
                                                             </table>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-3 col-lg-3" style="padding-right:0px;">
-                                                        <div class="col-xs-12 box_panel" style="padding:0px;">
+                                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                                                        <div class="box_panel">
                                                             <div class="box_panel-heading_madal">POD</div>
                                                             <div class="box_panel-text">
-                                                                <input class="knob" data-linecap="round"
-                                                                       data-width="100" data-height="100"
-                                                                       data-angleoffset="0" data-thickness=".2"
-                                                                       data-fgcolor="#5da2e5" data-bgcolor="#eeeeee"
-                                                                       value="61" style="">
+                                                                <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".2" data-fgcolor="#5da2e5"  data-bgcolor="#eeeeee"  value="61" style="">
                                                             </div>
                                                             <table class="mini-table ">
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Cpapcity
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Cpapcity</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Request
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Request</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Usage
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Usage</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>
-                                                                        <div class="circle_ss"></div>
-                                                                        Limit
-                                                                    </td>
+                                                                    <td><div class="circle_ss"></div>Limit</td>
                                                                     <td>0,000Mi</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100
-                                                                    </td>
+                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100</td>
                                                                 </tr>
                                                             </table>
                                                         </div>
@@ -410,7 +335,7 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span></td>
+                            <td><span class="madal_label_active">UP</span> </td>
                         </tr>
                         <tr>
                             <td>XXX [신계약]</td>
@@ -432,7 +357,7 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_false">DOWN</span></td>
+                            <td><span class="madal_label_false">DOWN</span> </td>
                         </tr>
                         <tr>
                             <td>XXX [신계약]</td>
@@ -454,7 +379,7 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span></td>
+                            <td><span class="madal_label_active">UP</span> </td>
                         </tr>
                         <tr>
                             <td>XXX [신계약]</td>
@@ -476,7 +401,7 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span></td>
+                            <td><span class="madal_label_active">UP</span> </td>
                         </tr>
                         <tr>
                             <td>XXX [신계약]</td>
@@ -498,7 +423,7 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_false">DOWN</span></td>
+                            <td><span class="madal_label_false">DOWN</span> </td>
                         </tr>
                         <tr>
                             <td>XXX [신계약]</td>
@@ -520,7 +445,7 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span></td>
+                            <td><span class="madal_label_active">UP</span> </td>
                         </tr>
                         <tr>
                             <td>XXX [신계약]</td>
@@ -542,7 +467,7 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span></td>
+                            <td><span class="madal_label_active">UP</span> </td>
                         </tr>
                         <tr>
                             <td>XXX [신계약]</td>
@@ -564,7 +489,7 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_false">DOWN</span></td>
+                            <td><span class="madal_label_false">DOWN</span> </td>
                         </tr>
                         <tr>
                             <td>XXX [신계약]</td>
@@ -586,13 +511,14 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span></td>
+                            <td><span class="madal_label_active">UP</span> </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+        <!-- [Events] End-->
     </div>
 
 </div>

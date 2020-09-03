@@ -11,32 +11,33 @@
 
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Application<i class=&quot;feather icon-chevron-right&quot; ></i>Catalog<i class=&quot;feather icon-chevron-right&quot; ></i>Application List')"/>
     <div id="main_contents">
+
         <!-- [Catalog - 업무] start -->
         <div class="row">
             <div class="main_title_top col-xs-12 mb_0  pr_0" ><i class="feather icon-chevrons-right"></i> Catalog - 업무
-                <!--#### [수정 2020-07-21] 시작 #######-->
-                    <!-- 드롭박스 시작 --><div class="dropdown d_ib f_r">
-                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                        All Namespareleasesce <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
-                    </button>
-                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                    </ul>
-                    <!-- 드롭박스 끝 --></div>
-                    <!-- search 박스 시작 --><div class="dropdown d_ib f_r mr_5">
-                    <div class="form-group has-feedback d_ib">
-                        <input type="text" placeholder="Search" class="search_table">
-                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                <div class="f_r">
+                    <div class=" d_ib">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="text" placeholder="Search" class="search_table">
+                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        </div>
                     </div>
-                    <!-- search 박스 끝 --></div>
-                <!--#### [수정 2020-07-21] 끝 ########-->
+                    <div class="dropdown d_ib">
+                        <select id="multi-select-box">
+                            <option value="통합관리환경 admin">통합관리환경 admin</option>
+                            <option value="보험코어 monitor">보험코어 monitor</option>
+                            <option value="Cluster monitor">Cluster monitor</option>
+                            <option value="Cluster log viewer">Cluster log viewer</option>
+                            <option value="On-premise monitor">On-premise monitor</option>
+                            <option value="Cluster admin">Cluster admin</option>
+                            <option value="Dashboard operator">Dashboard operator</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         고객관리 공통
@@ -134,7 +135,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         상품공통
@@ -144,7 +145,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         계약공통
@@ -154,7 +155,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-15 col-lg-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15 col-lg-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         입출금공통
@@ -164,7 +165,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         회계공통
@@ -179,10 +180,10 @@
 
         <!-- [Catalog - 인프라] start -->
         <div class="row">
-            <div class="main_title  col-xs-12 " ><i class="feather icon-chevrons-right"></i> Catalog - 인프라</div>
+            <div class="main_title" ><i class="feather icon-chevrons-right"></i> Catalog - 인프라</div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         kafka
@@ -192,7 +193,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         fluentd
@@ -202,7 +203,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         mySql
@@ -212,7 +213,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-15 col-lg-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15 col-lg-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         redis
@@ -222,7 +223,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         prometheus
@@ -237,10 +238,10 @@
 
         <!-- [Catalog - 보안] start -->
         <div class="row">
-            <div class="main_title  col-xs-12 " ><i class="feather icon-chevrons-right"></i> Catalog - 보안</div>
+            <div class="main_title" ><i class="feather icon-chevrons-right"></i> Catalog - 보안</div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-md-15" style="padding-left:10px; padding-right:0px;">
+            <div class="col-xs-12 col-md-15">
                 <div class="box_panel">
                     <div class="box_panel-heading">
                         감사

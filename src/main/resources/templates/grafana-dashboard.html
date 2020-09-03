@@ -75,7 +75,8 @@
 
                 $dashboardSelect.on('change', function (evt) {
                     //console.log($(this).val());
-                    if ($(this).val() === '-1')     return;
+                    if ($(this).val() === '-1')
+                        return;
 
                     $.get("/grafana/dashboards/" + $(this).val())
                         .done(function (data) {
@@ -100,7 +101,7 @@
 
                             generateVariable($inputArea, templating);                                   //input-area select-box list
                             generatePanelList($panelSelect, panels);                                    //panel select-box list
-                            //generatePanel($panelArea, data.meta.host + data.meta.panel_url, panels);    //data panel list
+                            generatePanel($panelArea, data.meta.host + data.meta.panel_url, panels);    //data panel list
                         });
 
                     function generateVariable(selector, templateVariable) {
@@ -110,7 +111,6 @@
                         //namescpace가 0번이 아닌 map을 뒤집는다.
                         if(variableMap.size > 1){
                             if([...variableMap.keys()][0].match(/namespace/gi) == null) {
-
                                 let reverceMap = new Map();
                                 reverceMap = [...variableMap].map(function(obj){
                                     return obj;
@@ -130,17 +130,16 @@
                                 + "<select id='" + "var-" + key + "' name='" + "var-" + key + "' class='form-control'>";
 
                             // 프로메테우스 api에서는 item.allValue를 이용해야 함.
-                            if (varItem.includeAll)                 select += getSelectOptionHtml("All");
+                            if (varItem.includeAll)
+                                select += getSelectOptionHtml("All");
 
                             if (Array.isArray(varItem.values) && varItem.values !== null) {
-                                for (let value of varItem.values)   select += getSelectOptionHtml(value);
+                                for (let value of varItem.values)
+                                    select += getSelectOptionHtml(value);
                             }
                             select += "</select>" + "</div></div>";
                             selector.append(select);
                         }
-
-
-
                     }
 
                     function generatePanelList(selector, panelsData) {
@@ -152,7 +151,8 @@
                                 });
                                 return;
                             }
-                            if (panel.type === "row")   return;
+                            if (panel.type === "row")
+                                return;
                             selector.append(getSelectOptionHtml(panel.id, panel.title));
                             panelQueryMap.set(panel.id, panel.targets);
                         });
@@ -173,12 +173,14 @@
                                 cardTag = getPanelRowHtml(item, cardTag);
                                 item.panels.forEach(function (subItem) {
                                     cardTag = getPanelHtml(panelUrl, subItem, cardTag);
-                                })
+                                });
                                 count++;
                                 return;
                             }
 
-                            if (item.type === "row") cardTag = getPanelRowHtml(item, cardTag);
+                            if (item.type === "row")
+                                cardTag = getPanelRowHtml(item, cardTag);
+
                             cardTag = getPanelHtml(panelUrl, item, cardTag);
                             count++;
                         });
@@ -208,7 +210,8 @@
                     $panelDataArea.text('');
                     let queries = panelQueryMap.get(parseInt($(this).val()));
                     for (let i = 0; i < queries.length; i++) {
-                        if (queries[i].hide)    continue;
+                        if (queries[i].hide)
+                            continue;
 
                         let query = queries[i].api_query;
                         let queryVariables = query.match(/\$\w+/g);
@@ -238,36 +241,31 @@
                                 alert("조회 실패");
                             })
                             .always(function (data) {
-
                             });
                     }
                 });
 
                 $(document).on("change", "select[name^='var']", function(){
-                    /*
-                    * 목표 및 체크 포인트
-                    * 1. last selectbox chage 때 작동
-                    * 2. 패널 src update 확인
-                    * */
-
                     const
                         $selectBoxs = $(document).find("select[name^='var']"),
                         $this = $(this),
                         thisSelectedIdx = $this.find('option:selected').index(),
-                        lastId = commonReplace($("select[name^='var']:last").attr('id'), 'var-', ''),
+                        lastId = comnJs.replace($("select[name^='var']:last").attr('id'), 'var-', ''),
                         maxSize = $selectBoxs.length - 1,
                         dataMap = [...variableMap].map(function(value){
                             return [value[0], value[1]];
                         });
 
-                    let thisKey = commonReplace($this.attr('id'), 'var-', ''),
+                    let thisKey = comnJs.replace($this.attr('id'), 'var-', ''),
                         keepGoing = true,
                         key, item;
 
                     generateAjaxUrl(rtnMap(thisKey, true));
 
+                    //------------function line
                     function generateAjaxUrl(data) {
-                        if(!keepGoing)  return false;
+                        if(!keepGoing)
+                            return false;
 
                         key = data[0];
                         item = data[1];
@@ -278,7 +276,9 @@
 
                         for (let refField of refFields) {
                             let targetValue = $("#var-" + refField).val();
-                            if (targetValue === null)   break;
+                            if (targetValue === null)
+                                break;
+
                             query = query.replace(new RegExp("\\" + "$" + refField, "g"), targetValue);
                             //console.log(refField, query);
 
@@ -286,33 +286,32 @@
                                 let url = promUrl + "/api/v1/query?query=" + query;
                                 let currentTime = new Date().getTime() / 1000;
                                 url += `&start=${currentTime - 300}&end=${currentTime}`;
-                                console.log(key + ' url==' + url);
+                                //console.log(key + ' url==' + url);
 
-                                commonAjax(url);
+                                let setData = {
+                                    url: url,
+                                    type: 'get',
+                                    done: ajaxDone,
+                                    fail: ajaxFail
+                                }; //ajax function setting
+                                comnJs.ajax(setData); //ajax call
                             }
                         }
                     }
 
-                    function commonAjax(url) {
-                        $.ajax({
-                            url: url,
-                            type: 'get',
-                            async:false
-                        })
-                            .done(function (data) {
-                                let results = data.data.result;
-                                let dataMap = rtnMap(key, false);
-                                //console.log(results, key, item, dataMap, keepGoing);
+                    function ajaxDone(data) {
+                        let results = data.data.result;
+                        let dataMap = rtnMap(key, false);
+                        //console.log(results, key, item, dataMap, keepGoing);
 
-                                generateSelectList(results);
-                                generateAjaxUrl(dataMap);
-                                if(!keepGoing)      reflashPanelList();
-                            })
-                            .fail(function () {
-                                alert("조회 실패");
-                            })
-                            .always(function () {
-                            });
+                        generateSelectList(results);            //select-box grid
+                        generateAjaxUrl(dataMap);               //ajax 호출 function
+                        if(!keepGoing)
+                            reflashPanelList(); //차트 패널의 src를 업데이트해서 다시 호출한다.
+                    }
+
+                    function ajaxFail(err) {
+                        alert("조회 실패");
                     }
 
                     function generateSelectList(results){
@@ -322,8 +321,10 @@
                         //----select box option append
                         $thisSelector.text('');
 
-                        if (item.includeAll)            $thisSelector.append(getSelectOptionHtml("All"));
-                        for (let result of results)     $thisSelector.append(getSelectOptionHtml(result.metric[metricName]));
+                        if (item.includeAll)
+                            $thisSelector.append(getSelectOptionHtml("All"));
+                        for (let result of results)
+                            $thisSelector.append(getSelectOptionHtml(result.metric[metricName]));
                         //----select box option append
 
                         $this.find("option").eq(thisSelectedIdx).attr("selected", true);
@@ -350,17 +351,12 @@
 
                     //다음 레벨 select box id return
                     function rtnMap(key, boln) {
-                        if(key === lastId && !boln)  keepGoing = false;
+                        if(key === lastId && !boln)
+                            keepGoing = false;
 
                         let idx = [...dataMap].findIndex((el) => el[0] === key);
                         idx = idx === maxSize ? idx : idx + 1;
                         return [...dataMap][idx];
-                    }
-
-                    //문자열 변환
-                    function commonReplace(str, rStr, nStr) {
-                        if(!str) return '';
-                        else     return str.replace(rStr, nStr);
                     }
 
                 });

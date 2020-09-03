@@ -14,7 +14,7 @@
 
         <!-- [Groups] start -->
         <div class="row">
-            <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Groups
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Groups
 
                 <div class="dropdown d_ib f_r">
                     <a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
@@ -52,13 +52,14 @@
                                         Group role
                                     </div>
                                     <div class="row">
+
                                         <table class="table-select">
                                             <tr>
                                                 <th>기본 Role</th>
                                                 <td>Cluster monitor</td>
                                                 <td class="select">
                                                     <!-- [multi select box] start-->
-                                                    <select class="multi-select" multiple="multiple">
+                                                    <select id="modal-multi-select-box" multiple="multiple">
                                                         <option value="통합관리환경 admin">통합관리환경 admin</option>
                                                         <option value="보험코어 monitor">보험코어 monitor</option>
                                                         <option value="Cluster monitor">Cluster monitor</option>
@@ -84,7 +85,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12" style="padding-right:0px;">
+        <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1

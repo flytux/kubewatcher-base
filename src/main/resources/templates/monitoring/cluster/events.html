@@ -11,28 +11,34 @@
 
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Events')"/>
     <div id="main_contents">
+
+        <!-- [Events] start -->
         <div class="row">
-            <div class="main_title_top col-xs-12" ><i class="feather icon-chevrons-right"></i> Events</div>
-        </div>
-        <div class="col-xs-12" style="padding-right:0px; padding-bottom:0px;">
-            <div class="box_panel">
-                <div class="box_table-heading">
-                    <div class="form-group has-feedback d_ib">
-                        <input type="text" placeholder="Search" class="search_table">
-                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Events
+                <div class="f_r">
+                    <div class=" d_ib">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="text" placeholder="Search" class="search_table">
+                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        </div>
                     </div>
                     <div class="dropdown d_ib">
-                        <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                            All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
-                        </button>
-                        <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                        </ul>
+                        <select id="multi-select-box">
+                            <option value="통합관리환경 admin">통합관리환경 admin</option>
+                            <option value="보험코어 monitor">보험코어 monitor</option>
+                            <option value="Cluster monitor">Cluster monitor</option>
+                            <option value="Cluster log viewer">Cluster log viewer</option>
+                            <option value="On-premise monitor">On-premise monitor</option>
+                            <option value="Cluster admin">Cluster admin</option>
+                            <option value="Dashboard operator">Dashboard operator</option>
+                        </select>
                     </div>
                 </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="box_panel">
                 <div class="box_panel-body">
                     <img th:src="@{/assets/img/chart7.jpg}" class="img-responsive" alt="" style="width:100%;">
                 </div>
@@ -43,7 +49,7 @@
             .list_table155 > thead > tr > th:last-child { width:25%;}
             .list_table155 > tbody > tr > td:last-child { width:24%;}
         </style>
-        <div class="col-xs-12" style="padding-right:0px; padding-bottom:0px;">
+        <div class="row">
             <div class="box_panel">
                 <div class="box_table-body">
                     <table class="list_table155">
@@ -227,6 +233,7 @@
                 </div>
             </div>
         </div>
+        <!-- [Events] End-->
     </div>
 
 </div>

@@ -11,22 +11,22 @@
 
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Alarm<i class=&quot;feather icon-chevron-right&quot; ></i>List')"/>
     <div id="main_contents">
+
+        <!-- [보험코어 Alarm List] start -->
         <div class="row">
-            <div class="main_title_top col-xs-12 mb_0 pr_0" ><i class="feather icon-chevrons-right"></i> 보험코어 Alarm List
-                <!--#### [수정 2020-07-21] 시작 #######-->
-                <!-- search 박스 시작 -->
-                <div class="dropdown d_ib f_r mr_5">
-                    <div class="form-group has-feedback d_ib">
-                        <input type="text" placeholder="Search" class="search_table">
-                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> 보험코어 Alarm List
+                <div class="f_r">
+                    <div class=" d_ib">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="text" placeholder="Search" class="search_table">
+                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        </div>
                     </div>
                 </div>
-                <!-- search 박스 끝 -->
-                <!--#### [수정 2020-07-21] 끝 ########-->
             </div>
         </div>
 
-        <div class="col-xs-12" style="padding-right:0px;">
+        <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1

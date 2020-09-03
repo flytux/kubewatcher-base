@@ -13,7 +13,7 @@
 
         <!-- lee -->
         <!-- 부트스트랩 -->
-        <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
         <!-- 기본 -->
         <link rel="stylesheet" th:href="@{/assets/css/style.css}">
 
@@ -26,8 +26,9 @@
 
         <!-- 좌측 메뉴 위해 필요합니다)-->
         <script th:src="@{/assets/js/jquery-3.2.1.min.js}"></script>
-
         <script th:src="@{/assets/js/bootstrap-multiselect.js}"></script>
+        <script th:src="@{/assets/js/common.js}"></script>  <!--공통-->
+        <script th:src="@{/assets/js/panelTemplate.js}"></script>  <!--공통-->
         <script>
             //if(sessionStorage.getItem('sidebarStatus') === 'fold')   console.log('fold');
             (function ($) {
@@ -85,7 +86,18 @@
                     });
 
                     //multiselect 동작
-                    $('.multi-select').multiselect();
+                    $('#multi-select').multiselect({
+                        nonSelectedText: 'none checked',
+                        onChange: function(option, checked) {
+                                let values = [];
+                                $('#multi-select option').each(function() {
+                                    if ($(this).val() !== option.val())     values.push($(this).val());
+                                });
+                                $('#multi-select').multiselect('deselect', values);
+                        }
+                    });
+
+                    $('.modal-multi-select').multiselect();
                 });
 
             }(jQuery));

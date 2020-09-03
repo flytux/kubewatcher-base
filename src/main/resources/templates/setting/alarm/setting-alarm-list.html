@@ -11,27 +11,30 @@
 
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>설정<i class=&quot;feather icon-chevron-right&quot; ></i>Alarm<i class=&quot;feather icon-chevron-right&quot; ></i>List')"/>
     <div id="main_contents">
+
+        <!-- [Alarm 설정 목록] start -->
         <div class="row">
             <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Alarm 설정 목록
-                <!--#### [수정 2020-07-21] 시작 #######-->
-                <!-- 드롭박스 시작 -->
-                <div class="dropdown d_ib f_r">
-                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                        All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
-                    </button>
-                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                    </ul>
+                <div class="f_r">
+                    <div class="d_ib">
+                        <button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button>
+                    </div>
+                    <div class="dropdown d_ib">
+                        <select id="multi-select-box">
+                            <option value="통합관리환경 admin">통합관리환경 admin</option>
+                            <option value="보험코어 monitor">보험코어 monitor</option>
+                            <option value="Cluster monitor">Cluster monitor</option>
+                            <option value="Cluster log viewer">Cluster log viewer</option>
+                            <option value="On-premise monitor">On-premise monitor</option>
+                            <option value="Cluster admin">Cluster admin</option>
+                            <option value="Dashboard operator">Dashboard operator</option>
+                        </select>
+                    </div>
                 </div>
-                <!-- 드롭박스 끝 -->
-                <!--#### [수정 2020-07-21] 끝 ########-->
             </div>
         </div>
 
-        <div class="col-xs-12" style="padding-right:0px;">
+        <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
@@ -40,7 +43,7 @@
                     <table class="list_table">
                         <thead>
                         <tr>
-                            <th>Node</th>
+                            <th>VM</th>
                             <th>Detect type</th>
                             <th>Config</th>
                             <th>Update</th>
@@ -57,6 +60,7 @@
                                                 <div class="modal-title">
                                                     <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                                     <span id="myModalLabel">노드명 : Metrics</span>
+                                                    <div class="f_r"><button class="btn btn-md btn-save">저 장</button></div>
                                                 </div>
                                             </div>
                                             <div class="modal-nbody">
@@ -64,7 +68,7 @@
                                                     VM
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">CPU</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -74,7 +78,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">MEM</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -84,7 +88,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">Disk</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -94,7 +98,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;" >
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">Network</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -110,7 +114,7 @@
                                                     Node
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">CPU</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -120,7 +124,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">MEM</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -130,7 +134,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">Disk</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -140,7 +144,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;" >
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">Pod</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -156,7 +160,7 @@
                                                     POD
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">CPU</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -166,7 +170,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">MEM</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -176,7 +180,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">Disk</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -186,7 +190,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3" style="padding-left:0px;" >
+                                                    <div class="col-xs-12 col-md-12 col-lg-3">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">File system</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -202,7 +206,7 @@
                                                     JVM
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-xs-12 col-md-12 col-lg-3 pb_0" style="padding-left:0px;">
+                                                    <div class="col-xs-12 col-md-12 col-lg-3 pb_0">
                                                         <div class="box_panel mb_0">
                                                             <div class="box_modal-heading2">CPU</div>
                                                             <div class="box_modal-body text-right pb_0">
@@ -212,239 +216,240 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3 pb_0" style="padding-left:0px;">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">Heap MEM</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3 pb_0" style="padding-left:0px;">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">Thread count</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> 개 <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> 개 <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3 pb_0" style="padding-left:0px;" >
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">GC Time</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> 분 <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> 분 <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
+                                                    <div class="col-xs-12 col-md-12 col-lg-3 pb_0">
+                                                    <div class="box_panel mb_0">
+                                                        <div class="box_modal-heading2">Heap MEM</div>
+                                                        <div class="box_modal-body text-right pb_0">
+                                                            <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
+                                                            <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
+                                                            <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-xs-12 col-md-12 col-lg-3 pb_0">
+                                                    <div class="box_panel mb_0">
+                                                        <div class="box_modal-heading2">Thread count</div>
+                                                        <div class="box_modal-body text-right pb_0">
+                                                            <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
+                                                            <p class="mb_2"> 위험 <input type="text" style="width:50px;"> 개 <i class="feather icon-chevron-right" ></i></p>
+                                                            <p class="mb_10">경고 <input type="text" style="width:50px;"> 개 <i class="feather icon-chevron-right" ></i></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-md-12 col-lg-3 pb_0">
+                                                    <div class="box_panel mb_0">
+                                                        <div class="box_modal-heading2">GC Time</div>
+                                                        <div class="box_modal-body text-right pb_0">
+                                                            <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
+                                                            <p class="mb_2"> 위험 <input type="text" style="width:50px;"> 분 <i class="feather icon-chevron-right" ></i></p>
+                                                            <p class="mb_10">경고 <input type="text" style="width:50px;"> 분 <i class="feather icon-chevron-right" ></i></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                <div class="table-title pt_5">
-                                                    Process
-                                                </div>
-                                                <div class="row text-center">
-                                                    <div class="col-xs-12 col-md-12 col-lg-12  pb_0" style="padding-left:0px;">
-                                                        <div class="box_panel">
-                                                            <div class="box_modal-body text-left pl_20">
+                                            <div class="table-title pt_5">
+                                                Process
+                                            </div>
+                                            <div class="row text-center">
+                                                <div class="col-xs-12 col-md-12 col-lg-12  pb_0">
+                                                    <div class="box_panel">
+                                                        <div class="box_modal-body text-left pl_20">
 																		<span class="mb_2">프로세스 <input type="text" style="width:200px;">
 																			<span class="ml_30">위험 <input type="text" style="width:50px;"> %<i class="feather icon-chevron-right" ></i></span>
 																			<span class="ml_15">경고 <input type="text" style="width:50px;"> %<i class="feather icon-chevron-right" ></i></span>
 																			<span class="ml_30"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
 																		</span><br>
 
-                                                                <span class="mb_2">프로세스 <input type="text" style="width:200px;">
+                                                            <span class="mb_2">프로세스 <input type="text" style="width:200px;">
 																			<span class="ml_30">위험 <input type="text" style="width:50px;"> %<i class="feather icon-chevron-right" ></i></span>
 																			<span class="ml_15">경고 <input type="text" style="width:50px;"> %<i class="feather icon-chevron-right" ></i></span>
 																		</span>
-                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <button class="btn btn-save">저 장</button>
                                                 </div>
 
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
-                                <!-- [Modal] End --></td>
-                            <td>VIM, cluster, node, Pod, JVM</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>HLI000</td>
-                            <td><a  href="" data-toggle="modal" data-target="#myModal2">Log</a><!-- [Modal] start -->
-                                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">노드명 : Event</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody">
-                                                <div class="table-title pt_5">
-                                                    VM
-                                                </div>
-                                                <div class="row text-center">
-                                                    <div class="col-xs-12 col-md-12 col-lg-12 pb_0" style="padding-left:0px;">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-body text-left pl_20">
-																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_30"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
-																	</span><br>
-                                                                <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																	</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="table-title pt_5">
-                                                    Cluster
-                                                </div>
-                                                <div class="row text-center">
-                                                    <div class="col-xs-12 col-md-12 col-lg-12 pb_0" style="padding-left:0px;">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-body text-left pl_20">
-																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_30"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
-																	</span><br>
-                                                                <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																	</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="table-title pt_5">
-                                                    Application
-                                                </div>
-                                                <div class="row text-center">
-                                                    <div class="col-xs-12 col-md-12 col-lg-12 pb_0" style="padding-left:0px;">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-body text-left pl_20">
-																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_30"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
-																	</span><br>
-                                                                <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																	</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="table-title pt_5">
-                                                    Database
-                                                </div>
-                                                <div class="row text-center">
-                                                    <div class="col-xs-12 col-md-12 col-lg-12  pb_0" style="padding-left:0px;">
-                                                        <div class="box_panel">
-                                                            <div class="box_modal-body text-left pl_20">
-																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_30"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
-																	</span><br>
-                                                                <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																	</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button class="btn btn-save">저 장</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End --></td>
-                            <td>VIM, cluster, node, Pod, JVM</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>HLI000</td>
-                            <td>Metric</td>
-                            <td>VIM, cluster, node, Pod, JVM</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>HLI000</td>
-                            <td>Metric</td>
-                            <td>VIM, cluster, node, Pod, JVM</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>HLI000</td>
-                            <td>Metric</td>
-                            <td>VIM, cluster, node, Pod, JVM</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>HLI000</td>
-                            <td>Metric</td>
-                            <td>VIM, cluster, node, Pod, JVM</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        </tbody>
-                    </table>
                 </div>
+                <!-- [Modal] End --></td>
+                <td>VIM, cluster, node, Pod, JVM</td>
+                <td>2020-06-29 14:21:05</td>
+                </tr>
+                <tr>
+                    <td>HLI000</td>
+                    <td><a  href="" data-toggle="modal" data-target="#myModal2">Log</a><!-- [Modal] start -->
+                        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                            <div class="modal-dialog modal-lg"style="width:765px;">
+                                <div class="modal-content">
+                                    <div class="modal-title_box">
+                                        <div class="modal-title">
+                                            <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <span id="myModalLabel">노드명 : Log</span>
+                                            <div class="f_r"><button class="btn btn-md btn-save">저 장</button></div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-nbody">
+                                        <div class="table-title pt_5">
+                                            VM
+                                        </div>
+                                        <div class="row text-center">
+                                            <div class="col-xs-12 col-md-12 col-lg-12 pb_0">
+                                                <div class="box_panel mb_0">
+                                                    <div class="box_modal-body text-left pl_20">
+																	<span class="mb_10">검출문자열 <input type="text" style="width:200px;">
+																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
+																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_60"><button class="btn btn-md btn-secondary">추가</button></span>
+																	</span><br>
+                                                        <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
+																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
+																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																	</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-title pt_5">
+                                            Cluster
+                                        </div>
+                                        <div class="row text-center">
+                                            <div class="col-xs-12 col-md-12 col-lg-12 pb_0">
+                                                <div class="box_panel mb_0">
+                                                    <div class="box_modal-body text-left pl_20">
+																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
+																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
+																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_50"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
+																	</span><br>
+                                                        <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
+																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
+																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																	</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-title pt_5">
+                                            Application
+                                        </div>
+                                        <div class="row text-center">
+                                            <div class="col-xs-12 col-md-12 col-lg-12 pb_0">
+                                                <div class="box_panel mb_0">
+                                                    <div class="box_modal-body text-left pl_20">
+																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
+																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
+																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_50"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
+																	</span><br>
+                                                        <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
+																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
+																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																	</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-title pt_5">
+                                            Database
+                                        </div>
+                                        <div class="row text-center">
+                                            <div class="col-xs-12 col-md-12 col-lg-12  pb_0">
+                                                <div class="box_panel">
+                                                    <div class="box_modal-body text-left pl_20">
+																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
+																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
+																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_50"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
+																	</span><br>
+                                                        <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
+																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
+																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
+																	</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [Modal] End --></td>
+                    <td>VIM, cluster, node, Pod, JVM</td>
+                    <td>2020-06-29 14:21:05</td>
+                </tr>
+                <tr>
+                    <td>HLI000</td>
+                    <td>Metric</td>
+                    <td>VIM, cluster, node, Pod, JVM</td>
+                    <td>2020-06-29 14:21:05</td>
+                </tr>
+                <tr>
+                    <td>HLI000</td>
+                    <td>Metric</td>
+                    <td>VIM, cluster, node, Pod, JVM</td>
+                    <td>2020-06-29 14:21:05</td>
+                </tr>
+                <tr>
+                    <td>HLI000</td>
+                    <td>Metric</td>
+                    <td>VIM, cluster, node, Pod, JVM</td>
+                    <td>2020-06-29 14:21:05</td>
+                </tr>
+                <tr>
+                    <td>HLI000</td>
+                    <td>Metric</td>
+                    <td>VIM, cluster, node, Pod, JVM</td>
+                    <td>2020-06-29 14:21:05</td>
+                </tr>
+                </tbody>
+                </table>
             </div>
         </div>
-        <div class="text-center"><!-- 페이지넘버 -->
-            <nav>
-                <ul class="pagination" >
-                    <li>
-                        <a href="#" aria-label="Previous">
-                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>
-                        </a>
-                    </li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li>
-                        <a href="#" aria-label="Next">
-                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
     </div>
+    <div class="text-center"><!-- 페이지넘버 -->
+        <nav>
+            <ul class="pagination" >
+                <li>
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true"  class="feather icon-chevron-left"></span>
+                    </a>
+                </li>
+                <li class="active"><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li>
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true"  class="feather icon-chevron-right"></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <!-- [Alarm 설정 목록] End-->
+
 </div>
 </body>
 </html>

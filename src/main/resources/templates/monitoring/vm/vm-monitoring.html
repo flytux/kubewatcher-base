@@ -12,33 +12,31 @@
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring')"/>
     <div id="main_contents">
         <div class="row">
-            <div class="main_title03 col-xs-12">VM#1 [HLIXXX-01]
-                <div class="text-center d-none d-md-inline">
+            <div class="main_title03">
+                <div id="namespace"
+                     th:classappend="${#strings.isEmpty(defaultNamespace) ? 'd-none' : 'd-inline'}"
+                     th:text="${defaultNamespace}">
+                    VM#1 [HLIXXX-01]
+                </div>
+                <div th:classappend="${#strings.isEmpty(defaultNamespace) ? 'd-none' : 'd-inline'}">
                     <button class="rounded-circle_p border-0"><i class="feather icon-file-text"></i></button>
                 </div>
-                <!--#### [수정 2020-07-21] 시작 #######-->
-                <!-- 드롭박스 시작 -->
-                <div class="dropdown d_ib f_r">
-                    <button class="list_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                        All Namespace <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
-                    </button>
-                    <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                    </ul>
-                </div>
-                <!-- 드롭박스 끝 -->
-                <!-- search 박스 시작 -->
-                <div class="dropdown d_ib f_r mr_5">
-                    <div class="form-group has-feedback d_ib">
-                        <input type="text" placeholder="Search" class="search_table">
-                        <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                <div class="f_r">
+                    <div class=" d_ib">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="text" placeholder="Search" class="search_table">
+                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        </div>
+                    </div>
+                    <div th:each="template : ${templating.values()}" class="dropdown d_ib">
+                        <select th:name="|var-${template?.name}|" th:id="|var-${template?.name}|"
+                                th:disabled="${template?.values == null ? 'true' : 'false'}" class="custom-select">
+                            <option value="" selected disabled hidden> -- select variable -- </option>
+                            <option th:each="value : ${template?.values}"
+                                    th:value="${value}" th:text="${value}" value="">value</option>
+                        </select>
                     </div>
                 </div>
-                <!-- search 박스 끝 -->
-                <!--#### [수정 2020-07-21] 끝 ########-->
             </div>
         </div>
         <!-- [CPU] start -->
@@ -46,33 +44,65 @@
             <div class="main_title02 col-xs-12"><i class="feather icon-chevrons-right"></i> CPU</div>
         </div>
         <div class="row" style="padding-bottom:0px;">
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">CPU Used</div>
+            <div th:switch="${panelMap.get(1L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'" class="box_panel">
+                    <div class="box_panel-heading">CPU Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(1L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">CPU Basic</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">CPU System </div>
+            <div th:switch="${panelMap.get(2L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">CPU</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(2L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">CPU</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">CPU User</div>
+            <div th:switch="${panelMap.get(3L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">System Load</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(3L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">System Load</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">CPU idle</div>
+            <div th:switch="${panelMap.get(4L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Process Status</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(4L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Process Status</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
@@ -87,33 +117,65 @@
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Memory</div>
         </div>
         <div class="row" style="padding-bottom:0px;">
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Memory Used %</div>
+            <div th:switch="${panelMap.get(5L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(5L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Basic</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Memory Used</div>
+            <div th:switch="${panelMap.get(6L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Stack</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(6L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Stack</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Memory Free</div>
+            <div th:switch="${panelMap.get(7L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Active/Inactive</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(7L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Active/Inactive</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Swap</div>
+            <div th:switch="${panelMap.get(8L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Memory Pages In/Out</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(8L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Memory Pages In/Out</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
@@ -127,33 +189,65 @@
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Disk</div>
         </div>
         <div class="row" style="padding-bottom:0px;">
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Disk Used %</div>
+            <div th:switch="${panelMap.get(9L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used Basic</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(9L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used Basic</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Disk used space</div>
+            <div th:switch="${panelMap.get(10L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(10L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk Space Used</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Disk I/O (Read/Write byte)</div>
+            <div th:switch="${panelMap.get(11L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk I/O (Read/Write bytes)</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(11L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk I/O (Read/Write bytes)</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
-                <div class="box_panel">
-                    <div class="box_panel-heading">Disk I/O (Read/Write count)</div>
+            <div th:switch="${panelMap.get(12L).getDataType()}" class="col-xs-12 col-md-12 col-lg-3" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(12L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
@@ -168,16 +262,32 @@
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> Network</div>
         </div>
         <div class="row" style="padding-bottom:0px;">
-            <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
-                <div class="box_panel">
+            <div th:switch="${panelMap.get(13L).getDataType()}" class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(13L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
                     <div class="box_panel-heading">Network (In/Out bps)</div>
                     <div class="box_panel-body" >
                         <img th:src="@{/assets/img/chart5.jpg}" class="img-responsive" alt="" style="width:100%;">
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px;">
-                <div class="box_panel">
+            <div th:switch="${panelMap.get(14L).getDataType()}" class="col-xs-12 col-md-12 col-lg-6" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-heading">Disk IOPS</div>
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-sm">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(14L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
                     <div class="box_panel-heading">Network (In/Out bps)</div>
                     <div class="box_panel-body">
                         <img th:src="@{/assets/img/chart6.jpg}" class="img-responsive" alt="" style="width:100%; ">
@@ -193,8 +303,15 @@
             <div class="main_title col-xs-12"><i class="feather icon-chevrons-right"></i> File System</div>
         </div>
         <div class="row" >
-            <div class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
-                <div class="box_panel">
+            <div th:switch="${panelMap.get(15L).getDataType()}" class="col-xs-12 col-md-12 col-lg-12" style="padding-right:0px;">
+                <div th:case="'iframe'"  class="box_panel">
+                    <div class="box_panel-body">
+                        <div class="embed-responsive embed-responsive-16by9-xxs">
+                            <iframe class="embed-responsive-item" th:src="${panelMap.get(15L).getSrc()}" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="*" class="box_panel">
                     <div class="box_table-body">
                         <table class="list_system">
                             <thead>
@@ -419,14 +536,34 @@
                     </div>
                 </div>
             </div>
-
-
-
-
         </div>
         <!-- [EVENT] End-->
+    </div>
+    <script th:src="@{/assets/js/variables.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var templating = new Map(Object.entries([[${templating}]])),
+            optionTitle = "<option value=\"\" selected disabled hidden> -- select variable -- </option>";
+        /*]]>*/
 
+        $(function() {
+            $("select[name^='var-']").change(function () {
+                const selectId = comnJs.replace($(this).attr('id'), 'var-', '');
+
+                let edgeFields = templating.get(selectId).edgeFields;
+                if (edgeFields.length) {
+                    // template-variable 데이터 채우기
+                    for (const edgeField of edgeFields) {
+                        variablesJs.setEdgeFieldValue(selectId, edgeField);
+                    }
+                } else {
+                    // 페이지 reloading
+                    console.log("reloading!!!");
+                    variablesJs.reloadPanel()
+                }
+            });
+        });
+    </script>
 </div>
-
 </body>
 </html>

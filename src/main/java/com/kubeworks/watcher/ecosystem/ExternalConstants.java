@@ -24,6 +24,7 @@ public class ExternalConstants {
 
     public final Pattern GRAFANA_TEMPLATE_VARIABLE_PATTERN = Pattern.compile("\\$\\w+");
     public final String SUCCESS_STATUS_STR = "success";
+    public final String NONE_STR = "None";
 
     public List<String> getTemplateVariables(String query) {
         List<String> result = null;

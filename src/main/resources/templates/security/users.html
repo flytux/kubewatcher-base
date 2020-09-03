@@ -8,7 +8,21 @@
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
+    <script>
+        (function ($) {
 
+            // Call lnbUI
+            $(function () {
+
+                // $('#multi-select-box').multiselect({
+                //     buttonClass: 'btn_select2 ',
+                // });	//공통, search-area
+                $('#modal-slingle-select-box').multiselect();
+                $('#modal-multi-select-box').multiselect();
+            });
+
+        }(jQuery));
+    </script>
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>보안<i class=&quot;feather icon-chevron-right&quot; ></i>Users')"/>
     <div id="main_contents">
 
@@ -25,7 +39,8 @@
                                 <div class="modal-title_box">
                                     <div class="modal-title">
                                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <span id="myModalLabel">Group : Group 명</span>
+                                        <span id="myModalLabel">User : User 명</span>
+                                        <div class="f_r"><button class="btn btn-md btn-save">저 장</button></div>
                                     </div>
                                 </div>
                                 <div class="modal-nbody">
@@ -35,7 +50,7 @@
                                     <div class="row">
                                         <table class="table-select">
                                             <tr>
-                                                <th>사용자</th>
+                                                <th>ID</th>
                                                 <td colspan="2">testuser</td>
                                             </tr>
                                             <tr>
@@ -58,17 +73,15 @@
                                                 <th>그룹</th>
                                                 <td>Operator</td>
                                                 <td class="select"><!-- [single select box] start-->
-                                                    <div class="dropdown d_ib">
-                                                        <button class="list_btn btn_select btn-default" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                                                            그룹변경 <i class="feather icon-chevron-down form-control-feedback  search_topbar_i" ></i></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu shadow animated--grow-in" role="menu" aria-labelledby="dropdownMenu1">
-                                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Hybrid</a></li>
-                                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Cluster</a></li>
-                                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">On-premise</a></li>
-                                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Operator</a></li>
-                                                        </ul>
-                                                    </div>
+                                                    <select id="modal-slingle-select-box" >
+                                                        <option value="통합관리환경 admin">통합관리환경 admin</option>
+                                                        <option value="보험코어 monitor">보험코어 monitor</option>
+                                                        <option value="Cluster monitor">Cluster monitor</option>
+                                                        <option value="Cluster log viewer">Cluster log viewer</option>
+                                                        <option value="On-premise monitor">On-premise monitor</option>
+                                                        <option value="Cluster admin">Cluster admin</option>
+                                                        <option value="Dashboard operator">Dashboard operator</option>
+                                                    </select>
                                                     <!-- [single select box] end-->
                                                 </td>
                                             </tr>
@@ -85,10 +98,10 @@
                                         <table class="table-select">
                                             <tr>
                                                 <th>역할</th>
-                                                <td>Cluster monitor/보험코어 monitor</td>
+                                                <td>Cluster monitor <a href="#"><i class="feather icon-trash-2"></i></a> / 보험코어 monitor  <i class="feather icon-trash-2"></i></td>
                                                 <td class="select">
                                                     <!-- [multi select box] start-->
-                                                    <select class="multi-select" multiple="multiple">
+                                                    <select id="modal-multi-select-box" multiple="multiple">
                                                         <option value="통합관리환경 admin">통합관리환경 admin</option>
                                                         <option value="보험코어 monitor">보험코어 monitor</option>
                                                         <option value="Cluster monitor">Cluster monitor</option>
@@ -107,7 +120,7 @@
                                             </tr>
                                             <tr>
                                                 <th>Token</th>
-                                                <td colspan="2">******************* <i class="feather icon-lock text-warning"></i></td>
+                                                <td colspan="2">******************* <a href="#"><i class="feather icon-lock text-warning"></i></a></td>
                                             </tr>
                                             <tr>
                                                 <th>Token 만기일</th>
@@ -115,8 +128,6 @@
                                             </tr>
                                         </table>
                                     </div>
-                                    <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
-
 
                                 </div>
                             </div>
@@ -127,7 +138,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12" style="padding-right:0px;">
+        <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
@@ -212,6 +223,7 @@
         </div>
         <!-- [Groups] End-->
     </div>
+
 </div>
 </body>
 </html>
