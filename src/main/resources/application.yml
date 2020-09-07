@@ -43,8 +43,9 @@ spring:
       hibernate.format_sql: true
       hibernate.use_sql_comments: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-
-
+  h2:
+    console:
+      enabled: false
 
 management:
   endpoints:
@@ -55,7 +56,6 @@ management:
     export:
       prometheus:
         enabled: true
-
 
 application:
   properties:
