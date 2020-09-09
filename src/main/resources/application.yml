@@ -73,6 +73,13 @@ application:
       prometheus:
         url: "http://prometheus.kw-management-dev"
 
+logging:
+  file:
+    path: /home/song/dev/logs
+    name: ${logging.file.path}/kube-watcher.log
+    max-history: 10
+    max-size: 20MB
+
 ---
 spring:
   profiles: local
@@ -88,6 +95,10 @@ application:
         login-cookie-name: "grafana_session"
       prometheus:
         url: "http://10.142.11.170:30909"
+
+logging:
+  level:
+    com.squareup.okhttp3: debug
 
 ---
 spring:
