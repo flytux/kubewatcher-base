@@ -212,7 +212,7 @@
                         selector.append(cardTag + "</div>");
                     }
                     
-                    function generateChart(panelsData, isFirst) {
+                    function generateChart(panelsData, isFirst) { // isFirst 최초 차트 렌더링, 인터벌 차트 시리즈 add
                       
                     	console.log(">>>> panelsData : ", panelsData);
                     	
@@ -249,7 +249,8 @@
                                         if (isFirst){
                                         	url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
                                         } else {
-                                        	url = promUrl + prom_query + "&start=" + (timestamp - 60) + "&end=" + timestamp + "&step=15";
+                                        	url = promUrl + prom_query + "&start=" + (timestamp - 400) + "&end=" + timestamp + "&step=15"; 
+                                        	//시간 차이에 따라 차트 곡선 왜곡됨으로 조정 필요, 화면에서 인터벌 변경시 반영해야됨 
                                         }
                                         
                                         let response = fetch(url).then(response => response.json());
@@ -276,7 +277,7 @@
 	    			                                temp_value[key][1] = loads;
 	    			                                
 	    			                                times = temp_value[key][0];
-	    			                                temp_value[key][0] = times * 1000;
+	    			                                temp_value[key][0] = times * 1000; // 차트 X축 시간 표시용 
 	    			                            }
 	    			                            let newSeriesData = {
 	    			                        	   "name": series[cnt].data.result[0].metric['__name__'],
@@ -325,7 +326,7 @@
 	                                if (isFirst){
                                     	url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
                                     } else {
-                                    	url = promUrl + prom_query + "&start=" + (timestamp - 60) + "&end=" + timestamp + "&step=15";
+                                    	url = promUrl + prom_query + "&start=" + (timestamp - 400) + "&end=" + timestamp + "&step=15";
                                     }
                                     
      		                       	let response = fetch(url).then(response => response.json());
@@ -387,7 +388,7 @@
 
                     function drawChart(loads, item) {   
                     	
-                    	var chart_id = 'container-line-'+item.id;
+                    	var chart_id = 'container-line-'+item.id; //차트 ID 관리 방식 검토 
                     	
                         var chart_panel = new Highcharts.chart(chart_id, {
                             chart : {
