@@ -311,12 +311,12 @@
                                 return;
 							} // if block
                             //서브 판넬 없는 경우
-                            {                                   
-                            	var series = [];
-                            	
+                            else {  
+                               	let series = [];
+                                let promises = [];
+                                
 								item.targets.forEach(function(key) {
-	                            //console.log(">>>>> prom_query : ",key['api_query']);
-	                                //queryObj = new Array( new Array(item.targets.lenghth), new Array(item.targets.length)); 
+									
 	                            	let prom_query = key['api_query'];
 
 	                                //차트 시작
@@ -330,7 +330,6 @@
 				                                prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*");
 				                            }
 				                        }
-				                        //console.log(">>>> Prom API queris : ", query);
 				                    }                                      
 	                                let timestamp = new Date().getTime() / 1000;
 	                                let url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
@@ -338,7 +337,7 @@
 	                                
 	                                //쿼리 URL 저장
                                     queryObj[no] = [item.id, promUrl+prom_query]; no++;
-                                    
+                                    /*
        		                        fetch(url)
      		                          .then(res => {
      		                              // response 처리
@@ -348,8 +347,8 @@
      		                          })
      		                          .then(data => {
      		                             // json 출력
-     		                             //console.log(">>>>> fetch return data : ",data); 		                                 
- 		                                 console.log(">>>>> fetch return array size : ",data.data.result.length); 		                                 		                                
+     		                             // console.log(">>>>> fetch return data : ",data);
+ 		                                 // console.log(">>>>> fetch return array size : ",data.data.result.length);
  		                                 
  		                                 if (data.data.result.length > 1){
  		                                	Object.keys(data.data.result).forEach(function(key){
@@ -369,7 +368,7 @@
 	          		                            };
 	          		                            series.push(newSeriesData);    
       		                            	});  
- 		                                	drawChart(series, item);
+ 		                                	//drawChart(series, item);
  		                                 } else {
  		                                	//시리즈 데이터 표기 표준화 필요
  		                                	    var times = [];
@@ -387,16 +386,77 @@
 	          		                        	   "data": temp_value
 	          		                            };
 	          		                            series.push(newSeriesData);
-	          		                            drawChart(series, item);
+	          		                            //drawChart(series, item);
     		                             }    
- 		                                 
+ 		                                 return series;
  		                              })
+ 		                              .then(series => {
+ 		                            	 drawChart(series, item);
+									  })
      		                          .catch(err => {
      		                            // error 처리
      		                            console.log('>>>>> Fetch Error : ', err);
-     		                        });	   		                      	   		                    	
+     		                        });	//fetch
+     		                        */
+     		                       
+     		                       let response = fetch(url).then(response => response.json());
+     		                        
+     		                       promises.push(response);
+     		                       
+	                            }); //forEach 
+	                            Promise.all(promises)	
+	                            .then(series => {
+	                            	console.log(">>>>> series : ",series);
+	                            	let times = [];
+	                                let loads = [];
+	                                console.log(">>>>> series.length : ",series.length);
+	                                
+	                                for (let cnt = 0; cnt < series.length; cnt++) {
+	                                	console.log(">>>>> for each series : ", series[cnt]);
+	                                	console.log(">>>>> series.data.result[0].values : ", series[cnt].data.result[0].values);
+	                                }
+	                                
+	                            	/*
+		                            for (var key in temp_value){
+		                                loads = parseFloat(temp_value[key][1]);
+		                                temp_value[key][1] = loads;
+		                                
+		                                times = temp_value[key][0];
+		                                temp_value[key][0] = times;
+		                            }
+		                            let newSeriesData = {
+		                        	   "name": data.data.result[0].metric['__name__'],
+		                        	   "data": temp_value
+		                            };
+		                            series.push(newSeriesData);
+		                            drawChart(series, item);
+		                            */
+	                            })
+	                            .catch(function handleError(error) {
+    								console.log("Error" +error);            
+  								}); 
+	                            /*
+	                   	  	 	    let times = [];
+	                                let loads = [];
+	                                console.log(">>>>> data : ",data); 
+	                            	let temp_value = data.data.result[0].values;
+		                            for (var key in temp_value){
+		                                loads = parseFloat(temp_value[key][1]);
+		                                temp_value[key][1] = loads;
+		                                
+		                                times = temp_value[key][0];
+		                                temp_value[key][0] = times;
+		                            }
+		                            let newSeriesData = {
+		                        	   "name": data.data.result[0].metric['__name__'],
+		                        	   "data": temp_value
+		                            };
+		                            series.push(newSeriesData);
+	 		                        
+		                            drawChart(series, item); 
 	                            });
-                            }
+                                */
+                            }//else if
                         }); //panel loop
                         //console.log(">>>>> queryObj : ",queryObj)
                     }
@@ -407,39 +467,43 @@
                     	console.log(">>>>> queryObj.length : ", queryObj.length);	
                     	for (let i = 0; i < queryObj.length; i++){
                     		if (queryObj.length == serCnt) break;
-                    		console.log(">>>>> i : ", i);
+                    		
                     		let qKey = queryObj[i][0];
                     		
                     		let ch = chartObj[qKey];
+                    		//console.log(">>>>> chart : ", ch);
                     		console.log(">>>>> qKey : ", qKey);
                     		console.log(">>>>> query : ", queryObj[serCnt][0]);
-                    		
+                    		var temp_value = null;
                         	if (qKey == queryObj[serCnt][0] && ch != "undefined" ) {
                         		//쿼리 수행
                                 console.log(">>>>> ch.series.length : ", ch.series.length);
                         		for (let v=0; v < ch.series.length; v++){
-	                  				
+                                     
+                                    console.log('>>>>> serCnt : ', serCnt);    
+	                  				if (serCnt == queryObj.length) {console.log("<<<<< break <<<<<<"); break;}
+
 		                    		var storedQueryUrl = queryObj[serCnt][1];
 		                    		console.log(">>>>> storedQueryUrl : ", storedQueryUrl);
 		                        		
 			                    	let timestamp = new Date().getTime() / 1000;
 			                        let url = storedQueryUrl + "&start=" + (timestamp - 30) + "&end=" + timestamp + "&step=15";
 			                        
-			                    	fetch(url)
+			                        fetch(url)
 			                         .then(res => {
 			                            return res.json();
 			                         })
 			                         .then(data => {
 			                        	if (Array.isArray(ch.series)){	
-			                            	var temp_value = null; 
+			                            	//var temp_value = null; 
 			                         		Object.keys(data.data.result).forEach(function(oKey){
 			                         			console.log(">>>>> query result size : ", data.data.result.length);             
 			 		                            temp_value = data.data.result[oKey].values;
 			 		                            
 			  		                            for (var tKey in temp_value){
 			  		                            	
-			  	                               	var times = [];
-			                                    var loads = [];
+			  	                               		var times = [];
+			                                    	var loads = [];
 			
 			                             	   		loads = parseFloat(temp_value[tKey][1]);
 													temp_value[tKey][1] = loads;
@@ -447,31 +511,36 @@
 													times = temp_value[tKey][0];
 													temp_value[tKey][0] = times;
 			  		                            }
-			        		                    
-			        		                    ch.series[v].addPoint(temp_value[0], true, true);
-			 	                           });   
-	                         	   		//ch.series[v].addPoint(temp_value[0], true, true);
+                                                console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[v].name);
+			        		                    //ch.series[v].addPoint(temp_value[0], true, true);
+			        		                    //return temp_value[0];
+			 	                           }); //forEach
+			                         		return temp_value[0];
 	                        			} // if
+	                          		})
+	                          		.then(series => {
+	                          			ch.series[v].addPoint(series, true, true);
 	                          		})
 	                          		.catch(err => {
 	                          			// error 처리
 	                           			console.log('>>>>> Fetch Error : ', err);
 	                           		});
+			                    	//
 			                    	serCnt++;
-			                    	console.log('>>>>> serCnt : ', serCnt);
+			                    	
 	                        	} //for chart series 갯수 만큼 루프 	
                         	} else { 
                         		//serCnt++;
                         	}
-                    	} // for loop 대시보드 내 쿼리 갯수만큼 루프 
+                    	} // for loop 대시보드 내 쿼리 갯수 만큼 루프
                     	
-                    },30000);       
+                    },15000);       
 
-                    async function drawChart(loads, item) {   
+                    function drawChart(loads, item) {   
                     	
                     	var chart_id = 'container-line-'+item.id;
-                    	console.log(">>>>> Rendering chart_id : ",chart_id);
-                        var chart_panel = await new Highcharts.chart(chart_id, {
+                    	
+                        var chart_panel = new Highcharts.chart(chart_id, {
                             chart : {
                                 type : 'line',
                                 styledMode : true
@@ -498,6 +567,7 @@
                             series : loads                       
                         });   
                         chartObj[item.id] = chart_panel; //차트를 오브젝트로 저장, key = panel.id
+                        console.log(">>>>> Rendering chart_id : ",item.id);
                     }
                     
                     function getPanelRowHtml(panel, cardTag) {
