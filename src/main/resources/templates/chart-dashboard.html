@@ -80,8 +80,8 @@
                 let variableMap;
                 let dashboardUrl;
                 let promUrl;
-                let queryObj = new Object(); //쿼리 저장용 
-                let chartObj = new Object(); //차트 오브젝트 저장용
+                let chartObj = new Object(); //차트 오브젝트 보관 
+                let selectedPanels; // 선택된 판넬 보관 
                 
                 const $dashboardSelect = $('#dashboard-select'),
                     $panelSelect = $('#panel-select'),
@@ -94,8 +94,7 @@
                     console.log(">>>> Dashboard : ",$(this).val());
                     if ($(this).val() === '-1')
                         return;
-                    //chartObj = null;
-					queryObj = null;
+                    
                     $.get("/prom/chart/" + $(this).val())
                         .done(function (data) {
                             $dashboardDataArea.text(JSON.stringify(data, null, '  '));
@@ -112,6 +111,7 @@
                             promUrl = data.meta.prom_host;
                             $panelSelect.empty();
                             let panels = data.dashboard.panels;
+                            selectedPanels = panels;
                             let templating = data.dashboard.templating;
 
                             panelQueryMap.clear();
@@ -120,7 +120,7 @@
                             generateVariable($inputArea, templating);                                   //input-area select-box list
                             generatePanelList($panelSelect, panels);                                    //panel select-box list
                             generatePanel($panelArea, data.meta.host + data.meta.panel_url, panels);    //data panel list
-                            generateChart(data.meta.host + data.meta.panel_url, panels);
+                            generateChart(panels, true); // 차트 동적 생성 
                         });
 
                     function generateVariable(selector, templateVariable) {
@@ -212,11 +212,10 @@
                         selector.append(cardTag + "</div>");
                     }
                     
-                    function generateChart(panelUrl, panelsData) {
+                    function generateChart(panelsData, isFirst) {
                       
                     	console.log(">>>> panelsData : ", panelsData);
-                    	var no = 0;
-                    	queryObj = new Array( new Array()); //new Object();
+                    	
                         panelsData.forEach(function (item) {
                         	
                             if (Array.isArray(item.panels)) {
@@ -226,7 +225,8 @@
                                     //console.log(">>>>> panelsData > subItem : ", subItem);
                                     //console.log(">>>>> subItem size :", subItem.targets.length);
                                     
-                                    var series = [];
+                                    let chartSeries = [];
+                                    let promises = [];
                                     subItem.targets.forEach(function(key) {  //single query or multi query
                                     
                                     	//console.log(">>>>> prom_query : ",key['api_query']);
@@ -245,74 +245,63 @@
 				                            //console.log(">>>> Prom API queris : ", query);
 				                        }                                      
                                         let timestamp = new Date().getTime() / 1000;
-                                        let url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
-                                        //console.log(">>>>> URL : ",url);
+                                        let url;
+                                        if (isFirst){
+                                        	url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
+                                        } else {
+                                        	url = promUrl + prom_query + "&start=" + (timestamp - 60) + "&end=" + timestamp + "&step=15";
+                                        }
                                         
-                                        //쿼리 URL 저장
-                                        queryObj[no] = [subItem.id, promUrl+prom_query]; no++;
-           		                        fetch(url)
-           		                          .then(res => {
-           		                              // response 처리
-           		                             //console.log(">>>>> fetch res : ",res);
-           		                             // 응답을 JSON 형태로 파싱
-           		                             return res.json();
-           		                          })
-           		                          .then(data => {
-           		                             // json 출력
-           		                             //console.log(">>>>> fetch return data : ",data);
-           		                             //console.log(">>>>> fetch return array size (Upper) : ",data.data.result.length);
-           		                             if (data.data.result.length > 1){ // multi data
-           		                            	
-           		                            	Object.keys(data.data.result).forEach(function(key){
-           		                            		var times = [];
-                                                    var loads = [];
-               		                            	var temp_value = data.data.result[key].values;
-    	          		                            for (var key in temp_value){
-    	          		                                loads = parseFloat(temp_value[key][1]);
-    	          		                                temp_value[key][1] = loads;
-    	          		                                
-    	          		                                times = temp_value[key][0];
-    	          		                                temp_value[key][0] = times;
-    	          		                            }
-    	          		                            var newSeriesData = {
-    	          		                        	   "name": data.data.result[0].metric['__name__'],
-    	          		                        	   "data": temp_value
-    	          		                            };
-    	          		                            series.push(newSeriesData);    
-           		                            	}); 
-           		                            	drawChart(series, subItem);
-           		                             } else {
-           		                            	var times = [];
-                                                var loads = [];
-           		                            	var temp_value = data.data.result[0].values;
-	          		                            for (var key in temp_value){
-	          		                                loads = parseFloat(temp_value[key][1]);
-	          		                                temp_value[key][1] = loads;
-	          		                                
-	          		                                times = temp_value[key][0];
-	          		                                temp_value[key][0] = times;
-	          		                            }
-	          		                            var newSeriesData = {
-	          		                        	   "name": data.data.result[0].metric['__name__'],
-	          		                        	   "data": temp_value
-	          		                            };
-	          		                            series.push(newSeriesData);
-	          		                            drawChart(series, subItem);	 
-           		                             }     
-           		                          })
-           		                          .catch(err => {
-           		                            // error 처리
-           		                            console.log('>>>>> Fetch Error : ', err);
-           		                        });    
-           		                         
-                                    }); //subItem loop
+                                        let response = fetch(url).then(response => response.json());
+         		                        
+         		                       	promises.push(response);
+                                    });
                                     
+                                    Promise.all(promises)	
+    	                            .then(series => {
+    	                            	//console.log(">>>>> series : ",series);
+    	                            	let chartSeries = [];
+    	                            	let times = [];
+    	                                let loads = [];
+    	                                //console.log(">>>>> series.length : ",series.length);
+    	                                
+    	                                for (let cnt = 0; cnt < series.length; cnt++) {
+    	                                	//console.log(">>>>> for each series : ", series[cnt]);
+    	                                	//console.log(">>>>> series.data.result[0].values : ", series[cnt].data.result[0].values);
+    	                                	if (series[cnt].data.result.length != 0){
+	    	                                	let temp_value = series[cnt].data.result[0].values;
+	    	                                	
+	    	                                	for (var key in temp_value){
+	    			                                loads = parseFloat(temp_value[key][1]);
+	    			                                temp_value[key][1] = loads;
+	    			                                
+	    			                                times = temp_value[key][0];
+	    			                                temp_value[key][0] = times * 1000;
+	    			                            }
+	    			                            let newSeriesData = {
+	    			                        	   "name": series[cnt].data.result[0].metric['__name__'],
+	    			                        	   "data": temp_value
+	    			                            };
+	    			                            chartSeries.push(newSeriesData);
+	    			                            if (isFirst) {
+	    			                            	drawChart(chartSeries, subItem);
+	    			                            } else {
+	    			                            	let ch = chartObj[subItem.id];
+	    			                            	console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[cnt].name);
+	    			                            	ch.series[cnt].addPoint(temp_value[0], true, true);
+	    			                            }
+    	                                	}    
+    	                                }
+    	                                
+    	                            })
+    	                            .catch(function handleError(error) {
+        								console.log("Error1 : " +error);            
+      								});
+         		                       
                                 }); //item loop
-                                return;
-							} // if block
-                            //서브 판넬 없는 경우
-                            else {  
-                               	let series = [];
+                                //return;
+							} else {   //서브 판넬 없는 경우
+                               	
                                 let promises = [];
                                 
 								item.targets.forEach(function(key) {
@@ -332,209 +321,69 @@
 				                        }
 				                    }                                      
 	                                let timestamp = new Date().getTime() / 1000;
-	                                let url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
-	                                //var series = [];
-	                                
-	                                //쿼리 URL 저장
-                                    queryObj[no] = [item.id, promUrl+prom_query]; no++;
-                                    /*
-       		                        fetch(url)
-     		                          .then(res => {
-     		                              // response 처리
-     		                             //console.log(">>>>> fetch res : ",res);
-     		                             // 응답을 JSON 형태로 파싱
-     		                             return res.json();
-     		                          })
-     		                          .then(data => {
-     		                             // json 출력
-     		                             // console.log(">>>>> fetch return data : ",data);
- 		                                 // console.log(">>>>> fetch return array size : ",data.data.result.length);
- 		                                 
- 		                                 if (data.data.result.length > 1){
- 		                                	Object.keys(data.data.result).forEach(function(key){
- 		                                		var times = [];
-                                                var loads = [];
-           		                            	var temp_value = data.data.result[key].values;
-	          		                            for (var key in temp_value){
-	          		                                loads = parseFloat(temp_value[key][1]);
-	          		                                temp_value[key][1] = loads;
-	          		                                
-	          		                                times = temp_value[key][0];
-	          		                                temp_value[key][0] = times;
-	          		                            }
-	          		                            var newSeriesData = {
-	          		                        	   "name": data.data.result[0].metric['__name__'],
-	          		                        	   "data": temp_value
-	          		                            };
-	          		                            series.push(newSeriesData);    
-      		                            	});  
- 		                                	//drawChart(series, item);
- 		                                 } else {
- 		                                	//시리즈 데이터 표기 표준화 필요
- 		                                	    var times = [];
-                                                var loads = [];
-           		                            	var temp_value = data.data.result[0].values;
-	          		                            for (var key in temp_value){
-	          		                                loads = parseFloat(temp_value[key][1]);
-	          		                                temp_value[key][1] = loads;
-	          		                                
-	          		                                times = temp_value[key][0];
-	          		                                temp_value[key][0] = times;
-	          		                            }
-	          		                            var newSeriesData = {
-	          		                        	   "name": data.data.result[0].metric['__name__'],
-	          		                        	   "data": temp_value
-	          		                            };
-	          		                            series.push(newSeriesData);
-	          		                            //drawChart(series, item);
-    		                             }    
- 		                                 return series;
- 		                              })
- 		                              .then(series => {
- 		                            	 drawChart(series, item);
-									  })
-     		                          .catch(err => {
-     		                            // error 처리
-     		                            console.log('>>>>> Fetch Error : ', err);
-     		                        });	//fetch
-     		                        */
-     		                       
-     		                       let response = fetch(url).then(response => response.json());
+	                                let url;
+	                                if (isFirst){
+                                    	url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
+                                    } else {
+                                    	url = promUrl + prom_query + "&start=" + (timestamp - 60) + "&end=" + timestamp + "&step=15";
+                                    }
+                                    
+     		                       	let response = fetch(url).then(response => response.json());
      		                        
-     		                       promises.push(response);
+     		                       	promises.push(response);
      		                       
 	                            }); //forEach 
+	                            
 	                            Promise.all(promises)	
 	                            .then(series => {
-	                            	console.log(">>>>> series : ",series);
+	                            	//console.log(">>>>> series : ",series);
+	                            	let chartSeries = [];
 	                            	let times = [];
 	                                let loads = [];
-	                                console.log(">>>>> series.length : ",series.length);
+	                                //console.log(">>>>> series.length : ",series.length);
 	                                
 	                                for (let cnt = 0; cnt < series.length; cnt++) {
-	                                	console.log(">>>>> for each series : ", series[cnt]);
-	                                	console.log(">>>>> series.data.result[0].values : ", series[cnt].data.result[0].values);
+	                                	//console.log(">>>>> for each series : ", series[cnt]);
+	                                	//console.log(">>>>> series.data.result[0].values : ", series[cnt].data.result[0].values);
+	                                	if (series[cnt].data.result.length != 0){
+		                                	let temp_value = series[cnt].data.result[0].values;
+		                                	
+		                                	for (var key in temp_value){
+				                                loads = parseFloat(temp_value[key][1]);
+				                                temp_value[key][1] = loads;
+				                                
+				                                times = temp_value[key][0];
+				                                temp_value[key][0] = times * 1000;
+				                            }
+				                            let newSeriesData = {
+				                        	   "name": series[cnt].data.result[0].metric['__name__'],
+				                        	   "data": temp_value
+				                            };
+				                            chartSeries.push(newSeriesData);
+				                            
+    			                            if (isFirst) {
+    			                            	drawChart(chartSeries, item);
+    			                            } else {
+    			                            	let ch = chartObj[item.id];
+    			                            	console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[cnt].name);
+    			                            	ch.series[cnt].addPoint(temp_value[0], true, true);
+    			                            }
+	                                	}    
 	                                }
 	                                
-	                            	/*
-		                            for (var key in temp_value){
-		                                loads = parseFloat(temp_value[key][1]);
-		                                temp_value[key][1] = loads;
-		                                
-		                                times = temp_value[key][0];
-		                                temp_value[key][0] = times;
-		                            }
-		                            let newSeriesData = {
-		                        	   "name": data.data.result[0].metric['__name__'],
-		                        	   "data": temp_value
-		                            };
-		                            series.push(newSeriesData);
-		                            drawChart(series, item);
-		                            */
 	                            })
 	                            .catch(function handleError(error) {
-    								console.log("Error" +error);            
+    								console.log("Error2 : " +error);            
   								}); 
-	                            /*
-	                   	  	 	    let times = [];
-	                                let loads = [];
-	                                console.log(">>>>> data : ",data); 
-	                            	let temp_value = data.data.result[0].values;
-		                            for (var key in temp_value){
-		                                loads = parseFloat(temp_value[key][1]);
-		                                temp_value[key][1] = loads;
-		                                
-		                                times = temp_value[key][0];
-		                                temp_value[key][0] = times;
-		                            }
-		                            let newSeriesData = {
-		                        	   "name": data.data.result[0].metric['__name__'],
-		                        	   "data": temp_value
-		                            };
-		                            series.push(newSeriesData);
-	 		                        
-		                            drawChart(series, item); 
-	                            });
-                                */
                             }//else if
                         }); //panel loop
-                        //console.log(">>>>> queryObj : ",queryObj)
                     }
                    
                     setInterval(function(){
-                    	let serCnt = 0;
-                    	//for(var qKey in queryObj){
-                    	console.log(">>>>> queryObj.length : ", queryObj.length);	
-                    	for (let i = 0; i < queryObj.length; i++){
-                    		if (queryObj.length == serCnt) break;
-                    		
-                    		let qKey = queryObj[i][0];
-                    		
-                    		let ch = chartObj[qKey];
-                    		//console.log(">>>>> chart : ", ch);
-                    		console.log(">>>>> qKey : ", qKey);
-                    		console.log(">>>>> query : ", queryObj[serCnt][0]);
-                    		var temp_value = null;
-                        	if (qKey == queryObj[serCnt][0] && ch != "undefined" ) {
-                        		//쿼리 수행
-                                console.log(">>>>> ch.series.length : ", ch.series.length);
-                        		for (let v=0; v < ch.series.length; v++){
-                                     
-                                    console.log('>>>>> serCnt : ', serCnt);    
-	                  				if (serCnt == queryObj.length) {console.log("<<<<< break <<<<<<"); break;}
-
-		                    		var storedQueryUrl = queryObj[serCnt][1];
-		                    		console.log(">>>>> storedQueryUrl : ", storedQueryUrl);
-		                        		
-			                    	let timestamp = new Date().getTime() / 1000;
-			                        let url = storedQueryUrl + "&start=" + (timestamp - 30) + "&end=" + timestamp + "&step=15";
-			                        
-			                        fetch(url)
-			                         .then(res => {
-			                            return res.json();
-			                         })
-			                         .then(data => {
-			                        	if (Array.isArray(ch.series)){	
-			                            	//var temp_value = null; 
-			                         		Object.keys(data.data.result).forEach(function(oKey){
-			                         			console.log(">>>>> query result size : ", data.data.result.length);             
-			 		                            temp_value = data.data.result[oKey].values;
-			 		                            
-			  		                            for (var tKey in temp_value){
-			  		                            	
-			  	                               		var times = [];
-			                                    	var loads = [];
-			
-			                             	   		loads = parseFloat(temp_value[tKey][1]);
-													temp_value[tKey][1] = loads;
-													
-													times = temp_value[tKey][0];
-													temp_value[tKey][0] = times;
-			  		                            }
-                                                console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[v].name);
-			        		                    //ch.series[v].addPoint(temp_value[0], true, true);
-			        		                    //return temp_value[0];
-			 	                           }); //forEach
-			                         		return temp_value[0];
-	                        			} // if
-	                          		})
-	                          		.then(series => {
-	                          			ch.series[v].addPoint(series, true, true);
-	                          		})
-	                          		.catch(err => {
-	                          			// error 처리
-	                           			console.log('>>>>> Fetch Error : ', err);
-	                           		});
-			                    	//
-			                    	serCnt++;
-			                    	
-	                        	} //for chart series 갯수 만큼 루프 	
-                        	} else { 
-                        		//serCnt++;
-                        	}
-                    	} // for loop 대시보드 내 쿼리 갯수 만큼 루프
                     	
-                    },15000);       
+                    	generateChart(selectedPanels, false);
+                    
+                    },10000);       
 
                     function drawChart(loads, item) {   
                     	
