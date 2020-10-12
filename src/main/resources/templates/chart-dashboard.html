@@ -214,7 +214,7 @@
                     
                     function generateChart(panelsData, isFirst) { // isFirst 최초 차트 렌더링, 인터벌 차트 시리즈 add
                       
-                    	console.log(">>>> panelsData : ", panelsData);
+                    	//console.log(">>>> panelsData : ", panelsData);
                     	
                         panelsData.forEach(function (item) {
                         	
@@ -237,22 +237,25 @@
 				                            for (let variable of queryVariables) {
 				                                const $thisSelector = $('#var-' + variable.replace("$", ""));
 				                                if ($thisSelector.val() !== undefined && $thisSelector.val() !== null) {
+                                                    if ($thisSelector.val() == "All") {
+                                                        prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*"); // 쿼리 스트링 값 변경 'All' --> '.*'
+                                                    }
 				                                    prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), $thisSelector.val());
 				                                } else {
 				                                    prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*");
 				                                }
 				                            }
-				                            //console.log(">>>> Prom API queris : ", query);
+				                            //console.log(">>>>> Prom API query : ", query);
 				                        }                                      
                                         let timestamp = new Date().getTime() / 1000;
                                         let url;
                                         if (isFirst){
-                                        	url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
+                                        	url = promUrl + prom_query + "&start=" + (timestamp - 1000) + "&end=" + timestamp + "&step=15";
                                         } else {
-                                        	url = promUrl + prom_query + "&start=" + (timestamp - 400) + "&end=" + timestamp + "&step=15"; 
+                                        	url = promUrl + prom_query + "&start=" + (timestamp - 500) + "&end=" + timestamp + "&step=15";
                                         	//시간 차이에 따라 차트 곡선 왜곡됨으로 조정 필요, 화면에서 인터벌 변경시 반영해야됨 
                                         }
-                                        
+                                        url= url.replace(/\+/g,"%2B"); // GET 방식 쿼리스트링 중 '+' 특수문자 변환
                                         let response = fetch(url).then(response => response.json());
          		                        
          		                       	promises.push(response);
@@ -269,32 +272,40 @@
     	                                for (let cnt = 0; cnt < series.length; cnt++) {
     	                                	//console.log(">>>>> for each series : ", series[cnt]);
     	                                	//console.log(">>>>> series.data.result[0].values : ", series[cnt].data.result[0].values);
-    	                                	if (series[cnt].data.result.length != 0){
-	    	                                	let temp_value = series[cnt].data.result[0].values;
-	    	                                	
-	    	                                	for (var key in temp_value){
-	    			                                loads = parseFloat(temp_value[key][1]);
-	    			                                temp_value[key][1] = loads;
-	    			                                
-	    			                                times = temp_value[key][0];
-	    			                                temp_value[key][0] = times * 1000; // 차트 X축 시간 표시용 
-	    			                            }
-	    			                            let newSeriesData = {
-	    			                        	   "name": series[cnt].data.result[0].metric['__name__'],
-	    			                        	   "data": temp_value
-	    			                            };
-	    			                            chartSeries.push(newSeriesData);
-	    			                            if (isFirst) {
-	    			                            	drawChart(chartSeries, subItem);
-	    			                            } else {
-	    			                            	let ch = chartObj[subItem.id];
-	    			                            	console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[cnt].name);
-	    			                            	ch.series[cnt].addPoint(temp_value[0], true, true);
-	    			                            }
-    	                                	}    
+    	                                	if (series[cnt].data.result.length > 0){
+                                                for (let resultCnt = 0; resultCnt < series[cnt].data.result.length ;resultCnt++ ){
+                                                    let temp_value = series[cnt].data.result[resultCnt].values;
+
+                                                    for (var key in temp_value){
+                                                        loads = parseFloat(temp_value[key][1]);
+                                                        temp_value[key][1] = loads;
+
+                                                        times = temp_value[key][0];
+                                                        temp_value[key][0] = times * 1000; // 차트 X축 시간 표시용
+                                                    }
+                                                    let newSeriesData = {
+                                                       "name": series[cnt].data.result[resultCnt].metric['__name__'],
+                                                       "data": temp_value
+                                                    };
+                                                    chartSeries.push(newSeriesData);
+                                                }
+    	                                	} else { //쿼리 결과 0인 경우
+                                            }
     	                                }
-    	                                
+                                        return chartSeries;
     	                            })
+                                    .then(chartSeries => {
+                                        // 최초 화면 오픈시 쿼리 결과 없고, 이후 쿼리 결과 나오는 경우 대비 해야됨
+                                        if (isFirst) {
+                                            drawChart(chartSeries, subItem);
+                                        } else {
+                                            let ch = chartObj[subItem.id];
+                                            for (let chartSeriesCnt = 0 ; chartSeriesCnt < chartSeries.length ; chartSeriesCnt++){
+                                                ch.series[chartSeriesCnt].addPoint(chartSeries[chartSeriesCnt].data[1], true, true);
+                                                console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[chartSeriesCnt].name);
+                                            }
+                                        }
+                                    })
     	                            .catch(function handleError(error) {
         								console.log("Error1 : " +error);            
       								});
@@ -315,20 +326,25 @@
 				                        for (let variable of queryVariables) {
 				                            const $thisSelector = $('#var-' + variable.replace("$", ""));
 				                            if ($thisSelector.val() !== undefined && $thisSelector.val() !== null) {
+                                                if ($thisSelector.val() == "All") {
+                                                    prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*"); // 쿼리 스트링 값 변경 'All' --> '.*'
+                                                }
 				                                prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), $thisSelector.val());
 				                            } else {
 				                                prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*");
 				                            }
 				                        }
-				                    }                                      
+				                    }
+
 	                                let timestamp = new Date().getTime() / 1000;
 	                                let url;
 	                                if (isFirst){
-                                    	url = promUrl + prom_query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
+                                    	url = promUrl + prom_query + "&start=" + (timestamp - 1000) + "&end=" + timestamp + "&step=20";
                                     } else {
-                                    	url = promUrl + prom_query + "&start=" + (timestamp - 400) + "&end=" + timestamp + "&step=15";
+                                    	url = promUrl + prom_query + "&start=" + (timestamp - 500) + "&end=" + timestamp + "&step=20";
                                     }
-                                    
+                                    url= url.replace(/\+/g,"%2B"); // GET 방식 쿼리스트링 중 '+' 특수문자 변환
+                                    //console.log(">>>>> Prom API query url : ", url);
      		                       	let response = fetch(url).then(response => response.json());
      		                        
      		                       	promises.push(response);
@@ -342,37 +358,49 @@
 	                            	let times = [];
 	                                let loads = [];
 	                                //console.log(">>>>> series.length : ",series.length);
-	                                
+
 	                                for (let cnt = 0; cnt < series.length; cnt++) {
 	                                	//console.log(">>>>> for each series : ", series[cnt]);
-	                                	//console.log(">>>>> series.data.result[0].values : ", series[cnt].data.result[0].values);
-	                                	if (series[cnt].data.result.length != 0){
-		                                	let temp_value = series[cnt].data.result[0].values;
-		                                	
-		                                	for (var key in temp_value){
-				                                loads = parseFloat(temp_value[key][1]);
-				                                temp_value[key][1] = loads;
-				                                
-				                                times = temp_value[key][0];
-				                                temp_value[key][0] = times * 1000;
-				                            }
-				                            let newSeriesData = {
-				                        	   "name": series[cnt].data.result[0].metric['__name__'],
-				                        	   "data": temp_value
-				                            };
-				                            chartSeries.push(newSeriesData);
-				                            
-    			                            if (isFirst) {
-    			                            	drawChart(chartSeries, item);
-    			                            } else {
-    			                            	let ch = chartObj[item.id];
-    			                            	console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[cnt].name);
-    			                            	ch.series[cnt].addPoint(temp_value[0], true, true);
-    			                            }
-	                                	}    
+	                                	//쿼리 결과 n개 오는 경우 처리
+	                                	if (series[cnt].data.result.length > 0){
+                                            //console.log(">>>>> series.data.result.length : ", series[cnt].data.result.length);
+                                            // 1개 쿼리에 Result n 개인 경우
+		                                	for (let resultCnt = 0; resultCnt < series[cnt].data.result.length ;resultCnt++ ) {
+                                                //console.log(">>>>> series.data.result["+resultCnt+"].values : ", series[cnt].data.result[resultCnt].values);
+                                                let temp_value = series[cnt].data.result[resultCnt].values;
+                                                for (var key in temp_value) {
+                                                    loads = parseFloat(temp_value[key][1]);
+                                                    temp_value[key][1] = loads;
+
+                                                    times = temp_value[key][0];
+                                                    temp_value[key][0] = times * 1000;
+                                                }
+                                                let newSeriesData = { //
+                                                    "name": series[cnt].data.result[resultCnt].metric['__name__'],
+                                                    "data": temp_value
+                                                };
+                                                chartSeries.push(newSeriesData);
+                                            }
+	                                	} else { // 쿼리 결과 0개인 경우
+
+                                        }
 	                                }
-	                                
+                                    return chartSeries;
 	                            })
+                                .then(chartSeries => { // 속도 고려 ... 분리
+                                    // 최초 화면 오픈시 쿼리 결과 없고, 이후 쿼리 결과 나오는 경우 대비 해야됨
+                                    if (isFirst) {
+                                        drawChart(chartSeries, item);
+                                    } else {
+                                        //console.log(">>>>> chartSeries : ", chartSeries);
+                                        //console.log(">>>>> chartSeries count : ", chartSeries.length);
+                                        let ch = chartObj[item.id];
+                                        for (let chartSeriesCnt = 0 ; chartSeriesCnt < chartSeries.length ; chartSeriesCnt++){
+                                            ch.series[chartSeriesCnt].addPoint(chartSeries[chartSeriesCnt].data[1], true, true);
+                                            console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[chartSeriesCnt].name);
+                                        }
+                                    }
+                                })
 	                            .catch(function handleError(error) {
     								console.log("Error2 : " +error);            
   								}); 
@@ -384,7 +412,7 @@
                     	
                     	generateChart(selectedPanels, false);
                     
-                    },10000);       
+                    },10000);
 
                     function drawChart(loads, item) {   
                     	
