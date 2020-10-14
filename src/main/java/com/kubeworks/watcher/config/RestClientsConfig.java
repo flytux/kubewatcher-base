@@ -5,12 +5,16 @@ import com.kubeworks.watcher.config.properties.GrafanaProperties;
 import feign.RequestInterceptor;
 import feign.codec.Decoder;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.AIMDBackoffManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultBackoffStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
@@ -41,13 +45,18 @@ public class RestClientsConfig {
         };
     }
 
+    @SneakyThrows
     @Bean(destroyMethod = "close")
     public CloseableHttpClient httpClient() {
         PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
         connManager.setMaxTotal(100);
         connManager.setDefaultMaxPerRoute(50);
-        return HttpClientBuilder.create()
+//        return HttpClientBuilder.create()
+        return HttpClients.custom()
             .setConnectionManager(connManager)
+            .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+            .setSSLContext(SSLContextBuilder.create()
+                .loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
             .setBackoffManager(new AIMDBackoffManager(connManager))
             .setConnectionBackoffStrategy(new DefaultBackoffStrategy())
             .build();

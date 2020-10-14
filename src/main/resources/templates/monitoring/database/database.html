@@ -11,10 +11,10 @@
 
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Database')"/>
     <div id="main_contents">
-        <div class="row">
+        <div th:if="${defaultVariable!= null}" class="row">
             <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 보험코어 데이터베이스</div>
         </div>
-        <div th:if="${defaultVariable?.values.size() > 1}"
+        <div th:if="${defaultVariable!= null && defaultVariable?.values.size() > 1}"
              th:with="colDivide=${12 / defaultVariable?.values.size()}"
              class="row">
             <div th:each="item,index : ${defaultVariable?.values}"
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" th:if="${defaultVariable?.values.size() == 1}"
+        <div class="row" th:if="${defaultVariable!= null && defaultVariable?.values.size() == 1}"
              th:with="variable=${'&var-' + defaultVariable.getName() + '=' + defaultVariable.getValues().get(0).split(':')[0]}">
             <div th:switch="${@proxyApiService.singleValueByQuery(#strings.replace(nodePanelMap.get(1L).getSrc(), '$' + defaultVariable.getName(), defaultVariable.getValues().get(0).split(':')[0]))}" class="col-lg-3">
                 <div class="box_normal">
@@ -128,10 +128,10 @@
             <div class="row">
                 <div class="main_title">
                     <div id="namespace" class="d-inline"
-                         th:utext="|<i class='feather icon-chevrons-right'></i> 보험코어 데이터베이스 Status [${defaultVariable?.values?.get(0)}]|">
+                         th:utext="|<i class='feather icon-chevrons-right'></i> 보험코어 데이터베이스 Status ${defaultVariable?.values?.get(0) != null ? '[' + defaultVariable?.values?.get(0) + ']' : ''}|">
                         보험코어 데이터베이스 Status
                     </div>
-                    <div class="f_r">
+                    <div th:if="${defaultVariable != null}" class="f_r">
                         <div th:each="template : ${templating.values()}" class="dropdown d_ib">
                             <select th:name="|var-${template?.name}|" th:id="|var-${template?.name}|"
                                     th:disabled="${template?.values == null ? 'true' : 'false'}" class="custom-select">

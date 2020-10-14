@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/monitoring/application/topologies").setViewName("monitoring/application/topologies");
         /*      > cluster (1) */
         registry.addViewController("/monitoring/cluster/overview").setViewName("monitoring/cluster/overview");
-        registry.addViewController("/monitoring/cluster/nodes").setViewName("monitoring/cluster/nodes");
+//        registry.addViewController("/monitoring/cluster/nodes").setViewName("monitoring/cluster/nodes");
         /*         >> workloads */
         registry.addViewController("/monitoring/cluster/workloads/overview").setViewName("monitoring/cluster/workloads/workloads");
         registry.addViewController("/monitoring/cluster/workloads/pods").setViewName("monitoring/cluster/workloads/pods");
@@ -86,5 +86,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /*      > alarm */
         registry.addViewController("/setting/alarm/list").setViewName("setting/alarm/setting-alarm-list");
         registry.addViewController("/setting/preference").setViewName("setting/preference/preference");
+
+        /* ncp계정관리 */
+        registry.addViewController("/ncp/audit").setViewName("ncp/audit");
+        registry.addViewController("/ncp/authorization").setViewName("ncp/authorization");
+        registry.addViewController("/ncp/groups").setViewName("ncp/groups");
+        registry.addViewController("/ncp/policies").setViewName("ncp/policies");
+        registry.addViewController("/ncp/roles").setViewName("ncp/roles");
+        registry.addViewController("/ncp/users").setViewName("ncp/users");
+
     }
 }

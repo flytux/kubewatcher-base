@@ -42,280 +42,27 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr th:if="${#arrays.isEmpty(nodes)}">
+                            <td colspan="8" class="text-center">No results</td>
+                        </tr>
+                        <tr th:if="${nodes}" th:each="node : ${nodes}">
+                            <td>
+                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${node?.name} + '&quot;)'"
+                                   th:utext="${node?.name}">Name</a>
+                            </td>
+                            <td th:text="|TO-DO %|">CPU</td>
+                            <td th:text="|TO-DO %|">Memory</td>
+                            <td th:text="|TO-DO %|">Disk</td>
+                            <td th:text="${node?.roles}">Role</td>
+                            <td th:text="${node?.version}">Version</td>
+                            <td th:text="${node?.age}">Age</td>
+                            <td >
+                                <span th:class="${#strings.contains(node?.status, 'Ready') ? 'madal_label_active' : 'madal_label_warning'}"
+                                      th:text="${node?.status}">UP</span>
+                            </td>
+                        </tr>
                         <tr>
                             <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">XXX [신계약]</a>
-
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">Node : XXX [신계약]</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody row_scroll">
-                                                <div class="table-title">
-                                                    Overview
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-md-3 col-lg-3">
-                                                        <div class="box_panel">
-                                                            <div class="box_panel-heading_madal">CPU</div>
-                                                            <div class="box_panel-text">
-                                                                <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".2" data-fgcolor="#a4df5d"  data-bgcolor="#eeeeee"  value="58" style="">
-                                                            </div>
-                                                            <table class="mini-table ">
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Cpapcity</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Request</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Usage</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Limit</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100</td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-3 col-lg-3">
-                                                        <div class="box_panel">
-                                                            <div class="box_panel-heading_madal">Memory</div>
-                                                            <div class="box_panel-text">
-                                                                <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".2" data-fgcolor="#37d8ae"  data-bgcolor="#eeeeee"  value="38" style="">
-                                                            </div>
-                                                            <table class="mini-table ">
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Cpapcity</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Request</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Usage</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Limit</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100</td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-3 col-lg-3">
-                                                        <div class="box_panel">
-                                                            <div class="box_panel-heading_madal">Disk</div>
-                                                            <div class="box_panel-text">
-                                                                <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".2" data-fgcolor="#50bee3"  data-bgcolor="#eeeeee"  value="77" style="">
-                                                            </div>
-                                                            <table class="mini-table ">
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Cpapcity</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Request</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Usage</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Limit</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100</td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-3 col-lg-3">
-                                                        <div class="box_panel">
-                                                            <div class="box_panel-heading_madal">POD</div>
-                                                            <div class="box_panel-text">
-                                                                <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".2" data-fgcolor="#5da2e5"  data-bgcolor="#eeeeee"  value="61" style="">
-                                                            </div>
-                                                            <table class="mini-table ">
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Cpapcity</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Request</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Usage</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><div class="circle_ss"></div>Limit</td>
-                                                                    <td>0,000Mi</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colspan="2" class="g">000%=Usage/Capacity*100</td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <table class="table-nt">
-                                                        <tr>
-                                                            <th>Ctrated</th>
-                                                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Name</th>
-                                                            <td>Event ID</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Namespace</th>
-                                                            <td>default</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Message</th>
-                                                            <td>Error creating///</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Reason</th>
-                                                            <td>Unhealthy</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Source</th>
-                                                            <td>kublet</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>First seen</th>
-                                                            <td>00d ago(2020-05-20 15:23:11)</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Last seen</th>
-                                                            <td>00d ago(2020-05-20 15:23:11)</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Count</th>
-                                                            <td>000</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Type</th>
-                                                            <td>Warning</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <div class="table-title">
-                                                    Pods
-                                                </div>
-                                                <table class="list_mtable_100">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Namespace</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>Pod name</td>
-                                                        <td>xxx</td>
-                                                        <td>Running/Terminating/CrashLoopBack/...</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Pod name</td>
-                                                        <td>xxx</td>
-                                                        <td>Running/Terminating/CrashLoopBack/...</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Pod name</td>
-                                                        <td>xxx</td>
-                                                        <td>Running/Terminating/CrashLoopBack/...</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Pod name</td>
-                                                        <td>xxx</td>
-                                                        <td>Running/Terminating/CrashLoopBack/...</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Pod name</td>
-                                                        <td>xxx</td>
-                                                        <td>Running/Terminating/CrashLoopBack/...</td>
-                                                    </tr>
-                                                    <tbody>
-                                                </table>
-                                                <div class="table-title">
-                                                    Events
-                                                </div>
-                                                <table class="list_mtable_100">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Event</th>
-                                                        <th>Source</th>
-                                                        <th>Count</th>
-                                                        <th>Sub-Object</th>
-                                                        <th>Last</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tbody>
-                                                </table>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End -->
                             </td>
                             <td>
                                 <div class="col-xs-12 box_chart mb_0 pb_0">
@@ -335,191 +82,444 @@
                             <td>Master/Worker</td>
                             <td>V0.0</td>
                             <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span> </td>
+                            <td><span class="madal_label_active">UP</span></td>
                         </tr>
-                        <tr>
-                            <td>XXX [신계약]</td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_false">DOWN</span> </td>
-                        </tr>
-                        <tr>
-                            <td>XXX [신계약]</td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span> </td>
-                        </tr>
-                        <tr>
-                            <td>XXX [신계약]</td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span> </td>
-                        </tr>
-                        <tr>
-                            <td>XXX [신계약]</td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_false">DOWN</span> </td>
-                        </tr>
-                        <tr>
-                            <td>XXX [신계약]</td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span> </td>
-                        </tr>
-                        <tr>
-                            <td>XXX [신계약]</td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span> </td>
-                        </tr>
-                        <tr>
-                            <td>XXX [신계약]</td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_false">DOWN</span> </td>
-                        </tr>
-                        <tr>
-                            <td>XXX [신계약]</td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span> </td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td>XXX [신계약]</td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>Master/Worker</td>-->
+<!--                            <td>V0.0</td>-->
+<!--                            <td>99d24h</td>-->
+<!--                            <td><span class="madal_label_false">DOWN</span> </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>XXX [신계약]</td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>Master/Worker</td>-->
+<!--                            <td>V0.0</td>-->
+<!--                            <td>99d24h</td>-->
+<!--                            <td><span class="madal_label_active">UP</span> </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>XXX [신계약]</td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>Master/Worker</td>-->
+<!--                            <td>V0.0</td>-->
+<!--                            <td>99d24h</td>-->
+<!--                            <td><span class="madal_label_active">UP</span> </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>XXX [신계약]</td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>Master/Worker</td>-->
+<!--                            <td>V0.0</td>-->
+<!--                            <td>99d24h</td>-->
+<!--                            <td><span class="madal_label_false">DOWN</span> </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>XXX [신계약]</td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>Master/Worker</td>-->
+<!--                            <td>V0.0</td>-->
+<!--                            <td>99d24h</td>-->
+<!--                            <td><span class="madal_label_active">UP</span> </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>XXX [신계약]</td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>Master/Worker</td>-->
+<!--                            <td>V0.0</td>-->
+<!--                            <td>99d24h</td>-->
+<!--                            <td><span class="madal_label_active">UP</span> </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>XXX [신계약]</td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>Master/Worker</td>-->
+<!--                            <td>V0.0</td>-->
+<!--                            <td>99d24h</td>-->
+<!--                            <td><span class="madal_label_false">DOWN</span> </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>XXX [신계약]</td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="col-xs-12 box_chart mb_0">-->
+<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>Master/Worker</td>-->
+<!--                            <td>V0.0</td>-->
+<!--                            <td>99d24h</td>-->
+<!--                            <td><span class="madal_label_active">UP</span> </td>-->
+<!--                        </tr>-->
                         </tbody>
                     </table>
+                    <!-- [Modal] start -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel" aria-hidden="true" >
+                        <div th:fragment="modalContents" class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-title_box">
+                                    <div class="modal-title">
+                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <span th:text="|Node : ${node?.name}|" id="myModalLabel">Node : XXX [신계약]</span>
+                                    </div>
+                                </div>
+                                <div class="modal-nbody row_scroll">
+                                    <div class="table-title">
+                                        Overview
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-3 col-lg-3">
+                                            <div class="box_panel">
+                                                <div class="box_panel-heading_madal">CPU</div>
+                                                <div class="box_panel-text">
+                                                    <input th:value="${node?.getActivationRatio('cpu')}" value="58"
+                                                           class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
+                                                           data-thickness=".2" data-fgcolor="#a4df5d"  data-bgcolor="#eeeeee" readonly>
+                                                </div>
+                                                <table class="mini-table ">
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Cpapcity</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.getAllocatableMetric('cpu')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Request</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getRequestsMetric('cpu')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Limit</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getLimitsMetric('cpu')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-md-3 col-lg-3">
+                                            <div class="box_panel">
+                                                <div class="box_panel-heading_madal">Memory</div>
+                                                <div class="box_panel-text">
+                                                    <input th:value="${node?.getActivationRatio('memory')}" value="38"
+                                                           class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0"
+                                                           data-thickness=".2" data-fgcolor="#37d8ae"  data-bgcolor="#eeeeee" readonly>
+                                                </div>
+                                                <table class="mini-table ">
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Cpapcity</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.getAllocatableMetric('memory')?.number?.divide(1024), 0, 'COMMA', 0, 'POINT')} Ki|">0,000Mi</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Request</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getRequestsMetric('memory')?.number?.divide(1024), 0, 'COMMA', 0, 'POINT')} Ki|">0,000Mi</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Limit</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getLimitsMetric('memory')?.number?.divide(1024), 0, 'COMMA', 0, 'POINT')} Ki|">0,000Mi</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-md-3 col-lg-3">
+                                            <div class="box_panel">
+                                                <div class="box_panel-heading_madal">Disk</div>
+                                                <div class="box_panel-text">
+                                                    <input th:value="${node?.getActivationRatio('ephemeral-storage')}" value="77"
+                                                           class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0"
+                                                           data-thickness=".2" data-fgcolor="#50bee3"  data-bgcolor="#eeeeee" readonly>
+                                                </div>
+                                                <table class="mini-table ">
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Capacity</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.getAllocatableMetric('ephemeral-storage')?.number?.divide(1024), 0, 'COMMA', 0, 'POINT')} Ki|">0,000Mi</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Request</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getRequestsMetric('ephemeral-storage')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Limit</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getLimitsMetric('ephemeral-storage')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-md-3 col-lg-3">
+                                            <div class="box_panel">
+                                                <div class="box_panel-heading_madal">POD</div>
+                                                <div class="box_panel-text">
+                                                    <input th:value="${node?.getActivationRatio('pods')}" value="61"
+                                                           class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
+                                                           data-thickness=".2" data-fgcolor="#5da2e5"  data-bgcolor="#eeeeee" readonly>
+                                                </div>
+                                                <table class="mini-table ">
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Cpapcity</td>
+                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.getAllocatableMetric('pods')?.number, 0, 'COMMA', 0, 'POINT')}|">0,000Mi</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="circle_ss"></div>Request</td>
+                                                        <td class="text-right" th:text="${node?.pods?.size()}">0,000Mi</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <table class="table-nt">
+                                            <tr>
+                                                <th>Ctrated</th>
+                                                <td th:text="${node?.creationTimestamp}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Name</th>
+                                                <td th:text="${node?.name}">Event ID</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Capacity</th>
+                                                <td>
+                                                    <div th:each="entry : ${node?.capacity}">
+                                                        <span th:text="|${entry.key} : ${entry.value.getNumber()}|"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Allocatable</th>
+                                                <td>
+                                                    <div th:each="entry : ${node?.allocatable}">
+                                                        <span th:text="|${entry.key} : ${entry.value.getNumber()}|"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>IP Address</th>
+                                                <td>
+                                                    <div th:each="address : ${node?.addresses}">
+                                                        <span th:text="|${address?.type} : ${address?.address}|"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>OS (Image)</th>
+                                                <td th:text="${node?.systemInfo?.osImage}">kublet</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Container Runtime</th>
+                                                <td th:text="${node?.systemInfo?.containerRuntimeVersion}">00d ago(2020-05-20 15:23:11)</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Kublet version</th>
+                                                <td th:text="${node?.systemInfo?.kubeletVersion}">00d ago(2020-05-20 15:23:11)</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Labels</th>
+                                                <td>
+                                                    <div th:each="entry : ${node?.labels}">
+                                                        <div class="col-md-4">
+                                                            <span  class="madal_label"
+                                                                  th:text="|${entry.key} : ${entry.value}|">label</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Annotations</th>
+                                                <td>
+                                                    <div th:each="entry : ${node?.annotations}">
+                                                        <div class="col-md-4">
+                                                            <span  class="madal_label"
+                                                                   th:text="|${entry.key} : ${entry.value}|">label</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="table-title">
+                                        Pods
+                                    </div>
+                                    <table class="list_mtable_100">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Namespace</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:if="${#arrays.isEmpty(node?.pods)}">
+                                            <td colspan="3" class="text-center">No pods</td>
+                                        </tr>
+                                        <tr th:if="${node?.pods}" th:each="pod : ${node?.pods}">
+                                            <td th:text="${pod?.name}">Name</td>
+                                            <td th:text="${pod?.namespace}">Namespace</td>
+                                            <td th:text="${pod?.status}">Status</td>
+                                        </tr>
+                                        <tbody>
+                                    </table>
+                                    <div class="table-title">
+                                        Events
+                                    </div>
+                                    <table class="list_mtable_100">
+                                        <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Reason</th>
+                                            <th>Count</th>
+                                            <th>Sub-Object</th>
+                                            <th>Last</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:if="${#arrays.isEmpty(node?.events)}">
+                                            <td colspan="5" class="text-center">No events</td>
+                                        </tr>
+                                        <tr th:if="${node?.events}" th:each="event : ${node?.events}">
+                                            <td th:text="${event?.type}">Type</td>
+                                            <td th:text="${event?.reason}">Reason</td>
+                                            <td th:text="${event?.count}">Count</td>
+                                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
+                                            <td th:text="${event?.lastSeen}">Last</td>
+                                        </tr>
+                                        <tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [Modal] End -->
                 </div>
             </div>
         </div>
         <!-- [Events] End-->
     </div>
+    <script type="text/javascript" th:inline="javascript">
+        function nodeDetail(nodeName) {
+            $.ajax({
+                url: "/monitoring/cluster/nodes/" + nodeName,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                    // $('#myModal').modal('open');
+                },
+                error: function (e) {
+                    alert(e);
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>
