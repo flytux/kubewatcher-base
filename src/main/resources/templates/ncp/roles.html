@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>NCP계정관리<i class=&quot;feather icon-chevron-right&quot; ></i>Roles')"/>
+    <div id="main_contents">
+
+        <!-- [NCP User Roles] start -->
+        <div class="row">
+            <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> NCP User Roles
+
+                <div class="dropdown d_ib f_r">
+                    <a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
+                    <!-- [Modal] start -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                        <div class="modal-dialog modal-lg" style="width:765px;">
+                            <div class="modal-content">
+                                <div class="modal-title_box">
+                                    <div class="modal-title">
+                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <span id="myModalLabel">Role : [Role명]</span>
+                                        <div class="f_r"><button class="btn_save_i feather icon-save"></button> <button class="btn_save_i feather icon-trash-2"></button></div>
+                                    </div>
+                                </div>
+                                <div class="modal-nbody">
+                                    <div class="table-title">
+                                        Overview
+                                    </div>
+                                    <div class="row">
+                                        <table class="table-select">
+                                            <tr>
+                                                <th>ID</th>
+                                                <td>testuser</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Description</th>
+                                                <td><textarea>NCP Console의 서버 상품에 대한 신규 생성 및 변경 권한 </textarea></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Role binding user</th>
+                                                <td>4</td>
+                                            </tr>
+                                            <tr>
+                                                <th>최종변경일</th>
+                                                <td colspan="2">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                        </table>
+                                    </div>
+                                    <div class="table-title">
+                                        Policy
+                                    </div>
+                                    <div class="row">
+
+                                        <table class="table-select">
+                                            <tr>
+                                                <th>Role-binding</th>
+                                                <td>NCP_Server_Manager <a href="#"><i class="feather icon-trash-2"></i></a></td>
+                                                <td class="select">
+                                                    <!-- [multi select box] start-->
+                                                    <select id="modal-multi-select-box" multiple="multiple">
+                                                        <option value="NCP_Server_Manager">NCP_Server_Manager</option>
+                                                        <option value="보험코어 monitor">보험코어 monitor</option>
+                                                        <option value="Cluster monitor">Cluster monitor</option>
+                                                        <option value="Cluster log viewer">Cluster log viewer</option>
+                                                        <option value="On-premise monitor">On-premise monitor</option>
+                                                        <option value="Cluster admin">Cluster admin</option>
+                                                        <option value="Dashboard operator">Dashboard operator</option>
+                                                    </select>
+                                                    <!-- [multi select box] end-->
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [Modal] End -->
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
+                </div>
+                <div class="box_table-body">
+                    <table class="list_table">
+                        <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>설명</th>
+                            <th>Policy</th>
+                            <th>등록일</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Server_Operator</td>
+                            <td>NCP Console의 서버 상품에 대한<br>신규 생성 및 변경 권한</td>
+                            <td>NCP_Server_Manager;  NCP_NAS_Manager</td>
+                            <td>2020-06-29 14:21:05</td>
+                        </tr>
+                        <tr>
+                            <td>Server_Operator</td>
+                            <td>NCP Console의 서버 상품에 대한<br>신규 생성 및 변경 권한</td>
+                            <td>NCP_Server_Manager;  NCP_NAS_Manager</td>
+                            <td>2020-06-29 14:21:05</td>
+                        </tr>
+                        <tr>
+                            <td>Server_Operator</td>
+                            <td>NCP Console의 서버 상품에 대한<br>신규 생성 및 변경 권한</td>
+                            <td>NCP_Server_Manager;  NCP_NAS_Manager</td>
+                            <td>2020-06-29 14:21:05</td>
+                        </tr>
+                        <tr>
+                            <td>Server_Operator</td>
+                            <td>NCP Console의 서버 상품에 대한<br>신규 생성 및 변경 권한</td>
+                            <td>NCP_Server_Manager;  NCP_NAS_Manager</td>
+                            <td>2020-06-29 14:21:05</td>
+                        </tr>
+                        <tr>
+                            <td>Server_Operator</td>
+                            <td>NCP Console의 서버 상품에 대한<br>신규 생성 및 변경 권한</td>
+                            <td>NCP_Server_Manager;  NCP_NAS_Manager</td>
+                            <td>2020-06-29 14:21:05</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="text-center"><!-- 페이지넘버 -->
+            <nav>
+                <ul class="pagination" >
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>
+                        </a>
+                    </li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- [NCP User Roles] End-->
+    </div>
+
+</div>
+</body>
+</html>

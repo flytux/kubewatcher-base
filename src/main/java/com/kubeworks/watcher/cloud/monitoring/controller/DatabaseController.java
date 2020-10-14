@@ -51,9 +51,7 @@ public class DatabaseController {
                     return variable;
                 }
                 List<String> values = proxyApiService.labelValuesQuery(variable.getSrc());
-                // TODO 삭제
-                values.add("test1");
-                values.add("test2");
+
                 variable.setValues(values);
                 return variable;
             })

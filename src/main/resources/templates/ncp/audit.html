@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>NCP계정관리<i class=&quot;feather icon-chevron-right&quot; ></i>Audit')"/>
+    <div id="main_contents">
+
+        <!-- [NCP 사용자 접근 History] start -->
+        <div class="row">
+            <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> NCP 사용자 접근 History
+
+                <div class="dropdown d_ib f_r">
+                    <input type="text" style="width:130px;" placeholder="">
+                    <select class="custom-select" >
+                        <option value="Loginid">LoginID</option>
+                        <option value="활성">활성</option>
+                        <option value="비활성">비활성</option>
+                    </select><span class="main_stitle"> - </span>
+                    <input type="text" style="width:130px;" placeholder="YYYY-MM-DD">
+                    <select class="custom-select">
+                        <option value="from">from</option>
+                        <option value="활성">활성</option>
+                        <option value="비활성">비활성</option>
+                    </select><span class="main_stitle"> - </span>
+                    <input type="text" style="width:130px;" placeholder="YYYY-MM-DD">
+                    <select class="custom-select">
+                        <option value="to">to</option>
+                        <option value="활성">활성</option>
+                        <option value="비활성">비활성</option>
+                    </select>
+                    <button class="btn btn-md btn-outline-white"><i class="feather icon-search"></i> Search</button>
+                    <button class="btn btn-md btn-outline-white"><img th:src="@{/assets/img/excel.gif}" alt=""> Excel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
+                </div>
+                <div class="box_table-body">
+                    <table class="NCP_History">
+                        <thead>
+                        <tr>
+                            <th>접속일시</th>
+                            <th>이벤트 명</th>
+                            <th>접근대상</th>
+                            <th>loginID</th>
+                            <th>접속 IP</th>
+                            <th>NRN</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>2020-06-29 14:21:05</td>
+                            <td>Server Termination</td>
+                            <td>Server</td>
+                            <td>testuser</td>
+                            <td>117.228.28.22</td>
+                            <td>nrn:PUB:AutoScaling:KR:2593846:AutoScalingGroup/17703</td>
+                        </tr>
+                        <tr>
+                            <td>2020-06-29 14:21:05</td>
+                            <td>Server Termination</td>
+                            <td>Server</td>
+                            <td>testuser</td>
+                            <td>117.228.28.22</td>
+                            <td>nrn:PUB:AutoScaling:KR:2593846:AutoScalingGroup/17703</td>
+                        </tr>
+                        <tr>
+                            <td>2020-06-29 14:21:05</td>
+                            <td>Server Termination</td>
+                            <td>Server</td>
+                            <td>testuser</td>
+                            <td>117.228.28.22</td>
+                            <td>nrn:PUB:AutoScaling:KR:2593846:AutoScalingGroup/17703</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="text-center"><!-- 페이지넘버 -->
+            <nav>
+                <ul class="pagination" >
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>
+                        </a>
+                    </li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- [NCP 사용자 접근 History] End-->
+    </div>
+
+</div>
+</body>
+</html>

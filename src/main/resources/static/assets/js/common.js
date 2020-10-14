@@ -91,7 +91,7 @@ let comnJs = (function(){
             }).then(function(resolve){
                 //console.log(resolve);
                 console.log('then');
-            }).catch(function(reject){overview
+            }).catch(function(reject){
                 //console.log(reject);
                 console.log('catch');
             });
