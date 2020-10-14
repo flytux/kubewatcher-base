@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
+    <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
+    <script th:src="@{/vendor/highlight/json.min.js}"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+	<link rel="stylesheet"
+	    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet"
+	    href="https://code.highcharts.com/css/highcharts.css" />
+	<script
+	    src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script
+	    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	    
+	<!-- Highcharts module -->     
+	<script th:src="@{/vendor/highcharts/highcharts.js}"></script>
+	<script th:src="@{/vendor/highcharts/exporting.js}"></script>
+	<script th:src="@{/vendor/highcharts/export-data.js}"></script>
+	<script th:src="@{/vendor/highcharts/accessibility.js}"></script>   
+    <!--TO-DO : 오프라인 모듈로 변경 --> 
+
+    <div class="row mx-auto">
+        <div class="col-md-4 my-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Grafana Dashboard</div>
+                </div>
+                <select id="dashboard-select" name="dashboard-select" class="form-control">
+                    <option value="" selected disabled hidden> --- dashboard select ---</option>
+                    <option th:each="dashboard : ${dashboards}"
+                            th:value="${dashboard?.uid}" th:text="${dashboard?.title}">dashboard
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4 my-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Grafana Dashboard Panel</div>
+                </div>
+                <select id="panel-select" name="dashboard-select" class="form-control">
+                    <option value="" selected disabled hidden> --- panel select ---</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div id="input-area" class="row mx-auto">
+    </div>
+    <div id="panel-area" class="row mx-auto">
+    </div>
+    <div class="row mx-auto">
+        <div class="col-md my-2">
+            <span>Panel 데이터</span>
+            <pre>
+                <code id="panel-data-area" class="json"></code>
+            </pre>
+        </div>
+    </div>
+    <div class="row mx-auto">
+        <div class="col-md my">
+            <span>Dashboard 정보</span>
+            <pre>
+                <code id="dashboard-data-area" class="json">{"test" : "test", "test1" : "test1"}</code>
+            </pre>
+        </div>
+        <script>
+            $(function () {
+                let panelUrl = new Map();
+                let panelQueryMap = new Map();
+                let variableMap;
+                let dashboardUrl;
+                let promUrl;
+                let chartObj = new Object(); //차트 오브젝트 보관 
+                let selectedPanels; // 선택된 판넬 보관 
+                
+                const $dashboardSelect = $('#dashboard-select'),
+                    $panelSelect = $('#panel-select'),
+                    $dashboardDataArea = $('#dashboard-data-area'),
+                    $panelDataArea = $('#panel-data-area'),
+                    $inputArea = $('#input-area'),
+                    $panelArea = $('#panel-area');
+
+                $dashboardSelect.on('change', function (evt) {
+                    console.log(">>>> Dashboard : ",$(this).val());
+                    if ($(this).val() === '-1')
+                        return;
+                    
+                    $.get("/prom/chart/" + $(this).val())
+                        .done(function (data) {
+                            $dashboardDataArea.text(JSON.stringify(data, null, '  '));
+                            document.querySelectorAll('pre > code').forEach(function (el) {
+                                hljs.highlightBlock(el);
+                            });
+                        })
+                        .fail(function () {
+                            alert(">> 조회 실패");
+                        })
+                        .always(function (data) {
+                            console.log(data);
+                            dashboardUrl = data.meta.host + data.meta.panel_url;
+                            promUrl = data.meta.prom_host;
+                            $panelSelect.empty();
+                            let panels = data.dashboard.panels;
+                            selectedPanels = panels;
+                            let templating = data.dashboard.templating;
+
+                            panelQueryMap.clear();
+                            panelUrl.clear();
+
+                            generateVariable($inputArea, templating);                                   //input-area select-box list
+                            generatePanelList($panelSelect, panels);                                    //panel select-box list
+                            generatePanel($panelArea, data.meta.host + data.meta.panel_url, panels);    //data panel list
+                            generateChart(panels, true); // 차트 동적 생성 
+                        });
+
+                    function generateVariable(selector, templateVariable) {
+                        selector.text('');
+                        variableMap = new Map(Object.entries(templateVariable));
+
+                        //namescpace가 0번이 아닌 map을 뒤집는다.
+                        if(variableMap.size > 1){
+                            if([...variableMap.keys()][0].match(/namespace/gi) == null) {
+                                let reverceMap = new Map();
+                                reverceMap = [...variableMap].map(function(obj){
+                                    return obj;
+                                }).reverse();
+
+                                variableMap.clear();
+                                reverceMap.map(function(obj){
+                                    variableMap.set(obj[0], obj[1]);
+                                });
+                            }
+                        }
+
+                        for (let [key, varItem] of variableMap) {
+                            let select = "<div class=\"col-md-4 my-2\"><div class=\"input-group\"><div class=\"input-group-prepend\"><div class=\"input-group-text\">"
+                                //varItem.label이 없는 경우 존재 (ex : Cluster)
+                                + (varItem.label === undefined ? varItem.name : varItem.label) + "</div></div>"
+                                + "<select id='" + "var-" + key + "' name='" + "var-" + key + "' class='form-control'>";
+
+                            // 프로메테우스 api에서는 item.allValue를 이용해야 함.
+                            if (varItem.includeAll)
+                                select += getSelectOptionHtml("All");
+
+                            if (Array.isArray(varItem.values) && varItem.values !== null) {
+                                for (let value of varItem.values)
+                                    select += getSelectOptionHtml(value);
+                            }
+                            select += "</select>" + "</div></div>";
+                            selector.append(select);
+                        }
+                    }
+
+                    function generatePanelList(selector, panelsData) {
+                    	
+                        panelsData.forEach(function (panel) {
+                            if (Array.isArray(panel.panels)) {
+                                panel.panels.forEach(function (subPanel) {
+                                    $panelSelect.append(getSelectOptionHtml(subPanel.id, subPanel.title));
+                                    panelQueryMap.set(subPanel.id, subPanel.targets);
+                                    
+                                });
+                                
+                                return;
+                            }
+                            if (panel.type === "row")
+                                return;
+                            selector.append(getSelectOptionHtml(panel.id, panel.title));
+                            panelQueryMap.set(panel.id, panel.targets);
+                            
+                        });
+                        //console.log(">>>> panelQueryMap : ", panelQueryMap);
+                    }
+                    
+
+                    function generatePanel(selector, panelUrl, panelsData) {
+                        selector.text('');
+                        let cardTag = "<div class=\"row\">";
+                        let count = 0;
+                        panelsData.forEach(function (item) {
+                            if (count !== 0 && count % 4 === 0) {
+                                cardTag += "</div>";
+                                cardTag += "<div class=\"row\">";
+                            }
+
+                            if (Array.isArray(item.panels)) {
+                            	
+                                cardTag = getPanelRowHtml(item, cardTag);
+                                item.panels.forEach(function (subItem) {
+                                    cardTag = getPanelHtml(panelUrl, subItem, cardTag);
+                                });
+                                count++;
+                                return;
+                            }
+
+                            if (item.type === "row")
+                                cardTag = getPanelRowHtml(item, cardTag);
+
+                            cardTag = getPanelHtml(panelUrl, item, cardTag);                            
+                            count++;
+                        });
+                        selector.append(cardTag + "</div>");
+                    }
+                    
+                    function generateChart(panelsData, isFirst) { // isFirst 최초 차트 렌더링, 인터벌 차트 시리즈 add
+                      
+                    	//console.log(">>>> panelsData : ", panelsData);
+                    	
+                        panelsData.forEach(function (item) {
+                        	
+                            if (Array.isArray(item.panels)) {
+                            	
+                                item.panels.forEach(function (subItem) {
+                                    
+                                    //console.log(">>>>> panelsData > subItem : ", subItem);
+                                    //console.log(">>>>> subItem size :", subItem.targets.length);
+                                    
+                                    let chartSeries = [];
+                                    let promises = [];
+                                    subItem.targets.forEach(function(key) {  //single query or multi query
+                                    
+                                    	//console.log(">>>>> prom_query : ",key['api_query']);
+                                    	let prom_query = key['api_query'];
+
+				                        let queryVariables = prom_query.match(/\$\w+/g);
+				                        if (queryVariables !== null) {
+				                            for (let variable of queryVariables) {
+				                                const $thisSelector = $('#var-' + variable.replace("$", ""));
+				                                if ($thisSelector.val() !== undefined && $thisSelector.val() !== null) {
+                                                    if ($thisSelector.val() == "All") {
+                                                        prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*"); // 쿼리 스트링 값 변경 'All' --> '.*'
+                                                    }
+				                                    prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), $thisSelector.val());
+				                                } else {
+				                                    prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*");
+				                                }
+				                            }
+				                            //console.log(">>>>> Prom API query : ", query);
+				                        }                                      
+                                        let timestamp = new Date().getTime() / 1000;
+                                        let url;
+                                        if (isFirst){
+                                        	url = promUrl + prom_query + "&start=" + (timestamp - 1000) + "&end=" + timestamp + "&step=15";
+                                        } else {
+                                        	url = promUrl + prom_query + "&start=" + (timestamp - 500) + "&end=" + timestamp + "&step=15";
+                                        	//시간 차이에 따라 차트 곡선 왜곡됨으로 조정 필요, 화면에서 인터벌 변경시 반영해야됨 
+                                        }
+                                        url= url.replace(/\+/g,"%2B"); // GET 방식 쿼리스트링 중 '+' 특수문자 변환
+                                        let response = fetch(url).then(response => response.json());
+         		                        
+         		                       	promises.push(response);
+                                    });
+                                    
+                                    Promise.all(promises)	
+    	                            .then(series => {
+    	                            	//console.log(">>>>> series : ",series);
+    	                            	let chartSeries = [];
+    	                            	let times = [];
+    	                                let loads = [];
+    	                                //console.log(">>>>> series.length : ",series.length);
+    	                                
+    	                                for (let cnt = 0; cnt < series.length; cnt++) {
+    	                                	//console.log(">>>>> for each series : ", series[cnt]);
+    	                                	//console.log(">>>>> series.data.result[0].values : ", series[cnt].data.result[0].values);
+    	                                	if (series[cnt].data.result.length > 0){
+                                                for (let resultCnt = 0; resultCnt < series[cnt].data.result.length ;resultCnt++ ){
+                                                    let temp_value = series[cnt].data.result[resultCnt].values;
+
+                                                    for (var key in temp_value){
+                                                        loads = parseFloat(temp_value[key][1]);
+                                                        temp_value[key][1] = loads;
+
+                                                        times = temp_value[key][0];
+                                                        temp_value[key][0] = times * 1000; // 차트 X축 시간 표시용
+                                                    }
+                                                    let newSeriesData = {
+                                                       "name": series[cnt].data.result[resultCnt].metric['__name__'],
+                                                       "data": temp_value
+                                                    };
+                                                    chartSeries.push(newSeriesData);
+                                                }
+    	                                	} else { //쿼리 결과 0인 경우
+                                            }
+    	                                }
+                                        return chartSeries;
+    	                            })
+                                    .then(chartSeries => {
+                                        // 최초 화면 오픈시 쿼리 결과 없고, 이후 쿼리 결과 나오는 경우 대비 해야됨
+                                        if (isFirst) {
+                                            drawChart(chartSeries, subItem);
+                                        } else {
+                                            let ch = chartObj[subItem.id];
+                                            for (let chartSeriesCnt = 0 ; chartSeriesCnt < chartSeries.length ; chartSeriesCnt++){
+                                                ch.series[chartSeriesCnt].addPoint(chartSeries[chartSeriesCnt].data[1], true, true);
+                                                console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[chartSeriesCnt].name);
+                                            }
+                                        }
+                                    })
+    	                            .catch(function handleError(error) {
+        								console.log("Error1 : " +error);            
+      								});
+         		                       
+                                }); //item loop
+                                //return;
+							} else {   //서브 판넬 없는 경우
+                               	
+                                let promises = [];
+                                
+								item.targets.forEach(function(key) {
+									
+	                            	let prom_query = key['api_query'];
+
+	                                //차트 시작
+				                    let queryVariables = prom_query.match(/\$\w+/g);
+				                    if (queryVariables !== null) {
+				                        for (let variable of queryVariables) {
+				                            const $thisSelector = $('#var-' + variable.replace("$", ""));
+				                            if ($thisSelector.val() !== undefined && $thisSelector.val() !== null) {
+                                                if ($thisSelector.val() == "All") {
+                                                    prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*"); // 쿼리 스트링 값 변경 'All' --> '.*'
+                                                }
+				                                prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), $thisSelector.val());
+				                            } else {
+				                                prom_query = prom_query.replace(new RegExp("\\" + variable, "g"), ".*");
+				                            }
+				                        }
+				                    }
+
+	                                let timestamp = new Date().getTime() / 1000;
+	                                let url;
+	                                if (isFirst){
+                                    	url = promUrl + prom_query + "&start=" + (timestamp - 1000) + "&end=" + timestamp + "&step=20";
+                                    } else {
+                                    	url = promUrl + prom_query + "&start=" + (timestamp - 500) + "&end=" + timestamp + "&step=20";
+                                    }
+                                    url= url.replace(/\+/g,"%2B"); // GET 방식 쿼리스트링 중 '+' 특수문자 변환
+                                    //console.log(">>>>> Prom API query url : ", url);
+     		                       	let response = fetch(url).then(response => response.json());
+     		                        
+     		                       	promises.push(response);
+     		                       
+	                            }); //forEach 
+	                            
+	                            Promise.all(promises)	
+	                            .then(series => {
+	                            	//console.log(">>>>> series : ",series);
+	                            	let chartSeries = [];
+	                            	let times = [];
+	                                let loads = [];
+	                                //console.log(">>>>> series.length : ",series.length);
+
+	                                for (let cnt = 0; cnt < series.length; cnt++) {
+	                                	//console.log(">>>>> for each series : ", series[cnt]);
+	                                	//쿼리 결과 n개 오는 경우 처리
+	                                	if (series[cnt].data.result.length > 0){
+                                            //console.log(">>>>> series.data.result.length : ", series[cnt].data.result.length);
+                                            // 1개 쿼리에 Result n 개인 경우
+		                                	for (let resultCnt = 0; resultCnt < series[cnt].data.result.length ;resultCnt++ ) {
+                                                //console.log(">>>>> series.data.result["+resultCnt+"].values : ", series[cnt].data.result[resultCnt].values);
+                                                let temp_value = series[cnt].data.result[resultCnt].values;
+                                                for (var key in temp_value) {
+                                                    loads = parseFloat(temp_value[key][1]);
+                                                    temp_value[key][1] = loads;
+
+                                                    times = temp_value[key][0];
+                                                    temp_value[key][0] = times * 1000;
+                                                }
+                                                let newSeriesData = { //
+                                                    "name": series[cnt].data.result[resultCnt].metric['__name__'],
+                                                    "data": temp_value
+                                                };
+                                                chartSeries.push(newSeriesData);
+                                            }
+	                                	} else { // 쿼리 결과 0개인 경우
+
+                                        }
+	                                }
+                                    return chartSeries;
+	                            })
+                                .then(chartSeries => { // 속도 고려 ... 분리
+                                    // 최초 화면 오픈시 쿼리 결과 없고, 이후 쿼리 결과 나오는 경우 대비 해야됨
+                                    if (isFirst) {
+                                        drawChart(chartSeries, item);
+                                    } else {
+                                        //console.log(">>>>> chartSeries : ", chartSeries);
+                                        //console.log(">>>>> chartSeries count : ", chartSeries.length);
+                                        let ch = chartObj[item.id];
+                                        for (let chartSeriesCnt = 0 ; chartSeriesCnt < chartSeries.length ; chartSeriesCnt++){
+                                            ch.series[chartSeriesCnt].addPoint(chartSeries[chartSeriesCnt].data[1], true, true);
+                                            console.log(">>>>> chart name : "+ch.title.textStr+" , series : ", ch.series[chartSeriesCnt].name);
+                                        }
+                                    }
+                                })
+	                            .catch(function handleError(error) {
+    								console.log("Error2 : " +error);            
+  								}); 
+                            }//else if
+                        }); //panel loop
+                    }
+                   
+                    setInterval(function(){
+                    	
+                    	generateChart(selectedPanels, false);
+                    
+                    },10000);
+
+                    function drawChart(loads, item) {   
+                    	
+                    	var chart_id = 'container-line-'+item.id; //차트 ID 관리 방식 검토 
+                    	
+                        var chart_panel = new Highcharts.chart(chart_id, {
+                            chart : {
+                                type : 'line',
+                                styledMode : true
+                            },
+                            title : {
+                                //차트 이름 문서 표준화 필요 
+                                text : item.title
+                            },
+                            xAxis : [ {
+                                title : {
+                                    text : 'Time'
+                                },
+                                type : 'datetime',
+                              
+                            } ],
+                           
+                            yAxis : [ {
+                                className : 'highcharts-color-0',
+                                title : {
+                                    text : ''
+                                }
+                            } ],
+                            
+                            series : loads                       
+                        });   
+                        chartObj[item.id] = chart_panel; //차트를 오브젝트로 저장, key = panel.id
+                        console.log(">>>>> Rendering chart_id : ",item.id);
+                    }
+                    
+                    function getPanelRowHtml(panel, cardTag) {
+                        cardTag += "<div class=\"row\"><div class=\"main_title_top col-xs-12\" ><i class=\"feather icon-chevrons-right\"></i>";
+                        cardTag += panel.title;
+                        cardTag += "</div></div>";
+                        return cardTag;
+                    }
+
+                    function getPanelHtml(url, panel, cardTag) {
+                        /* cardTag += "<div class=\"col-xs-12 col-md-12 col-lg-3\" style=\"padding-right:0px;\">\n" +
+                            "    <div class=\"col-xs-12 box_panel p-2\" style=\"padding:0px;\">\n" +
+                            "            <div class=\"embed-responsive embed-responsive-16by9\">";
+                        cardTag += "<iframe id=\"" + panel.id + "\" class=\"embed-responsive-item\" src=\"" + url + panel.panel_url + "\" allowfullscreen></iframe>";
+                        cardTag += "</div> </div> </div>"; */
+                        
+                        cardTag += "<div class=\"col-xs-12 col-md-12 col-lg-3\" style=\"padding-right:0px;\">\n" +
+                        "<figure class=\"highcharts-figure\">\n" +
+                        "<div class=\"col-xs-12 box_panel p-2\" style=\"padding:0px;\">\n"+
+                        "<div id=\"container-line-"  + panel.id + "\" style=\"height:300px;\"></div>";             	    
+                        //cardTag += "<div align=\"left\" style=\"margin:10px;\">\n";
+            		    //cardTag += "<figure class=\"highcharts-figure\">\n";
+            		    //cardTag += "   <div id=\"container-line\" style=\"width: 300px; height: 300px; margin: 1; border: 1px solid red\"></div>\n";
+            		    //cardTag += "   <div id=\"container-line\"></div>\n";
+            		    cardTag += "</div></figure>\n";
+            	        cardTag += "</div>";                        
+                        
+                        
+                        panelUrl.set(panel.id, panel.panel_url);
+                        return cardTag;
+                    }
+                });
+
+                $panelSelect.on('change', function (event) {
+                    $panelDataArea.text('');
+                    
+                    let queries = panelQueryMap.get(parseInt($(this).val()));
+                    for (let i = 0; i < queries.length; i++) {
+                    	
+                        if (queries[i].hide)
+                            continue;
+
+                        let query = queries[i].api_query;
+                        //console.log(">>>> Prom API Query (Single) : ", query);
+                        let queryVariables = query.match(/\$\w+/g);
+                        if (queryVariables !== null) {
+                            for (let variable of queryVariables) {
+                                const $thisSelector = $('#var-' + variable.replace("$", ""));
+                                if ($thisSelector.val() !== undefined && $thisSelector.val() !== null) {
+                                    query = query.replace(new RegExp("\\" + variable, "g"), $thisSelector.val());
+                                } else {
+                                    query = query.replace(new RegExp("\\" + variable, "g"), ".*");
+                                }
+                            }
+                            //console.log(">>>> Prom API queris : ", query);
+                        }
+                        let timestamp = new Date().getTime() / 1000;
+                        let url = promUrl + query + "&start=" + (timestamp - 600) + "&end=" + timestamp + "&step=15";
+                        //console.log(">>>>> AAA : ", url);
+                        $.get(url)
+                            .done(function (data) {
+                                //console.log(">>>>> data : ",data);
+                                $panelDataArea.text($panelDataArea.text() + JSON.stringify(data, null, '  '));
+                                document.querySelectorAll('pre > code').forEach(function (el) {
+                                    hljs.highlightBlock(el);
+                                });                                
+                            })
+                            .fail(function () {
+                                alert("조회 실패");
+                            })
+                            .always(function (data) {
+                            });
+                    }
+                    
+                });
+
+                $(document).on("change", "select[name^='var']", function(){
+                    const
+                        $selectBoxs = $(document).find("select[name^='var']"),
+                        $this = $(this),
+                        thisSelectedIdx = $this.find('option:selected').index(),
+                        lastId = comnJs.replace($("select[name^='var']:last").attr('id'), 'var-', ''),
+                        maxSize = $selectBoxs.length - 1,
+                        dataMap = [...variableMap].map(function(value){
+                            return [value[0], value[1]];
+                        });
+
+                    let thisKey = comnJs.replace($this.attr('id'), 'var-', ''),
+                        keepGoing = true,
+                        key, item;
+
+                    generateAjaxUrl(rtnMap(thisKey, true));
+
+                    //------------function line
+                    function generateAjaxUrl(data) {
+                        if(!keepGoing)
+                            return false;
+
+                        key = data[0];
+                        item = data[1];
+
+                        let refFields = item.ref_fields,
+                            query = item.api_query;
+                        //console.log(key, item);
+
+                        for (let refField of refFields) {
+                            let targetValue = $("#var-" + refField).val();
+                            if (targetValue === null)
+                                break;
+
+                            query = query.replace(new RegExp("\\" + "$" + refField, "g"), targetValue);
+                            //console.log(refField, query);
+
+                            if (query.indexOf("$") < 0) {
+                                let url = promUrl + "/api/v1/query?query=" + query;
+                                let currentTime = new Date().getTime() / 1000;
+                                url += `&start=${currentTime - 300}&end=${currentTime}`;
+                                console.log(key + ' url==' + url);
+
+                                let setData = {
+                                    url: url,
+                                    type: 'get',
+                                    done: ajaxDone,
+                                    fail: ajaxFail
+                                }; //ajax function setting
+                                comnJs.ajax(setData); //ajax call
+                            }
+                        }
+                    }
+
+                    function ajaxDone(data) {
+                        let results = data.data.result;
+                        let dataMap = rtnMap(key, false);
+                        //console.log(results, key, item, dataMap, keepGoing);
+
+                        generateSelectList(results);            //select-box grid
+                        generateAjaxUrl(dataMap);               //ajax 호출 function
+                        if(!keepGoing)
+                            reflashPanelList(); //차트 패널의 src를 업데이트해서 다시 호출한다.
+                    }
+
+                    function ajaxFail(err) {
+                        alert("조회 실패");
+                    }
+
+                    function generateSelectList(results){
+                        let $thisSelector = $("#var-" + key),
+                            metricName = item.api_query_metric_label;
+
+                        //----select box option append
+                        $thisSelector.text('');
+
+                        if (item.includeAll)
+                            $thisSelector.append(getSelectOptionHtml("All"));
+                        for (let result of results)
+                            $thisSelector.append(getSelectOptionHtml(result.metric[metricName]));
+                        //----select box option append
+
+                        $this.find("option").eq(thisSelectedIdx).attr("selected", true);
+                    }
+
+                    function reflashPanelList(){
+                        let selectSrc = '';
+
+                        //---make select box option:selected array
+                        $selectBoxs.each(function () {
+                            if ($(this).val() !== undefined && $(this).val() !== null)
+                                selectSrc += "&" + $(this).attr('id') + "=" + $(this).val();
+                        });
+                        //---make select box option:selected array
+
+                        //--panel reset
+                        $(document).find('iframe').map(function(){
+                            let panelSrc = dashboardUrl + panelUrl.get(parseInt($(this).attr('id'))) + selectSrc;
+                            //console.log(panelSrc);
+                            $(this).attr('src', panelSrc);
+                        });
+                        //--panel reset
+                    }
+
+                    //다음 레벨 select box id return
+                    function rtnMap(key, boln) {
+                        if(key === lastId && !boln)
+                            keepGoing = false;
+
+                        let idx = [...dataMap].findIndex((el) => el[0] === key);
+                        idx = idx === maxSize ? idx : idx + 1;
+                        return [...dataMap][idx];
+                    }
+
+                });
+            });
+
+            //공용 option html 생성
+            function getSelectOptionHtml(value, title) {
+                //console.log(value, title);
+                return "<option value='" + value + "'>" + (title == undefined ? value : title) + "</option>";
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>
