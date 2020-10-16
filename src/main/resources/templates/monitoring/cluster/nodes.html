@@ -15,14 +15,14 @@
         <!-- [Events] start -->
         <div class="row">
             <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Nodes
-                <div class="f_r">
-                    <div class=" d_ib">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="text" placeholder="Search" class="search_table">
-                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="f_r">-->
+<!--                    <div class=" d_ib">-->
+<!--                        <div class="form-group has-feedback d_ib">-->
+<!--                            <input type="text" placeholder="Search" class="search_table">-->
+<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
         <div class="row">
@@ -45,14 +45,14 @@
                         <tr th:if="${#arrays.isEmpty(nodes)}">
                             <td colspan="8" class="text-center">No results</td>
                         </tr>
-                        <tr th:if="${nodes}" th:each="node : ${nodes}">
+                        <tr th:unless="${#arrays.isEmpty(nodes)}" th:each="node : ${nodes}">
                             <td>
                                 <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${node?.name} + '&quot;)'"
                                    th:utext="${node?.name}">Name</a>
                             </td>
-                            <td th:text="|TO-DO %|">CPU</td>
-                            <td th:text="|TO-DO %|">Memory</td>
-                            <td th:text="|TO-DO %|">Disk</td>
+                            <td th:text="|- %|">CPU</td>
+                            <td th:text="|- %|">Memory</td>
+                            <td th:text="|- %|">Disk</td>
                             <td th:text="${node?.roles}">Role</td>
                             <td th:text="${node?.version}">Version</td>
                             <td th:text="${node?.age}">Age</td>
@@ -60,29 +60,6 @@
                                 <span th:class="${#strings.contains(node?.status, 'Ready') ? 'madal_label_active' : 'madal_label_warning'}"
                                       th:text="${node?.status}">UP</span>
                             </td>
-                        </tr>
-                        <tr>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">XXX [신계약]</a>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-12 box_chart mb_0 pb_0">
-                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>
-                                </div>
-                            </td>
-                            <td>Master/Worker</td>
-                            <td>V0.0</td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">UP</span></td>
                         </tr>
 <!--                        <tr>-->
 <!--                            <td>XXX [신계약]</td>-->
@@ -515,7 +492,9 @@
                     // $('#myModal').modal('open');
                 },
                 error: function (e) {
-                    alert(e);
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
                 }
             });
         }

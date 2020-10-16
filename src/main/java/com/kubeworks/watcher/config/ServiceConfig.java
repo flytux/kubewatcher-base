@@ -4,6 +4,9 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.kubeworks.watcher.ecosystem.kubernetes.serdes.IntOrStringModule;
 import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1Probe;
+import io.kubernetes.client.openapi.models.V1VolumeMount;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +37,9 @@ public class ServiceConfig {
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         Representer representer = new SkipNullRepresenter();
         representer.addClassTag(V1Container.class, Tag.MAP);
+        representer.addClassTag(V1EnvVar.class, Tag.MAP);
+        representer.addClassTag(V1VolumeMount.class, Tag.MAP);
+        representer.addClassTag(V1Probe.class, Tag.MAP);
         representer.getPropertyUtils()
             .setSkipMissingProperties(true);
         return new Yaml(representer, dumperOptions);

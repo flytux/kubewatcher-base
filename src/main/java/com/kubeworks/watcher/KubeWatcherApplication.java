@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.annotation.PostConstruct;
 
@@ -39,11 +40,12 @@ public class KubeWatcherApplication {
     static class UtilityClassInitializer {
 
         private final ObjectMapper objectMapper;
+        private final Yaml yaml;
 
         @PostConstruct
         public void initialize() {
-            log.debug("");
             ExternalConstants.setObjectMapper(objectMapper);
+            ExternalConstants.setSnakeyaml(yaml);
         }
     }
 
