@@ -98,6 +98,21 @@ public class PodDescribe {
             return builder.build();
         }
 
+        if (v1Volume.getConfigMap() != null) {
+            builder.type("ConfigMap");
+            if (v1Volume.getConfigMap().getItems() != null) {
+                List<String> paths = v1Volume.getConfigMap().getItems().stream()
+                    .map(V1KeyToPath::getPath).collect(Collectors.toList());
+                builder.values(paths);
+            }
+            return builder.build();
+        }
+
+        if (v1Volume.getEmptyDir() != null) {
+            builder.type("EmptyDir");
+            return builder.build();
+        }
+
         return null;
     }
 }

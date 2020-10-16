@@ -28,16 +28,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/monitoring/cluster/overview").setViewName("monitoring/cluster/overview");
 //        registry.addViewController("/monitoring/cluster/nodes").setViewName("monitoring/cluster/nodes");
         /*         >> workloads */
-        registry.addViewController("/monitoring/cluster/workloads/overview").setViewName("monitoring/cluster/workloads/workloads");
-        registry.addViewController("/monitoring/cluster/workloads/pods").setViewName("monitoring/cluster/workloads/pods");
-        registry.addViewController("/monitoring/cluster/workloads/deployments").setViewName("monitoring/cluster/workloads/deployments");
-        registry.addViewController("/monitoring/cluster/workloads/daemonsets").setViewName("monitoring/cluster/workloads/daemonsets");
-        registry.addViewController("/monitoring/cluster/workloads/statefulsets").setViewName("monitoring/cluster/workloads/statefulsets");
-        registry.addViewController("/monitoring/cluster/workloads/jobs").setViewName("monitoring/cluster/workloads/jobs");
-        registry.addViewController("/monitoring/cluster/workloads/cronjobs").setViewName("monitoring/cluster/workloads/cronjobs");
+//        registry.addViewController("/monitoring/cluster/workloads/overview").setViewName("monitoring/cluster/workloads/workloads");
+//        registry.addViewController("/monitoring/cluster/workloads/pods").setViewName("monitoring/cluster/workloads/pods");
+//        registry.addViewController("/monitoring/cluster/workloads/deployments").setViewName("monitoring/cluster/workloads/deployments");
+//        registry.addViewController("/monitoring/cluster/workloads/daemonsets").setViewName("monitoring/cluster/workloads/daemonsets");
+//        registry.addViewController("/monitoring/cluster/workloads/statefulsets").setViewName("monitoring/cluster/workloads/statefulsets");
+//        registry.addViewController("/monitoring/cluster/workloads/jobs").setViewName("monitoring/cluster/workloads/jobs");
+//        registry.addViewController("/monitoring/cluster/workloads/cronjobs").setViewName("monitoring/cluster/workloads/cronjobs");
         /*      > cluster (2) */
-        registry.addViewController("/monitoring/cluster/storages").setViewName("monitoring/cluster/storages");
-        registry.addViewController("/monitoring/cluster/events").setViewName("monitoring/cluster/events");
+//        registry.addViewController("/monitoring/cluster/storages").setViewName("monitoring/cluster/storages");
+//        registry.addViewController("/monitoring/cluster/events").setViewName("monitoring/cluster/events");
         /*      > jvm */
 //        registry.addViewController("/monitoring/jvm/overview").setViewName("monitoring/jvm/overview");
 //        registry.addViewController("/monitoring/jvm/application").setViewName("monitoring/jvm/application");

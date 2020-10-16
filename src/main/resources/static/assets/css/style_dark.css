@@ -3299,6 +3299,13 @@ input[id*="answer"] + label + div {max-height:0;transition: all .35s;overflow:hi
 input[id*="answer"]:checked + label + div {max-height:147px;}
 input[id*="answer"]:checked + label em {background-position:0 -18px;}
 
+input[id*="modal-answer"] {display:none;}
+input[id*="modal-answer"] + label {display:block;padding:10px; solid: red;border-bottom:0;color:#888888;cursor:pointer;position:relative;}
+input[id*="modal-answer"] + label em {position:absolute;top:50%;right:10px;width:18px;height:18px;margin-top:-9px;display:inline-block;background:url('../img/arrow_t.png') 0 0 no-repeat;}
+input[id*="modal-answer"] + label + div {max-height:0;transition: all .35s;overflow:hidden; }
+input[id*="modal-answer"]:checked + label + div {max-height:100%;}
+input[id*="modal-answer"]:checked + label em {background-position:0 -18px;}
+
 /*로그인 */
 .auth-wrapper {
     position: relative;

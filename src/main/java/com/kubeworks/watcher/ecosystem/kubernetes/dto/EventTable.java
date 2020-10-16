@@ -12,7 +12,7 @@ public class EventTable {
     @Builder
     private EventTable(String lastSeen, String type, String reason, String object,
                        String subObject, String source, String message, String firstSeen,
-                       String count, String name) {
+                       String count, String name, String namespace) {
         this.lastSeen = lastSeen;
         this.type = type;
         this.reason = reason;
@@ -23,6 +23,7 @@ public class EventTable {
         this.firstSeen = firstSeen;
         this.count = count;
         this.name = name;
+        this.namespace = namespace;
     }
 
     String lastSeen;
@@ -35,5 +36,6 @@ public class EventTable {
     String firstSeen;
     String count;
     String name;
+    String namespace;
 
 }

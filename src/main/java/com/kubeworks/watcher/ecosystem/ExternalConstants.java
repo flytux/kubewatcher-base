@@ -3,7 +3,9 @@ package com.kubeworks.watcher.ecosystem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kubeworks.watcher.ecosystem.grafana.dto.TemplateVariable;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.RegExUtils;
 import org.springframework.http.HttpStatus;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,9 +17,27 @@ import java.util.regex.Pattern;
 public class ExternalConstants {
 
     public ObjectMapper OBJECT_MAPPER;
-
     public static void setObjectMapper(ObjectMapper objectMapper) {
         ExternalConstants.OBJECT_MAPPER = objectMapper;
+    }
+
+    private Yaml yaml;
+    public static void setSnakeyaml(Yaml yaml) {
+        ExternalConstants.yaml = yaml;
+    }
+
+    public String yamlDump(Object data) {
+        if (data == null) {
+            return "";
+        }
+        return yaml.dump(data);
+    }
+
+    public String yamlDumpHtml(Object data) {
+        String yamlDump = ExternalConstants.yamlDump(data);
+        return RegExUtils.replaceAll(
+            RegExUtils.replaceAll(yamlDump, " ", "&nbsp;"),
+            "\n", "<br/>");
     }
 
     public final String GRAFANA_API_PREFIX = "/api";
@@ -70,4 +90,6 @@ public class ExternalConstants {
     public boolean isSuccessful(int status) {
         return HttpStatus.valueOf(status).is2xxSuccessful();
     }
+
+
 }

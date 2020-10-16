@@ -15,32 +15,33 @@
         <!-- [클러스터 Cron Jobs] start -->
         <div class="row">
             <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Cron Jobs
-                <div class="f_r">
-                    <div class=" d_ib">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="text" placeholder="Search" class="search_table">
-                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
-                        </div>
-                    </div>
-                    <div class="dropdown d_ib">
-                        <select id="multi-select-box">
-                            <option value="통합관리환경 admin">통합관리환경 admin</option>
-                            <option value="보험코어 monitor">보험코어 monitor</option>
-                            <option value="Cluster monitor">Cluster monitor</option>
-                            <option value="Cluster log viewer">Cluster log viewer</option>
-                            <option value="On-premise monitor">On-premise monitor</option>
-                            <option value="Cluster admin">Cluster admin</option>
-                            <option value="Dashboard operator">Dashboard operator</option>
-                        </select>
-                    </div>
-                </div>
+<!--                <div class="f_r">-->
+<!--                    <div class=" d_ib">-->
+<!--                        <div class="form-group has-feedback d_ib">-->
+<!--                            <input type="text" placeholder="Search" class="search_table">-->
+<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="dropdown d_ib">-->
+<!--                        <select id="multi-select-box">-->
+<!--                            <option value="통합관리환경 admin">통합관리환경 admin</option>-->
+<!--                            <option value="보험코어 monitor">보험코어 monitor</option>-->
+<!--                            <option value="Cluster monitor">Cluster monitor</option>-->
+<!--                            <option value="Cluster log viewer">Cluster log viewer</option>-->
+<!--                            <option value="On-premise monitor">On-premise monitor</option>-->
+<!--                            <option value="Cluster admin">Cluster admin</option>-->
+<!--                            <option value="Dashboard operator">Dashboard operator</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
 
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span class="point pr_10">6</span>  Page : <span class="point">1</span>/6
+                    Total : <span th:text="${#arrays.isEmpty(cronJobs) ? '0' : cronJobs.size()}" class="point pr_10">6</span>
+<!--                    Page : <span class="point">1</span>/6-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">
@@ -56,168 +57,22 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>heartbeat</td>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">default</a>
-
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg" style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">Jobs : Jobs 명</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody row_scroll">
-                                                <div class="table-title">
-                                                    Overview
-                                                </div>
-                                                <div class="row">
-                                                    <table class="table-nt">
-                                                        <tr>
-                                                            <th>Ctrated</th>
-                                                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Name</th>
-                                                            <td>heartbeat</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Namespace</th>
-                                                            <td>default</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Labels</th>
-                                                            <td><span class="madal_label">app.kubernetes.io/name=heartbeat</span></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Annotations</th>
-                                                            <td><span class="madal_label">linkerd.io/created-by=linkered/cli stable-2.9</span></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Schedule</th>
-                                                            <td>25 8****</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Active</th>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Suspend</th>
-                                                            <td>false</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Last schedule</th>
-                                                            <td>1d</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-
-
-                                                <div class="table-title">
-                                                    Events
-                                                </div>
-                                                <table class="list_mtable_100">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Event</th>
-                                                        <th>Source</th>
-                                                        <th>Count</th>
-                                                        <th>Sub-Object</th>
-                                                        <th>Last</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object name</td>
-                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                                    </tr>
-                                                    <tbody>
-                                                </table>
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End -->
-                            </td>
-                            <td>24 8****</td>
-                            <td>false</td>
-                            <td>0</td>
-                            <td>1d</td>
-                            <td>99d24h00mm</td>
+                        <tr th:if="${#arrays.isEmpty(cronJobs)}">
+                            <td colspan="7" class="text-center">No results</td>
                         </tr>
-                        <tr>
-                            <td>hearbeat</td>
-                            <td>default</td>
-                            <td>24 8****</td>
-                            <td>false</td>
-                            <td>0</td>
-                            <td>1d</td>
-                            <td>99d24h00mm</td>
-                        </tr>
-                        <tr>
-                            <td>hearbeat</td>
-                            <td>default</td>
-                            <td>24 8****</td>
-                            <td>false</td>
-                            <td>0</td>
-                            <td>1d</td>
-                            <td>99d24h00mm</td>
-                        </tr>
-                        <tr>
-                            <td>hearbeat</td>
-                            <td>default</td>
-                            <td>24 8****</td>
-                            <td>false</td>
-                            <td>0</td>
-                            <td>1d</td>
-                            <td>99d24h00mm</td>
-                        </tr>
-                        <tr>
-                            <td>hearbeat</td>
-                            <td>default</td>
-                            <td>24 8****</td>
-                            <td>false</td>
-                            <td>0</td>
-                            <td>1d</td>
-                            <td>99d24h00mm</td>
-                        </tr>
-                        <tr>
-                            <td>hearbeat</td>
-                            <td>default</td>
-                            <td>24 8****</td>
-                            <td>false</td>
-                            <td>0</td>
-                            <td>1d</td>
-                            <td>99d24h00mm</td>
+                        <tr th:unless="${#arrays.isEmpty(cronJobs)}" th:each="cronJob : ${cronJobs}">
+<!--                            <td>-->
+<!--                                <a th:text="${cronJob?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
+<!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${cronJob?.name} + '&quot;)'"&ndash;&gt;-->
+<!--&lt;!&ndash;                                   th:utext="${cronJob?.name}">Name</a>&ndash;&gt;-->
+<!--                            </td>-->
+                            <td th:text="${cronJob?.name}">Name</td>
+                            <td th:text="${cronJob?.namespace}">Namespace</td>
+                            <td th:text="${cronJob?.schedule}">Schedule</td>
+                            <td th:text="${cronJob?.suspend}">Suspend</td>
+                            <td th:text="${cronJob?.active}">Active</td>
+                            <td th:text="${cronJob?.lastSchedule}">Last Schedule</td>
+                            <td th:text="${cronJob?.age}">Age</td>
                         </tr>
                         </tbody>
                     </table>
@@ -225,26 +80,133 @@
             </div>
         </div>
 
-        <div class="text-center"><!-- 페이지넘버 -->
-            <nav>
-                <ul class="pagination" >
-                    <li>
-                        <a href="#" aria-label="Previous">
-                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>
-                        </a>
-                    </li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li>
-                        <a href="#" aria-label="Next">
-                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+<!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
+<!--            <nav>-->
+<!--                <ul class="pagination" >-->
+<!--                    <li>-->
+<!--                        <a href="#" aria-label="Previous">-->
+<!--                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="active"><a href="#">1</a></li>-->
+<!--                    <li><a href="#">2</a></li>-->
+<!--                    <li>-->
+<!--                        <a href="#" aria-label="Next">-->
+<!--                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </nav>-->
+<!--        </div>-->
         <!-- [클러스터 Cron Jobs] End-->
     </div>
+    <!-- [Modal] start -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div class="modal-dialog modal-lg" style="width:765px;">
+            <div class="modal-content">
+                <div class="modal-title_box">
+                    <div class="modal-title">
+                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span id="myModalLabel">Jobs : Jobs 명</span>
+                    </div>
+                </div>
+                <div class="modal-nbody row_scroll">
+                    <div class="table-title">
+                        Overview
+                    </div>
+                    <div class="row">
+                        <table class="table-nt">
+                            <tr>
+                                <th>Ctrated</th>
+                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            </tr>
+                            <tr>
+                                <th>Name</th>
+                                <td>heartbeat</td>
+                            </tr>
+                            <tr>
+                                <th>Namespace</th>
+                                <td>default</td>
+                            </tr>
+                            <tr>
+                                <th>Labels</th>
+                                <td><span class="madal_label">app.kubernetes.io/name=heartbeat</span></td>
+                            </tr>
+                            <tr>
+                                <th>Annotations</th>
+                                <td><span class="madal_label">linkerd.io/created-by=linkered/cli stable-2.9</span></td>
+                            </tr>
+                            <tr>
+                                <th>Schedule</th>
+                                <td>25 8****</td>
+                            </tr>
+                            <tr>
+                                <th>Active</th>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <th>Suspend</th>
+                                <td>false</td>
+                            </tr>
+                            <tr>
+                                <th>Last schedule</th>
+                                <td>1d</td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+                    <div class="table-title">
+                        Events
+                    </div>
+                    <table class="list_mtable_100">
+                        <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Source</th>
+                            <th>Count</th>
+                            <th>Sub-Object</th>
+                            <th>Last</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object name</td>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [Modal] End -->
 
 </div>
 </body>
