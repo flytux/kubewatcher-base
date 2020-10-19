@@ -100,9 +100,9 @@ application:
       prometheus:
         url: "http://162.243.175.190:9090"
       k8s:
-        name: local
-        url: "https://rancher.localhost.song/k8s/clusters/c-x4l59"
-        api-token: "kubeconfig-user-48zzt:jbzlv598x6xjx2n66dvmlbqlfzsxvnnhfrkmkmbt9k7hkg9tmhfwl9"
+        name: stone
+        url: "https://162.243.175.190/k8s/clusters/c-n2sv4"
+        api-token: "kubeconfig-user-bs2zr:hhfwshgvhkgprkcpctcwvs82whfs79bzx9dhxxjq48mzktc7dzd6ch"
 
 logging:
   level:
