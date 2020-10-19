@@ -59,11 +59,25 @@ public class ClusterController {
         return "monitoring/cluster/workloads/deployments";
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String deployment(Model model, @PathVariable String namespace, @PathVariable String name) {
+        DeploymentDescribe deployment = clusterRestController.deployment(namespace, name);
+        model.addAttribute("deployment", deployment);
+        return "monitoring/cluster/workloads/deployments :: modalContents";
+    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
     public String daemonSets(Model model) {
         List<DaemonSetTable> daemonSets = clusterRestController.daemonSets();
         model.addAttribute("daemonSets", daemonSets);
         return "monitoring/cluster/workloads/daemonsets";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String daemonSet(Model model, @PathVariable String namespace, @PathVariable String name) {
+        DaemonSetDescribe daemonSetDescribe = clusterRestController.daemonSet(namespace, name);
+        model.addAttribute("daemonSet", daemonSetDescribe);
+        return "monitoring/cluster/workloads/daemonsets :: modalContents";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -73,11 +87,25 @@ public class ClusterController {
         return "monitoring/cluster/workloads/statefulsets";
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String statefulSet(Model model, @PathVariable String namespace, @PathVariable String name) {
+        StatefulSetDescribe statefulSetDescribe = clusterRestController.statefulSet(namespace, name);
+        model.addAttribute("statefulSet", statefulSetDescribe);
+        return "monitoring/cluster/workloads/statefulsets :: modalContents";
+    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/jobs", produces = MediaType.APPLICATION_JSON_VALUE)
     public String jobs(Model model) {
         List<JobTable> jobs = clusterRestController.jobs();
         model.addAttribute("jobs", jobs);
         return "monitoring/cluster/workloads/jobs";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/jobs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String job(Model model, @PathVariable String namespace, @PathVariable String name) {
+        JobDescribe jobDescribe = clusterRestController.job(namespace, name);
+        model.addAttribute("job", jobDescribe);
+        return "monitoring/cluster/workloads/jobs :: modalContents";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/cronjobs", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,6 +115,13 @@ public class ClusterController {
         return "monitoring/cluster/workloads/cronjobs";
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/cronjobs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String cronJob(Model model, @PathVariable String namespace, @PathVariable String name) {
+        CronJobDescribe cronJobDescribe = clusterRestController.cronJob(namespace, name);
+        model.addAttribute("cronJob", cronJobDescribe);
+        return "monitoring/cluster/workloads/cronjobs :: modalContents";
+    }
+
     @GetMapping(value = "/monitoring/cluster/storages", produces = MediaType.APPLICATION_JSON_VALUE)
     public String storages(Model model) {
         Map<String, Object> storages = clusterRestController.storages();
@@ -94,11 +129,39 @@ public class ClusterController {
         return "monitoring/cluster/storages";
     }
 
+    @GetMapping(value = "/monitoring/cluster/persistent-volumes/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String persistentVolume(Model model, @PathVariable String name) {
+        PersistentVolumeDescribe persistentVolumeDescribe = clusterRestController.persistentVolume(name);
+        model.addAttribute("persistentVolume", persistentVolumeDescribe);
+        return "monitoring/cluster/storages :: pvModalContents";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/persistent-volume-claims/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String persistentVolumeClaim(Model model, @PathVariable String namespace, @PathVariable String name) {
+        PersistentVolumeClaimDescribe persistentVolumeClaimDescribe = clusterRestController.persistentVolumeClaim(namespace, name);
+        model.addAttribute("persistentVolumeClaim", persistentVolumeClaimDescribe);
+        return "monitoring/cluster/storages :: pvcModalContents";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/storage-classes/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String storageClass(Model model, @PathVariable String name) {
+        StorageClassDescribe storageClassDescribe = clusterRestController.storageClass(name);
+        model.addAttribute("storageClass", storageClassDescribe);
+        return "monitoring/cluster/storages :: storageModalContents";
+    }
+
     @GetMapping(value = "/monitoring/cluster/events", produces = MediaType.APPLICATION_JSON_VALUE)
     public String events(Model model) {
         List<EventTable> events = clusterRestController.events();
         model.addAttribute("events", events);
         return "monitoring/cluster/events";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String event(Model model, @PathVariable String namespace, @PathVariable String name) {
+        EventDescribe event = clusterRestController.event(namespace, name);
+        model.addAttribute("event", event);
+        return "monitoring/cluster/events :: modalContents";
     }
 
 }

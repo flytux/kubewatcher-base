@@ -166,7 +166,7 @@
     </div>
     <!-- [Modal : persistentVolumeClaim] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="pvModalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
@@ -303,7 +303,7 @@
     <!-- [Modal : persistentVolumeClaim] End -->
     <!-- [Modal : persistentVolume] start -->
     <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="pvcModalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
@@ -429,7 +429,7 @@
     <!-- [Modal : persistentVolume] End -->
     <!-- [Modal : storageClass] start -->
     <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="storageModalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
