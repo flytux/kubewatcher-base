@@ -187,12 +187,33 @@
                                 <th>Strategy Type</th>
                                 <td th:text="${deployment?.strategy}">strategy</td>
                             </tr>
-                            <tr>
-                                <th>Conditions</th>
-                                <td th:text="${deployment?.conditions}">conditions</td>
-                            </tr>
                         </table>
                     </div>
+                    <div class="table-title">
+                        Conditions
+                    </div>
+                    <table class="list_mtable_100_no">
+                        <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Reason</th>
+                            <th>LastTime</th>
+                            <th>Message</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#arrays.isEmpty(deployment?.conditions)}">
+                            <td colspan="4" class="text-center">No results</td>
+                        </tr>
+                        <tr th:unless="${#arrays.isEmpty(deployment?.conditions)}" th:each="condition : ${deployment?.conditions}">
+                            <td th:text="${condition?.type}">Type</td>
+                            <td th:text="${condition?.reason}">Reason</td>
+                            <td th:text="${#dates.format(condition?.lastUpdateTime, 'yyyy-MM-dd HH:mm:ss')}">LastTime</td>
+                            <td th:text="${condition?.message}">Message</td>
+                        </tr>
+                        <tbody>
+                    </table>
+
                     <div class="table-title">
                         Deploy Revisions
                     </div>
