@@ -66,7 +66,11 @@
 <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${cronJob?.name} + '&quot;)'"&ndash;&gt;-->
 <!--&lt;!&ndash;                                   th:utext="${cronJob?.name}">Name</a>&ndash;&gt;-->
 <!--                            </td>-->
-                            <td th:text="${cronJob?.name}">Name</td>
+<!--                            <td th:text="${cronJob?.name}">Name</td>-->
+                            <td>
+                                <a class="table2-link" th:href="'javascript:cronJobDetail(&quot;' + ${cronJob?.namespace} + '&quot;, &quot;'+ ${cronJob?.name} + '&quot;)'"
+                                   th:utext="${cronJob?.name}">Name</a>
+                            </td>
                             <td th:text="${cronJob?.namespace}">Namespace</td>
                             <td th:text="${cronJob?.schedule}">Schedule</td>
                             <td th:text="${cronJob?.suspend}">Suspend</td>
@@ -107,7 +111,7 @@
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Jobs : Jobs 명</span>
+                        <span id="myModalLabel" th:text="|Cron Job : ${cronJob?.name}|" >Jobs : Jobs 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
@@ -117,40 +121,60 @@
                     <div class="row">
                         <table class="table-nt">
                             <tr>
-                                <th>Ctrated</th>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <th>Created</th>
+                                <td th:text="${#dates.format(cronJob?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td>heartbeat</td>
+                                <td th:text="${cronJob?.name}">heartbeat</td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td>default</td>
+                                <td th:text="${cronJob?.namespace}">default</td>
                             </tr>
                             <tr>
                                 <th>Labels</th>
-                                <td><span class="madal_label">app.kubernetes.io/name=heartbeat</span></td>
+                                <td>
+                                    <div class="row" th:each="entry : ${cronJob?.labels}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                        label </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                        label </span>
+                                    </div>
+<!--                                    <span class="madal_label" th:text="${cronJob?.labels}">app.kubernetes.io/name=heartbeat</span>-->
+                                </td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
-                                <td><span class="madal_label">linkerd.io/created-by=linkered/cli stable-2.9</span></td>
+                                <td>
+<!--                                    <span class="madal_label">linkerd.io/created-by=linkered/cli stable-2.9</span>-->
+                                    <div class="row" th:each="entry : ${cronJob?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                        label </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                        label </span>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Schedule</th>
-                                <td>25 8****</td>
+                                <td th:text="${cronJob?.schedule}">25 8****</td>
                             </tr>
                             <tr>
                                 <th>Active</th>
-                                <td>0</td>
+                                <td th:text="${cronJob?.active}">0</td>
                             </tr>
                             <tr>
                                 <th>Suspend</th>
-                                <td>false</td>
+                                <td th:text="${cronJob?.suspend}">false</td>
                             </tr>
                             <tr>
                                 <th>Last schedule</th>
-                                <td>1d</td>
+                                <td th:text="${cronJob?.lastSchedule}">1d</td>
                             </tr>
                         </table>
                     </div>
@@ -170,34 +194,45 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${#arrays.isEmpty(cronJob?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${cronJob?.events}" th:each="event : ${cronJob?.events}">
+                            <td th:text="${event?.type}">Event Message</td>
+                            <td th:text="${event?.source}">///</td>
+                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
+                            <td th:text="${#dates.format(event?.c, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
+
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
                         <tbody>
                     </table>
 
@@ -207,6 +242,24 @@
         </div>
     </div>
     <!-- [Modal] End -->
+    <script type="text/javascript" th:inline="javascript">
+        function cronJobDetail(namespace, name) {
+            $.ajax({
+                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/cronjobs/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>
