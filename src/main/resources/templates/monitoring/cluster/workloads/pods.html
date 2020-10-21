@@ -134,21 +134,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Filesystem</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="col-md-12 col-lg-3">-->
+<!--                            <div class="box_panel">-->
+<!--                                <div class="box_modal-heading">Filesystem</div>-->
+<!--                                <div class="box_modal-body">-->
+<!--                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
 
                     <div class="row">
                         <table class="table-nt">
                             <tr>
-                                <th>Ctrated</th>
-                                <td th:text="${pod?.creationTimestamp}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <th>Created</th>
+                                <td th:text="${#dates.format(pod?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                             <tr>
                                 <th>Name</th>
@@ -161,8 +161,16 @@
                             <tr>
                                 <th>Labels</th>
                                 <td>
+<!--                                    <div class="row" th:each="entry : ${pod?.labels}" >-->
+<!--                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">label</span>-->
+<!--                                    </div>-->
                                     <div class="row" th:each="entry : ${pod?.labels}" >
-                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">label</span>
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                        label </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                        label </span>
                                     </div>
                                 </td>
                             </tr>
@@ -170,8 +178,17 @@
                                 <th>Annotations</th>
                                 <td>
                                     <div class="row" th:each="entry : ${pod?.annotations}" >
-                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">label</span>
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                        label </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                        label </span>
                                     </div>
+
+<!--                                    <div class="row" th:each="entry : ${pod?.annotations}" >-->
+<!--                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">label</span>-->
+<!--                                    </div>-->
                                 </td>
                             </tr>
                             <tr>
@@ -240,14 +257,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-lg-3">
-                                    <div class="box_panel">
-                                        <div class="box_modal-heading">Filesystem</div>
-                                        <div class="box_modal-body">
-                                            <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                        </div>
-                                    </div>
-                                </div>
+<!--                                <div class="col-md-12 col-lg-3">-->
+<!--                                    <div class="box_panel">-->
+<!--                                        <div class="box_modal-heading">Filesystem</div>-->
+<!--                                        <div class="box_modal-body">-->
+<!--                                            <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
                             <div class="row">
                                 <table class="table-nt">
@@ -329,7 +346,7 @@
                             <td th:text="${event?.reason}">Reason</td>
                             <td th:text="${event?.count}">Count</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">Last</td>
                         </tr>
                         <tbody>
                     </table>
