@@ -58,12 +58,16 @@
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(statefulSets)}" th:each="statefulSet : ${statefulSets}">
+                            <td>
+                                <a class="table2-link" th:href="'javascript:statefulSetDetail(&quot;' + ${statefulSet?.namespace} + '&quot;, &quot;'+ ${statefulSet?.name} + '&quot;)'"
+                                   th:utext="${statefulSet?.name}">Name</a>
+                            </td>
 <!--                            <td>-->
 <!--                                <a th:text="${statefulSet?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
 <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${statefulSet?.name} + '&quot;)'"&ndash;&gt;-->
 <!--&lt;!&ndash;                                   th:utext="${statefulSet?.name}">Name</a>&ndash;&gt;-->
 <!--                            </td>-->
-                            <td th:text="${statefulSet?.name}">Name</td>
+<!--                            <td th:text="${statefulSet?.name}">Name</td>-->
                             <td th:text="${statefulSet?.namespace}">Namespace</td>
                             <td th:text="${statefulSet?.ready}">Pods</td>
                             <td th:text="${statefulSet?.age}">Age</td>
@@ -101,7 +105,7 @@
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">StatefulSet : StatefulSet 명</span>
+                        <span id="myModalLabel" th:text="|StatefulSet : ${statefulSet?.name}|">StatefulSet : StatefulSet 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
@@ -133,41 +137,60 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Filesystem</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="col-md-12 col-lg-3">-->
+<!--                            <div class="box_panel">-->
+<!--                                <div class="box_modal-heading">Filesystem</div>-->
+<!--                                <div class="box_modal-body">-->
+<!--                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
 
                     <div class="row">
                         <table class="table-nt">
                             <tr>
-                                <th>Ctrated</th>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <th>Created</th>
+                                <td th:text="${#dates.format(statefulSet?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td>prometheus</td>
+                                <td th:text="${statefulSet?.name}">prometheus</td>
+                            </tr>
+                            <tr>
+                                <th>Namespace</th>
+                                <td th:text="${statefulSet?.namespace}">default</td>
                             </tr>
                             <tr>
                                 <th>Selector</th>
-                                <td><span class="madal_label">name=prometheus</span></td>
+                                <td>
+                                    <div class="row" th:each="item : ${statefulSet?.selector}" >
+                                        <span class="madal_label" th:text="|${item.key} : ${item.value}|">name=prometheus</span>
+                                    </div>
+                                </td>
+<!--                                <td><span class="madal_label">name=prometheus</span></td>-->
                             </tr>
                             <tr>
                                 <th>Images</th>
-                                <td>docker.io/prom/Prometheus:v2.17.2</td>
-                            </tr>.
+                                <td th:text="${statefulSet?.images}">docker.io/prom/Prometheus:v2.17.2</td>
+                            </tr>
                             <tr>
                                 <th>Annotations</th>
-                                <td><span class="madal_label">deprecated.daemonset.template.generation=1</span></td>
+                                <td>
+                                    <div class="row" th:each="entry : ${statefulSet?.annotations}" >
+                                            <span class="madal_label"
+                                                  th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                            deprecated.daemonset.template.generation=1 </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                            deprecated.daemonset.template.generation=1 </span>
+                                    </div>
+                                </td>
+<!--                                <td><span class="madal_label">deprecated.daemonset.template.generation=1</span></td>-->
                             </tr>
                             <tr>
                                 <th>Pod Ststus</th>
-                                <td><span class="madal_label_active">Running  : 2</span></td>
+                                <td th:text="${statefulSet?.podStatus}">Running  : 2 /td>
                             </tr>
                             <tr>
                                 <th>CPU</th>
@@ -195,34 +218,46 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0,000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
+                        <tr th:if="${#arrays.isEmpty(statefulSet?.pods)}">
+                            <td colspan="5" class="text-center">No pods</td>
                         </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0,000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
+                        <tr th:if="${statefulSet?.pods}" th:each="pod : ${statefulSet?.pods}">
+                            <td th:text="${pod?.name}">Name</td>
+                            <td th:text="${pod?.namespace}">Namespace</td>
+                            <td th:text="|- %|">CPU</td>
+                            <td th:text="|- %|">Memory</td>
+                            <td> <span class="madal_label_active" th:text="${pod?.status}">Status </span></td>
                         </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0,000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
-                        </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0,000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
-                        </tr>
+
+
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
                         <tbody>
                     </table>
                     <div class="table-title">
@@ -239,43 +274,69 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${#arrays.isEmpty(statefulSet?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${statefulSet?.events}" th:each="event : ${statefulSet?.events}">
+                            <td th:text="${event?.type}">Event Message</td>
+                            <td th:text="${event?.source}">///</td>
+                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
                         <tbody>
                     </table>
-
-
                 </div>
             </div>
         </div>
     </div>
     <!-- [Modal] End -->
+    <script type="text/javascript" th:inline="javascript">
+        function statefulSetDetail(namespace, name) {
+            $.ajax({
+                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/statefulsets/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>
