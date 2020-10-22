@@ -22,32 +22,57 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PageVariable extends BaseEntity {
 
+
+//    variable_id bigint unsigned auto_increment                    primary key,
+//    name                varchar(100)                              not null,
+//    sort_order          bigint unsigned                           not null,
+//    edge_fields         varchar (100)                             null,
+//    variable_type       varchar(20)                               not null,
+//    refresh_interval    varchar(3)                                not null,
+//    hidden_yn           varchar(1)                                not null,
+//    job_name            varchar(50)                               not null,
+//    api_query           varchar(1000)                             not null,
+//    create_time     timestamp           default CURRENT_TIMESTAMP not null,
+//    update_time     timestamp           default CURRENT_TIMESTAMP not null,
+//    page_id     bigint unsigned                                   null,
+//    constraint PAGE_VARIABLE_FK01
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "bigint unsigned", nullable = false)
+    @Column(name = "variable_id", columnDefinition = "bigint unsigned", nullable = false)
     long variableId;
+
+    @Column(name = "name", length = 100, nullable = false)
+    String name;
+
+    @Column(name = "sort_order", columnDefinition = "bigint unsigned default 0", nullable = false)
+    long sortOrder;
+
+    @Column(name = "edge_fields", length = 100)
+    String edgeFields;
+
+    @Column(name = "variable_type", length = 20, nullable = false)
+    //@ColumnDefault("'api'")
+    @Convert(converter = VariableTypeConverter.class)
+    VariableType variableType;
+
+    @Column(name = "refresh_interval", length = 3, nullable = false)
+    String refreshInterval;
+
+    @Column(name = "hidden_yn", length = 1, nullable = false)
+    String hiddenYn;
+
+    @Column(name = "job_name", length = 50, nullable = false)
+    String jobName;
+
+    @Column(name = "api_query", length = 1000, nullable = false)
+    String apiQuery;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "page_id", foreignKey = @ForeignKey(name = "PAGE_VARIABLE_FK01"))
     Page page;
-
-    @Column(length = 100, nullable = false)
-    String name;
-
-    @Column(length = 20, nullable = false)
-    @ColumnDefault("'api'")
-    @Convert(converter = VariableTypeConverter.class)
-    VariableType type;
-
-    @Column(length = 1000, nullable = false)
-    String src;
-
-    @Column(columnDefinition = "bigint unsigned default 0", nullable = false)
-    long sort;
-
-    @Column(length = 100)
-    String edgeFields;
 
     @Transient
     List<?> values;
