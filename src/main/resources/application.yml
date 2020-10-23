@@ -73,9 +73,9 @@ application:
       prometheus:
         url: "http://162.243.175.190:9090"
       k8s:
-        name: stone
-        url: "https://162.243.175.190/k8s/clusters/c-n2sv4"
-        api-token: "kubeconfig-user-bs2zr:hhfwshgvhkgprkcpctcwvs82whfs79bzx9dhxxjq48mzktc7dzd6ch"
+        name: local
+        url: "https://rancher.do/k8s/clusters/local"
+        api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
 
 #logging:
 #  file:
@@ -100,9 +100,9 @@ application:
       prometheus:
         url: "http://162.243.175.190:9090"
       k8s:
-        name: stone
-        url: "https://162.243.175.190/k8s/clusters/c-n2sv4"
-        api-token: "kubeconfig-user-bs2zr:hhfwshgvhkgprkcpctcwvs82whfs79bzx9dhxxjq48mzktc7dzd6ch"
+        name: local
+        url: "https://rancher.do/k8s/clusters/local"
+        api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
 
 logging:
   level:
