@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.models.V1DaemonSetCondition;
 import io.kubernetes.client.openapi.models.V1Toleration;
 import lombok.AccessLevel;
@@ -63,5 +64,15 @@ public class DaemonSetDescribe {
 
     List<PodTable> pods;
     List<EventTable> events;
+
+    public String getRequestResource(String name) {
+        Quantity requestsMetric = resources.getRequestsMetric(name);
+        return requestsMetric.getNumber().toPlainString();
+    }
+
+    public String getLimitsMetric(String name) {
+        Quantity limitsMetric = resources.getLimitsMetric(name);
+        return limitsMetric.getNumber().toPlainString();
+    }
 
 }
