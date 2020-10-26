@@ -56,70 +56,8 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">Kube-proxy</a>
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">ConfigMap : kube-proxy</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody">
-                                                <div class="table-title">
-                                                    Overview
-                                                </div>
-                                                <table class="table-nt">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Ctrated</th>
-                                                        <td>24일 15시 32분 (2020-05-24 15:32:08) </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <td>kube-proxy</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Namespace</th>
-                                                        <td>kube-system</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Labels</th>
-                                                        <td><span class="madal_label">app=kube-proxyt</span></td>
-                                                    </tr>
-                                                    </thead>
-                                                </table>
-                                                <div class="table-title">
-                                                    Configuration
-                                                </div>
-                                                <div class="scrollBoard">
-                                                    <div class="pre-title">
-                                                        Config.conf
-                                                    </div>
-                                                    <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
-                                                    <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
-                                                    <script>hljs.initHighlightingOnLoad();</script>
-                                                    <pre><code id="code-area">{"test" : "test", "test1" : "test1",
-																"test" : "test", "test1" : "test1""test" : "test", "test1" : "test1",
-																"test" : "test", "test1" : "test1"}</code></pre>
-
-                                                    <div class="pre-title">
-                                                        kubeConfig.conf
-                                                    </div>
-                                                    <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
-                                                    <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
-                                                    <script>hljs.initHighlightingOnLoad();</script>
-                                                    <pre><code id="code-area">{"test" : "test", "test1" : "test1",
-																"test" : "test", "test1" : "test1""test" : "test", "test1" : "test1",
-																"test" : "test", "test1" : "test1"}</code></pre>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End -->
+                            <td>
+                                <a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">Kube-proxy</a>
                             </td>
                             <td>Kube-system</td>
                             <td>config.conf, kubeconfig.conf</td>
@@ -253,7 +191,69 @@
         </div>
         <!-- [[Configmaps]] End-->
     </div>
+    <!-- [Modal] start -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div th:fragment="modalContents" class="modal-dialog modal-lg"style="width:765px;">
+            <div class="modal-content">
+                <div class="modal-title_box">
+                    <div class="modal-title">
+                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span id="myModalLabel">ConfigMap : kube-proxy</span>
+                    </div>
+                </div>
+                <div class="modal-nbody">
+                    <div class="table-title">
+                        Overview
+                    </div>
+                    <table class="table-nt">
+                        <thead>
+                        <tr>
+                            <th>Ctrated</th>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08) </td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>kube-proxy</td>
+                        </tr>
+                        <tr>
+                            <th>Namespace</th>
+                            <td>kube-system</td>
+                        </tr>
+                        <tr>
+                            <th>Labels</th>
+                            <td><span class="madal_label">app=kube-proxyt</span></td>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div class="table-title">
+                        Configuration
+                    </div>
+                    <div class="scrollBoard">
+                        <div class="pre-title">
+                            Config.conf
+                        </div>
+                        <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
+                        <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
+                        <script>hljs.initHighlightingOnLoad();</script>
+                        <pre><code id="code-area">{"test" : "test", "test1" : "test1",
+																"test" : "test", "test1" : "test1""test" : "test", "test1" : "test1",
+																"test" : "test", "test1" : "test1"}</code></pre>
 
+                        <div class="pre-title">
+                            kubeConfig.conf
+                        </div>
+                        <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
+                        <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
+                        <script>hljs.initHighlightingOnLoad();</script>
+                        <pre><code id="code-area">{"test" : "test", "test1" : "test1",
+																"test" : "test", "test1" : "test1""test" : "test", "test1" : "test1",
+																"test" : "test", "test1" : "test1"}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [Modal] End -->
 </div>
 </body>
 </html>
