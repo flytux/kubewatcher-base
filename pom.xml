@@ -19,6 +19,7 @@
         <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
         <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
         <k8s-client.version>9.0.2</k8s-client.version>
+        <jodatime-version>2.9.9</jodatime-version>
     </properties>
 
     <dependencies>
