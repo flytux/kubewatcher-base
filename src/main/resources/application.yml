@@ -20,12 +20,14 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kube-watcher?autoReconnect=true&useSSL=false&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/kube-watcher?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
     username: kwuser
     password: kubeworks!@
+#    initialization-mode: always # SpringBoot JDBC 이용시 블럭 해제 (schema.sql 적용됨) 하이버네이트 JPA 이용시 블럭, import.sql, ddl-auto: false
+#    data: import.sql
     hikari:
       auto-commit: false
-      connection-init-sql: "set session time_zone = 'Asia/Seoul'"
+#      connection-init-sql: "set session time_zone = 'Asia/Seoul'"
       minimum-idle: 10
       maximum-pool-size: 10
       data-source-properties:
@@ -33,19 +35,19 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
+
   jpa:
     database: mysql
-    generate-ddl: true
+    generate-ddl: false # db schema 생성 여부
     show-sql: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
+      # 엔티티 적용 방식 (update : 기존 데이터 유지, create : 신규 생성, create-drop : 신규 생성, validate : 검증),
+      # Entity 클래스의 컬럼정보로 테이블 생성
     properties:
       hibernate.format_sql: true
       hibernate.use_sql_comments: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-  h2:
-    console:
-      enabled: false
 
 management:
   endpoints:
@@ -76,13 +78,6 @@ application:
         name: local
         url: "https://rancher.do/k8s/clusters/local"
         api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
-
-#logging:
-#  file:
-#    path: /home/song/dev/logs
-#    name: ${logging.file.path}/kube-watcher.log
-#    max-history: 10
-#    max-size: 20MB
 
 ---
 spring:
