@@ -1,8 +1,8 @@
-INSERT INTO page (PAGE_ID, TITLE, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	1	,	 'Virtual Machine Overview'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	140	);
-INSERT INTO page (PAGE_ID, TITLE, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	2	,	 'Virtual Machine Overview 현황'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	141	);
-INSERT INTO page (PAGE_ID, TITLE, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	3	,	 '보험코어 JVM 현황'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	120	);
-INSERT INTO page (PAGE_ID, TITLE, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	4	,	 '보험코어 어플리케이션 JVM'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	121	);
-INSERT INTO page (PAGE_ID, TITLE, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	5	,	 '보험코어 Database 현황'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	130	);
+INSERT INTO page (PAGE_ID, TITLE, NAV, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	1	,	 'Virtual Machine Overview'	,	'Home<i class="feather icon-chevron-right" ></i>Monitoring<i class="feather icon-chevron-right" ></i>Virtual Machine<i class="feather icon-chevron-right" ></i>Overview',	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	140	);
+INSERT INTO page (PAGE_ID, TITLE, NAV, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	2	,	 'Virtual Machine Overview 현황'	,	'Home<i class="feather icon-chevron-right" ></i>Monitoring<i class="feather icon-chevron-right" ></i>Virtual Machine<i class="feather icon-chevron-right" ></i>Monitoring',	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	141	);
+INSERT INTO page (PAGE_ID, TITLE, NAV, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	3	,	 '보험코어 JVM 현황'	,	'Home<i class="feather icon-chevron-right" ></i>Monitoring<i class="feather icon-chevron-right" ></i>JVM<i class="feather icon-chevron-right" ></i>Overview'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	120	);
+INSERT INTO page (PAGE_ID, TITLE, NAV, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	4	,	 '보험코어 어플리케이션 JVM'	,	'Home<i class="feather icon-chevron-right" ></i>Monitoring<i class="feather icon-chevron-right" ></i>JVM<i class="feather icon-chevron-right" ></i>Application'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	121	);
+INSERT INTO page (PAGE_ID, TITLE, NAV, CREATE_TIME, UPDATE_TIME, MENU_ID) values (	5	,	 '보험코어 Database 현황'	,	'Home<i class="feather icon-chevron-right" ></i>Monitoring<i class="feather icon-chevron-right" ></i>Database'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	130	);
 
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	1	,	 '보험코어 VM 현황'	,	1	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	1	);
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	2	,	 '보험코어 VM 리소스'	,	2	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	1	);

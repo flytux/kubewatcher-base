@@ -18,6 +18,7 @@ public class Page extends BaseEntity {
 //    page_id     bigint unsigned auto_increment
 //    primary key,
 //    title       varchar(200)                          not null,
+//    nav       varchar(1000)                          not null,
 //    create_time timestamp default CURRENT_TIMESTAMP not null,
 //    update_time timestamp default CURRENT_TIMESTAMP not null,
 //    description varchar(500)                        null,
@@ -30,6 +31,9 @@ public class Page extends BaseEntity {
 
     @Column(name = "title", length = 200, nullable = false)
     String title;
+
+    @Column(name = "nav", length = 1000, nullable = false)
+    String nav;
 
     @Column(name = "description", length = 500)
     String description;

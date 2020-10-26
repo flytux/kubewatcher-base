@@ -11,7 +11,8 @@ create table page
 (
     page_id     bigint unsigned auto_increment
         primary key,
-    title       varchar(200)                          not null,
+    title       varchar(200)                        not null,
+    nav         varchar(1000)                       not null,
     create_time timestamp default CURRENT_TIMESTAMP not null,
     update_time timestamp default CURRENT_TIMESTAMP not null,
     description varchar(500)                        null,
