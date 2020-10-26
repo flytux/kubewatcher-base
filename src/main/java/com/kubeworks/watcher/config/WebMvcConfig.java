@@ -58,7 +58,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         /* cluster */
         /*      > config */
-        registry.addViewController("/cluster/config/configmaps").setViewName("cluster/config/configmaps");
+//        registry.addViewController("/cluster/config/configmaps").setViewName("cluster/config/configmaps");
         registry.addViewController("/cluster/config/secrets").setViewName("cluster/config/secrets");
         registry.addViewController("/cluster/config/resource-quotas").setViewName("cluster/config/resource-quotas");
         registry.addViewController("/cluster/config/hpa").setViewName("cluster/config/hpa");
