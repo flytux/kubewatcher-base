@@ -31,6 +31,13 @@ public class TestRestController {
     private final PersistentVolumeService persistentVolumeService;
     private final StorageService storageService;
     private final EventService eventService;
+    private final ConfigMapService configMapService;
+    private final SecretService secretService;
+    private final ResourceQuotaService resourceQuotaService;
+    private final HPAService hpaService;
+    private final NamespaceService namespaceService;
+    private final LimitRangeService limitRangeService;
+    private final CustomResourceService customResourceService;
 
     @GetMapping(value = "/grafana/dashboards/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public DashboardDetail grafanaDashboardPanels(@PathVariable String uid) {
@@ -157,6 +164,81 @@ public class TestRestController {
     public V1EventTableList eventTable(@PathVariable String kind, @PathVariable String namespace,
                                        @PathVariable String name, @PathVariable String uId) {
         return eventService.eventTable(kind, namespace, name, uId).orElse(null);
+    }
+
+    @GetMapping(value = "/k8s/configmaps", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ConfigMapTable> configMaps() {
+        return configMapService.allNamespaceConfigMapTables();
+    }
+
+    @GetMapping(value = "/k8s/namespace/{namespace}/configmap/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ConfigMapDescribe configMap(@PathVariable String namespace, @PathVariable String name) {
+        return configMapService.configMap(namespace, name).orElse(null);
+    }
+
+    @GetMapping(value = "/k8s/secrets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<SecretTable> secrets() {
+        return secretService.allNamespaceSecretTables();
+    }
+
+    @GetMapping(value = "/k8s/namespace/{namespace}/secrets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public SecretDescribe secret(@PathVariable String namespace, @PathVariable String name) {
+        return secretService.secret(namespace, name).orElse(null);
+    }
+
+    @GetMapping(value = "/k8s/resource-quotas", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ResourceQuotaTable> resourceQuotas() {
+        return resourceQuotaService.allNamespaceResourceQuotaTables();
+    }
+
+    @GetMapping(value = "/k8s/namespace/{namespace}/resource-quotas/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResourceQuotaDescribe resourceQuota(@PathVariable String namespace, @PathVariable String name) {
+        return resourceQuotaService.resourceQuota(namespace, name).orElse(null);
+    }
+
+    @GetMapping(value = "/k8s/hpa/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<HPATable> hpaList() {
+        return hpaService.allNamespaceHPATables();
+    }
+
+    @GetMapping(value = "/k8s/namespace/{namespace}/hpa/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HPADescribe hpa(@PathVariable String namespace, @PathVariable String name) {
+        return hpaService.hpa(namespace, name).orElse(null);
+    }
+
+    @GetMapping(value = "/k8s/limit-ranges", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<LimitRangeTable> limitRanges() {
+        return limitRangeService.allNamespaceLimitRangeTables();
+    }
+
+    @GetMapping(value = "/k8s/namespace/{namespace}/limit-ranges", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<LimitRangeDescribe> limitRanges(@PathVariable String namespace) {
+        return limitRangeService.listNamespacedLimitRange(namespace);
+    }
+
+    @GetMapping(value = "/k8s/namespace/{namespace}/limit-ranges/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public LimitRangeDescribe limitRange(@PathVariable String namespace, @PathVariable String name) {
+        return limitRangeService.limitRange(namespace, name).orElse(null);
+    }
+
+    @GetMapping(value = "/k8s/namespaces", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<NamespaceTable> namespaces() {
+        return namespaceService.allNamespaceTables();
+    }
+
+    @GetMapping(value = "/k8s/namespaces/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public NamespaceDescribe namespace(@PathVariable String name) {
+        return namespaceService.namespace(name).orElse(null);
+    }
+
+    @GetMapping(value = "/k8s/custom-resources", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CustomResourceTable> customResources() {
+        return customResourceService.allCustomResourceTables();
+    }
+
+    @GetMapping(value = "/k8s/custom-resources/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CustomResourceDescribe customResource(@PathVariable String name) {
+        return customResourceService.customResource(name).orElse(null);
     }
 }
 
