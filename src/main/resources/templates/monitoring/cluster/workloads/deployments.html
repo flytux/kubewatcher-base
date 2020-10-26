@@ -168,7 +168,7 @@
                                 <td>
                                     <div class="row" th:each="entry : ${deployment?.annotations}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         deprecated.daemonset.template.generation=1 </span>
                                         <span class="madal_label"
                                               th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">

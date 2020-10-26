@@ -14,7 +14,7 @@
 
         <!-- [클러스터 DeamonSet] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 DeamonSet
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 DaemonSet
 <!--                <div class="f_r">-->
 <!--                    <div class=" d_ib">-->
 <!--                        <div class="form-group has-feedback d_ib">-->
@@ -168,7 +168,7 @@
                                 <div class="row" th:each="entry : ${daemonSet?.annotations}" >
 <!--                                    <span class="madal_label" th:text="|${entry.key} : ${entry.value}|"> deprecated.daemonset.template.generation=1</span>-->
                                     <span class="madal_label"
-                                          th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                          th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         deprecated.daemonset.template.generation=1 </span>
                                     <span class="madal_label"
                                           th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
@@ -240,11 +240,19 @@
                             </tr>
                             <tr>
                                 <th>CPU</th>
-                                <td><span class="madal_label">Request 0,000</span> <span class="madal_label">Limit 0,000</span></td>
+                                <td>
+<!--                                    <span th:text="${daemonSet?.resources?.requests.get('cpu')}" class="madal_label">Request 0,000</span>-->
+                                    <span th:text="|Request ${#numbers.formatDecimal(daemonSet?.getRequestResource('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatDecimal(daemonSet?.getLimitsMetric('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Memory</th>
-                                <td><span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span></td>
+                                <td>
+                                    <span th:text="|Request ${#numbers.formatInteger(daemonSet?.getRequestResource('memory'), 0, 'COMMA')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatInteger(daemonSet?.getLimitsMetric('memory'), 0, 'COMMA')}|" class="madal_label">Limit 0,000</span>
+<!--                                    <span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span>-->
+                                </td>
                             </tr>
                         </table>
                     </div>

@@ -179,7 +179,7 @@
                                 <td>
                                     <div class="row" th:each="entry : ${statefulSet?.annotations}" >
                                             <span class="madal_label"
-                                                  th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                                  th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                             deprecated.daemonset.template.generation=1 </span>
                                         <span class="madal_label"
                                               th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
@@ -194,11 +194,19 @@
                             </tr>
                             <tr>
                                 <th>CPU</th>
-                                <td><span class="madal_label">Request 0,000</span> <span class="madal_label">Limit 0,000</span></td>
+                                <td>
+<!--                                    <span class="madal_label">Request 0,000</span> <span class="madal_label">Limit 0,000</span>-->
+                                    <span th:text="|Request ${#numbers.formatDecimal(statefulSet?.getRequestResource('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatDecimal(statefulSet?.getLimitsMetric('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Memory</th>
-                                <td><span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span></td>
+                                <td>
+<!--                                    <span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span>-->
+                                    <span th:text="|Request ${#numbers.formatInteger(statefulSet?.getRequestResource('memory'), 0, 'COMMA')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatInteger(statefulSet?.getLimitsMetric('memory'), 0, 'COMMA')}|" class="madal_label">Limit 0,000</span>
+                                </td>
                             </tr>
                         </table>
                     </div>

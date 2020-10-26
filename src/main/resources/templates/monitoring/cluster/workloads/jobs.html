@@ -70,8 +70,10 @@
 <!--&lt;!&ndash;                                   th:utext="${job?.name}">Name</a>&ndash;&gt;-->
 <!--                            </td>-->
 <!--                            <td th:text="${job?.name}">Name</td>-->
+                            <td>
                             <a class="table2-link" th:href="'javascript:jobDetail(&quot;' + ${job?.namespace} + '&quot;, &quot;'+ ${job?.name} + '&quot;)'"
                                th:utext="${job?.name}">Name</a>
+                            </td>
                             <td th:text="${job?.namespace}">Namespace</td>
                             <td th:text="${job?.completions}">Completions</td>
                             <td th:text="${job?.age}">Age</td>
@@ -140,7 +142,7 @@
                                 <td>
                                     <div class="row" th:each="entry : ${job?.labels}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         kubectl.kubernets.io/last-applied-configuration </span>
                                         <span class="madal_label"
                                               th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
@@ -154,7 +156,7 @@
                                 <td>
                                     <div class="row" th:each="entry : ${job?.annotations}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,100)}...|">
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         kubectl.kubernets.io/last-applied-configuration </span>
                                         <span class="madal_label"
                                               th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
@@ -195,24 +197,7 @@
                                     <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
                                     <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
                                     <script>hljs.initHighlightingOnLoad();</script>
-<!--                                    <pre><code >  Containers:-->
-<!--																					pi :-->
-<!--																						image:perl-->
-<!--																						port:<none>-->
-<!--																						Host port: <none>-->
-<!--																						Command:-->
-<!--																							perl-->
-<!--																							-Mbignum=bpi-->
-<!--																							-wle-->
-<!--																							print bpi(2000)-->
-<!--																						Environment : <none>-->
-<!--																						Mounts : <none>-->
-<!--																				Volumes: <none>-->
-<!--																				</code>-->
-<!--																			</pre>-->
-                                    <pre><code th:text="${job?.podTemplate}">
-																				</code>
-																			</pre>
+                                    <pre><code th:each="template : ${job?.podTemplate}" th:text="${template}"></code></pre>
                                 </td>
                             </tr>
                         </table>
