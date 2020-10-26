@@ -69,7 +69,11 @@
 <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${job?.name} + '&quot;)'"&ndash;&gt;-->
 <!--&lt;!&ndash;                                   th:utext="${job?.name}">Name</a>&ndash;&gt;-->
 <!--                            </td>-->
-                            <td th:text="${job?.name}">Name</td>
+<!--                            <td th:text="${job?.name}">Name</td>-->
+                            <td>
+                            <a class="table2-link" th:href="'javascript:jobDetail(&quot;' + ${job?.namespace} + '&quot;, &quot;'+ ${job?.name} + '&quot;)'"
+                               th:utext="${job?.name}">Name</a>
+                            </td>
                             <td th:text="${job?.namespace}">Namespace</td>
                             <td th:text="${job?.completions}">Completions</td>
                             <td th:text="${job?.age}">Age</td>
@@ -108,7 +112,7 @@
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Jobs : Jobs 명</span>
+                        <span id="myModalLabel" th:text="|Jobs : ${job?.name}|">Jobs : Jobs 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
@@ -118,52 +122,74 @@
                     <div class="row">
                         <table class="table-nt">
                             <tr>
-                                <th>Ctrated</th>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <th>Created</th>
+                                <td th:text="${#dates.format(job?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td>pi</td>
+                                <td th:text="${job?.name}">pi</td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td>default</td>
+                                <td th:text="${job?.namespace}">default</td>
                             </tr>
                             <tr>
                                 <th>Selector</th>
-                                <td><span class="madal_label">controller-uid=c99483s</span></td>
+                                <td><span class="madal_label" th:text="${job?.selector}">controller-uid=c99483s</span></td>
                             </tr>
                             <tr>
                                 <th>Labels</th>
-                                <td><span class="madal_label">job-name=pi</span></td>
+                                <td>
+                                    <div class="row" th:each="entry : ${job?.labels}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        kubectl.kubernets.io/last-applied-configuration </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                        kubectl.kubernets.io/last-applied-configuration </span>
+                                    </div>
+<!--                                    <span class="madal_label" th:text="${job?.labels}">job-name=pi</span>-->
+                                </td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
-                                <td><span class="madal_label">kubectl.kubernets.io/last-applied-configuration</span></td>
+                                <td>
+                                    <div class="row" th:each="entry : ${job?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        kubectl.kubernets.io/last-applied-configuration </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                        kubectl.kubernets.io/last-applied-configuration </span>
+                                    </div>
+<!--                                    <div class="row" th:each="entry : ${job?.annotations}" >-->
+<!--                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">kubectl.kubernets.io/last-applied-configuration</span>-->
+<!--                                    </div>-->
+                                </td>
                             </tr>
                             <tr>
                                 <th>parallelism</th>
-                                <td>1</td>
+                                <td th:text="${job?.parallelism}">1</td>
                             </tr>
                             <tr>
                                 <th>Completions</th>
-                                <td>1</td>
+                                <td th:text="${job?.completions}">1</td>
                             </tr>
                             <tr>
                                 <th>Start Time</th>
-                                <td>Mon, 02 Dec 2019 14:20:11 +200</td>
+                                <td th:text="${job?.startTime}">Mon, 02 Dec 2019 14:20:11 +200</td>
                             </tr>
                             <tr>
                                 <th>Completed at</th>
-                                <td>Mon, 02 Dec 2019 14:20:11 +200</td>
+                                <td th:text="${job?.completionTime}">Mon, 02 Dec 2019 14:20:11 +200</td>
                             </tr>
                             <tr>
                                 <th>Duration</th>
-                                <td>65s</td>
+                                <td th:text="${job?.duration}">65s</td>
                             </tr>
                             <tr>
                                 <th>Pod Ststus</th>
-                                <td>0 Running / 1 Succeded / 0 Failed</td>
+                                <td th:text="${job?.jobStatus}">0 Running / 1 Succeded / 0 Failed</td>
                             </tr>
                             <tr>
                                 <th>Pod template</th>
@@ -171,21 +197,7 @@
                                     <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
                                     <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
                                     <script>hljs.initHighlightingOnLoad();</script>
-                                    <pre><code >Containers:
-																					pi :
-																						image:perl
-																						port:<none>
-																						Host port: <none>
-																						Command:
-																							perl
-																							-Mbignum=bpi
-																							-wle
-																							print bpi(2000)
-																						Environment : <none>
-																						Mounts : <none>
-																				Volumes: <none>
-																				</code>
-																			</pre>
+                                    <pre><code th:each="template : ${job?.podTemplate}" th:text="${template}"></code></pre>
                                 </td>
                             </tr>
                         </table>
@@ -206,34 +218,44 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${#arrays.isEmpty(job?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${job?.events}" th:each="event : ${job?.events}">
+                            <td th:text="${event?.type}">Event Message</td>
+                            <td th:text="${event?.source}">///</td>
+                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
                         <tbody>
                     </table>
 
@@ -243,6 +265,24 @@
         </div>
     </div>
     <!-- [Modal] End -->
+    <script type="text/javascript" th:inline="javascript">
+        function jobDetail(namespace, name) {
+            $.ajax({
+                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/jobs/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>

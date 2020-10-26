@@ -14,7 +14,7 @@
 
         <!-- [클러스터 DeamonSet] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 DeamonSet
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 DaemonSet
 <!--                <div class="f_r">-->
 <!--                    <div class=" d_ib">-->
 <!--                        <div class="form-group has-feedback d_ib">-->
@@ -59,15 +59,18 @@
                             <td colspan="5" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(daemonSets)}" th:each="daemonSet : ${daemonSets}">
+                            <td>
+                                <a class="table2-link" th:href="'javascript:daemonSetDetail(&quot;' + ${daemonSet?.namespace} + '&quot;, &quot;'+ ${daemonSet?.name} + '&quot;)'"
+                                   th:utext="${daemonSet?.name}">Name</a>
+                            </td>
 <!--                            <td>-->
 <!--                                <a th:text="${daemonSet?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
 <!--                                &lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${deployment?.name} + '&quot;)'"&ndash;&gt;-->
 <!--                                &lt;!&ndash;                                   th:utext="${daemonSets?.name}">Name</a>&ndash;&gt;-->
 <!--                            </td>-->
-                            <td th:text="${daemonSet?.name}">Name</td>
                             <td th:text="${daemonSet?.namespace}">Namespace</td>
                             <td th:text="|${daemonSet?.available}/${daemonSet?.desired}|">Pods</td>
-                            <td th:text="${daemonSet?.nodeSelector}">Node selector</td>
+                            <td> <span class="madal_label"th:text="${daemonSet?.nodeSelector}">Node selector </span></td>
                             <td th:text="${daemonSet?.age}">Age</td>
                         </tr>
                         </tbody>
@@ -103,7 +106,7 @@
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">DeamonSet : DeamonSet 명</span>
+                        <span id="myModalLabel"th:text="|DaemonSet : ${daemonSet?.name}|"> DaemonSet : DaemonSet 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
@@ -135,98 +138,121 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Filesystem</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="col-md-12 col-lg-3">-->
+<!--                            <div class="box_panel">-->
+<!--                                <div class="box_modal-heading">Filesystem</div>-->
+<!--                                <div class="box_modal-body">-->
+<!--                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
 
                     <div class="row">
                         <table class="table-nt">
                             <tr>
-                                <th>Ctrated</th>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <th>Created</th>
+                                <td th:text="${#dates.format(daemonSet?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td>node-exporter</td>
+                                <td th:text="${daemonSet?.name}">node-exporter</td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td>default</td>
+                                <td th:text="${daemonSet?.namespace}"> default </td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
-                                <td><span class="madal_label">deprecated.daemonset.template.generation=1</span></td>
+                                <td>
+                                <div class="row" th:each="entry : ${daemonSet?.annotations}" >
+<!--                                    <span class="madal_label" th:text="|${entry.key} : ${entry.value}|"> deprecated.daemonset.template.generation=1</span>-->
+                                    <span class="madal_label"
+                                          th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        deprecated.daemonset.template.generation=1 </span>
+                                    <span class="madal_label"
+                                          th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                        deprecated.daemonset.template.generation=1 </span>
+
+                                </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Selector</th>
-                                <td><span class="madal_label">name=node-exporter</span></td>
+                                <td>
+                                    <div class="row" th:each="item : ${daemonSet?.selector}" >
+                                        <span class="madal_label" th:text="|${item.key} : ${item.value} |">name=node-exporter</span>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Images</th>
-                                <td>docker.io/prom/node-exporter.v1.0.0-rc.0</td>
+                                <td th:text="${daemonSet?.images}">docker.io/prom/node-exporter.v1.0.0-rc.0</td>
                             </tr>
                             <tr>
                                 <th>Strategy Type</th>
-                                <td>RollingUpdate</td>
+                                <td th:text="${daemonSet?.strategy}">RollingUpdate</td>
                             </tr>
                             <tr>
                                 <th>Tolerations</th>
                                 <td>
-                                    <table class="list_mtable_50">
-                                        <thead>
-                                        <tr>
-                                            <th>Key</th>
-                                            <th>Operator</th>
-                                            <th>Effect</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>-</td>
-                                            <td>Exists</td>
-                                            <td>Noschedule</td>
-                                        </tr>
-                                        <tr>
-                                            <td>///</td>
-                                            <td>hostpath</td>
-                                            <td>///</td>
-                                        </tr>
-                                        <tr>
-                                            <td>///</td>
-                                            <td>hostpath</td>
-                                            <td>///</td>
-                                        </tr>
-                                        <tr>
-                                            <td>///</td>
-                                            <td>hostpath</td>
-                                            <td>///</td>
-                                        </tr>
-                                        <tr>
-                                            <td>///</td>
-                                            <td>hostpath</td>
-                                            <td>///</td>
-                                        </tr>
-                                        <tbody>
-                                    </table>
+<!--                                    <table class="list_mtable_50">-->
+<!--                                        <thead>-->
+<!--                                        <tr>-->
+<!--                                            <th>Key</th>-->
+<!--                                            <th>Operator</th>-->
+<!--                                            <th>Effect</th>-->
+<!--                                        </tr>-->
+<!--                                        </thead>-->
+<!--                                        <tbody>-->
+<!--                                        <tr th:if="${#arrays.isEmpty(daemonSet?.tolerations)}">-->
+<!--                                            <td colspan="3" class="text-center">No results</td>-->
+<!--                                        </tr>-->
+<!--                                        <tr th:unless="${#arrays.isEmpty(daemonSet?.tolerations)}" th:each="toleration : ${daemonSet?.tolerations}">-->
+<!--                                            <td th:text="${toleration?.key}">-</td>-->
+<!--                                            <td th:text="${toleration?.operator}">Exists</td>-->
+<!--                                            <td th:text="${toleration?.effect}">No Schedule</td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td>-</td>-->
+<!--                                            <td>Exists</td>-->
+<!--                                            <td>Noschedule</td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td>///</td>-->
+<!--                                            <td>hostpath</td>-->
+<!--                                            <td>///</td>-->
+<!--                                        </tr>-->
+<!--                                        </tbody>-->
+<!--                                    </table>-->
+                                    <div class="row" th:each="item : ${daemonSet?.tolerations}" >
+                                        <span class="madal_label"
+                                              th:text="|Key : ${item?.key}, Operator : ${item?.operator}, Effect : ${item?.effect}|">
+                                            Key : [], Operator : [], Effect : []
+                                        </span>
+                                    </div>
+
                                 </td>
                             </tr>
                             <tr>
                                 <th>Pod Ststus</th>
-                                <td><span class="madal_label_active">Running  : 2</span></td>
+                                <td th:text="${daemonSet?.podStatus}">Running  : 2</td>
                             </tr>
                             <tr>
                                 <th>CPU</th>
-                                <td><span class="madal_label">Request 0,000</span> <span class="madal_label">Limit 0,000</span></td>
+                                <td>
+<!--                                    <span th:text="${daemonSet?.resources?.requests.get('cpu')}" class="madal_label">Request 0,000</span>-->
+                                    <span th:text="|Request ${#numbers.formatDecimal(daemonSet?.getRequestResource('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatDecimal(daemonSet?.getLimitsMetric('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Memory</th>
-                                <td><span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span></td>
+                                <td>
+                                    <span th:text="|Request ${#numbers.formatInteger(daemonSet?.getRequestResource('memory'), 0, 'COMMA')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatInteger(daemonSet?.getLimitsMetric('memory'), 0, 'COMMA')}|" class="madal_label">Limit 0,000</span>
+<!--                                    <span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span>-->
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -246,34 +272,38 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0,000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
+                        <tr th:if="${#arrays.isEmpty(daemonSet?.pods)}">
+                            <td colspan="5" class="text-center">No pods</td>
                         </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0,000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
+                        <tr th:if="${daemonSet?.pods}" th:each="pod : ${daemonSet?.pods}">
+                            <td th:text="${pod?.name}">Name</td>
+                            <td th:text="${pod?.namespace}">Namespace</td>
+                            <td th:text="|- %|">CPU</td>
+                            <td th:text="|- %|">Memory</td>
+                            <td> <span class="madal_label_active" th:text="${pod?.status}">Status </span></td>
                         </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0,000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
-                        </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0,000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
+
                         <tbody>
                     </table>
                     <div class="table-title">
@@ -290,34 +320,44 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${#arrays.isEmpty(daemonSet?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${daemonSet?.events}" th:each="event : ${daemonSet?.events}">
+                            <td th:text="${event?.type}">Event Message</td>
+                            <td th:text="${event?.source}">///</td>
+                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
                         <tbody>
                     </table>
 
@@ -327,6 +367,24 @@
         </div>
     </div>
     <!-- [Modal] End -->
+        <script type="text/javascript" th:inline="javascript">
+        function daemonSetDetail(namespace, name) {
+            $.ajax({
+                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/daemonsets/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>

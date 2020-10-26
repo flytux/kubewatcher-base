@@ -48,10 +48,16 @@ public class ObjectUsageResource {
     }
 
     public Quantity getRequestsMetric(String metricName) {
+        if (requests == null) {
+            return new Quantity("0");
+        }
         return requests.getOrDefault(metricName, new Quantity("0"));
     }
 
     public Quantity getLimitsMetric(String metricName) {
+        if (limits == null) {
+            return new Quantity("0");
+        }
         return limits.getOrDefault(metricName, new Quantity("0"));
     }
 }
