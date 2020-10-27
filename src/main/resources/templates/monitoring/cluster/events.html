@@ -52,7 +52,7 @@
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(events) ? '0' : events.size()}" class="point pr_10">6</span>
-<!--                    Page : <span class="point">1</span>/6-->
+                    <!--                    Page : <span class="point">1</span>/6-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table155">
@@ -73,7 +73,11 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(events)}" th:each="event : ${events}">
                             <td th:text="${event?.type}">Type</td>
-                            <td th:text="${event?.reason}">Reason</td>
+                            <td>
+                                <a class="table2-link" th:href="'javascript:eventDetail(&quot;' + ${event?.namespace} + '&quot;, &quot;'+ ${event?.name} + '&quot;)'"
+                                   th:utext="${event?.reason}">Reason</a>
+                                <!--                            <td th:text="${event?.reason}">Reason</td>-->
+                            </td>
                             <td th:text="${event?.namespace}">Namespace</td>
                             <td th:text="${event?.object}">Involved Object</td>
                             <td th:text="${event?.source}">Source</td>
@@ -94,7 +98,7 @@
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Event : Event Message</span>
+                        <span id="myModalLabel" th:text="|Event : ${event?.message}|">Event : Event Message</span>
                     </div>
                 </div>
                 <div class="modal-nbody">
@@ -104,44 +108,44 @@
 
                     <table class="table-nt">
                         <tr>
-                            <th>Ctrated</th>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <th>Created</th>
+                            <td th:text="${#dates.format(event?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td>Event ID</td>
+                            <td th:text="${event?.name}">Event ID</td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td>default</td>
+                            <td th:text="${event?.namespace}">default</td>
                         </tr>
                         <tr>
                             <th>Message</th>
-                            <td>Error creating///</td>
+                            <td th:text="${event?.message}">Error creating///</td>
                         </tr>
                         <tr>
                             <th>Reason</th>
-                            <td>Unhealthy</td>
+                            <td th:text="${event?.reason}">Unhealthy</td>
                         </tr>
                         <tr>
                             <th>Source</th>
-                            <td>kublet</td>
+                            <td th:text="${event?.source}">kublet</td>
                         </tr>
                         <tr>
                             <th>First seen</th>
-                            <td>00d ago(2020-05-20 15:23:11)</td>
+                            <td th:text="${#dates.format(event?.firstTimestamp,'yyyy-MM-dd HH:mm:ss')}">00d ago(2020-05-20 15:23:11)</td>
                         </tr>
                         <tr>
                             <th>Last seen</th>
-                            <td>00d ago(2020-05-20 15:23:11)</td>
+                            <td th:text="${#dates.format(event?.lastTimestamp,'yyyy-MM-dd HH:mm:ss')}">00d ago(2020-05-20 15:23:11)</td>
                         </tr>
                         <tr>
                             <th>Count</th>
-                            <td>000</td>
+                            <td th:text="${event?.count}">000</td>
                         </tr>
                         <tr>
                             <th>Type</th>
-                            <td>Warning</td>
+                            <td th:text="${event?.type}">Warning</td>
                         </tr>
                     </table>
 
@@ -158,36 +162,46 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Object name</td>
-                            <td>kube-system</td>
-                            <td>pod</td>
-                            <td>spec.containers(coredns)</td>
+
+                        <tr th:if="${#arrays.isEmpty(event?.involvedObject)}">
+                            <td colspan="4" class="text-center">No results</td>
                         </tr>
-                        <tr>
-                            <td>Object name</td>
-                            <td>kube-system</td>
-                            <td>pod</td>
-                            <td>spec.containers(coredns)</td>
+                        <tr th:if="${event?.involvedObject}" th:each="involved : ${event?.involvedObject}">
+                            <td th:text="${involved?.name}">Event Message</td>
+                            <td th:text="${involved?.namespace}">///</td>
+                            <td th:text="${involved?.kind}">00</td>
+                            <td th:text="${involved?.fieldPath}">Sub-Object</td>
                         </tr>
-                        <tr>
-                            <td>Object name</td>
-                            <td>kube-system</td>
-                            <td>pod</td>
-                            <td>spec.containers(coredns)</td>
-                        </tr>
-                        <tr>
-                            <td>Object name</td>
-                            <td>kube-system</td>
-                            <td>pod</td>
-                            <td>spec.containers(coredns)</td>
-                        </tr>
-                        <tr>
-                            <td>Object name</td>
-                            <td>kube-system</td>
-                            <td>pod</td>
-                            <td>spec.containers(coredns)</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>kube-system</td>-->
+<!--                            <td>pod</td>-->
+<!--                            <td>spec.containers(coredns)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>kube-system</td>-->
+<!--                            <td>pod</td>-->
+<!--                            <td>spec.containers(coredns)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>kube-system</td>-->
+<!--                            <td>pod</td>-->
+<!--                            <td>spec.containers(coredns)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>kube-system</td>-->
+<!--                            <td>pod</td>-->
+<!--                            <td>spec.containers(coredns)</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>kube-system</td>-->
+<!--                            <td>pod</td>-->
+<!--                            <td>spec.containers(coredns)</td>-->
+<!--                        </tr>-->
                         <tbody>
                     </table>
 
@@ -197,6 +211,24 @@
         </div>
     </div>
     <!-- [Modal] End -->
+    <script type="text/javascript" th:inline="javascript">
+        function eventDetail(namespace, name) {
+            $.ajax({
+                url: "/monitoring/cluster/namespace/" + namespace + "/events/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>
