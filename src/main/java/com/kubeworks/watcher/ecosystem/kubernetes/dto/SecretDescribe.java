@@ -18,13 +18,14 @@ public class SecretDescribe {
     @Builder
     private SecretDescribe(String name, String namespace, String uid, DateTime creationTimestamp,
                            Map<String, String> labels, Map<String, String> annotations,
-                           Map<String, String> data, Map<String, String> stringData) {
+                           String type, Map<String, String> data, Map<String, String> stringData) {
         this.name = name;
         this.namespace = namespace;
         this.uid = uid;
         this.creationTimestamp = creationTimestamp;
         this.labels = labels;
         this.annotations = annotations;
+        this.type = type;
         this.data = data;
         this.stringData = stringData;
     }
@@ -38,6 +39,8 @@ public class SecretDescribe {
 
     Map<String, String> labels;
     Map<String, String> annotations;
+
+    String type;
     Map<String, String> data;
     Map<String, String> stringData;
 
