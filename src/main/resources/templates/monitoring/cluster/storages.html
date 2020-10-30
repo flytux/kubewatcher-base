@@ -138,7 +138,7 @@
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(storages) ? '0' : storages.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(storageClasses) ? '0' : storageClasses.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table155">
@@ -151,10 +151,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(storages)}">
+                        <tr th:if="${#arrays.isEmpty(storageClasses)}">
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
-                        <tr th:unless="${#arrays.isEmpty(storages)}" th:each="storage : ${storages}">
+                        <tr th:unless="${#arrays.isEmpty(storageClasses)}" th:each="storage : ${storageClasses}">
                             <!--                            <td>-->
                             <!--                                <a th:text="${storage?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal3">Name</a>-->
                             <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${storage?.name} + '&quot;)'"&ndash;&gt;-->
@@ -178,7 +178,7 @@
     </div>
     <!-- [Modal : persistentVolumeClaim] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div th:fragment="pvModalContents" class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="pvcModalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
@@ -199,6 +199,8 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-12 col-md-12 col-lg-7">
                             <table class="table-nt">
                                 <tr>
@@ -218,10 +220,10 @@
                                     <td>
                                         <div class="row" th:each="entry : ${persistentVolumeClaim?.labels}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
                                             <span class="madal_label"
-                                                  th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                                  th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                         </div>
                                         <!--                                        <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
@@ -232,10 +234,10 @@
                                     <td>
                                         <div class="row" th:each="entry : ${persistentVolumeClaim?.annotations}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
                                             <span class="madal_label"
-                                                  th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                                  th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                         </div>
                                         <!--                                        <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
@@ -243,11 +245,11 @@
                                 </tr>
                                 <tr>
                                     <th>Finalizers</th>
-                                    <td><span class="madal_label" th:text="${persistentVolumeClaim?.finalizers}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                    <td><span class="madal_label" th:each="finalizer : ${persistentVolumeClaim?.finalizers}" th:text="${finalizer}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
                                 </tr>
                                 <tr>
                                     <th>Access Modes</th>
-                                    <td th:text="${persistentVolumeClaim?.accessModes}">ReadWriteOnce</td>
+                                    <td th:each="accessMode : ${persistentVolumeClaim?.accessModes}" th:text="${accessMode}">ReadWriteOnce</td>
                                 </tr>
                                 <tr>
                                     <th>Storage class name</th>
@@ -255,11 +257,11 @@
                                 </tr>
                                 <tr>
                                     <th>Storage</th>
-                                    <td>000G</td>
+                                    <td th:each="storage : ${persistentVolumeClaim?.capacity}" th:text="${storage.value.getNumber()}">000G</td>
                                 </tr>
                                 <tr>
                                     <th>Pods</th>
-                                    <td th:text="${persistentVolumeClaim?.pods}">pod-XXX</td>
+                                    <td th:text="${persistentVolumeClaim?.pods}"> </td>
                                 </tr>
                                 <tr>
                                     <th>Status</th>
@@ -275,11 +277,11 @@
                     <table class="table-nt">
                         <tr>
                             <th>Match Labels</th>
-                            <td th:text="${persistentVolumeClaim?.selector.matchLabels}"> </td>
+                            <td th:text="${persistentVolumeClaim?.selector?.matchLabels}"> </td>
                         </tr>
                         <tr>
                             <th>Match Expressions</th>
-                            <td th:text="${persistentVolumeClaim?.selector.matchExpressions}"></td>
+                            <td th:text="${persistentVolumeClaim?.selector?.matchExpressions}"></td>
                         </tr>
                     </table>
                     <div class="table-title">
@@ -306,34 +308,6 @@
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">Last</td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
 
@@ -345,7 +319,7 @@
     <!-- [Modal : persistentVolumeClaim] End -->
     <!-- [Modal : persistentVolume] start -->
     <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true" >
-        <div th:fragment="pvcModalContents" class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="pvModalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
@@ -367,19 +341,15 @@
                             <th>Name</th>
                             <td th:text="${persistentVolume?.name}">CLAIM-XXXX</td>
                         </tr>
-                        <!--                        <tr>-->
-                        <!--                            <th>Namespace</th>-->
-                        <!--                            <td>kube-system</td>-->
-                        <!--                        </tr>-->
                         <tr>
                             <th>Labels</th>
                             <td>
                                 <div class="row" th:each="entry : ${persistentVolume?.labels}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
                                     <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
                                 <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
@@ -391,21 +361,21 @@
                                 <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
                                 <div class="row" th:each="entry : ${persistentVolume?.annotations}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
                                     <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>Finalizers</th>
-                            <td><span class="madal_label" th:text="${persistentVolume?.finalizers}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td><span class="madal_label" th:each="finalizer : ${persistentVolume?.finalizers}" th:text="${finalizer}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
                         </tr>
                         <tr>
                             <th>Access Modes</th>
-                            <td th:text="${persistentVolume?.accessModes}">ReadWriteOnce</td>
+                            <td th:each="accessMode : ${persistentVolume?.accessModes}" th:text="${accessMode}">ReadWriteOnce</td>
                         </tr>
                         <tr>
                             <th>Reclaim Policy</th>
@@ -425,17 +395,17 @@
                         Claim
                     </div>
                     <table class="table-nt">
-                        <tr>
-                            <th>Type</th>
-                            <td th:text="${persistentVolume?.claim}">PersistentVolumeClaim</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <th>Type</th>-->
+<!--                            <td th:text="${persistentVolume?.claim}">PersistentVolumeClaim</td>-->
+<!--                        </tr>-->
                         <tr>
                             <th>Name</th>
-                            <td th:text="${persistentVolume?.claim.name}">CLAIM-XXX</td>
+                            <td th:text="${persistentVolume?.claim?.name}">CLAIM-XXX</td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td th:text="${persistentVolume?.claim.namespace}">default</td>
+                            <td th:text="${persistentVolume?.claim?.namespace}">default</td>
                         </tr>
                     </table>
                     <div class="table-title">
@@ -462,34 +432,6 @@
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
                 </div>
@@ -521,19 +463,19 @@
                             <th>Name</th>
                             <td th:text="${storageClass?.name}">Standard</td>
                         </tr>
-                        <tr>
-                            <th>Namespace</th>
-                            <td>kube-system</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <th>Namespace</th>-->
+<!--                            <td>kube-system</td>-->
+<!--                        </tr>-->
                         <tr>
                             <th>Labels</th>
                             <td>
                                 <div class="row" th:each="entry : ${storageClass?.labels}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
                                     <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
                                 <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
@@ -544,10 +486,10 @@
                             <td>
                                 <div class="row" th:each="entry : ${storageClass?.annotations}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
                                     <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
                                 <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
@@ -591,34 +533,6 @@
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
 

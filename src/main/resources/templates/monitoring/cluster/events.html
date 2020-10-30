@@ -129,7 +129,7 @@
                         </tr>
                         <tr>
                             <th>Source</th>
-                            <td th:text="${event?.source}">kublet</td>
+                            <td th:text="|${event?.source?.component}, ${event?.source?.host}"|>kubelet</td>
                         </tr>
                         <tr>
                             <th>First seen</th>
@@ -178,34 +178,8 @@
 <!--                            <td>pod</td>-->
 <!--                            <td>spec.containers(coredns)</td>-->
 <!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>kube-system</td>-->
-<!--                            <td>pod</td>-->
-<!--                            <td>spec.containers(coredns)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>kube-system</td>-->
-<!--                            <td>pod</td>-->
-<!--                            <td>spec.containers(coredns)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>kube-system</td>-->
-<!--                            <td>pod</td>-->
-<!--                            <td>spec.containers(coredns)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>kube-system</td>-->
-<!--                            <td>pod</td>-->
-<!--                            <td>spec.containers(coredns)</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
-
-
                 </div>
             </div>
         </div>

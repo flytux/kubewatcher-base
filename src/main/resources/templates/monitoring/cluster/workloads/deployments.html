@@ -168,10 +168,10 @@
                                 <td>
                                     <div class="row" th:each="entry : ${deployment?.annotations}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         deprecated.daemonset.template.generation=1 </span>
                                         <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         deprecated.daemonset.template.generation=1 </span>
 
                                     </div>
@@ -273,34 +273,13 @@
                             <td> <span class="madal_label_active"th:text="${pod?.status}">Status </span></td>
                         </tr>
 
-                        <!--<tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0.000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
-                        </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0.000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
-                        </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0.000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
-                        </tr>
-                        <tr>
-                            <td>kube-state-metrics-xxx</td>
-                            <td>default</td>
-                            <td>1</td>
-                            <td>0.000Mi</td>
-                            <td><span class="madal_label_active">Running</span></td>
-                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0.000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
                         <tbody>
                     </table>
                     <div class="table-title">
@@ -327,34 +306,13 @@
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">Last</td>
                         </tr>
-                        <!--<tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Event Message</td>-->
+<!--                            <td>///</td>-->
+<!--                            <td>00</td>-->
+<!--                            <td>Object name</td>-->
+<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
+<!--                        </tr>-->
                         <tbody>
                     </table>
 

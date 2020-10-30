@@ -137,10 +137,10 @@
                                 <td>
                                     <div class="row" th:each="entry : ${cronJob?.labels}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
                                         <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                     </div>
 <!--                                    <span class="madal_label" th:text="${cronJob?.labels}">app.kubernetes.io/name=heartbeat</span>-->
@@ -152,10 +152,10 @@
 <!--                                    <span class="madal_label">linkerd.io/created-by=linkered/cli stable-2.9</span>-->
                                     <div class="row" th:each="entry : ${cronJob?.annotations}" >
                                         <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
                                         <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                     </div>
                                 </td>
@@ -204,35 +204,6 @@
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${#dates.format(event?.c, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
-
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
 

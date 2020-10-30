@@ -179,10 +179,10 @@
                                 <td>
                                     <div class="row" th:each="entry : ${statefulSet?.annotations}" >
                                             <span class="madal_label"
-                                                  th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                                  th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                             deprecated.daemonset.template.generation=1 </span>
                                         <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                             deprecated.daemonset.template.generation=1 </span>
                                     </div>
                                 </td>
@@ -237,35 +237,14 @@
                             <td> <span class="madal_label_active" th:text="${pod?.status}">Status </span></td>
                         </tr>
 
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
 
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0,000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0,000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0,000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0,000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
                     <div class="table-title">
