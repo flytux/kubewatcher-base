@@ -15,30 +15,33 @@
         <!-- [Configmaps] start -->
         <div class="row">
             <div class="main_title" ><i class="feather icon-chevrons-right"></i> Custom Resources
-                <div class="f_r">
-                    <div class=" d_ib">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="text" placeholder="Search" class="search_table">
-                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
-                        </div>
-                    </div>
-                    <div class="dropdown d_ib">
-                        <select id="multi-select-box">
-                            <option value="통합관리환경 admin">통합관리환경 admin</option>
-                            <option value="보험코어 monitor">보험코어 monitor</option>
-                            <option value="Cluster monitor">Cluster monitor</option>
-                            <option value="Cluster log viewer">Cluster log viewer</option>
-                            <option value="On-premise monitor">On-premise monitor</option>
-                            <option value="Cluster admin">Cluster admin</option>
-                            <option value="Dashboard operator">Dashboard operator</option>
-                        </select>
-                    </div>
-                </div>
+<!--                <div class="f_r">-->
+<!--                    <div class=" d_ib">-->
+<!--                        <div class="form-group has-feedback d_ib">-->
+<!--                            <input type="text" placeholder="Search" class="search_table">-->
+<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="dropdown d_ib">-->
+<!--                        <select id="multi-select-box">-->
+<!--                            <option value="통합관리환경 admin">통합관리환경 admin</option>-->
+<!--                            <option value="보험코어 monitor">보험코어 monitor</option>-->
+<!--                            <option value="Cluster monitor">Cluster monitor</option>-->
+<!--                            <option value="Cluster log viewer">Cluster log viewer</option>-->
+<!--                            <option value="On-premise monitor">On-premise monitor</option>-->
+<!--                            <option value="Cluster admin">Cluster admin</option>-->
+<!--                            <option value="Dashboard operator">Dashboard operator</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
 
         <div class="row">
             <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : <span th:text="${#arrays.isEmpty(customResources) ? '0' : customResources.size()}" class="point pr_10">6</span>
+                </div>
                 <div class="box_table-body">
                     <table class="list_table">
                         <thead>
@@ -51,186 +54,57 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">example-resource</a>
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">Custom Resources 명</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody">
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>"CRD Object type별 상세 보기화면"
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                                <br>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End -->
+                        <tr th:if="${#arrays.isEmpty(customResources)}">
+                            <td colspan="5" class="text-center">No results</td>
+                        </tr>
+                        <tr th:unless="${#arrays.isEmpty(customResources)}" th:each="customResource : ${customResources}">
+                            <td th:text="${customResource?.name}">Name</td>
+                            <td>
+                                <a class="table2-link" th:href="'javascript:groupDetail(&quot;'+ ${customResource?.name} + '&quot;)'"
+                                   th:utext="${customResource?.group}">Group</a>
                             </td>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal2">example.crd.com</a>
-
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">Custom Resources : Custom Resources 명</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody">
-                                                <div class="table-title">
-                                                    Overview
-                                                </div>
-                                                <table class="table-nt">
-                                                    <tr>
-                                                        <th>Ctrated</th>
-                                                        <td>24일 15시 32분 (2020-05-24 15:32:08) </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <td>example</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Group</th>
-                                                        <td>example.crd.com</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Version</th>
-                                                        <td>v1</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Scope</th>
-                                                        <td>Cluster</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Conversion</th>
-                                                        <td>{"strategy","None"}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Conditions</th>
-                                                        <td><span class="madal_label">NameAccepted</span> <span class="madal_label">Established</span></td>
-                                                    </tr>
-                                                </table>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End -->
-                            </td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
+                            <td th:text="${customResource?.version}">Version</td>
+                            <td th:text="${customResource?.scope}">Scope</td>
+                            <td th:text="${customResource?.age}">Age</td>
                         </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>example-resource</td>
-                            <td>example.crd.com</td>
-                            <td>v1</td>
-                            <td>Cluster</td>
-                            <td>000d</td>
-                        </tr>
+<!--                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">example-resource</a>-->
+<!--                                &lt;!&ndash; [Modal] start &ndash;&gt;-->
+<!--                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >-->
+<!--                                    <div class="modal-dialog modal-lg"style="width:765px;">-->
+<!--                                        <div class="modal-content">-->
+<!--                                            <div class="modal-title_box">-->
+<!--                                                <div class="modal-title">-->
+<!--                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+<!--                                                    <span id="myModalLabel">Custom Resources 명</span>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="modal-nbody">-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>"CRD Object type별 상세 보기화면"-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                                <br>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                &lt;!&ndash; [Modal] End &ndash;&gt;-->
+<!--                            </td>-->
                         </tbody>
                     </table>
                 </div>
@@ -238,6 +112,132 @@
         </div>
         <!-- [[Configmaps]] End-->
     </div>
+
+    <!-- [Modal] start -->
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
+            <div class="modal-content">
+                <div class="modal-title_box">
+                    <div class="modal-title">
+                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span id="myModalLabel" th:text="|Custom Resources : ${customResource?.name}|">Custom Resources : Custom Resources 명</span>
+                    </div>
+                </div>
+                <div class="modal-nbody">
+                    <div class="table-title">
+                        Overview
+                    </div>
+                    <table class="table-nt">
+                        <tr>
+                            <th>Created</th>
+                            <td th:text="${#dates.format(customResource?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08) </td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td th:text="${customResource?.name}">example</td>
+                        </tr>
+                        <tr>
+                            <th>Group</th>
+                            <td th:text="${customResource?.group}">example.crd.com</td>
+                        </tr>
+                        <tr>
+                            <th>Version</th>
+                            <td th:each="version : ${customResource?.versions}" th:text="${version}">v1</td>
+                        </tr>
+                        <tr>
+                            <th>Scope</th>
+                            <td th:text="${customResource?.scope}">Cluster</td>
+                        </tr>
+                        <tr>
+                            <th>Conversion</th>
+                            <td th:text="${customResource?.conversion}">{"strategy","None"}</td>
+                        </tr>
+                    </table>
+
+                <div class="table-title">
+                    Conditions
+                </div>
+                <table class="list_mtable_100_no">
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Reason</th>
+                        <th>LastTime</th>
+                        <th>Message</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#arrays.isEmpty(customResource?.conditions)}">
+                            <td colspan="4" class="text-center">No results</td>
+                        </tr>
+                        <tr th:unless="${#arrays.isEmpty(customResource?.conditions)}" th:each="condition : ${customResource?.conditions}">
+                            <td th:text="${condition?.type}">Type</td>
+                            <td th:text="${condition?.reason}">Reason</td>
+                            <td th:text="${#dates.format(condition?.lastTransitionTime, 'yyyy-MM-dd HH:mm:ss')}">LastTime</td>
+                            <td th:text="${condition?.message}">Message</td>
+                        </tr>
+                    <tbody>
+                </table>
+                    <div class="table-title">
+                        Names
+                    </div>
+
+                    <table class="list_mtable_100">
+                        <thead>
+                        <tr>
+                            <th>Plural</th>
+                            <th>Singular</th>
+                            <th>Kind</th>
+                            <th>listKind</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#arrays.isEmpty(customResource?.acceptedNames)}">
+                                <td colspan="4" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(customResource?.acceptedNames)}" th:each="name : ${customResource?.acceptedNames}">
+                                <td th:text="${name?.plural}">Type</td>
+                                <td th:text="${name?.singular}">Status</td>
+                                <td th:text="${name?.kind}">Reason</td>
+                                <td th:text="${name?.listKind}">Message</td>
+                            </tr>
+                        <tbody>
+                    </table>
+
+                    <div class="table-title">
+                        Validation
+                    </div>
+                    <div class="scrollBoard">
+                        <!--                        <div class="pre-title" th:each="codeId : ${configMap?.data}">-->
+                        <!--                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/vs2015.min.css">-->
+                        <!--                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>-->
+                        <!--                            <script>hljs.initHighlightingOnLoad();</script>-->
+                        <!--                            <span th:text="${codeId.key}"></span>-->
+                        <!--                            <pre><code id ="code-area" th:text="${codeId.value}"> </code></pre>-->
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- [Modal] End -->
+    <script type="text/javascript" th:inline="javascript">
+        function groupDetail(name) {
+            $.ajax({
+                url: "/cluster/config/custom-resources/" + name,
+                success: function (data) {
+                    $('#myModal2').text("");
+                    $('#myModal2').html(data);
+                    $('#myModal2').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>
