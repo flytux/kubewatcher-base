@@ -78,6 +78,7 @@ public class BatchV1JobTableList extends V1ObjectTableList<JobTable, V1Job> {
                         for (Iterator<String> fieldNames = jsonNode.at("/f:status/f:conditions").fieldNames(); fieldNames.hasNext(); ) {
                             String fieldName = fieldNames.next();
                             if (!StringUtils.equalsIgnoreCase(".", fieldName)) {
+                                fieldName = StringUtils.substring(fieldName, 11, fieldName.lastIndexOf("\"}"));
                                 return fieldName;
                             }
                         }
