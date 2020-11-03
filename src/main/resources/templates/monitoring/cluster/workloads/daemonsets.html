@@ -249,8 +249,8 @@
                             <tr>
                                 <th>Memory</th>
                                 <td>
-                                    <span th:text="|Request ${#numbers.formatInteger(daemonSet?.getRequestResource('memory'), 0, 'COMMA')}|" class="madal_label">Request 0,000</span>
-                                    <span th:text="|Limit ${#numbers.formatInteger(daemonSet?.getLimitsMetric('memory'), 0, 'COMMA')}|" class="madal_label">Limit 0,000</span>
+                                    <span th:text="|Request ${#numbers.formatDecimal(daemonSet?.getRequestResource('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatDecimal(daemonSet?.getLimitsMetric('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
 <!--                                    <span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span>-->
                                 </td>
                             </tr>

@@ -189,7 +189,7 @@
 <!--                                <td><span class="madal_label">deprecated.daemonset.template.generation=1</span></td>-->
                             </tr>
                             <tr>
-                                <th>Pod Ststus</th>
+                                <th>Pod Status</th>
                                 <td th:text="${statefulSet?.podStatus}">Running  : 2 /td>
                             </tr>
                             <tr>
@@ -204,8 +204,8 @@
                                 <th>Memory</th>
                                 <td>
 <!--                                    <span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span>-->
-                                    <span th:text="|Request ${#numbers.formatInteger(statefulSet?.getRequestResource('memory'), 0, 'COMMA')}|" class="madal_label">Request 0,000</span>
-                                    <span th:text="|Limit ${#numbers.formatInteger(statefulSet?.getLimitsMetric('memory'), 0, 'COMMA')}|" class="madal_label">Limit 0,000</span>
+                                    <span th:text="|Request ${#numbers.formatDecimal(statefulSet?.getRequestResource('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatDecimal(statefulSet?.getLimitsMetric('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
                                 </td>
                             </tr>
                         </table>
