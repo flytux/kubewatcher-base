@@ -177,11 +177,11 @@
                             </tr>
                             <tr>
                                 <th>Start Time</th>
-                                <td th:text="${job?.startTime}">Mon, 02 Dec 2019 14:20:11 +200</td>
+                                <td th:text="${#dates.format(job?.startTime,'yyyy-MM-dd HH:mm:ss')}">Mon, 02 Dec 2019 14:20:11 +200</td>
                             </tr>
                             <tr>
                                 <th>Completed at</th>
-                                <td th:text="${job?.completionTime}">Mon, 02 Dec 2019 14:20:11 +200</td>
+                                <td th:text="${#dates.format(job?.completionTime,'yyyy-MM-dd HH:mm:ss')}">Mon, 02 Dec 2019 14:20:11 +200</td>
                             </tr>
                             <tr>
                                 <th>Duration</th>
