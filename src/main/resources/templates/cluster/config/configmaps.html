@@ -132,23 +132,20 @@
                         Configuration
                     </div>
                     <div class="scrollBoard">
-<!--                        <div class="pre-title">-->
-<!--                            Config.conf-->
-<!--                        </div>-->
-<!--                        <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">-->
-<!--                        <script th:src="@{/vendor/highlight/highlight.min.js}"></script>-->
-<!--                        <script>hljs.initHighlightingOnLoad();</script>-->
-<!--                        <pre><code id="code-area">{"test" : "test", "test1" : "test1",-->
-<!--																"test" : "test", "test1" : "test1""test" : "test", "test1" : "test1",-->
-<!--																"test" : "test", "test1" : "test1"}</code></pre>-->
-
                         <div class="pre-title" th:each="codeId : ${configMap?.data}">
                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/vs2015.min.css">
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
                             <script>hljs.initHighlightingOnLoad();</script>
-                            <span th:text="${codeId.key}"></span>
+<!--                            <span th:text="${codeId.key}"></span>-->
+                            <input th:id="|modal-answer-${codeId?.key}|"
+                                   type="checkbox" name="accordion" id="modal-answer">
+                            <label th:for="|modal-answer-${codeId?.key}|" for="modal-answer">
+                                <span th:text="${codeId?.key}">kube-state-metrics</span><em></em>
+                            </label>
+                            <div class="row">
                             <pre><code id ="code-area" th:text="${codeId.value}"> </code></pre>
                             <pre><code id ="code-area2" th:text="${configMap?.binaryData}"> </code></pre>
+                            </div>
                         </div>
 <!--                        <div class="pre-title"  th:text="${configMap?.binaryData}"> </div>-->
                     </div>
