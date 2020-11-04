@@ -9,6 +9,7 @@ import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.PersistentVolumeService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.PodService;
+import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.*;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -126,6 +128,7 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
         if (data.getStatus() != null) {
             V1PersistentVolumeClaimStatus status = data.getStatus();
             builder.status(status.getPhase());
+            builder.capacity(status.getCapacity());
         }
     }
 

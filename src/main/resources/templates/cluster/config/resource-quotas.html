@@ -14,31 +14,34 @@
 
         <!-- [Configmaps] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> ConfigMaps
-                <div class="f_r">
-                    <div class=" d_ib">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="text" placeholder="Search" class="search_table">
-                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
-                        </div>
-                    </div>
-                    <div class="dropdown d_ib">
-                        <select id="multi-select-box">
-                            <option value="통합관리환경 admin">통합관리환경 admin</option>
-                            <option value="보험코어 monitor">보험코어 monitor</option>
-                            <option value="Cluster monitor">Cluster monitor</option>
-                            <option value="Cluster log viewer">Cluster log viewer</option>
-                            <option value="On-premise monitor">On-premise monitor</option>
-                            <option value="Cluster admin">Cluster admin</option>
-                            <option value="Dashboard operator">Dashboard operator</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Resource Quotas
+<!--                <div class="f_r">-->
+<!--                    <div class=" d_ib">-->
+<!--                        <div class="form-group has-feedback d_ib">-->
+<!--                            <input type="text" placeholder="Search" class="search_table">-->
+<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="dropdown d_ib">-->
+<!--                        <select id="multi-select-box">-->
+<!--                            <option value="통합관리환경 admin">통합관리환경 admin</option>-->
+<!--                            <option value="보험코어 monitor">보험코어 monitor</option>-->
+<!--                            <option value="Cluster monitor">Cluster monitor</option>-->
+<!--                            <option value="Cluster log viewer">Cluster log viewer</option>-->
+<!--                            <option value="On-premise monitor">On-premise monitor</option>-->
+<!--                            <option value="Cluster admin">Cluster admin</option>-->
+<!--                            <option value="Dashboard operator">Dashboard operator</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
 
         <div class="row">
             <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : <span th:text="${#arrays.isEmpty(resourceQuotas) ? '0' : resourceQuotas.size()}" class="point pr_10">6</span>
+                </div>
                 <div class="box_table-body">
                     <table class="list_table">
                         <thead>
@@ -49,124 +52,25 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">cpmpute-resources</a>
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">Resource Quotas</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody">
-                                                <div class="table-title">
-                                                    Overview
-                                                </div>
-
-                                                <table class="list_mtable">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Resource</th>
-                                                        <th>Used</th>
-                                                        <th>Hard</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>limits.cpu</td>
-                                                        <td>00</td>
-                                                        <td>00</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>limits.memory</td>
-                                                        <td>00Gi</td>
-                                                        <td>000Gi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>request.cpu</td>
-                                                        <td>00</td>
-                                                        <td>00</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>request.memory</td>
-                                                        <td>00Gi</td>
-                                                        <td>000Gi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>limits.cpu</td>
-                                                        <td>00</td>
-                                                        <td>00</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>limits.memory</td>
-                                                        <td>00Gi</td>
-                                                        <td>000Gi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>request.cpu</td>
-                                                        <td>00</td>
-                                                        <td>00</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>request.memory</td>
-                                                        <td>00Gi</td>
-                                                        <td>000Gi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>limits.cpu</td>
-                                                        <td>00</td>
-                                                        <td>00</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>limits.memory</td>
-                                                        <td>00Gi</td>
-                                                        <td>000Gi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>request.cpu</td>
-                                                        <td>00</td>
-                                                        <td>00</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>request.memory</td>
-                                                        <td>00Gi</td>
-                                                        <td>000Gi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>request.memory</td>
-                                                        <td>00Gi</td>
-                                                        <td>000Gi</td>
-                                                    </tr>
-                                                    <tbody>
-                                                </table>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End -->
+                        <tr th:if="${#arrays.isEmpty(resourceQuotas)}">
+                            <td colspan="3" class="text-center">No results</td>
+                        </tr>
+                        <tr th:unless="${#arrays.isEmpty(resourceQuotas)}" th:each="resourceQuota : ${resourceQuotas}">
+                            <td>
+                                <a class="table2-link" th:href="'javascript:resourceQuotaDetail(&quot;' + ${resourceQuota?.namespace} + '&quot;, &quot;'+ ${resourceQuota?.name} + '&quot;)'"
+                                   th:utext="${resourceQuota?.name}">Name</a>
                             </td>
-                            <td>default</td>
-                            <td>000d</td>
+                            <td th:text="${resourceQuota?.namespace}">Namespace</td>
+                            <td th:text="${resourceQuota?.age}">Age</td>
                         </tr>
-                        <tr>
-                            <td>compute-resoures</td>
-                            <td>default</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>compute-resoures</td>
-                            <td>default</td>
-                            <td>000d</td>
-                        </tr>
-                        <tr>
-                            <td>compute-resoures</td>
-                            <td>default</td>
-                            <td>000d</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">cpmpute-resources</a>-->
+
+<!--                            </td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>000d</td>-->
+<!--                        </tr>-->
+
                         </tbody>
                     </table>
                 </div>
@@ -174,6 +78,69 @@
         </div>
         <!-- [[Configmaps]] End-->
     </div>
+    <!-- [Modal] start -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
+            <div class="modal-content">
+                <div class="modal-title_box">
+                    <div class="modal-title">
+                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span id="myModalLabel" th:text="|Resource Quotas : ${resourceQuota?.name}|">Resource Quotas</span>
+                    </div>
+                </div>
+                <div class="modal-nbody">
+                    <div class="table-title">
+                        Resource
+                    </div>
+
+                    <table class="list_mtable">
+                        <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Used</th>
+                            <th>Hard</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="resource : ${resourceQuota?.hard}">
+                            <td th:text="${resource.key}">limits.cpu</td>
+                            <td th:text="${resourceQuota?.used.value}">Used</td>
+                            <td th:text="${resource.value}">Hard</td>
+                        </tr>
+<!--                        <tr>-->
+<!--                            <td>limits.memory</td>-->
+<!--                            <td>00Gi</td>-->
+<!--                            <td>000Gi</td>-->
+<!--                        </tr>-->
+
+                        <tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [Modal] End -->
+
+    <script type="text/javascript" th:inline="javascript">
+        function resourceQuotaDetail(namespace, name) {
+            $.ajax({
+                url: "/cluster/config/resource-quotas/namespace/" + namespace + "/resourceQuota/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
+
 
 </div>
 </body>

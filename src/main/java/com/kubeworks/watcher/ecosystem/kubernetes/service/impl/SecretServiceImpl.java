@@ -61,6 +61,9 @@ public class SecretServiceImpl implements SecretService {
     }
 
     private void setSecret(SecretDescribe.SecretDescribeBuilder builder, V1Secret data) {
+
+        builder.type(data.getType());
+
         if (data.getMetadata() != null) {
             V1ObjectMeta metadata = data.getMetadata();
             builder.name(metadata.getName());

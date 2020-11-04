@@ -15,25 +15,25 @@
         <!-- [Persistent Volume Claims] start -->
         <div class="row">
             <div class="main_title_top"><i class="feather icon-chevrons-right"></i> Persistent Volume Claims
-<!--                <div class="f_r">-->
-<!--                    <div class=" d_ib">-->
-<!--                        <div class="form-group has-feedback d_ib">-->
-<!--                            <input type="text" placeholder="Search" class="search_table">-->
-<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="dropdown d_ib">-->
-<!--                        <select id="multi-select-box">-->
-<!--                            <option value="통합관리환경 admin">통합관리환경 admin</option>-->
-<!--                            <option value="보험코어 monitor">보험코어 monitor</option>-->
-<!--                            <option value="Cluster monitor">Cluster monitor</option>-->
-<!--                            <option value="Cluster log viewer">Cluster log viewer</option>-->
-<!--                            <option value="On-premise monitor">On-premise monitor</option>-->
-<!--                            <option value="Cluster admin">Cluster admin</option>-->
-<!--                            <option value="Dashboard operator">Dashboard operator</option>-->
-<!--                        </select>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="f_r">-->
+                <!--                    <div class=" d_ib">-->
+                <!--                        <div class="form-group has-feedback d_ib">-->
+                <!--                            <input type="text" placeholder="Search" class="search_table">-->
+                <!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                    <div class="dropdown d_ib">-->
+                <!--                        <select id="multi-select-box">-->
+                <!--                            <option value="통합관리환경 admin">통합관리환경 admin</option>-->
+                <!--                            <option value="보험코어 monitor">보험코어 monitor</option>-->
+                <!--                            <option value="Cluster monitor">Cluster monitor</option>-->
+                <!--                            <option value="Cluster log viewer">Cluster log viewer</option>-->
+                <!--                            <option value="On-premise monitor">On-premise monitor</option>-->
+                <!--                            <option value="Cluster admin">Cluster admin</option>-->
+                <!--                            <option value="Dashboard operator">Dashboard operator</option>-->
+                <!--                        </select>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
         </div>
 
@@ -59,12 +59,16 @@
                             <td colspan="6" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(persistentVolumeClaims)}" th:each="persistentVolumeClaim : ${persistentVolumeClaims}">
-<!--                            <td>-->
-<!--                                <a th:text="${persistentVolumeClaim?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
-<!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${persistentVolumeClaim?.name} + '&quot;)'"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:utext="${persistentVolumeClaim?.name}">Name</a>&ndash;&gt;-->
-<!--                            </td>-->
-                            <td th:text="${persistentVolumeClaim?.name}">Name</td>
+                            <!--                            <td>-->
+                            <!--                                <a th:text="${persistentVolumeClaim?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
+                            <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${persistentVolumeClaim?.name} + '&quot;)'"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                   th:utext="${persistentVolumeClaim?.name}">Name</a>&ndash;&gt;-->
+                            <!--                            </td>-->
+                            <td>
+                                <a class="table2-link" th:href="'javascript:persistentVolumesClaimDetail(&quot;' + ${persistentVolumeClaim?.namespace} + '&quot;, &quot;'+ ${persistentVolumeClaim?.name} + '&quot;)'"
+                                   th:utext="${persistentVolumeClaim?.name}">Name</a>
+                            </td>
+                            <!--                            <td th:text="${persistentVolumeClaim?.name}">Name</td>-->
                             <td th:text="${persistentVolumeClaim?.namespace}">Namespace</td>
                             <td th:text="${persistentVolumeClaim?.storageClass}">Storage class</td>
                             <td th:text="${persistentVolumeClaim?.capacity}">Size</td>
@@ -104,12 +108,16 @@
                             <td colspan="6" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(persistentVolumes)}" th:each="persistentVolume : ${persistentVolumes}">
-<!--                            <td>-->
-<!--                                <a th:text="${persistentVolume?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal2">Name</a>-->
-<!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${persistentVolume?.name} + '&quot;)'"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:utext="${persistentVolume?.name}">Name</a>&ndash;&gt;-->
-<!--                            </td>-->
-                            <td th:text="${persistentVolume?.name}">Name</td>
+                            <!--                            <td>-->
+                            <!--                                <a th:text="${persistentVolume?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal2">Name</a>-->
+                            <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${persistentVolume?.name} + '&quot;)'"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                   th:utext="${persistentVolume?.name}">Name</a>&ndash;&gt;-->
+                            <!--                            </td>-->
+                            <!--                            <td th:text="${persistentVolume?.name}">Name</td>-->
+                            <td>
+                                <a class="table2-link" th:href="'javascript:persistentVolumesDetail(&quot;'+ ${persistentVolume?.name} + '&quot;)'"
+                                   th:utext="${persistentVolume?.name}">Name</a>
+                            </td>
                             <td th:text="${persistentVolume?.storageClass}">Storage class</td>
                             <td th:text="${persistentVolume?.capacity}">Capacity</td>
                             <td th:text="${persistentVolume?.claim}">Claim</td>
@@ -130,7 +138,7 @@
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(storages) ? '0' : storages.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(storageClasses) ? '0' : storageClasses.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table155">
@@ -143,16 +151,20 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(storages)}">
+                        <tr th:if="${#arrays.isEmpty(storageClasses)}">
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
-                        <tr th:unless="${#arrays.isEmpty(storages)}" th:each="storage : ${storages}">
-<!--                            <td>-->
-<!--                                <a th:text="${storage?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal3">Name</a>-->
-<!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${storage?.name} + '&quot;)'"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:utext="${storage?.name}">Name</a>&ndash;&gt;-->
-<!--                            </td>-->
-                            <td th:text="${storage?.name}">Name</td>
+                        <tr th:unless="${#arrays.isEmpty(storageClasses)}" th:each="storage : ${storageClasses}">
+                            <!--                            <td>-->
+                            <!--                                <a th:text="${storage?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal3">Name</a>-->
+                            <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${storage?.name} + '&quot;)'"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                   th:utext="${storage?.name}">Name</a>&ndash;&gt;-->
+                            <!--                            </td>-->
+                            <td>
+                                <a class="table2-link" th:href="'javascript:storageClassesDetail(&quot;'+ ${storage?.name} + '&quot;)'"
+                                   th:utext="${storage?.name}">Name</a>
+                            </td>
+                            <!--                            <td th:text="${storage?.name}">Name</td>-->
                             <td th:text="${storage?.provisioner}">Provisioner</td>
                             <td th:text="${storage?.reclaimPolicy}">Reclaim Policy</td>
                             <td th:text="${storage?.age}">Age</td>
@@ -166,12 +178,12 @@
     </div>
     <!-- [Modal : persistentVolumeClaim] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div th:fragment="pvModalContents" class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="pvcModalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Persistent Volume Claim : PVC 명</span>
+                        <span id="myModalLabel" th:text="|Persistent Volume Claim : ${persistentVolumeClaim?.name}|">Persistent Volume Claim : PVC 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody">
@@ -187,51 +199,73 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-12 col-md-12 col-lg-7">
                             <table class="table-nt">
                                 <tr>
-                                    <th>Ctrated</th>
-                                    <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                    <th>Created</th>
+                                    <td th:text="${#dates.format(persistentVolumeClaim?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                                 </tr>
                                 <tr>
                                     <th>Name</th>
-                                    <td>CLAIM-XXXX</td>
+                                    <td th:text="${persistentVolumeClaim?.name}">CLAIM-XXXX</td>
                                 </tr>
                                 <tr>
                                     <th>Namespace</th>
-                                    <td>kube-system</td>
+                                    <td th:text="${persistentVolumeClaim?.namespace}">kube-system</td>
                                 </tr>
                                 <tr>
                                     <th>Labels</th>
-                                    <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                    <td>
+                                        <div class="row" th:each="entry : ${persistentVolumeClaim?.labels}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        label </span>
+                                            <span class="madal_label"
+                                                  th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        label </span>
+                                        </div>
+                                        <!--                                        <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Annotations</th>
-                                    <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                    <td>
+                                        <div class="row" th:each="entry : ${persistentVolumeClaim?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        label </span>
+                                            <span class="madal_label"
+                                                  th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        label </span>
+                                        </div>
+                                        <!--                                        <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Finalizers</th>
-                                    <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                    <td><span class="madal_label" th:each="finalizer : ${persistentVolumeClaim?.finalizers}" th:text="${finalizer}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
                                 </tr>
                                 <tr>
                                     <th>Access Modes</th>
-                                    <td>ReadWriteOnce</td>
+                                    <td th:each="accessMode : ${persistentVolumeClaim?.accessModes}" th:text="${accessMode}">ReadWriteOnce</td>
                                 </tr>
                                 <tr>
                                     <th>Storage class name</th>
-                                    <td>Standard</td>
+                                    <td th:text="${persistentVolumeClaim?.storageClassName}">Standard</td>
                                 </tr>
                                 <tr>
                                     <th>Storage</th>
-                                    <td>000G</td>
+                                    <td th:each="storage : ${persistentVolumeClaim?.capacity}" th:text="${storage.value.getNumber()}">000G</td>
                                 </tr>
                                 <tr>
                                     <th>Pods</th>
-                                    <td>pod-XXX</td>
+                                    <td th:text="${persistentVolumeClaim?.pods}"> </td>
                                 </tr>
                                 <tr>
                                     <th>Status</th>
-                                    <td>Bound</td>
+                                    <td th:text="${persistentVolumeClaim?.status}">Bound</td>
                                 </tr>
                             </table>
                         </div>
@@ -243,11 +277,11 @@
                     <table class="table-nt">
                         <tr>
                             <th>Match Labels</th>
-                            <td> </td>
+                            <td th:text="${persistentVolumeClaim?.selector?.matchLabels}"> </td>
                         </tr>
                         <tr>
                             <th>Match Expressions</th>
-                            <td></td>
+                            <td th:text="${persistentVolumeClaim?.selector?.matchExpressions}"></td>
                         </tr>
                     </table>
                     <div class="table-title">
@@ -264,33 +298,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${#arrays.isEmpty(persistentVolumeClaim?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${persistentVolumeClaim?.events}" th:each="event : ${pod?.events}">
+                            <td th:text="${event?.type}">Type</td>
+                            <td th:text="${event?.reason}">Reason</td>
+                            <td th:text="${event?.count}">Count</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">Last</td>
                         </tr>
                         <tbody>
                     </table>
@@ -302,13 +318,13 @@
     </div>
     <!-- [Modal : persistentVolumeClaim] End -->
     <!-- [Modal : persistentVolume] start -->
-    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div th:fragment="pvcModalContents" class="modal-dialog modal-lg"style="width:765px;">
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true" >
+        <div th:fragment="pvModalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Persistent Volume : PV 명</span>
+                        <span id="myModalLabel2" th:text="|Persistent Volume : ${persistentVolume?.name}|">Persistent Volume : PV 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody">
@@ -318,44 +334,60 @@
 
                     <table class="table-nt">
                         <tr>
-                            <th>Ctrated</th>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <th>Created</th>
+                            <td th:text="${#dates.format(persistentVolume?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td>CLAIM-XXXX</td>
-                        </tr>
-                        <tr>
-                            <th>Namespace</th>
-                            <td>kube-system</td>
+                            <td th:text="${persistentVolume?.name}">CLAIM-XXXX</td>
                         </tr>
                         <tr>
                             <th>Labels</th>
-                            <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td>
+                                <div class="row" th:each="entry : ${persistentVolume?.labels}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        /// </span>
+                                    <span class="madal_label"
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        /// </span>
+                                </div>
+                                <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
+                            </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
-                            <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td>
+                                <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
+                                <div class="row" th:each="entry : ${persistentVolume?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        /// </span>
+                                    <span class="madal_label"
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        /// </span>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
                             <th>Finalizers</th>
-                            <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td><span class="madal_label" th:each="finalizer : ${persistentVolume?.finalizers}" th:text="${finalizer}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
                         </tr>
                         <tr>
                             <th>Access Modes</th>
-                            <td>ReadWriteOnce</td>
+                            <td th:each="accessMode : ${persistentVolume?.accessModes}" th:text="${accessMode}">ReadWriteOnce</td>
                         </tr>
                         <tr>
                             <th>Reclaim Policy</th>
-                            <td>Delete</td>
+                            <td th:text="${persistentVolume?.reclaimPolicy}">Delete</td>
                         </tr>
                         <tr>
                             <th>Storage Class Name</th>
-                            <td>Standard</td>
+                            <td th:text="${persistentVolume?.storageClassName}">Standard</td>
                         </tr>
                         <tr>
                             <th>Status</th>
-                            <td>Bound</td>
+                            <td th:text="${persistentVolume?.status}">Bound</td>
                         </tr>
                     </table>
 
@@ -363,17 +395,17 @@
                         Claim
                     </div>
                     <table class="table-nt">
-                        <tr>
-                            <th>Type</th>
-                            <td>PersistentVolumeClaim</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <th>Type</th>-->
+<!--                            <td th:text="${persistentVolume?.claim}">PersistentVolumeClaim</td>-->
+<!--                        </tr>-->
                         <tr>
                             <th>Name</th>
-                            <td>CLAIM-XXX</td>
+                            <td th:text="${persistentVolume?.claim?.name}">CLAIM-XXX</td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td>default</td>
+                            <td th:text="${persistentVolume?.claim?.namespace}">default</td>
                         </tr>
                     </table>
                     <div class="table-title">
@@ -390,38 +422,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${#arrays.isEmpty(persistentVolume?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${persistentVolume?.events}" th:each="event : ${persistentVolume?.events}">
+                            <td th:text="${event?.type}">Event Message</td>
+                            <td th:text="${event?.source}">///</td>
+                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
                         <tbody>
                     </table>
-
-
                 </div>
             </div>
         </div>
@@ -434,7 +446,7 @@
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Storage Class : SC 명</span>
+                        <span id="myModalLabel3" th:text="|Storage Class : ${storageClass?.name}|">Storage Class : SC 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody">
@@ -444,36 +456,56 @@
 
                     <table class="table-nt">
                         <tr>
-                            <th>Ctrated</th>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <th>Created</th>
+                            <td th:text="${#dates.format(storageClass?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td>Standard</td>
+                            <td th:text="${storageClass?.name}">Standard</td>
                         </tr>
-                        <tr>
-                            <th>Namespace</th>
-                            <td>kube-system</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <th>Namespace</th>-->
+<!--                            <td>kube-system</td>-->
+<!--                        </tr>-->
                         <tr>
                             <th>Labels</th>
-                            <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td>
+                                <div class="row" th:each="entry : ${storageClass?.labels}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        /// </span>
+                                    <span class="madal_label"
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        /// </span>
+                                </div>
+                                <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
+                            </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
-                            <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td>
+                                <div class="row" th:each="entry : ${storageClass?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        /// </span>
+                                    <span class="madal_label"
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        /// </span>
+                                </div>
+                                <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
+                            </td>
                         </tr>
                         <tr>
                             <th>Provisioner</th>
-                            <td><span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td><span class="madal_label" th:text="${storageClass?.provisioner}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
                         </tr>
                         <tr>
                             <th>Volume Binding Mode</th>
-                            <td>Immediate</td>
+                            <td th:text="${storageClass?.volumeBindingMode}">Immediate</td>
                         </tr>
                         <tr>
                             <th>Reclaim Policy</th>
-                            <td>Delete</td>
+                            <td th:text="${storageClass?.reclaimPolicy}">Delete</td>
                         </tr>
                     </table>
 
@@ -491,33 +523,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${#arrays.isEmpty(storageClass?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        <tr th:if="${storageClass?.events}" th:each="event : ${storageClass?.events}">
+                            <td th:text="${event?.type}">Event Message</td>
+                            <td th:text="${event?.source}">///</td>
+                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
                         <tbody>
                     </table>
@@ -528,6 +542,57 @@
         </div>
     </div>
     <!-- [Modal : storageClass] End -->
+    <script type="text/javascript" th:inline="javascript">
+        function persistentVolumesClaimDetail(namespace, name) {
+            $.ajax({
+                url: "/monitoring/cluster/namespace/" + namespace + "/persistent-volume-claims/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+        function persistentVolumesDetail(name) {
+            $.ajax({
+                url: "/monitoring/cluster/persistent-volumes/" + name,
+                success: function (data) {
+                    $('#myModal2').text("");
+                    $('#myModal2').html(data);
+                    $('#myModal2').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+
+        function storageClassesDetail(name) {
+            $.ajax({
+                url: "/monitoring/cluster/storage-classes/" + name,
+                success: function (data) {
+                    $('#myModal3').text("");
+                    $('#myModal3').html(data);
+                    $('#myModal3').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>

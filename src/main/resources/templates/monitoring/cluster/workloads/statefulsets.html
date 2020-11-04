@@ -179,18 +179,18 @@
                                 <td>
                                     <div class="row" th:each="entry : ${statefulSet?.annotations}" >
                                             <span class="madal_label"
-                                                  th:if = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                                  th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                             deprecated.daemonset.template.generation=1 </span>
                                         <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>100}" th:text="|${entry.key} : ${entry.value}|">
+                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                             deprecated.daemonset.template.generation=1 </span>
                                     </div>
                                 </td>
 <!--                                <td><span class="madal_label">deprecated.daemonset.template.generation=1</span></td>-->
                             </tr>
                             <tr>
-                                <th>Pod Ststus</th>
-                                <td th:text="${statefulSet?.podStatus}">Running  : 2 /td>
+                                <th>Pod Status</th>
+                                <td th:text="${statefulSet?.podStatus}">Running  : 2 </td>
                             </tr>
                             <tr>
                                 <th>CPU</th>
@@ -204,8 +204,8 @@
                                 <th>Memory</th>
                                 <td>
 <!--                                    <span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span>-->
-                                    <span th:text="|Request ${#numbers.formatInteger(statefulSet?.getRequestResource('memory'), 0, 'COMMA')}|" class="madal_label">Request 0,000</span>
-                                    <span th:text="|Limit ${#numbers.formatInteger(statefulSet?.getLimitsMetric('memory'), 0, 'COMMA')}|" class="madal_label">Limit 0,000</span>
+                                    <span th:text="|Request ${#numbers.formatDecimal(statefulSet?.getRequestResource('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${#numbers.formatDecimal(statefulSet?.getLimitsMetric('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
                                 </td>
                             </tr>
                         </table>
@@ -237,35 +237,14 @@
                             <td> <span class="madal_label_active" th:text="${pod?.status}">Status </span></td>
                         </tr>
 
+<!--                        <tr>-->
+<!--                            <td>kube-state-metrics-xxx</td>-->
+<!--                            <td>default</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0,000Mi</td>-->
+<!--                            <td><span class="madal_label_active">Running</span></td>-->
+<!--                        </tr>-->
 
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0,000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0,000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0,000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0,000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
                     <div class="table-title">
