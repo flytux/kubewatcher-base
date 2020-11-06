@@ -12,34 +12,36 @@
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Container<i class=&quot;feather icon-chevron-right&quot; ></i>Network<i class=&quot;feather icon-chevron-right&quot; ></i>Services')"/>
     <div id="main_contents">
 
-        <!-- [Events] start -->
+        <!-- [Services] start -->
         <div class="row">
             <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Services
-                <div class="f_r">
-                    <div class=" d_ib">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="text" placeholder="Search" class="search_table">
-                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
-                        </div>
-                    </div>
-                    <div class="dropdown d_ib">
-                        <select id="multi-select-box">
-                            <option value="통합관리환경 admin">통합관리환경 admin</option>
-                            <option value="보험코어 monitor">보험코어 monitor</option>
-                            <option value="Cluster monitor">Cluster monitor</option>
-                            <option value="Cluster log viewer">Cluster log viewer</option>
-                            <option value="On-premise monitor">On-premise monitor</option>
-                            <option value="Cluster admin">Cluster admin</option>
-                            <option value="Dashboard operator">Dashboard operator</option>
-                        </select>
-                    </div>
-                </div>
+<!--                <div class="f_r">-->
+<!--                    <div class=" d_ib">-->
+<!--                        <div class="form-group has-feedback d_ib">-->
+<!--                            <input type="text" placeholder="Search" class="search_table">-->
+<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="dropdown d_ib">-->
+<!--                        <select id="multi-select-box">-->
+<!--                            <option value="통합관리환경 admin">통합관리환경 admin</option>-->
+<!--                            <option value="보험코어 monitor">보험코어 monitor</option>-->
+<!--                            <option value="Cluster monitor">Cluster monitor</option>-->
+<!--                            <option value="Cluster log viewer">Cluster log viewer</option>-->
+<!--                            <option value="On-premise monitor">On-premise monitor</option>-->
+<!--                            <option value="Cluster admin">Cluster admin</option>-->
+<!--                            <option value="Dashboard operator">Dashboard operator</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
 
-
         <div class="row">
             <div class="box_panel">
+                <div class="box_panel-total">
+                    Total : <span th:text="${#arrays.isEmpty(services) ? '0' : services.size()}" class="point pr_10">6</span>
+                </div>
                 <div class="box_table-body">
                     <table class="list_table">
                         <thead>
@@ -50,275 +52,39 @@
                             <th>Cluster IP</th>
                             <th>Ports</th>
                             <th>External IP</th>
-                            <th>Seletor</th>
+                            <th>Selector</th>
                             <th>Age</th>
-                            <th>Staus</th>
+                            <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">Kube-system</a>
-
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">Service : Service 명</span>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody row_scroll">
-                                                <div class="table-title">
-                                                    Overview
-                                                </div>
-                                                <table class="table-nt">
-                                                    <tr>
-                                                        <th>Ctrated</th>
-                                                        <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <td>Kube-dns</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Namespace</th>
-                                                        <td>kube-system</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Labels</th>
-                                                        <td><span class="madal_label"> Kube-dns</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Annotations</th>
-                                                        <td><span class="madal_label"> service/port=9999</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Selector</th>
-                                                        <td><span class="madal_label"> K8s-app=myAPP</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Type</th>
-                                                        <td>ClusterIP</td>
-                                                    </tr>
-                                                </table>
-
-                                                <div class="table-title">
-                                                    Connention
-                                                </div>
-                                                <table class="table-nt">
-                                                    <tr>
-                                                        <th>Cluster IP</th>
-                                                        <td>000.000.000.000</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Ports</th>
-                                                        <td>000/UDP, 000/TCP</td>
-                                                    </tr>
-                                                </table>
-
-                                                <div class="table-title">
-                                                    Endpoint
-                                                </div>
-                                                <table class="table-nt">
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <td>kube-dns</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Endpoints</th>
-                                                        <td>000.000.000.000, 000.000.000.000, 000.000.000.000</td>
-                                                    </tr>
-                                                </table>
-
-                                                <div class="table-title">
-                                                    Events
-                                                </div>
-                                                <table class="list_mtable_100">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Event</th>
-                                                        <th>Source</th>
-                                                        <th>Count</th>
-                                                        <th>Sub-Object</th>
-                                                        <th>Last</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Event Message</td>
-                                                        <td>///</td>
-                                                        <td>00</td>
-                                                        <td>Object-name</td>
-                                                        <td>2020-05-22 12:41:05</td>
-                                                    </tr>
-                                                    <tbody>
-                                                </table>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                        <tr th:if="${#arrays.isEmpty(services)}">
+                            <td colspan="8" class="text-center">No results</td>
+                        </tr>
+                        <tr th:unless="${#arrays.isEmpty(services)}" th:each="service : ${services}">
+                            <td th:text="${service?.name}">Name</td>
+                            <td th:text="${service?.namespace}"> </td>
+<!--                                <a class="table2-link" th:href="'javascript:serviceDetail(&quot;'+ ${service?.name} + '&quot;)'"-->
+<!--                                   th:utext="${customResource?.namespace}">Namespace</a>-->
+                            <td th:text="${service?.type}">Type</td>
+                            <td th:text="${service?.clusterIp}">Cluster IP</td>
+                            <td th:text="${service?.ports}">Ports</td>
+                            <td th:text="${service?.externalIp}">External IP</td>
+                            <td>
+                                <div class="row" th:each="select : ${service?.selector}" >
+                                <span class="madal_label"
+                                      th:if = " ${#strings.contains(select,',')}"
+                                      th:text = "${#strings.length(#strings.arraySplit(select,',')[0])}>30?
+                                      |${#strings.arraySplit(select,',')[0]}...| : |${#strings.arraySplit(select,',')[0]}...| ">
+                                      Selector</span>
+                                    <span class="madal_label"
+                                          th:unless = " ${#strings.contains(select,',')}"
+                                          th:text = "${#strings.length(select)}>30 ? |${select}...| : ${select}">
+                                      Selector</span>
                                 </div>
-                                <!-- [Modal] End -->
                             </td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
-                        </tr>
-                        <tr>
-                            <td>Kube-dns</td>
-                            <td>Kube-system</td>
-                            <td>ClusterIP</td>
-                            <td>000,000,000,000</td>
-                            <td>8080/TCP</td>
-                            <td>000,000,000,000</td>
-                            <td><span class="madal_label">K8s-app=myApp</span> </td>
-                            <td>99d24h</td>
-                            <td><span class="madal_label_active">Active</span> </td>
+                            <td th:text="${service?.age}">Age</td>
+                            <td>Status</td>
                         </tr>
                         </tbody>
                     </table>
@@ -327,6 +93,137 @@
         </div>
         <!-- [Events] End-->
     </div>
+
+    <!-- [Modal] start -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div class="modal-dialog modal-lg"style="width:765px;">
+            <div class="modal-content">
+                <div class="modal-title_box">
+                    <div class="modal-title">
+                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span id="myModalLabel">Service : Service 명</span>
+                    </div>
+                </div>
+                <div class="modal-nbody row_scroll">
+                    <div class="table-title">
+                        Overview
+                    </div>
+                    <table class="table-nt">
+                        <tr>
+                            <th>Created</th>
+                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>Kube-dns</td>
+                        </tr>
+                        <tr>
+                            <th>Namespace</th>
+                            <td>kube-system</td>
+                        </tr>
+                        <tr>
+                            <th>Labels</th>
+                            <td><span class="madal_label"> Kube-dns</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                        </tr>
+                        <tr>
+                            <th>Annotations</th>
+                            <td><span class="madal_label"> service/port=9999</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                        </tr>
+                        <tr>
+                            <th>Selector</th>
+                            <td><span class="madal_label"> K8s-app=myAPP</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                        </tr>
+                        <tr>
+                            <th>Type</th>
+                            <td>ClusterIP</td>
+                        </tr>
+                    </table>
+
+                    <div class="table-title">
+                        Connention
+                    </div>
+                    <table class="table-nt">
+                        <tr>
+                            <th>Cluster IP</th>
+                            <td>000.000.000.000</td>
+                        </tr>
+                        <tr>
+                            <th>Ports</th>
+                            <td>000/UDP, 000/TCP</td>
+                        </tr>
+                    </table>
+
+                    <div class="table-title">
+                        Endpoint
+                    </div>
+                    <table class="table-nt">
+                        <tr>
+                            <th>Name</th>
+                            <td>kube-dns</td>
+                        </tr>
+                        <tr>
+                            <th>Endpoints</th>
+                            <td>000.000.000.000, 000.000.000.000, 000.000.000.000</td>
+                        </tr>
+                    </table>
+
+                    <div class="table-title">
+                        Events
+                    </div>
+                    <table class="list_mtable_100">
+                        <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Source</th>
+                            <th>Count</th>
+                            <th>Sub-Object</th>
+                            <th>Last</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object-name</td>
+                            <td>2020-05-22 12:41:05</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object-name</td>
+                            <td>2020-05-22 12:41:05</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object-name</td>
+                            <td>2020-05-22 12:41:05</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object-name</td>
+                            <td>2020-05-22 12:41:05</td>
+                        </tr>
+                        <tr>
+                            <td>Event Message</td>
+                            <td>///</td>
+                            <td>00</td>
+                            <td>Object-name</td>
+                            <td>2020-05-22 12:41:05</td>
+                        </tr>
+                        <tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [Modal] End -->
 
 </div>
 </body>
