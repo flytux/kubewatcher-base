@@ -9,6 +9,7 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.Pair;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1EndpointAddress;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Call;
 
@@ -81,6 +82,21 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
     public ApiResponse<V1LimitRangeTableList> allNamespaceLimitRangeAsTable(String pretty) throws ApiException {
         Call call = listLimitRangeAsTableAllNamespacesCall(pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1LimitRangeTableList.class).getType());
+    }
+
+    public ApiResponse<V1ServiceTableList> allNamespaceServiceAsTables(String pretty) throws ApiException {
+            Call call = listServiceAsTableAllNamespacesCall(pretty);
+            return super.getApiClient().execute(call, TypeToken.getParameterized(V1ServiceTableList.class).getType());
+    }
+
+    public ApiResponse<V1EndpointTableList> allNamespaceEndpointAsTables(String pretty) throws ApiException {
+        Call call = listEndpointAsTableAllNamespacesCall(pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1EndpointTableList.class).getType());
+    }
+
+    public ApiResponse<V1ServiceAccountTableList> allNamespaceServiceAccountAsTables(String pretty) throws ApiException {
+        Call call = listServiceAccountAsTableAllNamespacesCall(pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1ServiceAccountTableList.class).getType());
     }
 
     private Call listLimitRangeAsTableAllNamespacesCall(String pretty) throws ApiException {
@@ -243,5 +259,42 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
+
+    public Call listServiceAsTableAllNamespacesCall(String pretty) throws ApiException {
+        String localVarPath = "/api/v1/services";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listEndpointAsTableAllNamespacesCall(String pretty) throws ApiException {
+        String localVarPath = "/api/v1/endpoints";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listServiceAccountAsTableAllNamespacesCall(String pretty) throws ApiException {
+        String localVarPath = "/api/v1/serviceaccounts";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
 
 }
