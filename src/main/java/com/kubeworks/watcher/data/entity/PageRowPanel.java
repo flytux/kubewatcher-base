@@ -16,19 +16,20 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PageRowPanel extends BaseEntity {
 
-//    panel_id    bigint unsigned auto_increment
-//    primary key,
-//    title       varchar(200)                              not null,
-//    sort_order  bigint unsigned                           not null,
-//    panel_type  varchar(20)                               not null,
-//    chart_type  varchar(20)                               not null,
-//    yaxis_label varchar(50)                               not null,
-//    yaxis_unit  varchar(20)                               not null,
-//    yaxis_min   varchar(10)                               not null,
-//    yaxis_max   varchar(10)                               not null,
-//    xaxis_mode  varchar(20)                               not null,
-//    create_time timestamp       default CURRENT_TIMESTAMP not null,
-//    update_time timestamp       default CURRENT_TIMESTAMP not null,
+//    panel_id       bigint unsigned auto_increment            primary key,
+//    title          varchar(200)                              not null,
+//    sort_order     bigint unsigned                           not null,
+//    panel_type     varchar(20)                               not null,
+//    fragment_name  varchar(50)                                   null,
+//    chart_type     varchar(20)                               not null,
+//    refresh_interval  bigint unsigned       default 60000    not null,
+//    yaxis_label    varchar(50)                               not null,
+//    yaxis_unit     varchar(20)                               not null,
+//    yaxis_min      varchar(10)                               not null,
+//    yaxis_max      varchar(10)                               not null,
+//    xaxis_mode     varchar(20)                               not null,
+//    create_time    timestamp       default CURRENT_TIMESTAMP not null,
+//    update_time    timestamp       default CURRENT_TIMESTAMP not null,
 //    page_row_id bigint unsigned                           null,
 //    constraint PAGE_ROW_PANEL_FK01
 
@@ -46,8 +47,14 @@ public class PageRowPanel extends BaseEntity {
     @Column(name = "panel_type", length = 20, nullable = false)
     String panelType; //TODO enum으로 변경
 
+    @Column(name = "fragment_name", length = 50, nullable = true)
+    String fragmentName;
+
     @Column(name = "chart_type", length = 20, nullable = false)
     String chartType;
+
+    @Column(name = "refresh_interval", columnDefinition = "bigint unsigned default 60000", nullable = false)
+    int refreshIntervalMillis;
 
     @Column(name = "yaxis_label", length = 50, nullable = false)
     String yaxisLabel;

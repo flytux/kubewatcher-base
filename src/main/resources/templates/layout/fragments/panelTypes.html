@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <th:block th:fragment="page-row-header(title)">
+        <div class="main_title col-xs-12">
+            <i class="feather icon-chevrons-right"></i> [[${title}]]
+        </div>
+    </th:block>
+
+    <th:block th:fragment="value-card-panel(panel)">
+        <div class="col-md-12 col-lg-15">
+            <div class="box1">
+                <div th:text="${panel?.title}" class="title">VM</div>
+<!--                <div class="stitle">Virtual Machine</div>-->
+                <div th:id="|container-${panel?.panelId}|" class="b_txt text-center">102</div>
+            </div>
+        </div>
+    </th:block>
+
+<!--    <th:block th:fragment="headless-card-panel(panel)">-->
+<!--        <div class="col-md-12 col-lg-15">-->
+<!--            <div class="col-md-12">-->
+<!--                <div class="col-xs-12 box_panel" th:id="|container-${panel?.panelId}|" style="height:300px;"></div>-->
+<!--&lt;!&ndash;                <div class="col-xs-12 box_panel">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="embed-responsive embed-responsive-16by9-sm">&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </th:block>-->
+
+    <th:block th:fragment="headless-card-panel(panel)">
+        <div class="col-md-12 col-lg-15">
+            <figure class="highcharts-figure">
+                <div th:id="|container-${panel?.panelId}|"
+                     class="chart-container box_panel" style="min-height: 160px; max-height: 130px;"></div>
+            </figure>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="head-card-panel(panel)">
+        <div class="col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                <div th:id="|container-${panel?.panelId}|" style="height:300px;"></div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="head-card-panel-in-table(panel)">
+        <div class="col-md-12 col-lg-6">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                <div class="box_panel-body" style="min-height: 300px;">
+                    <table th:id="|container-${panel?.panelId}|"
+                           class="list_table">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+
+
+</body>
+</html>
