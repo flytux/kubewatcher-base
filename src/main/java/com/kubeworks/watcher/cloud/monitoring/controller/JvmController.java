@@ -1,8 +1,6 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
-import com.kubeworks.watcher.data.entity.PageRowPanel;
-import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
-import com.kubeworks.watcher.preference.service.PageViewService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -12,24 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Map;
 
 @Controller
+@AllArgsConstructor(onConstructor_ = {@Autowired})
 public class JvmController {
 
     private static final long OVERVIEW_MENU_ID = 120;
     private static final long DETAIL_MENU_ID = 121;
 
-    private final PageViewService pageViewService;
-    private final ProxyApiService proxyApiService;
-
-    @Autowired
-    public JvmController(PageViewService pageViewService, ProxyApiService proxyApiService) {
-        this.pageViewService = pageViewService;
-        this.proxyApiService = proxyApiService;
-    }
+    private final MonitoringRestController monitoringRestController;
 
     @GetMapping(value = "/monitoring/jvm/overview", produces = MediaType.TEXT_HTML_VALUE)
     public String overview(Model model) {
-        Map<Long, PageRowPanel> panelMap = pageViewService.getPagePanels(OVERVIEW_MENU_ID);
-        model.addAttribute("panelMap", panelMap);
+        Map<String, Object> response = monitoringRestController.jvmOverview();
+        model.addAllAttributes(response);
         return "monitoring/jvm/overview";
     }
 
