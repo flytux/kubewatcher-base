@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
+import com.kubeworks.watcher.config.properties.PrometheusProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class MonitoringRestController {
     private static final long VM_DETAIL_MENU_ID = 141;
 
     private final PageViewService pageViewService;
+    private final PrometheusProperties prometheusProperties;
 
     @GetMapping(value = "/monitoring/database", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> database() {
@@ -61,6 +63,7 @@ public class MonitoringRestController {
     private Map<String, Object> responseData(Page page) {
         Map<String, Object> response = new HashMap<>();
         response.put("user", getUser());
+        response.put("host", prometheusProperties.getUrl());
         response.put("page", page);
         return response;
     }
@@ -72,5 +75,6 @@ public class MonitoringRestController {
         }
         return null;
     }
+
 
 }

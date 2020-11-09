@@ -9,14 +9,14 @@
 
 create table page
 (
-    page_id     bigint unsigned auto_increment
-        primary key,
-    title       varchar(200)                        not null,
-    nav         varchar(1000)                       not null,
-    create_time timestamp default CURRENT_TIMESTAMP not null,
-    update_time timestamp default CURRENT_TIMESTAMP not null,
-    description varchar(500)                        null,
-    menu_id     bigint unsigned                     not null
+    page_id        bigint unsigned auto_increment      primary key,
+    title          varchar(200)                     not null,
+    nav            varchar(1000)                    not null,
+    fragment_name  varchar(50)                      null,
+    create_time    timestamp default CURRENT_TIMESTAMP not null,
+    update_time    timestamp default CURRENT_TIMESTAMP not null,
+    description    varchar(500)                        null,
+    menu_id        bigint unsigned                     not null
 );
 
 create table page_row
@@ -41,6 +41,7 @@ create table page_row_panel
     sort_order  bigint unsigned                           not null,
     panel_type  varchar(20)                               not null,
     chart_type  varchar(20)                               not null,
+    refresh_interval  bigint unsigned       default 60000    not null,
     yaxis_label varchar(50)                               not null,
     yaxis_unit  varchar(20)                               not null,
     yaxis_min   varchar(10)                               not null,
