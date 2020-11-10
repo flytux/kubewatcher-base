@@ -37,18 +37,18 @@ public class AccessControlController {
     */
     @GetMapping(value = "/cluster/acl/roles", produces = MediaType.TEXT_HTML_VALUE)
     public String roles(Model model) {
-        //List<CustomResourceTable> customResources = configRestController.customResources();
-        //model.addAttribute("customResources", customResources);
+        List<RoleTable> roles = accessControlRestController.roles();
+        model.addAttribute("roles", roles);
         return "cluster/access-control/roles";
     }
 
     /*
         클러스터 엑세스 컨트롤 팝업 모달 화면 : /cluster/acl/roles/{name}
      */
-    @GetMapping(value = "/cluster/acl/roles/{namespace}/role/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String role(Model model, @PathVariable String namespace, @PathVariable String roleName) {
-        //List<CustomResourceTable> customResources = configRestController.customResources();
-        //model.addAttribute("customResources", customResources);
+    @GetMapping(value = "/cluster/acl/roles/namespace/{namespace}/role/{name}", produces = MediaType.TEXT_HTML_VALUE)
+    public String role(Model model, @PathVariable String namespace, @PathVariable String name) {
+        RoleDescribe roleDescribe = accessControlRestController.roleDescribe(namespace, name);
+        model.addAttribute("roleDescribe", roleDescribe);
         return "cluster/access-control/roles :: modalContents";
     }
 
@@ -65,8 +65,8 @@ public class AccessControlController {
     /*
         클러스터 POD Security Policy 팝업 모달 화면 : /cluster/acl/podsecuriypolicies/{name}
      */
-    @GetMapping(value = "/cluster/acl/podsecuriypolicies/{namespace}/podsecuriypolicy/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String podSecurityPolicy(Model model, @PathVariable String namespace, @PathVariable String podSecurityPolicyName) {
+    @GetMapping(value = "/cluster/acl/podsecuriypolicies/podsecuriypolicy/{name}", produces = MediaType.TEXT_HTML_VALUE)
+    public String podSecurityPolicy(Model model, @PathVariable String podSecurityPolicyName) {
         //List<CustomResourceTable> customResources = configRestController.customResources();
         //model.addAttribute("customResources", customResources);
         return "cluster/access-control/pod-security-policies :: modalContents";

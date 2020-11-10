@@ -47,7 +47,7 @@ public class AccessControlRestController {
     /*
         Role 네임스페이스로 상세 조회
     */
-    @GetMapping(value = "/cluster/acl/roles/{namespace}/role/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/cluster/acl/roles/namespace/{namespace}/role/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public RoleDescribe roleDescribe(@PathVariable String namespace, @PathVariable String roleName) {
 
         return roleService.role(namespace, roleName).orElse(null);
@@ -65,8 +65,8 @@ public class AccessControlRestController {
     /*
         Pod Security Policies 네임스페이스로 상세 조회
     */
-    @GetMapping(value = "/cluster/acl/podsecuriypolicies/{namespace}/podsecuriypolicy/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PodSecurityPolicyDescribe podSecurityPolicyDescribe(@PathVariable String namespace, @PathVariable String podPolicyName) {
+    @GetMapping(value = "/cluster/acl/podsecuriypolicies/namespace/{namespace}/podsecuriypolicy/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public PodSecurityPolicyDescribe podSecurityPolicyDescribe(@PathVariable String podPolicyName) {
 
         return podSecurityPoliciesService.podSecurityPolicy(podPolicyName).orElse(null);
     }
