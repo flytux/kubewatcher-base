@@ -53,22 +53,22 @@ public class AccessControlController {
     }
 
     /*
-    클러스터 POD Security Policy 메인 화면 : /cluster/acl/podsecuriypolicies
+    클러스터 POD Security Policy 메인 화면 : /cluster/acl/pod-security-policies
 */
-    @GetMapping(value = "/cluster/acl/podsecuriypolicies", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/cluster/acl/pod-security-policies", produces = MediaType.TEXT_HTML_VALUE)
     public String podSecurityPolicies(Model model) {
-        //List<CustomResourceTable> customResources = configRestController.customResources();
-        //model.addAttribute("customResources", customResources);
+        List<PodSecurityPolicyTable> podSecurityPolicies = accessControlRestController.podSecurityPolicies();
+        model.addAttribute("podSecurityPolicies", podSecurityPolicies);
         return "cluster/access-control/pod-security-policies";
     }
 
     /*
-        클러스터 POD Security Policy 팝업 모달 화면 : /cluster/acl/podsecuriypolicies/{name}
+        클러스터 POD Security Policy 팝업 모달 화면 : /cluster/acl/pod-security-policies/{name}
      */
-    @GetMapping(value = "/cluster/acl/podsecuriypolicies/podsecuriypolicy/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String podSecurityPolicy(Model model, @PathVariable String podSecurityPolicyName) {
-        //List<CustomResourceTable> customResources = configRestController.customResources();
-        //model.addAttribute("customResources", customResources);
+    @GetMapping(value = "/cluster/acl/pod-security-policies/{name}", produces = MediaType.TEXT_HTML_VALUE)
+    public String podSecurityPolicy(Model model, @PathVariable String name) {
+        PodSecurityPolicyDescribe policyDescribe = accessControlRestController.podSecurityPolicyDescribe(name);
+        model.addAttribute("policyDescribe", policyDescribe);
         return "cluster/access-control/pod-security-policies :: modalContents";
     }
 }

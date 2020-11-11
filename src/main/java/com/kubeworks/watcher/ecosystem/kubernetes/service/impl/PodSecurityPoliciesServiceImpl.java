@@ -1,8 +1,10 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodSecurityPolicyDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodSecurityPolicyTable;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.RbacV1beta1PodSecurityPolicyTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.PolicyV1beta1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.PodSecurityPoliciesService;
@@ -11,6 +13,7 @@ import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -52,10 +55,28 @@ public class PodSecurityPoliciesServiceImpl implements PodSecurityPoliciesServic
 
         PodSecurityPolicyDescribe.PodSecurityPolicyDescribeBuilder builder = PodSecurityPolicyDescribe.builder();
         PolicyV1beta1PodSecurityPolicy data = apiResponse.getData();
-        //setPodSecurityPolicy(builder, data);
+        setPodSecurityPolicy(builder, data);
 
         PodSecurityPolicyDescribe roleDescribe = builder.build();
 
         return Optional.of(roleDescribe);
+    }
+
+    private void setPodSecurityPolicy(PodSecurityPolicyDescribe.PodSecurityPolicyDescribeBuilder builder, PolicyV1beta1PodSecurityPolicy data) {
+
+        if (data.getMetadata() != null) {
+            V1ObjectMeta metadata = data.getMetadata();
+            builder.name(metadata.getName());
+            builder.namespace(metadata.getNamespace());
+            builder.uid(metadata.getUid());
+            builder.labels(metadata.getLabels());
+            builder.annotations(metadata.getAnnotations());
+            builder.creationTimestamp(metadata.getCreationTimestamp());
+        }
+
+        if (data.getSpec() != null) {
+            builder.specs(data.getSpec());
+        }
+
     }
 }

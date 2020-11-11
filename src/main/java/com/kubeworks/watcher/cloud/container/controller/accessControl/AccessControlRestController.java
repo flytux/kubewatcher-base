@@ -56,7 +56,7 @@ public class AccessControlRestController {
     /*
         Pod Security Policies 전체 리스트 조회
     */
-    @GetMapping(value = "/cluster/acl/podsecuriypolicies", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/cluster/acl/pod-security-policies", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PodSecurityPolicyTable> podSecurityPolicies() {
 
         return podSecurityPoliciesService.allNamespacePodSecurityPolicyTables();
@@ -65,7 +65,7 @@ public class AccessControlRestController {
     /*
         Pod Security Policies 네임스페이스로 상세 조회
     */
-    @GetMapping(value = "/cluster/acl/podsecuriypolicies/namespace/{namespace}/podsecuriypolicy/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/cluster/acl/pod-security-policies/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public PodSecurityPolicyDescribe podSecurityPolicyDescribe(@PathVariable String podPolicyName) {
 
         return podSecurityPoliciesService.podSecurityPolicy(podPolicyName).orElse(null);
