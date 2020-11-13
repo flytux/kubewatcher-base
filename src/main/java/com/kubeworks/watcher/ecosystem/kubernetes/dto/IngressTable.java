@@ -16,7 +16,9 @@ public class IngressTable {
     String namespace;
     String ingressClass;
     String hosts;
+    String paths;
     String address;
     String ports;
     String age;
+
 }
