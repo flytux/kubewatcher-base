@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
 
 @UtilityClass
 public class ExternalConstants {
@@ -112,6 +113,11 @@ public class ExternalConstants {
 
     public String getBetweenPeriod(long startDurationInMillis, long endDurationInMillis) {
         return DEFAULT_PERIOD_FORMATTER.print(new Period(endDurationInMillis - startDurationInMillis));
+    }
+
+    public String getBetweenPeriodDay(long startDurationInMillis) {
+        long days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis()-startDurationInMillis);
+        return days+"d";
     }
 
 }
