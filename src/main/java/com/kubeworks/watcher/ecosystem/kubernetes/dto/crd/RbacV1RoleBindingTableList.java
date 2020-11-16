@@ -1,10 +1,8 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleBindingTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectAsTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
-import io.kubernetes.client.openapi.models.V1Endpoints;
 import io.kubernetes.client.openapi.models.V1RoleBinding;
 
 import java.util.ArrayList;
@@ -12,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class RbacV1beta1RoleBindingTableList extends V1ObjectTableList<RoleBindingTable, V1RoleBinding> {
+public class RbacV1RoleBindingTableList extends V1ObjectTableList<RoleBindingTable, V1RoleBinding> {
     @Override
     protected RoleBindingTable getDataObject() {
         return new RoleBindingTable();
