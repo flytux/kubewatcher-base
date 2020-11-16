@@ -29,10 +29,19 @@ public class AccessControlRestController {
         return serviceAccountService.allNamespaceServiceAccountTables();
     }
 
+    @GetMapping(value = "/cluster/acl/service-accounts/namespace/{namespace}/service-account/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ServiceAccountDescribe serviceAccount(@PathVariable String namespace, @PathVariable String name) {
+        return serviceAccountService.serviceAccount(namespace, name).orElse(null);
+    }
+
     @GetMapping(value = "/cluster/acl/role-bindings", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RoleBindingTable> roleBindings() {
-
         return roleBindingService.allNamespaceRoleBindingTables();
+    }
+
+    @GetMapping(value = "/cluster/acl/role-bindings/namespace/{namespace}/role-binding/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RoleBindingDescribe roleBinding(@PathVariable String namespace, @PathVariable String name) {
+        return roleBindingService.roleBinding(namespace, name).orElse(null);
     }
 
     /*

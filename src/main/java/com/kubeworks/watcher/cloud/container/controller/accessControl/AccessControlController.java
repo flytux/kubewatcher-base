@@ -24,6 +24,13 @@ public class AccessControlController {
         return "cluster/access-control/service-accounts";
     }
 
+    @GetMapping(value = "/cluster/acl/service-accounts/namespace/{namespace}/service-account/{name}", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceAccount(Model model, @PathVariable String namespace, @PathVariable String name) {
+        ServiceAccountDescribe serviceAccountDescribe = accessControlRestController.serviceAccount(namespace, name);
+        model.addAttribute("serviceAccount", serviceAccountDescribe);
+        return "cluster/access-control/service-accounts :: modalContents";
+    }
+
     @GetMapping(value = "/cluster/acl/role-bindings", produces = MediaType.TEXT_HTML_VALUE)
     public String roleBindings(Model model) {
         List<RoleBindingTable> roleBindings = accessControlRestController.roleBindings();
@@ -31,6 +38,12 @@ public class AccessControlController {
         return "cluster/access-control/role-bindings";
     }
 
+    @GetMapping(value = "/cluster/acl/role-bindings/namespace/{namespace}/role-binding/{name}", produces = MediaType.TEXT_HTML_VALUE)
+    public String roleBinding(Model model, @PathVariable String namespace, @PathVariable String name) {
+        RoleBindingDescribe roleBindingDescribe = accessControlRestController.roleBinding(namespace, name);
+        model.addAttribute("roleBinding", roleBindingDescribe);
+        return "cluster/access-control/role-bindings :: modalContents";
+    }
 
     /*
         클러스터 엑세스 컨트롤 메인 화면 : /cluster/acl/roles
