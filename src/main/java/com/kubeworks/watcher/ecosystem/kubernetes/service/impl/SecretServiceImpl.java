@@ -10,6 +10,7 @@ import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Secret;
+import io.kubernetes.client.openapi.models.V1SecretList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,27 @@ public class SecretServiceImpl implements SecretService {
 
         return Optional.of(secretDescribe);
     }
+
+    @SneakyThrows
+    @Override
+    public List<SecretDescribe> secretTable(String namespace) {
+        ApiResponse<V1SecretList> apiResponse = coreV1Api.listNamespacedSecretWithHttpInfo(namespace, "true", true, null,null,
+            null,null,null,null,null);
+        if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            return Collections.emptyList();
+        }
+
+        V1SecretList data = apiResponse.getData();
+        List<V1Secret> secrets = data.getItems();
+
+        return secrets.stream().map(v1Secret -> {
+            SecretDescribe.SecretDescribeBuilder builder1 = SecretDescribe.builder();
+            setSecret(builder1, v1Secret);
+            return builder1.build();
+        }).collect(Collectors.toList());
+    }
+
+
 
     private void setSecret(SecretDescribe.SecretDescribeBuilder builder, V1Secret data) {
 
