@@ -58,7 +58,7 @@ public class EndpointServiceImpl implements EndpointService {
 
         EndpointDescribe endpointDescribe = builder.build();
 
-        Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Endpoint",
+        Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Endpoints",
             endpointDescribe.getNamespace(), endpointDescribe.getName(), endpointDescribe.getUid());
         eventTableListOptional.ifPresent(v1EventTableList -> endpointDescribe.setEvents(v1EventTableList.getDataTable()));
 
