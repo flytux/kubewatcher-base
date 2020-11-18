@@ -13,10 +13,12 @@ import com.kubeworks.watcher.ecosystem.prometheus.dto.PrometheusApiResponse;
 import com.kubeworks.watcher.ecosystem.prometheus.service.PrometheusService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,7 +47,31 @@ public class GrafanaSerivceImpl implements GrafanaSerivce {
         dashboardDetail.getMeta().setPromHost(prometheusProperties.getUrl());
         settingTemplateVariable(dashboardDetail.getDashboard());
         log.debug("dashboard = {}", dashboardDetail.toString());
+        getPanel(dashboardDetail);
         return dashboardDetail;
+    }
+
+    final List<Integer> panelIds = Arrays.asList(77, 3, 7, 62, 78, 24, 191, 176, 152, 156, 42, 229, 74, 60, 317);
+    private void getPanel(DashboardDetail detail) {
+        Dashboard dashboard = detail.getDashboard();
+        List<Panel> panels = dashboard.getPanels();
+        panels.forEach(this::printPanelTarget);
+    }
+
+    private void printPanelTarget(Panel panel) {
+        if (CollectionUtils.isNotEmpty(panel.getPanels())) {
+            panel.getPanels().forEach(this::printPanelTarget);
+        } else {
+            if (panelIds.contains(panel.getId())) {
+                log.info("--------------- panel : Name={}, Id={} ---------------", panel.getTitle(), panel.getId());
+                panel.getTargets().forEach(panelQuery -> {
+                    if (!panelQuery.isHide()) {
+                        log.info("panelId={}, apiQuery={}, legendFormat={}, step={}",
+                            panel.getId(), panelQuery.getApiQuery(), panelQuery.getLegendFormat(), panelQuery.getStep());
+                    }
+                });
+            }
+        }
     }
 
     @Override

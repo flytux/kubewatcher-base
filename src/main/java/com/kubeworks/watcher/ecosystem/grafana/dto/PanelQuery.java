@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.ecosystem.grafana.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,8 +12,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class PanelQuery {
 
-
     String expr;
+    @JsonProperty("legendFormat")
+    String legendFormat;
     String format;
     boolean instant;
     boolean hide;
