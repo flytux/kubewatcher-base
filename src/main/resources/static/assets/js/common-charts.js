@@ -294,7 +294,7 @@ let commonChartsJs = (function () {
             const chartQueries = panel.chartQueries;
             const series = chartQueries.flatMap(function(chartQuery, index) {
                 const responseElement = responses[index];
-                if (responseElement.status === 'error') {
+                if (responseElement.status === 'error' || !responseElement.data.result.length) {
                     return {
                         "name": "N/A",
                         "data": [0, 0]
