@@ -1,4 +1,6 @@
 let commonChartsJs = (function () {
+    let chartMap = new Map();
+    let scheduleMap = new Map();
     let readyTimestamp = new Date().getTime();
     let defaultIntervalMillis = 60 * 1000;
     let gaugeOptions = {
@@ -93,11 +95,11 @@ let commonChartsJs = (function () {
 
     function convertSumBadgeData(dataArray) {
         return dataArray.map(item => {
-            if (item.data.data.resultType === 'matrix') {
+            if (item.data.resultType === 'matrix') {
                 console.warn("unsupported result type=" + item.data.data.resultType);
                 return 0;
             }
-            return item.data.data.result.map(resultItem =>
+            return item.data.result.map(resultItem =>
                 parseInt(resultItem.value[1]));
         }).reduce((value1, value2) => value1 + value2)[0];
     }
@@ -149,30 +151,26 @@ let commonChartsJs = (function () {
             const panelType = panel.panelType;
             switch (panelType) {
                 case "CHART":
-                    if (Array.isArray(panel.chartQueries) && panel.chartQueries.length > 0) {
-                        this.getDataByPanel(panel)
-                            .then(value => this.createCharts(panel, value));
+                    if (panel.chartQueries.length > 0) {
+                        this.getDataByPanel(panel, true)
+                            .then(responses => this.convertSeries(panel, responses))
+                            .then(series => this.getChartData(panel, series))
+                            .then(chartOptions => this.renderChart(panel, chartOptions));
                     }
                     break;
                 case "TABLE":
-                    this.getDataByPanel(panel)
+                    this.getDataByPanel(panel, true)
                         .then(value => this.createTable(panel, value))
-                        .then(panel => {
-                            setInterval(function () {
-                                commonChartsJs.getDataByPanel(panel)
-                                    .then(value => commonChartsJs.createTable(panel, value));
-                            }, panel.refreshIntervalMillis);
-                        });
+                        .then(panel => scheduleMap.set(panel.panelId,
+                            setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
+                        )
                     break;
                 case "BADGE":
-                    this.getDataByPanel(panel)
+                    this.getDataByPanel(panel, true)
                         .then(value => this.createBadge(panel, value))
-                        .then(panel => {
-                            setInterval(function () {
-                                commonChartsJs.getDataByPanel(panel)
-                                    .then(value => commonChartsJs.createBadge(panel, value));
-                            }, panel.refreshIntervalMillis);
-                        });
+                        .then(panel => scheduleMap.set(panel.panelId,
+                            setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
+                        );
                     break;
                 default:
                     console.warn("unsupported panel type");
@@ -184,15 +182,14 @@ let commonChartsJs = (function () {
             $('#container-' + panel.panelId).text(badgeData);
             return panel;
         },
-
         createTable: function (panel, dataArray) {
             let data = new Map();
             for (let i = 0; i < dataArray.length; i++) {
                 let item = dataArray[i];
-                if (item.data.data.resultType === 'matrix') {
+                if (item.data.resultType === 'matrix') {
                     console.warn("unsupported result type=" + item.data.data.resultType);
                 } else {
-                    item.data.data.result.forEach(value => {
+                    item.data.result.forEach(value => {
                         const key = Object.values(value.metric).toString();
                         const legend = item.legend;
                         let element = data.get(key);
@@ -212,67 +209,134 @@ let commonChartsJs = (function () {
             return panel;
         },
 
-        createCharts: function (panel, chartQueries) {
-            let series = [];
-            for (let i = 0; i < chartQueries.length; i++) {
-                const item = chartQueries[i];
-                let chartData = chartQueries[i].data;
-                item.data = undefined;
-                item.intervalMillis = panel.refreshIntervalMillis;
-
-                if (chartData.data.resultType === 'matrix') {
-                    chartData.data.result.forEach(value => {
-                        series.push({
-                            "name": Mustache.render(chartQueries[i].legend, value.metric),
-                            "data": value.values.map(arr => [arr[0] * 1000, parseFloat(arr[1]).toFixed(2) - 0]),
-                            "custom": item
-                        })
-                    })
-                } else {
-                    chartData.data.result.forEach(value => {
-                        series.push({
-                            "name": Mustache.render(chartQueries[i].legend, value.metric),
-                            "data": [parseFloat(value.value[1]).toFixed(2) - 0],
-                            "custom": item
-                        });
-                    })
-                }
+        refreshFunction: function (panel) {
+            const panelType = panel.panelType;
+            panel.readyTimestamp = panel.readyTimestamp + panel.refreshIntervalMillis;
+            let timerId = setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel);
+            scheduleMap.set(panel.panelId, timerId);
+            switch (panelType) {
+                case "CHART":
+                    commonChartsJs.refreshChart(panel);
+                    break;
+                case "TABLE":
+                    commonChartsJs.getDataByPanel(panel)
+                        .then(value => commonChartsJs.createTable(panel, value));
+                    break;
+                case "BADGE":
+                    commonChartsJs.getDataByPanel(panel)
+                        .then(value => commonChartsJs.createBadge(panel, value));
+                    break;
+                default:
+                    console.warn("unsupported panel type");
             }
-            const chartData = this.getChartData(panel, series, panel.refreshIntervalMillis);
-            if (chartData === undefined) {
-                console.warn("empty chartData");
-                return;
-            }
-            this.renderChart(panel.panelId, chartData);
         },
 
+        refreshChart: function (panel) {
+            const chart = chartMap.get(panel.panelId);
+            const chartSeries = chart.series;
+            const panelType = panel.panelType;
+            if (panel.chartQueries.length > 0) {
+                this.getDataByPanel(panel, false)
+                    .then(responses => this.convertSeries(panel, responses))
+                    .then(series => {
+                        const start = new Date().getTime();
+                        switch (panel.chartType) {
+                            case "line":
+                                const seriesMap = new Map(series.map(i => [i.name, i]));
+                                console.log("refreshChart seriesMap", panel.panelId, panel.title, (new Date().getTime()) - start);
+                                for (let chartSeriesItem of chartSeries) {
+                                    const seriesData = seriesMap.get(chartSeriesItem.name);
+                                    // const start = new Date().getTime();
+                                    if (seriesData.data.length) {
+                                        seriesData.data.forEach((arr, index) => {
+                                            chartSeriesItem.addPoint(arr, index === seriesData.data.length - 1, true);
+                                        })
+                                    }
+                                    // console.log("refreshChart addPoint", panel.panelId, seriesData.data, panel.title, (new Date().getTime()) - start);
+                                    seriesMap.delete(chartSeriesItem.name);
+                                }
+                                if (seriesMap.size > 0) {
+                                    seriesMap.forEach((value, key) => chart.addSeries(value));
+                                }
+                                break;
+                            case "solidgauge":
+                                if (series[0].data.lengrh) {
+                                    chartSeries[0].points[0].update(series[0].data[0]);
+                                }
+                                break;
+                            default:
+                                console.warn("unsupported chart type");
+                        }
+                        console.log("refreshChart completed", panel.panelId, panel.title, (new Date().getTime()) - start);
+                    });
+            }
+        },
 
-        getChartData: function (panel, series, refreshIntervalMillis) {
+        getDataByPanel: function (panel, isCreate) {
+            return Promise.all(panel.chartQueries.map(chartQuery => {
+                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery);
+
+                const start = isCreate ? panel.readyTimestamp - (60 * 60) * 1000
+                    : panel.readyTimestamp - panel.refreshIntervalMillis;
+
+                const end = isCreate ? start + (60 * 60) * 1000
+                    : start + panel.refreshIntervalMillis;
+
+                if (chartQuery.apiQuery.indexOf("query_range") > 0) {
+                    return request = this.getFetchRequest(convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, start, end));
+                } else {
+                    return request = this.getFetchRequest(convertApiQuery);
+                }
+            }));
+        },
+
+        convertSeries: function (panel, responses) {
+            const chartQueries = panel.chartQueries;
+            const series = chartQueries.flatMap(function(chartQuery, index) {
+                const responseElement = responses[index];
+                if (responseElement.status === 'error') {
+                    return {
+                        "name": "N/A",
+                        "data": [0, 0]
+                    };
+                }
+                chartQuery.resultType = responseElement.data.resultType;
+                return responseElement.data.result.flatMap(value => {
+                    return {
+                        "name": Mustache.render(chartQuery.legend, value.metric),
+                        "data": chartQuery.resultType === 'matrix'
+                            ? value.values.map(arr => [arr[0] * 1000, parseFloat(arr[1]).toFixed(2) - 0])
+                            : [parseFloat(value.value[1]).toFixed(2) - 0]
+                    };
+                });
+            });
+            return series;
+        },
+
+        getChartData: function (panel, series) {
             const type = panel.chartType;
             let data;
             switch (type) {
                 case "line":
-                    data = this.getLineChartData(panel, series, refreshIntervalMillis);
+                    data = this.getLineChartData(panel, series);
                     break;
                 case "solidgauge":
-                    data = this.getGaugeChartData(panel, series, refreshIntervalMillis);
+                    data = this.getGaugeChartData(panel, series);
                     break;
                 default:
                     console.warn("unsupported chart type");
             }
             return data;
         },
-        getLineChartData: function (panel, series, refreshIntervalMillis) {
+        getLineChartData: function (panel, series) {
             return {
                 chart: {
                     type: panel.chartType.toLowerCase(),
                     styledMode: false,
                     events: {
                         load: function () {
-                            const series = this.series;
-                            setInterval(function () {
-                                commonChartsJs.refreshChart(series);
-                            }, refreshIntervalMillis);
+                            scheduleMap.set(panel.panelId,
+                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
                         }
                     }
                 },
@@ -305,13 +369,16 @@ let commonChartsJs = (function () {
                 series: series
             }
         },
-        getGaugeChartData: function (panel, series, refreshIntervalMillis) {
+        getGaugeChartData: function (panel, series) {
             series.forEach(item => {
+                const valueHtml = item.name === 'N/A' ? '<span style="font-size:25px">' + item.name + '</span><br/>'
+                    : '<span style="font-size:25px">{y}</span><br/>';
+
                 item.dataLabels = {
                     format:
                         '<div style="text-align:center">' +
-                        '<span style="font-size:25px">{y}</span><br/>' +
-                        '<span style="font-size:12px;opacity:0.4">' +
+                        valueHtml +
+                        '<span style="font-size:10px;opacity:0.4">' +
                         panel.title + ' [' + panel.yaxisUnit + ']' +
                         '</span>' +
                         '</div>'
@@ -327,10 +394,8 @@ let commonChartsJs = (function () {
                     styledMode: false,
                     events: {
                         load: function () {
-                            const series = this.series;
-                            setInterval(function () {
-                                commonChartsJs.refreshChart(series);
-                            }, refreshIntervalMillis);
+                            scheduleMap.set(panel.panelId,
+                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
                         }
                     }
                 },
@@ -345,84 +410,58 @@ let commonChartsJs = (function () {
                 series: series
             }
         },
-        renderChart: function (id, chartData) {
+
+        renderChart: function (panel, chartData) {
             const type = chartData.chart.type;
             switch (type) {
                 case "line":
-                    this.createLineHighChart(id, chartData);
+                    this.renderLineHighChart(panel, chartData);
                     break;
                 case "solidgauge":
-                    this.createGaugeHighChart(id, chartData);
+                    this.renderGaugeHighChart(panel, chartData);
                     break;
                 default:
                     console.warn("unsupported chart type");
             }
         },
-        createLineHighChart: function (id, chartData) {
-            return new Highcharts.chart('container-' + id, chartData);
+        renderLineHighChart: function (panel, chartData) {
+            const panelId = panel.panelId;
+            const chart = new Highcharts.chart('container-' + panelId, chartData);
+            chartMap.set(panelId, chart);
         },
-        createGaugeHighChart: function (id, chartData) {
-            return new Highcharts.chart('container-' + id, Highcharts.merge(gaugeOptions, chartData));
-        },
-        getDataByPanel: function (panel) {
-            return Promise.all(panel.chartQueries.map((chartQuery) => {
-                let request;
-                chartQuery.timesptamp = panel.readyTimestamp - (60 * 60) * 1000;
-                if (chartQuery.apiQuery.indexOf("query_range") > 0) {
-                    request = this.getRequest(chartQuery.apiQuery + this.getQueryRangeTimeNStep(chartQuery, (60 * 60) * 1000));
-                } else {
-                    request = this.getRequest(chartQuery.apiQuery);
-                }
-                return request
-                    .then(response => {
-                        chartQuery.data = response.data;
-                        return chartQuery;
-                    })
-                    .catch(error => {
-                        console.error(panel.panelId + error);
-                    });
-            }));
+        renderGaugeHighChart: function (panel, chartData) {
+            const panelId = panel.panelId;
+            const chart = new Highcharts.chart('container-' + panelId, Highcharts.merge(gaugeOptions, chartData));
+            chartMap.set(panelId, chart);
         },
 
-        refreshChart: function (series) {
-            Promise.all(series.map((item) => {
-                const chartQuery = item.options.custom;
-                let request;
-                if (chartQuery.apiQuery.indexOf("query_range") > 0) {
-                    request = this.getRequest(chartQuery.apiQuery + this.getQueryRangeTimeNStep(chartQuery, chartQuery.intervalMillis));
-                } else {
-                    request = this.getRequest(chartQuery.apiQuery);
-                }
-                return request
-                    .then(response => {
-                        const chartData = response.data;
-                        const resultType = chartData.data.resultType;
-                        if (item.chart.types.includes('solidgauge')) {
-                            chartData.data.result.forEach(cItem => loadSolidGaugeChartData(item, cItem));
-                        } else if (item.chart.types.includes('line')) {
-                            chartData.data.result.forEach(cItem => loadLineChartData(item, chartQuery.legend, resultType, cItem));
-                        } else {
-                            console.error('unsupported chart type // type=' + item.chart.types);
-                        }
-                    })
-                    .catch(error => {
-                        console.error(item.name, error);
-                    });
-            }))
+        getFetchRequest: function (uri) {
+            return fetch(apiHost + uri.replace(/\+/g, "%2B")).then(response => response.json());
         },
 
-        getRequest: function (uri) {
-            return axios.get(apiHost + uri.replace(/\+/g, "%2B"));
-        },
-
-        getQueryRangeTimeNStep: function (chartQuery, intervalMillis) {
-            const start = chartQuery.timesptamp;
-            const end = start + intervalMillis;
-            chartQuery.timesptamp = end;
+        getQueryRangeTimeNStep: function (chartQuery, start, end) {
             const queryStep = chartQuery.queryStep === undefined || chartQuery.queryStep === ''
                 ? 15 : chartQuery.queryStep;
             return String.prototype.concat("&start=", start / 1000, "&end=", end / 1000, "&step=", queryStep);
         },
+        getChart: function (id) {
+            return chartMap.get(id);
+        },
+        removeChart: function (panel) {
+            const id = panel.panelId;
+            const scheduleId = scheduleMap.get(id);
+            clearTimeout(scheduleId);
+            scheduleMap.delete(id)
+            if (panel.panelType === 'CHART') {
+                const chart = chartMap.get(id);
+                chart.destroy();
+                chartMap.delete(id);
+            }
+        },
+        resetReadyTimestamp: function () {
+            readyTimestamp = new Date().getTime();
+        },
+
 
     }
 }());
