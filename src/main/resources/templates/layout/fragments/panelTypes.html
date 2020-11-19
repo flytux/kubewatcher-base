@@ -65,7 +65,42 @@
         </div>
     </th:block>
 
-
+    <th:block th:fragment="head-card-db-dummy(dbPanel, index)">
+        <div class="col-xs-12 col-md-12 col-lg-4" style=" padding-right:0px;">
+            <div class="col-xs-12 box1_pb15">
+                <div th:each="dbNode : ${dbPanel}">
+                    <th:block th:if="${dbNode.title} == 'Available Node'">
+                        <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                            <div class="title col-xs-12" th:text="|RAC Node #${index}|"></div>
+                        </div>
+                        <div class="row col-xs-6" style="padding-left:5px; padding-right:0px; height: 100px;">
+                            <div th:id="|container-${dbNode?.panelId}|"></div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${dbNode.title} == 'CPU Usage'">
+                        <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                            <div class="col-xs-12">
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${dbNode?.panelId}|"
+                                         class="chart-container box_panel" style="min-height: 170px; max-height: 140px;"></div>
+                                </figure>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${dbNode.title} == 'Memory Usage'">
+                        <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                            <div class="col-xs-12">
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${dbNode?.panelId}|"
+                                         class="chart-container box_panel" style="min-height: 170px; max-height: 140px;"></div>
+                                </figure>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </th:block>
 
 </body>
 </html>
