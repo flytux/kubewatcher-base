@@ -1,6 +1,6 @@
 let commonChartsJs = (function () {
     let readyTimestamp = new Date().getTime();
-    let defaultIntervalMillis = 60 * 1000;
+    let defaultIntervalMillis = 10 * 1000;
     let gaugeOptions = {
         chart: {
             type: 'solidgauge'
@@ -90,6 +90,41 @@ let commonChartsJs = (function () {
             }
         }
     }
+    // 스파크라인 차트 추가
+    function loadSparkLineChartData(serise, tagetLegend, resultType, dataItem) {
+        if (dataItem === undefined || dataItem.length < 2) {
+            console.error("failed chart reload // empty reload data")
+            return;
+        }
+        if (Mustache.render(tagetLegend, dataItem.metric) === serise.name) {
+            if (resultType === 'matrix') {
+                dataItem.values.forEach(arr => {
+                    //시리즈의 마지막 데이터
+                    let lastPoint = serise.points[serise.points.length - 1];
+
+                    serise.addPoint([
+                        arr[0] * 1000,
+                        parseFloat(arr[1]).toFixed(2) - 0
+                    ], true, true);
+                    let chart = serise.chart;
+
+                    let lastVal = addSparkUnitFormat(lastPoint.y);
+                    chart.customText.attr({
+                        //시리즈의 마지막 데이터 y 값 갱신
+                        text: lastVal
+                    })
+
+                })
+            } else {
+                dataItem.value.forEach(arr => {
+                    serise.addPoint([
+                        arr[0] * 1000,
+                        parseFloat(arr[1]).toFixed(2) - 0
+                    ], true, true);
+                })
+            }
+        }
+    }
 
     function convertSumBadgeData(dataArray) {
         return dataArray.map(item => {
@@ -138,7 +173,36 @@ let commonChartsJs = (function () {
         result.data = data.map(value => value);
         return result;
     }
+    //스파크라인 차트 최초 생성시 마지막 데이터값 그려주는 함수
+    function drawOneLabel(chart, series) {
+        let render = chart.renderer;
+        let v = series[0].points[series[0].points.length - 1];
+        let lastVal = addSparkUnitFormat(v.y);
+        chart.customText = render.label(lastVal, chart.plotWidth / 2, chart.plotHeight / 2).css({
+                color: '#FFFFFF',
+                fontSize: 40
+            }).attr({
+                zIndex: 5,
+                align: 'center'
+            }).add();
+    }
+    //스파크라인 차트용 포맷
+    function addSparkUnitFormat(str) {
+        str = String(str);
+        if (str.indexOf(".") != -1) {
+            var cFloat = parseFloat(str);
+            cFloat = cFloat.toFixed(1);
+            str = cFloat+'%';
+        } else {
+            var minus = str.substring(0, 1);
 
+            str = str.replace(/[^\d]+/g, '');
+            str = str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+
+            if (minus == "-") str = "-" + str;
+        }
+        return str;
+    }
 
     return {
         createPanel: function (panel) {
@@ -174,6 +238,16 @@ let commonChartsJs = (function () {
                             }, panel.refreshIntervalMillis);
                         });
                     break;
+                case "UPDOWN":
+                    this.getDataByPanel(panel)
+                        .then(value => this.createUpDown(panel, value))
+                        .then(panel => {
+                            setInterval(function () {
+                                commonChartsJs.getDataByPanel(panel)
+                                    .then(value => commonChartsJs.createUpDown(panel, value));
+                            }, panel.refreshIntervalMillis);
+                        });
+                    break;
                 default:
                     console.warn("unsupported panel type");
             }
@@ -182,6 +256,17 @@ let commonChartsJs = (function () {
         createBadge: function (panel, dataArray) {
             const badgeData = convertSumBadgeData(dataArray);
             $('#container-' + panel.panelId).text(badgeData);
+            return panel;
+        },
+
+        createUpDown: function (panel, dataArray) {
+            const upDown = convertSumBadgeData(dataArray);
+            if (upDown == '1') {
+                $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up">UP</div>');
+            } else {
+                $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down">DOWN</div>');
+            }
+            //$('#container-' + panel.panelId).text(badgeData);
             return panel;
         },
 
@@ -248,6 +333,7 @@ let commonChartsJs = (function () {
 
 
         getChartData: function (panel, series, refreshIntervalMillis) {
+
             const type = panel.chartType;
             let data;
             switch (type) {
@@ -256,6 +342,9 @@ let commonChartsJs = (function () {
                     break;
                 case "solidgauge":
                     data = this.getGaugeChartData(panel, series, refreshIntervalMillis);
+                    break;
+                case "sparkline":
+                    data = this.getSparkLineChartData(panel, series, refreshIntervalMillis);
                     break;
                 default:
                     console.warn("unsupported chart type");
@@ -283,7 +372,7 @@ let commonChartsJs = (function () {
                     enabled: false
                 },
                 yAxis: {
-                    // min: panel.yaxisMin,
+                    min: parseFloat(panel.yaxisMin),
                     // max: panel.yaxisMax,
                     title: {
                         text: panel.yaxisLabel
@@ -345,7 +434,96 @@ let commonChartsJs = (function () {
                 series: series
             }
         },
+        //스파크라인 차트 --> 차트 타입은 기본형인 'area'
+        getSparkLineChartData: function (panel, series, refreshIntervalMillis) {
+            return {
+                chart: {
+                    type: 'area',
+                    styledMode: false,
+                    backgroundColor: 'transparent',
+                    events: {
+                        load: function () {
+                            const chart = this;
+                            const series = this.series;
+                            //현재 값을 스파크라인 판넬 중앙에 표시하고, 리프레시할때 마다 업데이트하기 위해 customText renderer 사용
+                            //loadSparkLineChartData 메소드에서 customText트 변수 업데이트
+                            drawOneLabel(chart, series, panel.yaxisUnit);
+
+                            setInterval(function () {
+                                commonChartsJs.refreshChart(series);
+                            }, refreshIntervalMillis);
+                        }
+                    },
+                    margin: [60, 0, 0, 0],
+                    style: {
+                        overflow: 'visible'
+                    },
+                    skipClone: true
+                },
+                title: {
+                    text: panel.title,
+                    style: {
+                        color: '#bebebe',
+                        fontWeight: 'bold'
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
+                    },
+                    title: {
+                        text: null
+                    },
+                    startOnTick: false,
+                    endOnTick: false,
+                    tickPositions: []
+                },
+                yAxis: {
+                    min: parseFloat(panel.yaxisMin),
+                    max: 100,
+                    endOnTick: false,
+                    startOnTick: false,
+                    labels: {
+                        enabled: false
+                    },
+                    title: {
+                        text: null
+                    },
+                    tickPositions: []
+                },
+                plotOptions: {
+                    series: {
+                        enableMouseTracking: false,
+                        animation: false,
+                        lineWidth: 0,
+                        shadow: false,
+                        fillColor: '#5a5c69',
+                        marker: {
+                            enabled: false
+                        },
+                        showInNavigator: true
+                        //fillOpacity: 0.2
+                    }
+                },
+                tooltip: {
+                    style: {
+                        display: "none",
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                series: series
+            }
+        },
         renderChart: function (id, chartData) {
+
             const type = chartData.chart.type;
             switch (type) {
                 case "line":
@@ -353,6 +531,9 @@ let commonChartsJs = (function () {
                     break;
                 case "solidgauge":
                     this.createGaugeHighChart(id, chartData);
+                    break;
+                case "area":
+                    this.createSparkLineHighChart(id, chartData);
                     break;
                 default:
                     console.warn("unsupported chart type");
@@ -364,12 +545,15 @@ let commonChartsJs = (function () {
         createGaugeHighChart: function (id, chartData) {
             return new Highcharts.chart('container-' + id, Highcharts.merge(gaugeOptions, chartData));
         },
+        createSparkLineHighChart: function (id, chartData) {
+            return new Highcharts.chart('container-' + id, chartData);
+        },
         getDataByPanel: function (panel) {
             return Promise.all(panel.chartQueries.map((chartQuery) => {
                 let request;
                 chartQuery.timesptamp = panel.readyTimestamp - (60 * 60) * 1000;
                 if (chartQuery.apiQuery.indexOf("query_range") > 0) {
-                    request = this.getRequest(chartQuery.apiQuery + this.getQueryRangeTimeNStep(chartQuery, (60 * 60) * 1000));
+                    request = this.getRequest(chartQuery.apiQuery + this.getQueryRangeTimeNStep(chartQuery, (30 * 60) * 1000));
                 } else {
                     request = this.getRequest(chartQuery.apiQuery);
                 }
@@ -401,6 +585,8 @@ let commonChartsJs = (function () {
                             chartData.data.result.forEach(cItem => loadSolidGaugeChartData(item, cItem));
                         } else if (item.chart.types.includes('line')) {
                             chartData.data.result.forEach(cItem => loadLineChartData(item, chartQuery.legend, resultType, cItem));
+                        } else if (item.chart.types.includes('area')) {
+                            chartData.data.result.forEach(cItem => loadSparkLineChartData(item, chartQuery.legend, resultType, cItem));
                         } else {
                             console.error('unsupported chart type // type=' + item.chart.types);
                         }

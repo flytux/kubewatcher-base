@@ -38,6 +38,13 @@ public class TestRestController {
     private final NamespaceService namespaceService;
     private final LimitRangeService limitRangeService;
     private final CustomResourceService customResourceService;
+    private final ServiceKindService serviceKindService;
+    private final IngressService ingressService;
+    private final EndpointService endpointService;
+    private final NetworkPolicyService networkPolicyService;
+    private final ServiceAccountService serviceAccountService;
+    private final RoleBindingService roleBindingService;
+
 
     @GetMapping(value = "/grafana/dashboards/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public DashboardDetail grafanaDashboardPanels(@PathVariable String uid) {
@@ -240,5 +247,37 @@ public class TestRestController {
     public CustomResourceDescribe customResource(@PathVariable String name) {
         return customResourceService.customResource(name).orElse(null);
     }
+
+    @GetMapping(value = "/k8s/services", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ServiceTable> services() {
+        return serviceKindService.allNamespaceServiceTables();
+    }
+
+    @GetMapping(value = "/k8s/ingresses", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<IngressTable> ingresses() {
+        return ingressService.allNamespaceIngressTables();
+    }
+
+    @GetMapping(value = "/k8s/endpoints", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EndpointTable> endpoints() {
+        return endpointService.allNamespaceEndpointTables();
+    }
+
+    @GetMapping(value = "/k8s/network-policies", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<NetworkPolicyTable> networkPolicies() {
+        return networkPolicyService.allNamespaceNetworkPolicyTables();
+    }
+
+    @GetMapping(value = "/k8s/service-accounts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ServiceAccountTable> serviceAccounts() {
+        return serviceAccountService.allNamespaceServiceAccountTables();
+    }
+
+    @GetMapping(value = "/k8s/role-bindings", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<RoleBindingTable> roleBindings() {
+        return roleBindingService.allNamespaceRoleBindingTables();
+    }
+
+
 }
 
