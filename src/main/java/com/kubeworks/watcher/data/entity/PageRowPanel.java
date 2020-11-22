@@ -53,7 +53,7 @@ public class PageRowPanel extends BaseEntity {
     @Column(name = "chart_type", length = 20, nullable = false)
     String chartType;
 
-    @Column(name = "main_yn", length = 1, nullable = false)
+    @Column(name = "main_yn", columnDefinition = "VARCHAR(1) default 'Y'", length = 1, nullable = false)
     String mainYn;
 
     @Column(name = "refresh_interval", columnDefinition = "bigint unsigned default 60000", nullable = false)
