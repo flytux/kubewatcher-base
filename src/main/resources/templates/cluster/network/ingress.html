@@ -147,8 +147,8 @@
                             <div th:each = "item : ${rule.http}">
                                 <div th:each="endpoint : ${ingress?.endpoints}">
                                 <tr th:each = "select : ${item.paths}">
-                                    <td th:text = "${rule.host}"></td>
-                                    <td th:text = "${select.path}"></td>
+                                    <td th:text="${#strings.equals(rule.host, 'null') ? '<none>' : rule.host}">foo.bar.com</td>
+                                    <td th:text="${#strings.equals(select.path, 'null') ? '<none>' : select.path}">foo.bar.com</td>
                                     <td th:each = "back : ${select.backend}" th:text = "|${back.serviceName}:${back.servicePort} ${endpoint.endpoints}|"></td>
 
                                 </tr>

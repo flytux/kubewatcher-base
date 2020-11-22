@@ -61,7 +61,7 @@
                                    th:utext="${policy?.name}">Name</a>
                             </td>
                             <td th:text="${policy?.namespace}">default</td>
-                            <td>Ingress/Egress</td>
+                            <td th:text="${policy?.policyType}">Ingress/Egress</td>
                             <td th:text="${policy?.age}">000d</td>
                         </tr>
 
@@ -82,7 +82,7 @@
                         <span id="myModalLabel" th:text="|Network Policy : ${policy?.name}|">Network Policy: Policy명</span>
                     </div>
                 </div>
-                <div class="modal-nbody">
+                <div class="modal-nbody row_scroll">
                     <div class="table-title">
                         Overview
                     </div>
@@ -100,7 +100,7 @@
                             <td th:text="${policy?.namespace}">default</td>
                         </tr>
                         <tr>
-                            <th>labels</th>
+                            <th>Labels</th>
                             <td>
                                 <div class="row" th:each="entry : ${policy?.labels}" >
                                         <span class="madal_label"
@@ -129,34 +129,160 @@
                     </table>
 
                     <div class="table-title">
-                        Ingress/Egress Spec
+                        Spec
                     </div>
-                    <table class="list_mtable_cs">
-                        <thead>
+
+                    <table class="table-nt">
                         <tr>
-                            <th colspan="2" style="border-right:1px solid #d9d9d9;">Target</th>
-                            <th colspan="4">Source</th>
+                            <th>Pod Selector</th>
+<!--                            <div th:each = "pod : ${policy?.podSelector}">-->
+<!--                                <td th:each = "item : ${pod?.matchLabels}" th:text="${item}"></td>-->
+<!--                            </div>-->
+
+                            <div class="row" th:each="pod : ${policy?.podSelector}" >
+                                <td> <span class="madal_label" th:text="|${pod.key} : ${pod.value}|">label </span></td>
+                            </div>
                         </tr>
-                        <tr>
-                            <th>Namespace</th>
-                            <th style="border-right:1px solid #d9d9d9;">Pod</th>
-                            <th>Namespace</th>
-                            <th>Pod</th>
-                            <th>Subnet</th>
-                            <th>Port</th>
-                        </tr>
-                        </thead>
+                    </table>
+
+                    <div class="table-title">
+                        Ingress/Egress
+                    </div>
+
+                    <div class="row" >
+                        <input type="checkbox" name="accordion" id="modal-answer">
+                        <label for="modal-answer">
+                            <span>Ingress</span> <em></em>
+                        </label>
+                        <div>
+                            <div class="row">
+
+                        <table class="table-nt">
+                            <tbody>
+                            <tr th:each = "ingress : ${policy?.ingresses}">
+                                <td>
+                                    <table th:if="${ingress?.ports}" class="table-nt">
+                                        <tr>
+                                            <th>Ports</th>
+                                            <div th:each = "ports : ${ingress?.ports}">
+                                                <td th:each = "port : ${ports}" >
+                                                    <span th:text="|${port.port}/${port.protocol} |"></span>
+                                                </td>
+                                            </div>
+                                        </tr>
+                                    </table>
+                                    <div th:if="${ingress?.from}">
+                                        <div class="table-title">
+                                            from
+                                        </div>
+                                        <table th:if="${ingress?.from}" class="table-nt">
+                                            <tr th:each = "from : ${ingress?.from}">
+                                                <div th:if="${from?.ipBlock}">
+                                                    <div th:each = "ip : ${from?.ipBlock}" >
+                                                        <th>IPBlock</th>
+                                                        <td>
+                                                            <span th:if = "${ip?.cidr}" th:text = "| CIDR: ${ip.cidr}|"></span>
+                                                            <span th:unless = "${ip?.cidr}" th:text = "| CIDR: |"></span>
+                                                            <span th:text = "| Except: |"></span>
+                                                            <span th:if = "${ip?.except}" th:each = "except : ${ip.except}" th:text="${except}"></span>
+                                                            <span th:unless = "${ip?.except}"  th:text="| Except : |"></span>
+                                                        </td>
+
+                                                        </div>
+                                                </div>
+                                                <div th:if="${from?.namespaceSelector}">
+                                                    <th>namespaceSelector</th>
+                                                    <td>
+                                                    <div class="row" th:each="item : ${policy?.ingressNamespace}" >
+                                                        <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
+                                                    </div>
+                                                    </td>
+                                                </div>
+                                                <div th:if="${from?.podSelector}">
+                                                    <th>podSelector</th>
+                                                    <td>
+                                                        <div class="row" th:each="item : ${policy?.ingressPod}" >
+                                                            <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
+                                                        </div>
+                                                    </td>
+                                                </div>
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                </td>
+                            </tr>
+                            <tbody>
+                        </table>
+                            </div>
+                            </div>
+                    </div>
+
+                    <div class="row" >
+                        <input type="checkbox" name="accordion" id="modal-answer2">
+                        <label for="modal-answer2">
+                            <span>Egress</span> <em></em>
+                        </label>
+                        <div>
+                            <div class="row">
+                    <table class="table-nt">
                         <tbody>
-                        <tr>
-                            <td>test</td>
-                            <td>test</td>
-                            <td>test</td>
-                            <td>test</td>
-                            <td>test</td>
-                            <td>test</td>
+                        <tr th:each = "egress : ${policy?.egresses}">
+                            <td>
+                                <table th:if="${egress?.ports}" class="table-nt">
+                                    <tr>
+                                        <th>Ports</th>
+                                        <div th:each = "ports : ${egress?.ports}">
+                                            <td th:each = "port : ${ports}" >
+                                                <span th:text="|${port.port}/${port.protocol} |"></span>
+                                            </td>
+                                        </div>
+                                    </tr>
+                                </table>
+                                <div th:if="${egress?.to}">
+                                    <div class="table-title">
+                                        to
+                                    </div>
+                                    <table th:if="${egress?.to}" class="table-nt">
+                                        <tr th:each = "to : ${egress?.to}">
+                                            <div th:if="${to?.ipBlock}">
+                                                <div th:each = "ip : ${to?.ipBlock}" >
+                                                    <th>IPBlock</th>
+                                                    <td>
+                                                        <span th:if = "${ip?.cidr}" th:text = "| CIDR: ${ip.cidr}|"></span>
+                                                        <span th:unless = "${ip?.cidr}" th:text = "| CIDR: |"></span>
+                                                        <span th:if = "${ip?.except}" th:each = "except : ${ip.except}" th:text="| Except : ${except}|"></span>
+                                                        <span th:unless = "${ip?.except}"  th:text="| Except : |"></span>
+                                                    </td>
+                                                </div>
+                                            </div>
+                                            <div th:if="${to?.namespaceSelector}">
+                                                <th>namespaceSelector</th>
+                                                <td>
+                                                    <div class="row" th:each="item : ${policy?.egressNamespace}" >
+                                                        <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
+                                                    </div>
+                                                </td>
+                                            </div>
+                                            <div th:if="${to?.podSelector}">
+                                                <th>podSelector</th>
+                                                <td>
+                                                    <div class="row" th:each="item : ${policy?.egressPod}" >
+                                                        <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
+                                                    </div>
+                                                </td>
+                                            </div>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </td>
                         </tr>
                         <tbody>
                     </table>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>

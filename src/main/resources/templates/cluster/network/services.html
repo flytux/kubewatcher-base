@@ -87,6 +87,10 @@
                             </td>
                             <td th:text="${service?.age}">Age</td>
                             <td>Status</td>
+<!--                            <td>-->
+<!--                                <span class="madal_label"-->
+<!--                                      th:text="${service?.status}">Conditions</span>-->
+<!--                            </td>-->
                         </tr>
                         </tbody>
                     </table>
@@ -191,11 +195,11 @@
                     <table class="table-nt">
                         <tr>
                             <th>Name</th>
-                            <td th:text="${service?.endpoints?.name}">kube-dns</td>
+                            <td th:text="${#strings.isEmpty(service?.endpoints?.name) ? '-' : service?.endpoints?.name}">Object-name</td>
                         </tr>
                         <tr>
                             <th>Endpoints</th>
-                            <td th:text="${service?.endpoints?.endpoints}">000.000.000.000, 000.000.000.000, 000.000.000.000</td>
+                            <td th:text="${#strings.isEmpty(service?.endpoints?.endpoints) ? '-' : service?.endpoints?.endpoints}">Object-name</td>
                         </tr>
                     </table>
 

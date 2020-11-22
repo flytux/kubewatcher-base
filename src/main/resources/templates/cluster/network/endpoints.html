@@ -62,7 +62,9 @@
                                    th:utext="${endpoint?.name}">Name</a>
                             </td>
                             <td th:text="${endpoint?.namespace}">Namespace</td>
-                            <td th:text="${endpoint?.endpoints}">000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+
+                            <td th:if ="${#strings.contains(endpoint?.endpoints,',')}" th:text = "|${#strings.substringBefore(endpoint?.endpoints,',')}...|" ></td>
+                            <td th:unless ="${#strings.contains(endpoint?.endpoints,',')}" th:text ="${endpoint?.endpoints}"></td>
                             <td th:text="${endpoint?.age}">000d</td>
                         </tr>
                         </tbody>
@@ -70,7 +72,7 @@
                 </div>
             </div>
         </div>
-        <!-- [[Configmaps]] End-->
+        <!-- [[Endpoints]] End-->
     </div>
     <!-- [Modal] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >

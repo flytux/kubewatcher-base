@@ -73,7 +73,11 @@
                             <td th:text="${persistentVolumeClaim?.storageClass}">Storage class</td>
                             <td th:text="${persistentVolumeClaim?.capacity}">Size</td>
                             <td th:text="${persistentVolumeClaim?.age}">Age</td>
-                            <td th:text="${persistentVolumeClaim?.status}">Status</td>
+                            <td>
+                                <span class="madal_label"
+                                      th:text="${persistentVolumeClaim?.status}">UP</span>
+                            </td>
+
                         </tr>
                         </tbody>
                     </table>
@@ -122,7 +126,10 @@
                             <td th:text="${persistentVolume?.capacity}">Capacity</td>
                             <td th:text="${persistentVolume?.claim}">Claim</td>
                             <td th:text="${persistentVolume?.age}">Age</td>
-                            <td th:text="${persistentVolume?.status}">Status</td>
+                            <td>
+                                <span class="madal_label"
+                                      th:text="${persistentVolume?.status}">UP</span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

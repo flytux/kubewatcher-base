@@ -68,7 +68,10 @@
                             <td th:text="${pod?.ready}">Container</td>
                             <td th:text="${pod?.node}">Controlled</td>
                             <td th:text="${pod?.age}">Age</td>
-                            <td th:text="${pod?.status}">Status</td>
+                            <td>
+                                <span class="madal_label"
+                                      th:text="${pod?.status}">UP</span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

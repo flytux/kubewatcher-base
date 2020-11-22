@@ -77,7 +77,10 @@
                             <td th:text="${job?.namespace}">Namespace</td>
                             <td th:text="${job?.completions}">Completions</td>
                             <td th:text="${job?.age}">Age</td>
-                            <td th:text="${job?.statusCondition}">Conditions</td>
+                            <td>
+                                <span class="madal_label"
+                                      th:text="${job?.statusCondition}">Conditions</span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
