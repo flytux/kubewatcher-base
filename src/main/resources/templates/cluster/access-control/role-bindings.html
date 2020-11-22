@@ -49,7 +49,7 @@
                         <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Bindings</th>
+                            <th>Role</th>
                             <th>Namespace</th>
                             <th>Age</th>
                         </tr>
@@ -59,8 +59,11 @@
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(roleBindings)}" th:each="roleBinding : ${roleBindings}">
-                            <td th:text="${roleBinding?.name}">cluster-admin</td>
-                            <td>system:master</td>
+                            <td>
+                                <a class="table2-link" th:href="'javascript:roleBindingDetail(&quot;' + ${roleBinding?.namespace} + '&quot;, &quot;'+ ${roleBinding?.name} + '&quot;)'"
+                                   th:utext="${roleBinding?.name}">Name</a>
+                            </td>
+                            <td th:text="${roleBinding?.role}">system:master</td>
                             <td th:text="${roleBinding?.namespace}">kube-system</td>
                             <td th:text="${roleBinding?.age}">2020-06-29 14:21:05</td>
                         </tr>
@@ -69,8 +72,8 @@
                 </div>
             </div>
         </div>
-<!--        -->
-<!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
+
+<!--        <div class="text-center"> &lt;!&ndash; 페이지넘버 &ndash;&gt;-->
 <!--            <nav>-->
 <!--                <ul class="pagination" >-->
 <!--                    <li>-->
@@ -88,17 +91,18 @@
 <!--                </ul>-->
 <!--            </nav>-->
 <!--        </div>-->
-<!--        -->
+
         <!-- [Alarm 설정 목록] End-->
     </div>
+
     <!-- [Modal] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg" style="width:765px;">
+        <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Role Bindings : Role Bindings 명</span>
+                        <span id="myModalLabel" th:text="|Role Bindings : ${roleBinding?.name}|" >Role Bindings : Role Bindings 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody">
@@ -109,23 +113,41 @@
                         <table class="table-nt">
                             <tr>
                                 <th>Created</th>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${#dates.format(roleBinding?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td>cluster-admin</td>
+                                <td th:text="${roleBinding?.name}">cluster-admin</td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td>kube-system</td>
+                                <td th:text="${roleBinding?.namespace}">kube-system</td>
                             </tr>
                             <tr>
                                 <th>Labels</th>
-                                <td><span class="madal_label">kubernetes.io/bootstrapping=rbac-default</span></td>
+                                <td>
+                                    <div class="row" th:each="entry : ${roleBinding?.labels}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        kubernetes.io/bootstrapping=rbac-default </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        kubernetes.io/bootstrapping=rbac-default </span>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
-                                <td><span class="madal_label">rbac.authorization.kubernetes.io/autoupdate=ture</span></td>
+                                <td>
+                                    <div class="row" th:each="entry : ${roleBinding?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        rbac.authorization.kubernetes.io/autoupdate=ture </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        rbac.authorization.kubernetes.io/autoupdate=ture </span>
+                                    </div>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -136,16 +158,16 @@
                         <table class="list_mtable_100">
                             <thead>
                             <tr>
-                                <th>ClusterRole</th>
+                                <th>Kind</th>
                                 <th>Name</th>
                                 <th>API Group</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Cluster</td>
-                                <td>cluster-admin</td>
-                                <td>rabac.authorization.k8s.io</td>
+                            <tr th:if="${roleBinding?.roleRefs}" th:each = "roleRef : ${roleBinding?.roleRefs}">
+                                <td th:text="${roleRef.kind}">Cluster</td>
+                                <td th:text="${roleRef.name}">cluster-admin</td>
+                                <td th:text="${roleRef.apiGroup}">rbac.authorization.k8s.io</td>
                             </tr>
                             <tbody>
                         </table>
@@ -163,73 +185,41 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>system:master</td>
-                                <td>Group</td>
-                                <td>kube-system</td>
+                            <tr th:if="${#arrays.isEmpty(roleBinding?.subjects)}">
+                                <td colspan="3" class="text-center">No results</td>
                             </tr>
-                            <tr>
-                                <td>cluster-autoscaler</td>
-                                <td>ServiceAccount</td>
-                                <td>kube-system</td>
+                            <tr th:if="${roleBinding?.subjects}" th:each="binding : ${roleBinding?.subjects}">
+                                <td th:text="${binding?.kind}">system:master</td>
+                                <td th:text="${binding?.name}">Group</td>
+                                <td th:text="${roleBinding?.namespace}">kube-system</td>
                             </tr>
                             <tbody>
                         </table>
                     </div>
-                    <div class="table-title">
-                        Events
-                    </div>
-                    <div class="row">
-                        <table class="list_mtable_100">
-                            <thead>
-                            <tr>
-                                <th>Event</th>
-                                <th>Source</th>
-                                <th>Count</th>
-                                <th>Sub-Object</th>
-                                <th>Last</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>Event Message</td>
-                                <td>///</td>
-                                <td>00</td>
-                                <td>Object name</td>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                            </tr>
-                            <tr>
-                                <td>Event Message</td>
-                                <td>///</td>
-                                <td>00</td>
-                                <td>Object name</td>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                            </tr>
-                            <tr>
-                                <td>Event Message</td>
-                                <td>///</td>
-                                <td>00</td>
-                                <td>Object name</td>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                            </tr>
-                            <tr>
-                                <td>Event Message</td>
-                                <td>///</td>
-                                <td>00</td>
-                                <td>Object name</td>
-                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                            </tr>
-                            <tbody>
-                        </table>
-                    </div>
-
-
                 </div>
             </div>
         </div>
     </div>
     <!-- [Modal] End -->
 
+    <script type="text/javascript" th:inline="javascript">
+        function roleBindingDetail(namespace, name) {
+            $.ajax({
+                url: "/cluster/acl/role-bindings/namespace/" + namespace + "/role-binding/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 </div>
 </body>
 </html>
