@@ -47,7 +47,7 @@ public class ApiExtV1CustomResourceTableList extends V1ObjectTableList<CustomRes
             if (rowObject.getMetadata() != null) {
                 data.setName(rowObject.getMetadata().getName());
                 if (rowObject.getMetadata().getCreationTimestamp() != null) {
-                    data.setAge(ExternalConstants.getCurrentBetweenPeriod(rowObject.getMetadata().getCreationTimestamp().toInstant().getMillis()));
+                    data.setAge(ExternalConstants.getBetweenPeriodDay(rowObject.getMetadata().getCreationTimestamp().toInstant().getMillis()));
                 }
             }
             if (rowObject.getSpec() != null) {

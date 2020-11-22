@@ -48,7 +48,7 @@ public class NetworkingV1beta1IngressTableList extends V1ObjectTableList<Ingress
                 data.setName(rowObject.getMetadata().getName());
                 data.setNamespace(rowObject.getMetadata().getNamespace());
                 if (rowObject.getMetadata().getCreationTimestamp() != null) {
-                    data.setAge(ExternalConstants.getCurrentBetweenPeriod(rowObject.getMetadata().getCreationTimestamp().toInstant().getMillis()));
+                    data.setAge(ExternalConstants.getBetweenPeriodDay(rowObject.getMetadata().getCreationTimestamp().toInstant().getMillis()));
                 }
             }
             if (rowObject.getSpec() != null && rowObject.getSpec().getRules() != null) {
