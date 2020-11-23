@@ -181,17 +181,23 @@
                                                     <div th:each = "ip : ${from?.ipBlock}" >
                                                         <th>IPBlock</th>
                                                         <td>
-                                                            <span th:if = "${ip?.cidr}" th:text = "| CIDR: ${ip.cidr}|"></span>
-                                                            <span th:unless = "${ip?.cidr}" th:text = "| CIDR: |"></span>
-                                                            <span th:text = "| Except: |"></span>
-                                                            <span th:if = "${ip?.except}" th:each = "except : ${ip.except}" th:text="${except}"></span>
-                                                            <span th:unless = "${ip?.except}"  th:text="| Except : |"></span>
+                                                            <table class="table-nt">
+                                                                <tr>
+                                                                    <th>CIDR</th>
+                                                                    <td>
+                                                                        <div class="row" th:text="${ip.cidr}"></div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>except</th>
+                                                                    <td th:each = "except : ${ip.except}" th:text="${except}"></td>
+                                                                </tr>
+                                                            </table>
                                                         </td>
-
-                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div th:if="${from?.namespaceSelector}">
-                                                    <th>namespaceSelector</th>
+                                                    <th>Namespace Selector</th>
                                                     <td>
                                                     <div class="row" th:each="item : ${policy?.ingressNamespace}" >
                                                         <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
@@ -199,7 +205,7 @@
                                                     </td>
                                                 </div>
                                                 <div th:if="${from?.podSelector}">
-                                                    <th>podSelector</th>
+                                                    <th>Pod Selector</th>
                                                     <td>
                                                         <div class="row" th:each="item : ${policy?.ingressPod}" >
                                                             <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
@@ -249,15 +255,23 @@
                                                 <div th:each = "ip : ${to?.ipBlock}" >
                                                     <th>IPBlock</th>
                                                     <td>
-                                                        <span th:if = "${ip?.cidr}" th:text = "| CIDR: ${ip.cidr}|"></span>
-                                                        <span th:unless = "${ip?.cidr}" th:text = "| CIDR: |"></span>
-                                                        <span th:if = "${ip?.except}" th:each = "except : ${ip.except}" th:text="| Except : ${except}|"></span>
-                                                        <span th:unless = "${ip?.except}"  th:text="| Except : |"></span>
+                                                        <table class="table-nt">
+                                                            <tr>
+                                                                <th>CIDR</th>
+                                                                <td>
+                                                                    <div class="row" th:text="${ip.cidr}"></div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>except</th>
+                                                                <td th:each = "except : ${ip.except}" th:text="${except}"></td>
+                                                            </tr>
+                                                        </table>
                                                     </td>
                                                 </div>
                                             </div>
                                             <div th:if="${to?.namespaceSelector}">
-                                                <th>namespaceSelector</th>
+                                                <th>Namespace Selector</th>
                                                 <td>
                                                     <div class="row" th:each="item : ${policy?.egressNamespace}" >
                                                         <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
@@ -265,7 +279,7 @@
                                                 </td>
                                             </div>
                                             <div th:if="${to?.podSelector}">
-                                                <th>podSelector</th>
+                                                <th>Pod Selector</th>
                                                 <td>
                                                     <div class="row" th:each="item : ${policy?.egressPod}" >
                                                         <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>

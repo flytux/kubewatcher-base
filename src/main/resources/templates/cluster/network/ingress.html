@@ -104,9 +104,13 @@
                             <td th:text="${ingress?.namespace}">default</td>
                         </tr>
                         <tr>
-                            <th >Address</th>
-                            <td th:if="${ingress?.loadBalancer}" th:each="load : ${ingress?.loadBalancer}"
-                                th:text = "|${load.ingress[0].ip},${load.ingress[1].ip}|">
+                            <th>Address</th>
+                            <td>
+                                <div th:if="${ingress?.loadBalancer}" th:each="load : ${ingress?.loadBalancer}">
+                                    <div th:if="${load?.ingress}" th:each="ingress : ${load?.ingress}"
+                                         th:text = "${ingress.ip}">
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
