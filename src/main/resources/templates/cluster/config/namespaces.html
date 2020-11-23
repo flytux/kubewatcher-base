@@ -61,7 +61,10 @@
                                    th:utext="${namespace?.name}">Name</a>
                             </td>
                             <td th:text="${namespace?.age}">Age</td>
-                            <td th:text="${namespace?.status}">Status</td>
+                            <td>
+                                <span class="madal_label_active"
+                                      th:text="${namespace?.status}">Conditions</span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -123,10 +126,17 @@
                         </tr>
                         <tr>
                             <th>Status</th>
-                            <td th:text="${namespace?.status}">Active</td>
+                            <td>
+                                <span class="madal_label"
+                                      th:text="${namespace?.status}">Conditions</span>
+                            </td>
                         </tr>
                             <th>Resource Quotas</th>
-                            <td th:each = "resourceQuota : ${namespace?.resourceQuotas}" th:text="${resourceQuota}"></td>
+                            <td th:if="${#arrays.isEmpty(namespace?.resourceQuotas)}">-</td>
+                            <td th:unless="${#arrays.isEmpty(namespace?.resourceQuotas)}"
+                                th:each = "resourceQuota : ${namespace?.resourceQuotas}"
+                                th:text="${resourceQuota}"></td>
+
                         </tr>
                     </table>
 

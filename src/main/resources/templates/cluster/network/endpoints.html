@@ -57,9 +57,14 @@
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(endpoints)}" th:each="endpoint : ${endpoints}">
-                            <td th:text="${endpoint?.name}">test</td>
-                            <td th:text="${endpoint?.namespace}">default</td>
-                            <td th:text="${endpoint?.endpoints}">000.000.000.000:000, xxx.xxx.xxx.xxx:xxx</td>
+                            <td>
+                                <a class="table2-link" th:href="'javascript:endpointDetail(&quot;' + ${endpoint?.namespace} + '&quot;, &quot;'+ ${endpoint?.name} + '&quot;)'"
+                                   th:utext="${endpoint?.name}">Name</a>
+                            </td>
+                            <td th:text="${endpoint?.namespace}">Namespace</td>
+
+                            <td th:if ="${#strings.contains(endpoint?.endpoints,',')}" th:text = "|${#strings.substringBefore(endpoint?.endpoints,',')}...|" ></td>
+                            <td th:unless ="${#strings.contains(endpoint?.endpoints,',')}" th:text ="${endpoint?.endpoints}"></td>
                             <td th:text="${endpoint?.age}">000d</td>
                         </tr>
                         </tbody>
@@ -67,16 +72,16 @@
                 </div>
             </div>
         </div>
-        <!-- [[Configmaps]] End-->
+        <!-- [[Endpoints]] End-->
     </div>
     <!-- [Modal] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="modalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Endpoints : Endpoints명</span>
+                        <span id="myModalLabel" th:text="|Endpoints : ${endpoint?.name}|">Endpoints : Endpoints 명</span>
                     </div>
                 </div>
                 <div class="modal-nbody">
@@ -85,24 +90,43 @@
                     </div>
                     <table class="table-nt">
                         <tr>
-                            <th>Ctrated</th>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08) </td>
+                            <th>Created</th>
+                            <td th:text="${#dates.format(endpoint?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08) </td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td>test</td>
+                            <td th:text="${endpoint?.name}">test</td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td>default</td>
+                            <td th:text="${endpoint?.namespace}">default</td>
                         </tr>
                         <tr>
                             <th>labels</th>
-                            <td><span class="madal_label">service.kubernets.io/headless=</span></td>
+                            <td>
+                                <div class="row" th:each="entry : ${endpoint?.labels}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        service/port=9999 </span>
+                                    <span class="madal_label"
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        service/port=9999 </span>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
-                            <td><span class="madal_label"> /// </span></td>
+                            <td>
+                                <div class="row" th:each="entry : ${endpoint?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        service/port=9999 </span>
+                                    <span class="madal_label"
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        service/port=9999 </span>
+
+                                </div>
+                            </td>
                         </tr>
                     </table>
 
@@ -118,67 +142,31 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>000.000.000.000</td>
-                            <td>///</td>
-                            <td>coredns-xxx</td>
-                        </tr>
-                        <tr>
-                            <td>000.000.000.000</td>
-                            <td>///</td>
-                            <td>coredns-xxx</td>
-                        </tr>
-                        <tr>
-                            <td>000.000.000.000</td>
-                            <td>///</td>
-                            <td>coredns-xxx</td>
-                        </tr>
-                        <tr>
-                            <td>000.000.000.000</td>
-                            <td>///</td>
-                            <td>coredns-xxx</td>
-                        </tr>
-                        <tr>
-                            <td>000.000.000.000</td>
-                            <td>///</td>
-                            <td>coredns-xxx</td>
-                        </tr>
+                        <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
+                            <tr th:each=" address : ${subset.addresses}">
+                                <td th:text = "${address.ip}"></td>
+                                <td th:text = "${address.hostname}"></td>
+                                <td th:each = "target : ${address.targetRef}" th:text = "|${target.kind} / ${target.name}|"> Target </td>
+                            </tr>
+                        </div>
                         <tbody>
                     </table>
                     <table class="list_mtable_100">
                         <thead>
                         <tr>
                             <th>Port</th>
-                            <th>Nname</th>
-                            <th>Target</th>
+                            <th>Name</th>
+                            <th>Protocol</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>0000</td>
-                            <td>dns-tcp</td>
-                            <td>TCP</td>
-                        </tr>
-                        <tr>
-                            <td>0000</td>
-                            <td>dns-tcp</td>
-                            <td>TCP</td>
-                        </tr>
-                        <tr>
-                            <td>0000</td>
-                            <td>dns-tcp</td>
-                            <td>TCP</td>
-                        </tr>
-                        <tr>
-                            <td>0000</td>
-                            <td>dns-tcp</td>
-                            <td>TCP</td>
-                        </tr>
-                        <tr>
-                            <td>0000</td>
-                            <td>dns-tcp</td>
-                            <td>TCP</td>
-                        </tr>
+                        <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
+                            <tr th:each=" port : ${subset.ports}">
+                                <td th:text = "${port.port}"></td>
+                                <td th:text = "${port.name}"></td>
+                                <td th:text = "${port.protocol}"></td>
+                             </tr>
+                        </div>
                         <tbody>
                     </table>
 
@@ -196,47 +184,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
+                        <tr th:if="${#arrays.isEmpty(endpoint?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
+                        <tr th:if="${endpoint?.events}" th:each="event : ${service?.events}">
+                            <td th:text="${event?.type}">Event Message</td>
+                            <td th:text="${event?.source}">///</td>
+                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Object-name</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">2020-05-22 12:41:05</td>
                         </tr>
                         <tbody>
                     </table>
@@ -246,6 +202,25 @@
         </div>
     </div>
     <!-- [Modal] End -->
+
+    <script type="text/javascript" th:inline="javascript">
+        function endpointDetail(namespace, name) {
+            $.ajax({
+                url: "/cluster/network/endpoints/namespace/" + namespace + "/endpoint/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 </div>
 </body>
 </html>

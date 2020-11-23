@@ -71,7 +71,10 @@
                             <td th:text="${hpas?.maxPods}">Max Pods</td>
                             <td th:text="${hpas?.replicas}">Replicas</td>
                             <td th:text="${hpas?.age}">Age</td>
-                            <td th:text="${hpas?.targets}">Status</td>
+                            <td>
+                                <span class="madal_label_active"
+                                      th:text="${hpas?.targets}">Conditions</span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -146,7 +149,7 @@
                         </tr>
                         <tr>
                             <th>Deployment Pods</th>
-                            <td th:text="|${hpas.currentReplicas} : ${hpas.desiredReplicas}|">1 current / 1 desired</td>
+                            <td th:text="|${hpas?.currentReplicas} : ${hpas?.desiredReplicas}|">1 current / 1 desired</td>
                         </tr>
                     </table>
 

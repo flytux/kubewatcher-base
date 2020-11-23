@@ -1,16 +1,29 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
+import com.google.gson.annotations.SerializedName;
+import com.kubeworks.watcher.ecosystem.ExternalConstants;
+
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.IngressTable;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectAsTable;
+
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
-import io.kubernetes.client.openapi.models.NetworkingV1beta1Ingress;
+import io.kubernetes.client.openapi.models.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.IntStream;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NetworkingV1beta1IngressTableList extends V1ObjectTableList<IngressTable, NetworkingV1beta1Ingress> {
+
+    @SerializedName("items")
+    private List<NetworkingV1beta1Ingress> items;
 
     @Override
     protected IngressTable getDataObject() {
@@ -19,49 +32,42 @@ public class NetworkingV1beta1IngressTableList extends V1ObjectTableList<Ingress
 
     @Override
     protected void makeObject(IngressTable builder, String fieldName, String value) {
-        switch (fieldName) {
-            case "name" :
-                builder.setName(value);
-                break;
-            case "class" :
-                builder.setIngressClass(value);
-                break;
-            case "hosts" :
-                builder.setHosts(value);
-                break;
-            case "address" :
-                builder.setAddress(value);
-                break;
-            case "ports" :
-                builder.setPorts(value);
-                break;
-            case "age" :
-                builder.setAge(value);
-                break;
-            default:
-                break;
-        }
+        // no implementation
     }
 
     @Override
     public List<IngressTable> getDataTable() {
-        if (super.getRows() == null || super.getColumnDefinitions() == null) {
+        if (getItems() == null) {
             return Collections.emptyList();
         }
 
-        List<IngressTable> list = new ArrayList<>(super.getRows().size());
-        for (V1ObjectAsTable<NetworkingV1beta1Ingress> row : super.getRows()) {
+        List<IngressTable> list = new ArrayList<>(getItems().size());
+        for (NetworkingV1beta1Ingress rowObject : getItems()) {
             IngressTable data = getDataObject();
-            final List<String> cells = row.getCells();
-            IntStream.range(0, cells.size()).forEach(index -> {
-                String value = cells.get(index);
-                V1ObjectColumnDefinition columnDefinition = super.getColumnDefinitions().get(index);
-                String fieldName = columnDefinition.getName().toLowerCase();
-                makeObject(data, fieldName, value);
-            });
-            if (row.getObject().getMetadata() != null) {
-                data.setNamespace(row.getObject().getMetadata().getNamespace());
+            if (rowObject.getMetadata() != null) {
+                data.setName(rowObject.getMetadata().getName());
+                data.setNamespace(rowObject.getMetadata().getNamespace());
+                if (rowObject.getMetadata().getCreationTimestamp() != null) {
+                    data.setAge(ExternalConstants.getBetweenPeriodDay(rowObject.getMetadata().getCreationTimestamp().toInstant().getMillis()));
+                }
             }
+            if (rowObject.getSpec() != null && rowObject.getSpec().getRules() != null) {
+
+                NetworkingV1beta1IngressSpec spec = rowObject.getSpec();
+                List<NetworkingV1beta1IngressRule> rules = spec.getRules();
+                String hosts = rules.stream()
+                    .map(NetworkingV1beta1IngressRule::getHost).collect(Collectors.joining(", "));
+
+                String paths = rules.stream().map(NetworkingV1beta1IngressRule::getHttp)
+                    .filter(Objects::nonNull)
+                    .map(http -> http.getPaths().stream().map(NetworkingV1beta1HTTPIngressPath::getPath).collect(Collectors.joining(", ")))
+                    .collect(Collectors.joining(", "));
+
+                data.setHosts(hosts);
+                data.setPaths(paths);
+
+            }
+
             list.add(data);
         }
         return list;

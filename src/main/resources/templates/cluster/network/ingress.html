@@ -49,7 +49,7 @@
                             <th>Name</th>
                             <th>Namespace</th>
                             <th>Host</th>
-                            <th>path</th>
+                            <th>Path</th>
                             <th>Age</th>
                         </tr>
                         </thead>
@@ -59,9 +59,12 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(ingresses)}" th:each="ingress : ${ingresses}">
                             <td th:text="${ingress?.name}">test</td>
-                            <td th:text="${ingress?.namespace}">default</td>
-                            <td th:text="${ingress?.hosts}">foo.bar.com</td>
-                            <td>path</td>
+                            <td>
+                                <a class="table2-link" th:href="'javascript:ingressDetail(&quot;' + ${ingress?.namespace} + '&quot;, &quot;'+ ${ingress?.name} + '&quot;)'"
+                                   th:utext="${ingress?.namespace}">Namespace</a>
+                            </td>
+                            <td th:text="${#strings.equals(ingress?.hosts, 'null') ? '<none>' : ingress?.hosts}">foo.bar.com</td>
+                            <td th:text="${#strings.equals(ingress?.paths, 'null') ? '<none>' : ingress?.paths}">path</td>
                             <td th:text="${ingress?.age}">000d</td>
                         </tr>
 
@@ -75,12 +78,12 @@
 
     <!-- [Modal] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="modalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Ingresses : Ingresses명</span>
+                        <span id="myModalLabel" th:text="|Ingresses : ${ingress?.name}|">Ingresses : Ingresses명</span>
                     </div>
                 </div>
                 <div class="modal-nbody">
@@ -89,20 +92,22 @@
                     </div>
                     <table class="table-nt">
                         <tr>
-                            <th>Ctrated</th>
-                            <td>24일 15시 32분 (2020-05-24 15:32:08) </td>
+                            <th>Created</th>
+                            <td th:text="${#dates.format(ingress?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08) </td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td>test</td>
+                            <td th:text="${ingress?.name}">test</td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td>default</td>
+                            <td th:text="${ingress?.namespace}">default</td>
                         </tr>
                         <tr>
-                            <th>Address</th>
-                            <td>132.132.132.132</td>
+                            <th >Address</th>
+                            <td th:if="${ingress?.loadBalancer}" th:each="load : ${ingress?.loadBalancer}"
+                                th:text = "|${load.ingress[0].ip},${load.ingress[1].ip}|">
+                            </td>
                         </tr>
                         <tr>
                             <th>Default backend</th>
@@ -110,7 +115,18 @@
                         </tr>
                         <tr>
                             <th>Annotations</th>
-                            <td><span class="madal_label">nginx.ingress.kubernetes.io/rewrite-target=/</span></td>
+                            <td>
+                                <div class="row" th:each="entry : ${ingress?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                        nginx.ingress.kubernetes.io/rewrite-target=/ </span>
+                                    <span class="madal_label"
+                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                        nginx.ingress.kubernetes.io/rewrite-target=/ </span>
+
+                                </div>
+<!--                                <span class="madal_label">nginx.ingress.kubernetes.io/rewrite-target=/</span>-->
+                            </td>
                         </tr>
                     </table>
 
@@ -126,31 +142,20 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>foo.bar.com</td>
-                            <td>/foo</td>
-                            <td>service1:80 (000.000.000.000:0000)</td>
-                        </tr>
-                        <tr>
-                            <td>foo.bar.com</td>
-                            <td>/foo</td>
-                            <td>service1:80 (000.000.000.000:0000)</td>
-                        </tr>
-                        <tr>
-                            <td>foo.bar.com</td>
-                            <td>/foo</td>
-                            <td>service1:80 (000.000.000.000:0000)</td>
-                        </tr>
-                        <tr>
-                            <td>foo.bar.com</td>
-                            <td>/foo</td>
-                            <td>service1:80 (000.000.000.000:0000)</td>
-                        </tr>
-                        <tr>
-                            <td>foo.bar.com</td>
-                            <td>/foo</td>
-                            <td>service1:80 (000.000.000.000:0000)</td>
-                        </tr>
+
+                        <div th:if="${ingress?.rules}" th:each="rule : ${ingress?.rules}">
+                            <div th:each = "item : ${rule.http}">
+                                <div th:each="endpoint : ${ingress?.endpoints}">
+                                <tr th:each = "select : ${item.paths}">
+                                    <td th:text="${#strings.equals(rule.host, 'null') ? '<none>' : rule.host}">foo.bar.com</td>
+                                    <td th:text="${#strings.equals(select.path, 'null') ? '<none>' : select.path}">foo.bar.com</td>
+                                    <td th:each = "back : ${select.backend}" th:text = "|${back.serviceName}:${back.servicePort} ${endpoint.endpoints}|"></td>
+
+                                </tr>
+                            </div>
+                            </div>
+                        </div>
+
                         <tbody>
                     </table>
 
@@ -168,47 +173,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
+                        <tr th:if="${#arrays.isEmpty(ingress?.events)}">
+                            <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
-                        </tr>
-                        <tr>
-                            <td>Event Message</td>
-                            <td>///</td>
-                            <td>00</td>
-                            <td>Object name</td>
-                            <td>2020-06-23 (13:45:13)</td>
+                        <tr th:if="${ingress?.events}" th:each="event : ${ingress?.events}">
+                            <td th:text="${event?.type}">Event Message</td>
+                            <td th:text="${event?.source}">///</td>
+                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Object-name</td>
+                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">2020-05-22 12:41:05</td>
                         </tr>
                         <tbody>
                     </table>
@@ -218,6 +191,25 @@
         </div>
     </div>
     <!-- [Modal] End -->
+
+    <script type="text/javascript" th:inline="javascript">
+        function ingressDetail(namespace, name) {
+            $.ajax({
+                url: "/cluster/network/ingress/namespace/" + namespace + "/ingresses/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 </div>
 </body>
 </html>

@@ -12,4 +12,6 @@ public interface SecretService {
 
     Optional<SecretDescribe> secret(String namespace, String name);
 
+    List<SecretDescribe> secretTable(String namespace);
+
 }

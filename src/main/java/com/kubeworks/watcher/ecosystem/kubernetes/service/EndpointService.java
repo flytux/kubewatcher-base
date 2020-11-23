@@ -1,13 +1,17 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service;
 
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointTable;
-import lombok.SneakyThrows;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EndpointService {
 
-    @SneakyThrows
     List<EndpointTable> allNamespaceEndpointTables();
+
+    List<EndpointTable> endpointTable(String namespace, String name);
+
+    Optional<EndpointDescribe> endpoint(String namespace, String name);
 
 }
