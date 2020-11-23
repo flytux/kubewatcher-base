@@ -14,6 +14,7 @@ public class NetworkPolicyTable {
 
     String name;
     String namespace;
+    String policyType;
     String podSelector;
     String age;
 }
