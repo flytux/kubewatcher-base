@@ -44,4 +44,10 @@ public class PromChartController {
 
         return "prom-chart";
     }
+
+    @GetMapping(value = "/prom/edit")
+    public String doNot(Model model) {
+
+        return "edit-query";
+    }
 }

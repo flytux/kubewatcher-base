@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="_csrf" th:content="${_csrf.token}"><meta name="_csrf_header" th:content="${_csrf.headerName}">
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <div id="main_contents">
+        <div class="box_panel">
+            <div class="box_modal-body text-left pl_20">
+                <span class="mb_50">API QUERY ID : <input id="queryNo" type="text" style="width:100px;">
+                <span class="ml_50"><button id="query" class="btn btn-md btn-secondary  ml_10">조회</button></span>
+            </div>
+        </div>
+        <div class="box_panel" style="height:300px;">
+            <div class="box_panel-heading">Query</div>
+                <div class="box_table-body" style="height:300px;">
+                    <table>
+                        <tr>
+                            <td>Query ID :
+                            <input type="text" id="queryId" readonly/></td>
+                        </tr>
+                        <tr>
+                            <td>Query : </td>
+                        </tr>
+                            <td><textarea id="queryText" COLS=200 ROWS=5 style="background-color:black;"></textarea></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row text-center pt_15"><button class="btn btn-save" id="save">저 장</button></div>
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            var queryNo;
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+            $('#query').click(function () {
+                queryNo = $('#queryNo').val();
+                //alert("query click : " + queryNo);
+                $.get("/prom/query/" + $('#queryNo').val()).done(function (data) {
+                    //console.log(">>>>> query : ", data.api_query);
+                    $('#queryId').val(data.cquery_id);
+                    $('#queryText').val(data.api_query);
+                });
+            });
+            $('#save').click(function () {
+                //alert("save click : " + queryNo);
+                let queryText = $('#queryText').val();
+                $.ajax({
+                    url: '/prom/query/save/', // 서버 요청
+                    dataType: 'json',
+                    type: 'post',
+                    data: {
+                        'cQueryId': queryNo,
+                        'apiQuery': queryText // 수정 쿼리
+                    },
+                    success: function () {
+                        alert('Success'); // 성공시 코드
+                    }
+                });
+            });
+        });
+    </script>
+</div>
+</body>
+</html>회

@@ -12,27 +12,29 @@
         </div>
     </th:block>
 
-    <th:block th:fragment="value-card-panel(panel)">
-        <div class="col-md-12 col-lg-15">
-            <div class="box1">
-                <div th:text="${panel?.title}" class="title">VM</div>
-<!--                <div class="stitle">Virtual Machine</div>-->
-                <div th:id="|container-${panel?.panelId}|" class="b_txt text-center">102</div>
+    <th:block th:fragment="page-row-variable-header(variables)">
+        <div class="main_title03">
+            <div class="f_r">
+                <div th:each="variable : ${variables}" class="dropdown d_ib">
+                    <select th:name="|var-${variable?.name}|" th:id="|var-${variable?.name}|"
+                            th:disabled="${variable?.values == null ? 'true' : 'false'}" class="custom-select">
+                        <option value="" selected disabled hidden> -- select variable -- </option>
+                        <option th:each="value : ${variable?.values}"
+                                th:value="${variable}" th:text="${value}" value="">value</option>
+                    </select>
+                </div>
             </div>
         </div>
     </th:block>
 
-<!--    <th:block th:fragment="headless-card-panel(panel)">-->
-<!--        <div class="col-md-12 col-lg-15">-->
-<!--            <div class="col-md-12">-->
-<!--                <div class="col-xs-12 box_panel" th:id="|container-${panel?.panelId}|" style="height:300px;"></div>-->
-<!--&lt;!&ndash;                <div class="col-xs-12 box_panel">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <div class="embed-responsive embed-responsive-16by9-sm">&ndash;&gt;-->
-<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
-<!--&lt;!&ndash;                </div>&ndash;&gt;-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </th:block>-->
+    <th:block th:fragment="value-card-panel(panel)">
+        <div class="col-md-12 col-lg-15">
+            <div class="box1">
+                <div th:text="${panel?.title}" class="title">VM</div>
+                <div th:id="|container-${panel?.panelId}|" class="b_txt text-center">102</div>
+            </div>
+        </div>
+    </th:block>
 
     <th:block th:fragment="headless-card-panel(panel)">
         <div class="col-md-12 col-lg-15">
@@ -45,6 +47,15 @@
 
     <th:block th:fragment="head-card-panel(panel)">
         <div class="col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                <div th:id="|container-${panel?.panelId}|" style="height:300px;"></div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="col-6-head-card-panel(panel)">
+        <div class="col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
             <div class="box_panel">
                 <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
                 <div th:id="|container-${panel?.panelId}|" style="height:300px;"></div>
@@ -65,7 +76,55 @@
         </div>
     </th:block>
 
+    <th:block th:fragment="full-head-card-panel-in-table(panel)">
+        <div class="col-md-12 col-lg-12">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                <div class="box_panel-body" style="min-height: 300px;">
+                    <table th:id="|container-${panel?.panelId}|"
+                           class="list_table">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </th:block>
 
+    <th:block th:fragment="head-card-db-dummy(dbPanel, index)">
+        <div class="col-xs-12 col-md-12 col-lg-4" style=" padding-right:0px;">
+            <div class="col-xs-12 box1_pb15">
+                <div th:each="dbNode : ${dbPanel}">
+                    <th:block th:if="${dbNode.title} == 'Available Node'">
+                        <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                            <div class="title col-xs-12" th:text="|RAC Node #${index}|"></div>
+                        </div>
+                        <div class="row col-xs-6" style="padding-left:5px; padding-right:0px; height: 100px;">
+                            <div th:id="|container-${dbNode?.panelId}|"></div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${dbNode.title} == 'CPU Usage'">
+                        <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                            <div class="col-xs-12">
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${dbNode?.panelId}|"
+                                         class="chart-container box_panel" style="min-height: 170px; max-height: 140px;"></div>
+                                </figure>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${dbNode.title} == 'Memory Usage'">
+                        <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                            <div class="col-xs-12">
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${dbNode?.panelId}|"
+                                         class="chart-container box_panel" style="min-height: 170px; max-height: 140px;"></div>
+                                </figure>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </th:block>
 
 </body>
 </html>
