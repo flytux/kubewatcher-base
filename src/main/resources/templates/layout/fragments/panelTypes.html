@@ -7,7 +7,9 @@
 <body>
 
     <th:block th:fragment="page-row-header(title)">
-        <div class="main_title col-xs-12">
+        <div th:if="${#strings.isEmpty(title)}" class="main_title col-xs-12">
+        </div>
+        <div th:unless="${#strings.isEmpty(title)}" class="main_title col-xs-12">
             <i class="feather icon-chevrons-right"></i> [[${title}]]
         </div>
     </th:block>
