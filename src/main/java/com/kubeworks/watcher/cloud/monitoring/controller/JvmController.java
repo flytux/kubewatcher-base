@@ -27,6 +27,8 @@ public class JvmController {
 
     @GetMapping(value = "/monitoring/jvm/application", produces = MediaType.TEXT_HTML_VALUE)
     public String detail(Model model) {
+        Map<String, Object> response = monitoringRestController.jvmDetail();
+        model.addAllAttributes(response);
 //        Page page = pageViewService.getPageView(DETAIL_MENU_ID);
 //
 //        Map<String, PageVariable> templating = page.getVariables().stream()
