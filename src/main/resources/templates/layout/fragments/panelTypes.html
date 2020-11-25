@@ -36,11 +36,29 @@
         </div>
     </th:block>
 
+    <th:block th:fragment="col-3-value-card-panel(panel)">
+        <div class="col-md-12 col-lg-3" >
+            <div class="box1">
+                <div th:text="${panel?.title}" class="title">VM</div>
+                <div style="font-size:2em;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">102</div>
+            </div>
+        </div>
+    </th:block>
+
     <th:block th:fragment="headless-card-panel(panel)">
         <div class="col-md-12 col-lg-15">
             <figure class="highcharts-figure">
                 <div th:id="|container-${panel?.panelId}|"
                      class="chart-container box_panel" style="min-height: 160px; max-height: 130px;"></div>
+            </figure>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="col-3-headless-card-panel(panel)">
+        <div class="col-md-12 col-lg-3">
+            <figure class="highcharts-figure">
+                <div th:id="|container-${panel?.panelId}|"
+                     class="chart-container box_panel" style="height: 122px;"></div>
             </figure>
         </div>
     </th:block>
@@ -125,6 +143,7 @@
             </div>
         </div>
     </th:block>
+
 
 </body>
 </html>

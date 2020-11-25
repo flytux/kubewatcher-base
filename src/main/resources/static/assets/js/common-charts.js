@@ -204,6 +204,19 @@ let commonChartsJs = (function () {
         return str;
     }
 
+    function boxsDatas(dataArray) {
+        return dataArray.map(item => {
+            if (item.data.resultType === 'matrix') {
+                console.warn("unsupported result type=" + item.data.data.resultType);
+                return 0;
+            }
+            return item.data.result.map(resultItem =>
+                resultItem.metric.version
+            );
+        }).reduce((value1, value2) => value1 + value2)[0];
+    }
+
+
     return {
         createPanel: function (panel) {
             if (panel.refreshIntervalMillis === undefined || panel.refreshIntervalMillis <= 0) {
@@ -240,14 +253,35 @@ let commonChartsJs = (function () {
                         .then(panel => scheduleMap.set(panel.panelId,
                             setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel)));
                     break;
+                case "Boxversion":
+                    this.getDataByPanel(panel, true)
+                        .then(value => this.Boxversions(panel, value))
+                        .then(panel => scheduleMap.set(panel.panelId,
+                            setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
+                        );
+                    break;
                 default:
                     console.warn("unsupported panel type");
             }
         },
 
+       Boxversions: function (panel, dataArray) { //버전
+            const boxsData = boxsDatas(dataArray);
+            $('#container-' + panel.panelId).text(boxsData);
+            return panel;
+        },
+
         createBadge: function (panel, dataArray) {
             const badgeData = convertSumBadgeData(dataArray);
-            $('#container-' + panel.panelId).text(badgeData);
+            if(panel.chartType === 'text') {
+                $('#container-' + panel.panelId).text((badgeData) +panel.yaxisUnit);
+            } else if (panel.chartType === 'date') {
+                $('#container-' + panel.panelId).text(moment(new Date(badgeData)).format('YYYY-MM-DD hh:mm:ss'));
+            } else if(dataArray[0].data.result.length === 0) {
+                $('#container-' + panel.panelId).text('N/A');
+            } else {
+                $('#container-' + panel.panelId).text(badgeData);
+            }
             return panel;
         },
 
