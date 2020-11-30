@@ -425,6 +425,7 @@ let commonChartsJs = (function () {
                         const start = new Date().getTime();
                         let seriesMap;
                         switch (panel.chartType) {
+                            case "area":
                             case "sparkline":
                             case "line":
                                 seriesMap = new Map(series.map(i => [i.name, i]));
@@ -517,6 +518,7 @@ let commonChartsJs = (function () {
             const type = panel.chartType;
             let data;
             switch (type) {
+                case "area":
                 case "line":
                     data = this.getLineChartData(panel, series);
                     break;
@@ -538,11 +540,11 @@ let commonChartsJs = (function () {
             return data;
         },
         getLineChartData: function (panel, series) {
-            return {
+            let lineChartOption = {
                 chart: {
                     type: panel.chartType.toLowerCase(),
-                    styledMode: false,
-                    events: {
+                        styledMode: false,
+                        events: {
                         load: function () {
                             scheduleMap.set(panel.panelId,
                                 setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
@@ -575,8 +577,18 @@ let commonChartsJs = (function () {
                     type: panel.xaxisMode
                 },
                 title: null,
-                series: series
+                    series: series
+            };
+
+            if (panel.chartType === 'area') {
+                lineChartOption.plotOptions = {
+                    series: {
+                        fillOpacity: 0.3
+                    }
+                };
             }
+
+            return lineChartOption;
         },
         getMultipleGaugeChartData: function (panel, series) {
             let paneBackground = [];
