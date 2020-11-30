@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.cloud.monitoring.controller.cluster;
 
+import com.kubeworks.watcher.cloud.monitoring.controller.MonitoringRestController;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,14 @@ import java.util.Map;
 public class ClusterController {
 
     private final ClusterRestController clusterRestController;
+    private final MonitoringRestController monitoringRestController;
+
+    @GetMapping(value = "/monitoring/cluster/overview", produces = MediaType.TEXT_HTML_VALUE)
+    public String clusterOverview(Model model) {
+        Map<String, Object> response = monitoringRestController.clusterOverview();
+        model.addAllAttributes(response);
+        return "monitoring/cluster/overview_render";
+    }
 
     @GetMapping(value = "/monitoring/cluster/nodes", produces = MediaType.TEXT_HTML_VALUE)
     public String nodes(Model model) {
@@ -34,8 +43,9 @@ public class ClusterController {
 
     @GetMapping(value = "/monitoring/cluster/workloads/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public String workloadsOverview(Model model) {
-        // TODO no implementation
-        return "monitoring/cluster/workloads/workloads";
+        Map<String, Object> response = monitoringRestController.clusterWorkloadsOverview();
+        model.addAllAttributes(response);
+        return "monitoring/cluster/workloads/workloads_render";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/pods", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -155,6 +165,13 @@ public class ClusterController {
         List<EventTable> events = clusterRestController.events();
         model.addAttribute("events", events);
         return "monitoring/cluster/events";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events", produces = MediaType.TEXT_HTML_VALUE)
+    public String events(Model model, @PathVariable String namespace) {
+        List<EventTable> events = clusterRestController.events(namespace);
+        model.addAttribute("events", events);
+        return "monitoring/cluster/events :: listContents";
     }
 
     @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events/{name}", produces = MediaType.APPLICATION_JSON_VALUE)

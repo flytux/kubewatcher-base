@@ -47,6 +47,15 @@
         </div>
     </th:block>
 
+    <th:block th:fragment="col-4-value-card-panel(panel)">
+        <div class="col-md-12 col-lg-4" >
+            <div class="box1">
+                <div th:text="${panel?.title}" class="title">VM</div>
+                <div style="font-size:2em;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">102</div>
+            </div>
+        </div>
+    </th:block>
+
     <th:block th:fragment="headless-card-panel(panel)">
         <div class="col-md-12 col-lg-15">
             <figure class="highcharts-figure">
@@ -67,6 +76,24 @@
 
     <th:block th:fragment="head-card-panel(panel)">
         <div class="col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                <div th:id="|container-${panel?.panelId}|" style="height:300px;"></div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="col-odd-head-card-panel(panel)">
+        <div class="col-md-12 col-lg-15" style="padding-right:0px; padding-bottom:0px;">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                <div th:id="|container-${panel?.panelId}|" style="height:300px;"></div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="col-2-head-card-panel(panel)">
+        <div class="col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
             <div class="box_panel">
                 <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
                 <div th:id="|container-${panel?.panelId}|" style="height:300px;"></div>
@@ -106,6 +133,22 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </th:block>
+
+
+    <th:block th:fragment="full-head-card-panel-in-table-modal(panel)">
+        <div class="col-md-12 col-lg-12">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                <div class="box_panel-body" style="min-height: 300px;">
+                    <table th:id="|container-${panel?.panelId}|"
+                           class="list_table235">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
         </div>
     </th:block>
 

@@ -25,7 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/monitoring/application/overview").setViewName("monitoring/application/overview");
         registry.addViewController("/monitoring/application/topologies").setViewName("monitoring/application/topologies");
         /*      > cluster (1) */
-        registry.addViewController("/monitoring/cluster/overview").setViewName("monitoring/cluster/overview");
+//        registry.addViewController("/monitoring/cluster/overview").setViewName("monitoring/cluster/overview");
 //        registry.addViewController("/monitoring/cluster/nodes").setViewName("monitoring/cluster/nodes");
         /*         >> workloads */
 //        registry.addViewController("/monitoring/cluster/workloads/overview").setViewName("monitoring/cluster/workloads/workloads");

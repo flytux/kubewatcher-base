@@ -152,6 +152,12 @@ public class ClusterRestController {
         return eventService.allNamespaceEventTables();
     }
 
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EventTable> events(@PathVariable String namespace) {
+        Optional<V1EventTableList> eventTableListOptional = eventService.eventTable(null, namespace, null, null);
+        return eventTableListOptional.map(V1EventTableList::getDataTable).orElse(null);
+    }
+
     @GetMapping(value = "/monitoring/cluster/kind/{kind}/namespace/{namespace}/events/{name}/{uId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public V1EventTableList events(@PathVariable String kind, @PathVariable String namespace,
                                    @PathVariable String name, @PathVariable String uId) {

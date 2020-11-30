@@ -173,6 +173,12 @@ public class TestRestController {
         return eventService.eventTable(kind, namespace, name, uId).orElse(null);
     }
 
+    @GetMapping(value = "/k8s/kind/namespace/{namespace}/events", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EventTable> eventTable(@PathVariable String namespace) {
+        Optional<V1EventTableList> eventTableListOptional = eventService.eventTable(null, namespace, null, null);
+        return eventTableListOptional.map(V1EventTableList::getDataTable).orElse(null);
+    }
+
     @GetMapping(value = "/k8s/configmaps", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ConfigMapTable> configMaps() {
         return configMapService.allNamespaceConfigMapTables();

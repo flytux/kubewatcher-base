@@ -1,3 +1,51 @@
+Highcharts.Legend.prototype.colorizeItem = function(item, visible) {
+    item.legendGroup[visible ? 'removeClass' : 'addClass']('highcharts-legend-item-hidden');
+    if (!this.chart.styledMode) {
+        var legend = this,
+            options = legend.options,
+            legendItem = item.legendItem,
+            legendLine = item.legendLine,
+            legendSymbol = item.legendSymbol,
+            hiddenColor = legend.itemHiddenStyle.color,
+            textColor = visible ?
+                options.itemStyle.color :
+                hiddenColor,
+            symbolColor = visible ?
+                (item.color || hiddenColor) :
+                hiddenColor,
+            markerOptions = item.options && item.options.marker,
+            symbolAttr = {
+                fill: symbolColor
+            };
+        if (legendItem) {
+            legendItem.css({
+                fill: textColor,
+                color: textColor // #1553, oldIE
+            });
+        }
+        if (legendLine) {
+            legendLine.attr({
+                stroke: symbolColor
+            });
+        }
+        if (legendSymbol) {
+            // Apply marker options
+            if (markerOptions) { // #585
+
+                symbolAttr = item.pointAttribs();
+                if (!visible) {
+                    // #6769
+                    symbolAttr.stroke = symbolAttr.fill = hiddenColor;
+                }
+            }
+            legendSymbol.attr(symbolAttr);
+        }
+    }
+    Highcharts.fireEvent(this, 'afterColorizeItem', {
+        item: item,
+        visible: visible
+    });
+}
 let commonChartsJs = (function () {
     let chartMap = new Map();
     let scheduleMap = new Map();
@@ -92,6 +140,7 @@ let commonChartsJs = (function () {
             }
         }
     }
+
     // 스파크라인 차트 추가
     function loadSparkLineChartData(serise, tagetLegend, resultType, dataItem) {
         if (dataItem === undefined || dataItem.length < 2) {
@@ -146,6 +195,15 @@ let commonChartsJs = (function () {
             return;
         }
 
+        if (panel.panelType === 'HTML_TABLE') {
+            const tableHtml = tableData.substring(tableData.indexOf('<thead>'),
+                tableData.indexOf('</tbody>') + 8);
+
+            $('#container-' + panel.panelId)
+                .html(tableHtml);
+            return;
+        }
+
         const headers = tableData.headers;
         const dataArray = tableData.data;
         const tableHeaderHtml = String.prototype.concat('<thead><tr>',
@@ -175,6 +233,7 @@ let commonChartsJs = (function () {
         result.data = data.map(value => value);
         return result;
     }
+
     //스파크라인 차트 최초 생성시 마지막 데이터값 그려주는 함수
     function drawOneLabel(chart, series) {
         let render = chart.renderer;
@@ -188,13 +247,14 @@ let commonChartsJs = (function () {
             align: 'center'
         }).add();
     }
+
     //스파크라인 차트용 포맷
     function addSparkUnitFormat(str) {
         str = String(str);
         if (str.indexOf(".") != -1) {
             var cFloat = parseFloat(str);
             cFloat = cFloat.toFixed(1);
-            str = cFloat+'%';
+            str = cFloat + '%';
         } else {
             var minus = str.substring(0, 1);
             str = str.replace(/[^\d]+/g, '');
@@ -233,7 +293,8 @@ let commonChartsJs = (function () {
                             .then(chartOptions => this.renderChart(panel, chartOptions));
                     }
                     break;
-                case "TABLE":
+                case "METRIC_TABLE":
+                case "HTML_TABLE":
                     this.getDataByPanel(panel, true)
                         .then(value => this.createTable(panel, value))
                         .then(panel => scheduleMap.set(panel.panelId,
@@ -292,33 +353,37 @@ let commonChartsJs = (function () {
             } else {
                 $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down">DOWN</div>');
             }
-            //$('#container-' + panel.panelId).text(badgeData);
             return panel;
         },
 
         createTable: function (panel, dataArray) {
-            let data = new Map();
-            for (let i = 0; i < dataArray.length; i++) {
-                let item = dataArray[i];
-                if (item.data.resultType === 'matrix') {
-                    console.warn("unsupported result type=" + item.data.data.resultType);
-                } else {
-                    item.data.result.forEach(value => {
-                        const key = Object.values(value.metric).toString();
-                        const legend = item.legend;
-                        let element = data.get(key);
-                        if (element === undefined) {
-                            element = {};
-                            for (const [key, entry] of Object.entries(value.metric)) {
-                                element[key] = entry;
+            let tableData;
+            if (panel.panelType === 'METRIC_TABLE') {
+                let data = new Map();
+                for (let i = 0; i < dataArray.length; i++) {
+                    let item = dataArray[i];
+                    if (item.data.resultType === 'matrix') {
+                        console.warn("unsupported result type=" + item.data.data.resultType);
+                    } else {
+                        item.data.result.forEach(value => {
+                            const key = Object.values(value.metric).toString();
+                            const legend = item.legend;
+                            let element = data.get(key);
+                            if (element === undefined) {
+                                element = {};
+                                for (const [key, entry] of Object.entries(value.metric)) {
+                                    element[key] = entry;
+                                }
                             }
-                        }
-                        element[legend] = parseFloat(value.value[1]).toFixed(2) - 0;
-                        data.set(key, element);
-                    });
+                            element[legend] = parseFloat(value.value[1]).toFixed(2) - 0;
+                            data.set(key, element);
+                        });
+                    }
                 }
+                tableData = convertTableData([...data.values()]);
+            } else if (panel.panelType === 'HTML_TABLE'){
+                tableData = dataArray[0];
             }
-            const tableData = convertTableData([...data.values()]);
             renderTable(panel, tableData);
             return panel;
         },
@@ -332,7 +397,8 @@ let commonChartsJs = (function () {
                 case "CHART":
                     commonChartsJs.refreshChart(panel);
                     break;
-                case "TABLE":
+                case "METRIC_TABLE":
+                case "HTML_TABLE":
                     commonChartsJs.getDataByPanel(panel)
                         .then(value => commonChartsJs.createTable(panel, value));
                     break;
@@ -357,10 +423,11 @@ let commonChartsJs = (function () {
                     .then(responses => this.convertSeries(panel, responses))
                     .then(series => {
                         const start = new Date().getTime();
+                        let seriesMap;
                         switch (panel.chartType) {
                             case "sparkline":
                             case "line":
-                                const seriesMap = new Map(series.map(i => [i.name, i]));
+                                seriesMap = new Map(series.map(i => [i.name, i]));
                                 for (let chartSeriesItem of chartSeries) {
                                     const seriesData = seriesMap.get(chartSeriesItem.name);
                                     if (seriesData.data.length) {
@@ -390,6 +457,10 @@ let commonChartsJs = (function () {
                                     chartSeries[0].points[0].update(series[0].data[0]);
                                 }
                                 break;
+                            case "bar":
+                            case "multiplegauge":
+                                chart.update({series: series});
+                                break;
                             default:
                                 console.warn("unsupported chart type");
                         }
@@ -408,20 +479,23 @@ let commonChartsJs = (function () {
                 const end = isCreate ? start + (60 * 60) * 1000
                     : start + panel.refreshIntervalMillis;
 
-                if (chartQuery.apiQuery.indexOf("query_range") > 0) {
-                    return request = this.getFetchRequest(convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, start, end));
+                if (chartQuery.queryType === 'METRIC') {
+                    let uri = chartQuery.apiQuery.indexOf("query_range") > 0
+                        ? convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, start, end)
+                        : convertApiQuery;
+                    return this.getFetchRequest(apiHost + uri.replace(/\+/g, "%2B"));
                 } else {
-                    return request = this.getFetchRequest(convertApiQuery);
+                    return this.getFetchRequest(convertApiQuery.replace(/\+/g, "%2B"));
                 }
             }));
         },
 
         convertSeries: function (panel, responses) {
             const chartQueries = panel.chartQueries;
-            const series = chartQueries.flatMap(function(chartQuery, index) {
+            const series = chartQueries.flatMap(function (chartQuery, index) {
                 const responseElement = responses[index];
                 if (responseElement.status === 'error' || !responseElement.data.result.length) {
-                    return panel.chartType === 'solidgauge' ? {
+                    return panel.chartType.indexOf('gauge') > 0 ? {
                         "name": "N/A",
                         "data": [0, 0]
                     } : undefined;
@@ -446,11 +520,17 @@ let commonChartsJs = (function () {
                 case "line":
                     data = this.getLineChartData(panel, series);
                     break;
+                case "sparkline":
+                    data = this.getSparkLineChartData(panel, series);
+                    break;
                 case "solidgauge":
                     data = this.getGaugeChartData(panel, series);
                     break;
-                case "sparkline":
-                    data = this.getSparkLineChartData(panel, series);
+                case "multiplegauge":
+                    data = this.getMultipleGaugeChartData(panel, series);
+                    break;
+                case "bar":
+                    data = this.getBarChartData(panel, series);
                     break;
                 default:
                     console.warn("unsupported chart type");
@@ -498,6 +578,111 @@ let commonChartsJs = (function () {
                 series: series
             }
         },
+        getMultipleGaugeChartData: function (panel, series) {
+            let paneBackground = [];
+            series.forEach((item, index) => {
+                if (index === 0) {
+                    const valueHtml = item.name === 'N/A' ? '<span style="font-size:calc({series.chart.plotWidth} * 0.0066em);font-weight:bold;opacity:0.7;">' + item.name + '</span><br/>'
+                        : '<span style="font-size:calc({series.chart.plotWidth} * 0.0066em);font-weight:bold;opacity:0.7;">{y}</span><br/>';
+                    item.dataLabels = {
+                        format:
+                            '<div style="text-align:center">' +
+                            valueHtml +
+                            '<span style="font-size:10px;opacity:0.4">' + panel.title + ' [' + panel.yaxisUnit + ']' +
+                            '</span>' +
+                            '</div>'
+                    };
+                }
+
+                let radiusRatio = (110 - (11 * index));
+
+                item.data = [{
+                    color: Highcharts.getOptions().colors[index],
+                    radius: radiusRatio + '%',
+                    innerRadius: radiusRatio - 10 + '%',
+                    y: item.data[item.data.length - 1]
+                }];
+
+                item.marker = {
+                    fillColor: Highcharts.getOptions().colors[index]
+                };
+
+                paneBackground.push({
+                    outerRadius: radiusRatio + '%',
+                    innerRadius: radiusRatio - 10 + '%',
+                    backgroundColor: Highcharts.color(Highcharts.getOptions().colors[index])
+                        .setOpacity(0.3).get(),
+                    borderWidth: 0
+                })
+            });
+
+            return {
+                chart: {
+                    type: 'solidgauge',
+                    events: {
+                        load: function () {
+                            scheduleMap.set(panel.panelId,
+                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
+                        }
+                    }
+                },
+                title: null,
+                exporting: {
+                    enabled: false
+                },
+                credits: {
+                    enabled: false
+                },
+                tooltip: {
+                    enabled: false
+                },
+                legend: {
+                    layout: 'vertical',
+                    // backgroundColor: '#FFFFFF',
+                    floating: false,
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    x: 0,
+                    y: 0,
+                    labelFormatter: function () {
+                        let data = this.data;
+                        let color = data.length ? data[data.length - 1].color : '#a4a4a4';
+                        let yValue = data.length ? data[data.length - 1].y : 0;
+                        return '<span style="text-weight:bold;color:' + color + '">' + this.name + ' : ' + yValue + '</span>';
+                        // return this.name + ' : ' + points[points.length - 1]
+                    }
+                },
+
+                pane: {
+                    startAngle: 0,
+                    endAngle: 360,
+                    background: paneBackground
+                },
+
+                yAxis: {
+                    min: parseFloat(panel.yaxisMin),
+                    max: parseFloat(panel.yaxisMax),
+                    lineWidth: 0,
+                    tickPositions: []
+                },
+                plotOptions: {
+                    solidgauge: {
+                        dataLabels: {
+                            x: 0,
+                            y: -40,
+                            borderWidth: 0,
+                            useHTML: true,
+                            position: 'center',
+                        },
+                        linecap: 'round',
+                        stickyTracking: false,
+                        rounded: false,
+                        showInLegend: true
+                    }
+                },
+                series: series
+            }
+        },
         getGaugeChartData: function (panel, series) {
             series.forEach(item => {
                 const valueHtml = item.name === 'N/A' ? '<span style="font-size:25px">' + item.name + '</span><br/>'
@@ -515,7 +700,7 @@ let commonChartsJs = (function () {
                 item.tooltip = {
                     valueSuffix: ' ' + panel.yaxisUnit
                 };
-            })
+            });
 
             return {
                 chart: {
@@ -625,12 +810,96 @@ let commonChartsJs = (function () {
                 series: series
             }
         },
+        getBarChartData: function (panel, series) {
+            return {
+                chart: {
+                    type: "bar",
+                    events: {
+                        load: function () {
+                            scheduleMap.set(panel.panelId,
+                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
+                        }
+                    }
+                },
+                title: null,
+                exporting: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                credits: {
+                    enabled: false
+                },
+                tooltip: {
+                    enabled: false
+                },
+                xAxis: {
+                    title: null,
+                    labels: {
+                        enabled: false
+                    },
+                    lineWidth: 0,
+                    minorGridLineWidth: 0,
+                    lineColor: "transparent",
+                    minorTickLength: 0,
+                    tickLength: 0,
+                    gridLineColor: "transparent",
+                },
+                yAxis: {
+                    title: null,
+                    labels: {
+                        enabled: false
+                    },
+                    lineWidth: 0,
+                    tickInterval: 0,
+                    minorGridLineWidth: 0,
+                    lineColor: "transparent",
+                    minorTickLength: 0,
+                    tickLength: 0,
+                    gridLineColor: "transparent"
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true,
+                            useHTML: true,
+                            padding: 0,
+                            formatter: function () {
+                                return "<span style='font-width:bold; font-size:1.2em; color:#0D2A4D; opacity:0.5;'> [" + this.y + " " + panel.yaxisUnit + "] </span>"
+                                    + "&nbsp;" + this.series.name;
+                            }
+                        }
+                    },
+                    series: {
+                        groupPadding: 0,
+                        minPointLength: 0,
+                        pointPadding: 0.2,
+                        pointWidth: 40,
+                        dataLabels: {
+                            enabled: true,
+                            align: 'right',
+                            /* color: '#000000', */
+                            x: -20
+                        }
+                    }
+                },
+                series: series
+            };
+        },
         renderChart: function (panel, chartData) {
+            if (chartData === undefined) {
+                console.log(panel.panelId, panel.title);
+                return;
+            }
+
             const type = chartData.chart.type;
             switch (type) {
+                case "bar":
                 case "line":
                     this.renderLineHighChart(panel, chartData);
                     break;
+                case "multiplegauge":
                 case "solidgauge":
                     this.renderGaugeHighChart(panel, chartData);
                     break;
@@ -648,7 +917,9 @@ let commonChartsJs = (function () {
         },
         renderGaugeHighChart: function (panel, chartData) {
             const panelId = panel.panelId;
-            const chart = new Highcharts.chart('container-' + panelId, Highcharts.merge(gaugeOptions, chartData));
+            const chart = new Highcharts.chart('container-' + panelId,
+                panel.chartType === 'solidgauge' ? Highcharts.merge(gaugeOptions, chartData)
+                    : chartData);
             chartMap.set(panelId, chart);
         },
         renderSparkLineHighChart: function (panel, chartData) {
@@ -657,8 +928,15 @@ let commonChartsJs = (function () {
             chartMap.set(panelId, chart);
         },
 
-        getFetchRequest: function (uri) {
-            return fetch(apiHost + uri.replace(/\+/g, "%2B")).then(response => response.json());
+        getFetchRequest: function (url) {
+            // return fetch(apiHost + uri.replace(/\+/g, "%2B")).then(response => response.json());
+            return fetch(url).then(response => {
+                const contentType = response.headers.get("Content-Type");
+                if (contentType.indexOf("text/html") >= 0) {
+                    return response.text();
+                }
+                return response.json()
+            });
         },
 
         getQueryRangeTimeNStep: function (chartQuery, start, end) {
