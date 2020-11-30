@@ -24,7 +24,7 @@ public class ClusterController {
     public String clusterOverview(Model model) {
         Map<String, Object> response = monitoringRestController.clusterOverview();
         model.addAllAttributes(response);
-        return "monitoring/cluster/overview_render";
+        return "monitoring/cluster/overview";
     }
 
     @GetMapping(value = "/monitoring/cluster/nodes", produces = MediaType.TEXT_HTML_VALUE)
@@ -45,7 +45,7 @@ public class ClusterController {
     public String workloadsOverview(Model model) {
         Map<String, Object> response = monitoringRestController.clusterWorkloadsOverview();
         model.addAllAttributes(response);
-        return "monitoring/cluster/workloads/workloads_render";
+        return "monitoring/cluster/workloads/workloads";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/pods", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -5,363 +5,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
-    <script>
-
-    </script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
     <div id="main_contents">
-
-        <!-- [클러스터 Overview] start -->
-        <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> 클러스터 Overview</div>
-        </div>
-
-        <div class="row">
-            <div class="col-xs-12 col-lg-4">
-                <div class="box1">
-                    <div class="title">Total Cluster CPU</div>
-                    <div class="b_txt_green text-center">999 <span class="b_sstxt2">vCPU</span></div>
-                </div>
+        <div th:each="panelRow : ${page?.rows}">
+            <div class="row">
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
             </div>
-            <div class="col-xs-12 col-lg-4">
-                <div class="box1">
-                    <div class="title">Total Cluster Memory</div>
-                    <div class="b_txt_green text-center">999 <span class="b_sstxt2">GB</span></div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-lg-4">
-                <div class="box1">
-                    <div class="title">Total Cluster Filesystem</div>
-                    <div class="b_txt_green text-center">999 <span class="b_sstxt2">GB</span></div>
-                </div>
+            <div class="row">
+                <th:block th:each="panel : ${panelRow?.pageRowPanels}">
+                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                </th:block>
             </div>
         </div>
-
-        <!-- [Nodes] start -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="col-xs-12 box_panel">
-                    <div class="box_panel-heading3">Nodes <span class="st">(000)</span></div>
-                    <div class="box_panel-body">
-                        <div class="col-xs-12 col-lg-3 text-center mt_30">
-                            <input class="knob" data-linecap="round" data-width="160"  data-height="160" data-angleoffset="0" data-thickness=".35" data-fgcolor="#a4df5d"  data-bgcolor="#eeeeee"  value="58" style="">
-                            <div class="box_panel-stext ml_60" >
-                                <div class="circle_s"></div>000 Nodes Running<br>
-                                <div class="circle_s"></div>000 Nodes Failed <br>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_panel-heading">CPU</div>
-                                <div class="box_panel-body">
-                                    <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
-                                </div>
-                                <div class="box_panel-stext ml_20" >
-                                    <div class="circle_s"></div>Usage : 00<br>
-                                    <div class="circle_s"></div>Requests : 00 <br>
-                                    <div class="circle_s"></div>Limits :  00<br>
-                                    <div class="circle_s"></div>Capacity :  00
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_panel-heading">Memory</div>
-                                <div class="box_panel-body">
-                                    <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
-                                </div>
-                                <div class="box_panel-stext ml_20" >
-                                    <div class="circle_s"></div>Usage : 00<br>
-                                    <div class="circle_s"></div>Requests : 00 <br>
-                                    <div class="circle_s"></div>Limits :  00<br>
-                                    <div class="circle_s"></div>Capacity :  00
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-lg-3 ">
-                            <div class="box_panel">
-                                <div class="box_panel-heading">Filesystem</div>
-                                <div class="box_panel-body">
-                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%;">
-                                </div>
-                                <div class="box_panel-stext ml_20" >
-                                    <div class="circle_s"></div>Usage : 00<br>
-                                    <div class="circle_s"></div>Requests : 00 <br>
-                                    <div class="circle_s"></div>Limits :  00<br>
-                                    <div class="circle_s"></div>Capacity :  00
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- [Nodes] end -->
-
-        <!-- [Pods] Start -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="col-xs-12 box_panel">
-                    <div class="box_panel-heading3">Pods <span class="st">(000)</span></div>
-                    <div class="box_panel-body">
-                        <div class="col-xs-12 col-lg-3 text-center mt_30">
-                            <input class="knob" data-linecap="round" data-width="160"  data-height="160" data-angleoffset="0" data-thickness=".35" data-fgcolor="#37d8ae"  data-bgcolor="#eeeeee"  value="78" style="">
-                            <div class="box_panel-stext ml_60" >
-                                <div class="circle_s"></div>000 Pods Running<br>
-                                <div class="circle_s"></div>000 Pods Failed <br>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-lg-9">
-                            <div class="col-xs-12 col-lg-4">
-                                <div class="box_panel">
-                                    <div class="box_panel-heading">CPU</div>
-                                    <div class="box_panel-body">
-                                        <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%;">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-lg-4">
-                                <div class="box_panel">
-                                    <div class="box_panel-heading">Memory</div>
-                                    <div class="box_panel-body">
-                                        <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%;">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-lg-4 ">
-                                <div class="box_panel">
-                                    <div class="box_panel-heading">Network</div>
-                                    <div class="box_panel-body">
-                                        <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%;">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12 col-lg-6">
-                                <div class="box_panel">
-                                    <div class="box_panel-heading">CPU Intensive Top 5 Pods</div>
-                                    <div class="box_panel-body">
-
-                                        <div class="row">
-                                            <div class="col-xs-1" >3.21 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 95%;">
-                                                        app-pod-xxy-23xa [계약]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-1" >3.01 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 90%;">
-                                                        app-pod-xxy-25zz [클레임]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-1" >2.49 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 75%;">
-                                                        app-pod-xxy-21k [공통]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-1" >2.21 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 68%;">
-                                                        app-pod-xxy-23xa [고객]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-1" >2.04 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 54%;">
-                                                        app-pod-xxy-12xx [입출금]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-lg-6">
-                                <div class="box_panel">
-                                    <div class="box_panel-heading">Memory Intensive Top 5 Pods</div>
-                                    <div class="box_panel-body">
-
-                                        <div class="row">
-                                            <div class="col-xs-1" >3.21 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar2" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 98%;">
-                                                        app-pod-xxy-23xa [계약]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-1" >3.01 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar2" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 88%;">
-                                                        app-pod-xxy-25zz [클레임]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-1" >2.49 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar2" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 70%;">
-                                                        app-pod-xxy-21k [공통]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-1" >2.21 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar2" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 68%;">
-                                                        app-pod-xxy-23xa [고객]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-1" >2.04 </div>
-                                            <div class="col-xs-11">
-                                                <div class="progress">
-                                                    <div class="progress-bar2" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
-                                                        app-pod-xxy-12xx [입출금]
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- [Pods] ENd -->
-        <!-- [클러스터 Overview] End -->
-
-        <!-- [클러스터 Events] start -->
-        <div class="row">
-            <div class="main_title col-xs-12" ><i class="feather icon-chevrons-right"></i> 클러스터 Events</div>
-        </div>
-
-        <div class="col-lg-12" >
-            <div class="box_panel">
-                <div class="box_panel-body">
-                    <img th:src="@{/assets/img/chart7.jpg}" class="img-responsive" alt="" style="width:100%;">
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-12" >
-            <div class="box_panel">
-                <div class="box_table-body">
-                    <table class="list_table155">
-                        <thead>
-                        <tr>
-                            <th>Message</th>
-                            <th>Object name</th>
-                            <th>Type</th>
-                            <th>Reason</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">Back-off restarting failed container</a>
-
-                                <!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">Node</span>/Pod/ReplicaSet/Deployment/...
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody">
-                                                <br><br><br><br><br><br><br><br><br>
-                                                Cluster Object type별 상세보기화면
-                                                <br><br><br><br><br><br><br><br><br>
-
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- [Modal] End -->
-                            </td>
-                            <td>node-agent-pdxx3</td>
-                            <td>Pod</td>
-                            <td>Back-off</td>
-                        </tr>
-                        <tr>
-                            <td>Back-off restarting failed container</td>
-                            <td>node-agent-pdxx3</td>
-                            <td>Pod</td>
-                            <td>Back-off</td>
-                        </tr>
-                        <tr>
-                            <td>Back-off restarting failed container</td>
-                            <td>node-agent-pdxx3</td>
-                            <td>Pod</td>
-                            <td>Back-off</td>
-                        </tr>
-                        <tr>
-                            <td>Back-off restarting failed container</td>
-                            <td>node-agent-pdxx3</td>
-                            <td>Pod</td>
-                            <td>Back-off</td>
-                        </tr>
-                        <tr>
-                            <td>Back-off restarting failed container</td>
-                            <td>node-agent-pdxx3</td>
-                            <td>Pod</td>
-                            <td>Back-off</td>
-                        </tr>
-                        <tr>
-                            <td>Back-off restarting failed container</td>
-                            <td>node-agent-pdxx3</td>
-                            <td>Pod</td>
-                            <td>Back-off</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- [클러스터 Events] End-->
     </div>
+    <script th:src="@{/assets/js/common-charts.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/axios/axios.min.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let pageRows = [[${page?.rows}]],
+            apiHost = [[${host}]];
+        /*]]>*/
+
+        $(document).ready(function () {
+            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+        });
+
+    </script>
+
 </div>
 </body>
 </html>

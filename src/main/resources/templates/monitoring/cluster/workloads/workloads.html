@@ -9,256 +9,74 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
     <div id="main_contents">
-
-        <!-- [Events] start -->
-        <div class="row">
-            <div class="main_title mr_5"><i class="feather icon-chevrons-right"></i> 클러스터 Workloads
-                <div class="f_r">
-                    <div class="dropdown d_ib">
-                        <select id="multi-select-box">
-                            <option value="통합관리환경 admin">통합관리환경 admin</option>
-                            <option value="보험코어 monitor">보험코어 monitor</option>
-                            <option value="Cluster monitor">Cluster monitor</option>
-                            <option value="Cluster log viewer">Cluster log viewer</option>
-                            <option value="On-premise monitor">On-premise monitor</option>
-                            <option value="Cluster admin">Cluster admin</option>
-                            <option value="Dashboard operator">Dashboard operator</option>
-                        </select>
-                    </div>
-                </div>
+        <div th:each="panelRow : ${page?.rows}">
+            <div th:if="${panelRow?.rowType == T(com.kubeworks.watcher.data.vo.PageRowType).VARIABLE}" class="row">
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-variable-header(${page?.variables})"/>
             </div>
-        </div>
-        <!-- [chart 6EA] start-->
-        <div class="row">
-
-            <div class="col-xs-12 col-md-4 col-lg-2">
-                <div class="box_panel">
-                    <div class="box_panel-heading3">
-                        <a th:href="@{/monitoring/cluster/workloads/pods}">Pods</a><span class="st">(000)</span>
-                    </div>
-                    <div class="box_panel-text">
-                        <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".35" data-fgcolor="#a4df5d"  data-bgcolor="#eeeeee"  value="58" style="">
-                    </div>
-                    <div class="box_panel-stext ml_20" >
-                        <div class="circle_s"></div>Running 00<br>
-                        <div class="circle_s"></div>Pending <br>
-                        <div class="circle_s"></div>Failed 00
-                    </div>
-                </div>
+            <div th:unless="${panelRow?.rowType == T(com.kubeworks.watcher.data.vo.PageRowType).VARIABLE}" class="row">
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
             </div>
-            <div class="col-xs-12 col-md-4 col-lg-2">
-                <div class="box_panel">
-                    <div class="box_panel-heading3">
-                        <a th:href="@{/monitoring/cluster/workloads/deployments}">Deployments</a><span class="st">(000)</span>
-                    </div>
-                    <div class="box_panel-text">
-                        <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".35" data-fgcolor="#37d8ae"  data-bgcolor="#eeeeee"  value="68" style="">
-                    </div>
-                    <div class="box_panel-stext ml_20">
-                        <div class="circle_s"></div>Running 00<br>
-                        <div class="circle_s"></div>Pending <br>
-                        <div class="circle_s"></div>Failed 00
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-4 col-lg-2">
-                <div class="box_panel">
-                    <div class="box_panel-heading3">
-                        <a th:href="@{/monitoring/cluster/workloads/statefulsets}">StatefulSets</a><span class="st">(000)</span>
-                    </div>
-                    <div class="box_panel-text">
-                        <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".35" data-fgcolor="#50bee3"  data-bgcolor="#eeeeee"  value="68" style="">
-                    </div>
-                    <div class="box_panel-stext ml_20">
-                        <div class="circle_s"></div>Running 00<br>
-                        <div class="circle_s"></div>Pending <br>
-                        <div class="circle_s"></div>Failed 00
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-4 col-lg-2">
-                <div class="box_panel">
-                    <div class="box_panel-heading3">
-                        <a th:href="@{/monitoring/cluster/workloads/daemonsets}">DaemonSet</a><span class="st">(000)</span>
-                    </div>
-                    <div class="box_panel-text">
-                        <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".35" data-fgcolor="#5da2e5"  data-bgcolor="#eeeeee"  value="78" style="">
-                    </div>
-                    <div class="box_panel-stext ml_20">
-                        <div class="circle_s"></div>Running 00<br>
-                        <div class="circle_s"></div>Pending <br>
-                        <div class="circle_s"></div>Failed 00
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-4 col-lg-2">
-                <div class="box_panel">
-                    <div class="box_panel-heading3">
-                        <a th:href="@{/monitoring/cluster/workloads/jobs}">Jobs</a><span class="st">(000)</span>
-                    </div>
-                    <div class="box_panel-text">
-                        <input class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0" data-thickness=".35" data-fgcolor="#7392ed"  data-bgcolor="#eeeeee"  value="65" style="">
-                    </div>
-                    <div class="box_panel-stext ml_20">
-                        <div class="circle_s"></div>Running 00<br>
-                        <div class="circle_s"></div>Pending <br>
-                        <div class="circle_s"></div>Failed 00
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-4 col-lg-2">
-                <div class="box_panel">
-                    <div class="box_panel-heading3">
-                        <a th:href="@{/monitoring/cluster/workloads/cronjobs}">CronJobs</a><span class="st">(000)</span>
-                    </div>
-                    <div class="box_panel-text">
-                        <input class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0" data-thickness=".35" data-fgcolor="#be7fc6"  data-bgcolor="#eeeeee"  value="74" style="">
-                    </div>
-                    <div class="box_panel-stext ml_20">
-                        <div class="circle_s"></div>Running 00<br>
-                        <div class="circle_s"></div>Pending <br>
-                        <div class="circle_s"></div>Failed 00
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!-- [chart 6EA] end-->
-        <div class="row">
-            <div class="main_title"><i class="feather icon-chevrons-right"></i> Events
-            </div>
-            <!-- 테이블 width css -->
-            <style>
-                .list_table235 > thead > tr > th:first-child { width:23%;}
-                .list_table235 > tbody > tr > td:first-child { width:23%;}
-            </style>
             <div class="row">
-                <div class="box_panel">
-                    <div class="box_table-body">
-                        <table class="list_table235">
-                            <thead>
-                            <tr>
-                                <th>Message</th>
-                                <th>Namespace</th>
-                                <th>Type</th>
-                                <th>Involved Object</th>
-                                <th>Source</th>
-                                <th>Count</th>
-                                <th>Age</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">Back-off restarting failed container</a>
-
-                                    <!-- [Modal] start -->
-                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                        <div class="modal-dialog modal-lg"style="width:765px;">
-                                            <div class="modal-content">
-                                                <div class="modal-title_box">
-                                                    <div class="modal-title">
-                                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                        <span id="myModalLabel">Node/Pod/ReplicaSet/Deployment/...</span>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-nbody">
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>"Cluster Object type별 상세 보기화면"
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- [Modal] End -->
-                                </td>
-                                <td>Kube-system</td>
-                                <td>Pod</td>
-                                <td>Object name</td>
-                                <td>node-controler</td>
-                                <td>000</td>
-                                <td>99d24h00mm</td>
-                            </tr>
-                            <tr>
-                                <td>Back-off restarting failed container</td>
-                                <td>Kube-system</td>
-                                <td>Pod</td>
-                                <td>Object name</td>
-                                <td>node-controler</td>
-                                <td>000</td>
-                                <td>99d24h00mm</td>
-                            </tr>
-                            <tr>
-                                <td>Back-off restarting failed container</td>
-                                <td>Kube-system</td>
-                                <td>Pod</td>
-                                <td>Object name</td>
-                                <td>node-controler</td>
-                                <td>000</td>
-                                <td>99d24h00mm</td>
-                            </tr>
-                            <tr>
-                                <td>Back-off restarting failed container</td>
-                                <td>Kube-system</td>
-                                <td>Pod</td>
-                                <td>Object name</td>
-                                <td>node-controler</td>
-                                <td>000</td>
-                                <td>99d24h00mm</td>
-                            </tr>
-                            <tr>
-                                <td>Back-off restarting failed container</td>
-                                <td>Kube-system</td>
-                                <td>Pod</td>
-                                <td>Object name</td>
-                                <td>node-controler</td>
-                                <td>000</td>
-                                <td>99d24h00mm</td>
-                            </tr>
-                            <tr>
-                                <td>Back-off restarting failed container</td>
-                                <td>Kube-system</td>
-                                <td>Pod</td>
-                                <td>Object name</td>
-                                <td>node-controler</td>
-                                <td>000</td>
-                                <td>99d24h00mm</td>
-                            </tr>
-                            <tr>
-                                <td>Back-off restarting failed container</td>
-                                <td>Kube-system</td>
-                                <td>Pod</td>
-                                <td>Object name</td>
-                                <td>node-controler</td>
-                                <td>000</td>
-                                <td>99d24h00mm</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <th:block th:each="panel : ${panelRow?.pageRowPanels}">
+                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                </th:block>
             </div>
-            <!-- [Events] End-->
         </div>
     </div>
+    <script th:src="@{/assets/js/common-charts.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/axios/axios.min.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let pageRows = [[${page?.rows}]],
+            apiHost = [[${host}]];
+        /*]]>*/
+
+        function eventDetail(namespace, name) {
+            $.ajax({
+                url: "/monitoring/cluster/namespace/" + namespace + "/events/" + name,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            commonVariablesJs.createVariables([[${page?.variables}]]);
+            commonVariablesJs.generateVariable();
+
+            if (commonVariablesJs.isSelectedAllVariable()) {
+                pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+            }
+
+            $("select[name^='var-']").change(function () {
+                const selectedId = comnJs.replace($(this).attr('id'), 'var-', '');
+                let variable = commonVariablesJs.getVariable(selectedId);
+                commonVariablesJs.refreshEdgeVariableData(selectedId);
+                if (commonVariablesJs.isSelectedAllVariable()) {
+                    commonChartsJs.resetReadyTimestamp();
+                    pageRows.forEach(row => row.pageRowPanels.forEach(panel => {
+                        commonChartsJs.removeChart(panel);
+                        commonChartsJs.createPanel(panel)
+                    }));
+                }
+            });
+
+        });
+
+    </script>
 
 </div>
 </body>
