@@ -30,6 +30,7 @@ public class ClusterController {
     private final ClusterRestController clusterRestController;
     private final PageViewService pageViewService;
     private final MonitoringRestController monitoringRestController;
+    private final PrometheusProperties prometheusProperties;
 
     @GetMapping(value = "/monitoring/cluster/overview", produces = MediaType.TEXT_HTML_VALUE)
     public String clusterOverview(Model model) {
