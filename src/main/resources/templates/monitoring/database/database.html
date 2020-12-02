@@ -12,23 +12,13 @@
     <th:block
         th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
     <div id="main_contents">
-
-
-
-
         <div th:each="panelRow : ${page?.rows}">
             <div class="row">
                 <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
             </div>
             <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
-
-
-
                     <th:block th:if="${panel?.mainYn} == 'Y'">
-
-
-
                         <th:block th:if="${panel?.fragmentName} == 'head-card-db-dummy'">
                             <th:block th:each="dbPanel, index: ${dbPanels}">
                                 <th:block th:replace="layout/fragments/panelTypes :: head-card-db-dummy (${dbPanel}, ${index.count})"/>
@@ -36,22 +26,11 @@
                         </th:block>
                         <th:block th:unless="${panel?.fragmentName} == 'head-card-db-dummy'">
                             <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
-
-
-
-
                         </th:block>
                     </th:block>
-
-
-
                 </th:block>
             </div>
         </div>
-
-
-
-
     </div>
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
