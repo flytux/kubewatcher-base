@@ -259,9 +259,19 @@ public class TestRestController {
         return serviceKindService.allNamespaceServiceTables();
     }
 
+    @GetMapping(value = "/k8s/namespace/{namespace}/service/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ServiceDescribe service(@PathVariable String namespace, @PathVariable String name) {
+        return serviceKindService.service(namespace, name).orElse(null);
+    }
+
     @GetMapping(value = "/k8s/ingresses", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<IngressTable> ingresses() {
         return ingressService.allNamespaceIngressTables();
+    }
+
+    @GetMapping(value = "/k8s/namespace/{namespace}/ingresses/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public IngressDescribe ingress(@PathVariable String namespace, @PathVariable String name) {
+        return ingressService.ingress(namespace, name).orElse(null);
     }
 
     @GetMapping(value = "/k8s/endpoints", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -269,14 +279,27 @@ public class TestRestController {
         return endpointService.allNamespaceEndpointTables();
     }
 
+    @GetMapping(value = "/k8s/namespace/{namespace}/endpoints/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EndpointDescribe endpoint(@PathVariable String namespace, @PathVariable String name) {
+        return endpointService.endpoint(namespace, name).orElse(null);
+    }
+
     @GetMapping(value = "/k8s/network-policies", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NetworkPolicyTable> networkPolicies() {
         return networkPolicyService.allNamespaceNetworkPolicyTables();
     }
 
+    @GetMapping(value = "/k8s/namespace/{namespace}/network-policies/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public NetworkPolicyDescribe networkPolicy(@PathVariable String namespace, @PathVariable String name) {
+        return networkPolicyService.networkPolicy(namespace, name).orElse(null);
+    }
     @GetMapping(value = "/k8s/service-accounts", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ServiceAccountTable> serviceAccounts() {
         return serviceAccountService.allNamespaceServiceAccountTables();
+    }
+    @GetMapping(value = "/k8s/namespace/{namespace}/service-accounts/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ServiceAccountDescribe serviceAccount(@PathVariable String namespace, @PathVariable String name) {
+        return serviceAccountService.serviceAccount(namespace,name).orElse(null);
     }
 
     @GetMapping(value = "/k8s/role-bindings", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -284,6 +307,10 @@ public class TestRestController {
         return roleBindingService.allNamespaceRoleBindingTables();
     }
 
+    @GetMapping(value = "/k8s/namespace/{namespace}/role-bindings/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RoleBindingDescribe roleBinding(@PathVariable String namespace, @PathVariable String name) {
+        return roleBindingService.roleBinding(namespace,name).orElse(null);
+    }
 
 }
 

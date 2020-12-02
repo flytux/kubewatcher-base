@@ -1,15 +1,22 @@
 package com.kubeworks.watcher.cloud.monitoring.controller.cluster;
 
+import com.kubeworks.watcher.config.properties.PrometheusProperties;
+import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.cloud.monitoring.controller.MonitoringRestController;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
+import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +24,13 @@ import java.util.Map;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class ClusterController {
 
+    private static final long NODE_MENU_ID = 111;
+    private static final long POD_MENU_ID  = 1120;
+
     private final ClusterRestController clusterRestController;
+    private final PageViewService pageViewService;
     private final MonitoringRestController monitoringRestController;
+    private final PrometheusProperties prometheusProperties;
 
     @GetMapping(value = "/monitoring/cluster/overview", produces = MediaType.TEXT_HTML_VALUE)
     public String clusterOverview(Model model) {
@@ -29,8 +41,18 @@ public class ClusterController {
 
     @GetMapping(value = "/monitoring/cluster/nodes", produces = MediaType.TEXT_HTML_VALUE)
     public String nodes(Model model) {
+
         List<NodeTable> nodes = clusterRestController.nodes();
+
+        Map<String, Object> response = new HashMap<>();
+        Page pageView = pageViewService.getPageView(NODE_MENU_ID);
+        response.put("page", pageView);
+        response.put("user", getUser());
+        response.put("host", prometheusProperties.getUrl());
+
         model.addAttribute("nodes", nodes);
+        model.addAllAttributes(response);
+
         return "monitoring/cluster/nodes";
     }
 
@@ -50,8 +72,19 @@ public class ClusterController {
 
     @GetMapping(value = "/monitoring/cluster/workloads/pods", produces = MediaType.APPLICATION_JSON_VALUE)
     public String pods(Model model) {
+//        List<PodTable> pods = clusterRestController.pods();
+//        model.addAttribute("pods", pods);
+
         List<PodTable> pods = clusterRestController.pods();
+
+        Map<String, Object> response = new HashMap<>();
+        Page pageView = pageViewService.getPageView(POD_MENU_ID);
+        response.put("page", pageView);
+        response.put("user", getUser());
+        response.put("host", prometheusProperties.getUrl());
+
         model.addAttribute("pods", pods);
+        model.addAllAttributes(response);
         return "monitoring/cluster/workloads/pods";
     }
 
@@ -179,6 +212,14 @@ public class ClusterController {
         EventDescribe event = clusterRestController.event(namespace, name);
         model.addAttribute("event", event);
         return "monitoring/cluster/events :: modalContents";
+    }
+
+    protected User getUser() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated() && authentication.getPrincipal() instanceof User) {
+            return (User) authentication.getPrincipal();
+        }
+        return null;
     }
 
 }

@@ -60,15 +60,9 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(deployments)}" th:each="deployment : ${deployments}">
                             <td>
-                                <!--                            <td>-->
-                                <!--                                <a th:text="${deployment?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Pod명+보험코어 어플리케이션 명</a>-->
-                                <!--                                &lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${deployment?.name} + '&quot;)'"&ndash;&gt;-->
-                                <!--                                &lt;!&ndash;                                   th:utext="${deployment?.name}">Name</a>&ndash;&gt;-->
-                                <!--                            </td>-->
                                 <a class="table2-link" th:href="'javascript:deployDetail(&quot;' + ${deployment?.namespace} + '&quot;, &quot;'+ ${deployment?.name} + '&quot;)'"
                                    th:utext="${deployment?.name}">Name</a>
                             </td>
-<!--                            <td th:text="${deployment?.name}">Name</td>-->
                             <td th:text="${deployment?.namespace}">Namespace</td>
                             <td th:text="${deployment?.ready}">Pods</td>
                             <td th:text="${deployment?.upToDate}">Replicas</td>
@@ -115,39 +109,13 @@
                     <div class="table-title">
                         Overview
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-3">
+                    <div class="row" th:each="panelRow : ${page?.rows}">
+                        <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
                             <div class="box_panel">
-                                <div class="box_modal-heading">CPU</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
+                                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Memory</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Network</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
-<!--                        <div class="col-md-12 col-lg-3">-->
-<!--                            <div class="box_panel">-->
-<!--                                <div class="box_modal-heading">Filesystem</div>-->
-<!--                                <div class="box_modal-body">-->
-<!--                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                     </div>
                     <div class="row">
                         <table class="table-nt">
@@ -169,15 +137,12 @@
                                     <div class="row" th:each="entry : ${deployment?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        deprecated.daemonset.template.generation=1 </span>
+                                        deprecated.daemonet.template.generation=1 </span>
                                         <span class="madal_label"
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         deprecated.daemonset.template.generation=1 </span>
 
                                     </div>
-<!--                                    <div class="row" th:each="entry : ${deployment?.annotations}" >-->
-<!--                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">label</span>-->
-<!--                                    </div>-->
                                 </td>
                             </tr>
                             <tr>
@@ -239,12 +204,6 @@
                         <tr th:if="${#arrays.isEmpty(deployments)}">
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
-<!--                        <tr th:unless="${#arrays.isEmpty(deployments)}" th:each="deployment : ${deployments}">-->
-<!--                            <td th:text="${deployment?.name}">Name</td>-->
-<!--                            <td th:text="${deployment?.namespace}">Namespace</td>-->
-<!--                            <td th:text="${deployment?.pods}">Pods</td>-->
-<!--                            <td th:text="${deployment?.age}">Age</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
 
@@ -272,14 +231,6 @@
                             <td th:text="|- %|">Memory</td>
                             <td> <span class="madal_label_active"th:text="${pod?.status}">Status </span></td>
                         </tr>
-
-<!--                        <tr>-->
-<!--                            <td>kube-state-metrics-xxx</td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>1</td>-->
-<!--                            <td>0.000Mi</td>-->
-<!--                            <td><span class="madal_label_active">Running</span></td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
                     <div class="table-title">
@@ -306,13 +257,6 @@
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">Last</td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
 
@@ -323,23 +267,50 @@
     </div>
     <!-- [Modal] End -->
 
+    <script th:src="@{/assets/js/common-charts.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
+    <input type="hidden" id="var-namespace" value=""/>
+    <input type="hidden" id="var-name" value=""/>
+
     <script type="text/javascript" th:inline="javascript">
+
+        var apiHost,
+            $namespace = $("#var-namespace"),
+            $name = $("#var-name");
+
+
         function deployDetail(namespace, name) {
+            $namespace.val(namespace);
+            $name.val(name);
+
             $.ajax({
-                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/deployments/" + name,
+                url: "/api/v1/monitoring/cluster/workloads/namespace/" + namespace + "/deployments/" + name + "/metrics",
                 success: function (data) {
+
+                    apiHost = data.host;
+                    data.page.rows.forEach(row => row.pageRowPanels.forEach(panel => {
+                        commonChartsJs.removeChart(panel);
+                        commonChartsJs.createPanel(panel)
+                    }));
+
                     $('#myModal').text("");
-                    $('#myModal').html(data);
+                    $('#myModal').html(data.describe);
                     $('#myModal').modal();
                     $(".knob").knob();
+
                 },
                 error: function (e) {
                     if (e.status === 401) {
                         $(location).attr('href', '/login?logout')
                     }
+
                 }
             });
         }
+
+
     </script>
 
 </div>

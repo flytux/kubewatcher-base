@@ -1,25 +1,40 @@
 package com.kubeworks.watcher.cloud.monitoring.controller.cluster;
 
+import com.kubeworks.watcher.config.properties.PrometheusProperties;
+import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.*;
+import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.context.IContext;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController()
 @RequestMapping(path = "/api/v1")
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class ClusterRestController {
+
+    private static final long NODE_MENU_ID = 111;
+    private static final long POD_MENU_ID = 1120;
+    private static final long DEPLOYMENT_MENU_ID = 1121;
+    private static final long DAEMONSET_MENU_ID = 1122;
+    private static final long STATEFULSET_MENU_ID = 1123;
+    private static final long STORAGE_MENU_ID = 113;
 
     private final NodeService nodeService;
     private final PodService podService;
@@ -32,6 +47,11 @@ public class ClusterRestController {
     private final StorageService storageService;
     private final EventService eventService;
 
+    private final PageViewService pageViewService;
+
+    private final SpringTemplateEngine springTemplateEngine;
+    private final PrometheusProperties prometheusProperties;
+
     @GetMapping(value = "/monitoring/cluster/nodes", produces = MediaType.TEXT_HTML_VALUE)
     public List<NodeTable> nodes() {
         return nodeService.nodes();
@@ -40,6 +60,26 @@ public class ClusterRestController {
     @GetMapping(value = "/monitoring/cluster/nodes/{nodeName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public NodeDescribe node(@PathVariable String nodeName) {
         return nodeService.nodeDescribe(nodeName);
+    }
+
+    @GetMapping(value = "/monitoring/cluster/nodes/{nodeName}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> nodeMetrics(@PathVariable String nodeName) {
+
+        NodeDescribe nodeDescribe = nodeService.nodeDescribe(nodeName);
+
+        Map<String, Object> node = new HashMap<>();
+        node.put("node", nodeDescribe);
+        Page pageView = pageViewService.getPageView(NODE_MENU_ID);
+        node.put("page", pageView);
+
+        String nodeDescribeHtml = springTemplateEngine.process("monitoring/cluster/nodes",
+            Collections.singleton("modalContents"), new Context(Locale.KOREA, node));
+
+        node.put("describe", nodeDescribeHtml);
+        node.put("user", getUser());
+        node.put("host", prometheusProperties.getUrl());
+
+        return node;
     }
 
 //    @GetMapping(value = "/monitoring/cluster/workloads/overview", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,14 +95,75 @@ public class ClusterRestController {
         return podDescribeOptional.orElse(null);
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/pods/{podName}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> podMetrics(@PathVariable String namespace, @PathVariable String podName) {
+
+        PodDescribe podDescribe = podService.pod(namespace, podName).orElse(null);;
+
+        Map<String, Object> pod = new HashMap<>();
+        pod.put("pod", podDescribe);
+        Page pageView = pageViewService.getPageView(POD_MENU_ID);
+        pod.put("page", pageView);
+
+        String podDescribeHtml = springTemplateEngine.process("monitoring/cluster/workloads/pods",
+            Collections.singleton("modalContents"), new Context(Locale.KOREA, pod));
+
+        pod.put("describe", podDescribeHtml);
+        pod.put("user", getUser());
+        pod.put("host", prometheusProperties.getUrl());
+
+        return pod;
+    }
+
+
     @GetMapping(value = "/monitoring/cluster/workloads/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DeploymentTable> deployments() {
         return deploymentService.allNamespaceDeploymentTables();
     }
 
+//    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public DeploymentDescribe deployment(@PathVariable String namespace, @PathVariable String name) {
+//
+//        DeploymentDescribe deploymentDescribe = deploymentService.deployment(namespace, name).orElse(null);
+//        Map<String, Object> deployment = new HashMap<>();
+//        deployment.put("deployment", deploymentDescribe);
+//
+//        String template = "monitoring/cluster/workloads/deployments";
+//        Set<String> selector = new HashSet<>();
+//        selector.add("modalContents");
+//
+////        String template = "monitoring/cluster/workloads/deployments";
+//        Context iContext = new Context(Locale.KOREA, deployment);
+//        String deploymentDescribeHtml = springTemplateEngine.process(template, selector, iContext);
+//
+//        return deploymentDescribe;
+//    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public DeploymentDescribe deployment(@PathVariable String namespace, @PathVariable String name) {
-        return deploymentService.deployment(namespace, name).orElse(null);
+        Optional<DeploymentDescribe> DeploymentDescribeOptional = deploymentService.deployment(namespace, name);
+        return DeploymentDescribeOptional.orElse(null);
+    }
+
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> deploymentMetrics(@PathVariable String namespace, @PathVariable String name) {
+
+        DeploymentDescribe deploymentDescribe = deploymentService.deployment(namespace, name).orElse(null);
+
+        Map<String, Object> deployment = new HashMap<>();
+        deployment.put("deployment", deploymentDescribe);
+        Page pageView = pageViewService.getPageView(DEPLOYMENT_MENU_ID);
+        deployment.put("page", pageView);
+
+        String deploymentDescribeHtml = springTemplateEngine.process("monitoring/cluster/workloads/deployments",
+            Collections.singleton("modalContents"), new Context(Locale.KOREA, deployment));
+
+        deployment.put("describe", deploymentDescribeHtml);
+        deployment.put("user", getUser());
+        deployment.put("host", prometheusProperties.getUrl());
+
+        return deployment;
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,6 +176,26 @@ public class ClusterRestController {
         return daemonSetService.daemonSet(namespace, name).orElse(null);
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets/{name}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> daemonSetMetrics(@PathVariable String namespace, @PathVariable String name) {
+
+        DaemonSetDescribe daemonSetDescribe = daemonSetService.daemonSet(namespace, name).orElse(null);
+
+        Map<String, Object> daemonSet = new HashMap<>();
+        daemonSet.put("daemonSet", daemonSetDescribe);
+        Page pageView = pageViewService.getPageView(DAEMONSET_MENU_ID);
+        daemonSet.put("page", pageView);
+
+        String daemonSetDescribeHtml = springTemplateEngine.process("monitoring/cluster/workloads/daemonsets",
+            Collections.singleton("modalContents"), new Context(Locale.KOREA, daemonSet));
+
+        daemonSet.put("describe", daemonSetDescribeHtml);
+        daemonSet.put("user", getUser());
+        daemonSet.put("host", prometheusProperties.getUrl());
+
+        return daemonSet;
+    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StatefulSetTable> statefulSets() {
         return statefulSetService.allNamespaceStatefulSetTables();
@@ -83,6 +204,26 @@ public class ClusterRestController {
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public StatefulSetDescribe statefulSet(@PathVariable String namespace, @PathVariable String name) {
         return statefulSetService.statefulSet(namespace, name).orElse(null);
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets/{name}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> statefulSetMetrics(@PathVariable String namespace, @PathVariable String name) {
+
+        StatefulSetDescribe statefulSetDescribe = statefulSetService.statefulSet(namespace, name).orElse(null);
+
+        Map<String, Object> statefulSet = new HashMap<>();
+        statefulSet.put("statefulSet", statefulSetDescribe);
+        Page pageView = pageViewService.getPageView(STATEFULSET_MENU_ID);
+        statefulSet.put("page", pageView);
+
+        String statefulSetDescribeHtml = springTemplateEngine.process("monitoring/cluster/workloads/statefulsets",
+            Collections.singleton("modalContents"), new Context(Locale.KOREA, statefulSet));
+
+        statefulSet.put("describe", statefulSetDescribeHtml);
+        statefulSet.put("user", getUser());
+        statefulSet.put("host", prometheusProperties.getUrl());
+
+        return statefulSet;
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/jobs", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -137,6 +278,26 @@ public class ClusterRestController {
         return persistentVolumeService.persistentVolumeClaim(namespace, name).orElse(null);
     }
 
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/persistent-volume-claims/{name}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> PersistentVolumeClaimMetrics(@PathVariable String namespace, @PathVariable String name) {
+
+        PersistentVolumeClaimDescribe persistentVolumeClaimDescribe = persistentVolumeService.persistentVolumeClaim(namespace, name).orElse(null);
+
+        Map<String, Object> persistentVolumeClaim = new HashMap<>();
+        persistentVolumeClaim.put("persistentVolumeClaim", persistentVolumeClaimDescribe);
+        Page pageView = pageViewService.getPageView(STORAGE_MENU_ID);
+        persistentVolumeClaim.put("page", pageView);
+
+        String persistentVolumeClaimDescribeHtml = springTemplateEngine.process("/monitoring/cluster/storages",
+            Collections.singleton("pvcModalContents"), new Context(Locale.KOREA, persistentVolumeClaim));
+
+        persistentVolumeClaim.put("describe", persistentVolumeClaimDescribeHtml);
+        persistentVolumeClaim.put("user", getUser());
+        persistentVolumeClaim.put("host", prometheusProperties.getUrl());
+
+        return persistentVolumeClaim;
+    }
+
     @GetMapping(value = "/monitoring/cluster/storage-classes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StorageClassTable> storageClasses() {
         return storageService.allStorageClassClaimTables();
@@ -167,6 +328,14 @@ public class ClusterRestController {
     @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public EventDescribe event(@PathVariable String namespace, @PathVariable String name) {
         return eventService.event(namespace, name).orElse(null);
+    }
+
+    protected User getUser() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated() && authentication.getPrincipal() instanceof User) {
+            return (User) authentication.getPrincipal();
+        }
+        return null;
     }
 
 }
