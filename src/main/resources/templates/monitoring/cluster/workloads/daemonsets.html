@@ -9,10 +9,10 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>DeamonSets')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>DaemonSets')"/>
     <div id="main_contents">
 
-        <!-- [클러스터 DeamonSet] start -->
+        <!-- [클러스터 DaemonSet] start -->
         <div class="row">
             <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 DaemonSet
 <!--                <div class="f_r">-->
@@ -63,11 +63,6 @@
                                 <a class="table2-link" th:href="'javascript:daemonSetDetail(&quot;' + ${daemonSet?.namespace} + '&quot;, &quot;'+ ${daemonSet?.name} + '&quot;)'"
                                    th:utext="${daemonSet?.name}">Name</a>
                             </td>
-<!--                            <td>-->
-<!--                                <a th:text="${daemonSet?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
-<!--                                &lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${deployment?.name} + '&quot;)'"&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                   th:utext="${daemonSets?.name}">Name</a>&ndash;&gt;-->
-<!--                            </td>-->
                             <td th:text="${daemonSet?.namespace}">Namespace</td>
                             <td th:text="|${daemonSet?.available}/${daemonSet?.desired}|">Pods</td>
                             <td> <span class="madal_label"th:text="${daemonSet?.nodeSelector}">Node selector </span></td>
@@ -97,7 +92,7 @@
 <!--                </ul>-->
 <!--            </nav>-->
 <!--        </div>-->
-<!--        &lt;!&ndash; [클러스터 DeamonSet] End&ndash;&gt;-->
+<!--        &lt;!&ndash; [클러스터 DaemonSet] End&ndash;&gt;-->
 <!--    </div>-->
     <!-- [Modal] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
@@ -109,43 +104,18 @@
                         <span id="myModalLabel"th:text="|DaemonSet : ${daemonSet?.name}|"> DaemonSet : DaemonSet 명</span>
                     </div>
                 </div>
+
                 <div class="modal-nbody row_scroll">
                     <div class="table-title">
                         Overview
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-3">
+                    <div class="row" th:each="panelRow : ${page?.rows}">
+                        <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
                             <div class="box_panel">
-                                <div class="box_modal-heading">CPU</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
+                                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Memory</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Network</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
-<!--                        <div class="col-md-12 col-lg-3">-->
-<!--                            <div class="box_panel">-->
-<!--                                <div class="box_modal-heading">Filesystem</div>-->
-<!--                                <div class="box_modal-body">-->
-<!--                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                     </div>
 
                     <div class="row">
@@ -196,42 +166,12 @@
                             <tr>
                                 <th>Tolerations</th>
                                 <td>
-<!--                                    <table class="list_mtable_50">-->
-<!--                                        <thead>-->
-<!--                                        <tr>-->
-<!--                                            <th>Key</th>-->
-<!--                                            <th>Operator</th>-->
-<!--                                            <th>Effect</th>-->
-<!--                                        </tr>-->
-<!--                                        </thead>-->
-<!--                                        <tbody>-->
-<!--                                        <tr th:if="${#arrays.isEmpty(daemonSet?.tolerations)}">-->
-<!--                                            <td colspan="3" class="text-center">No results</td>-->
-<!--                                        </tr>-->
-<!--                                        <tr th:unless="${#arrays.isEmpty(daemonSet?.tolerations)}" th:each="toleration : ${daemonSet?.tolerations}">-->
-<!--                                            <td th:text="${toleration?.key}">-</td>-->
-<!--                                            <td th:text="${toleration?.operator}">Exists</td>-->
-<!--                                            <td th:text="${toleration?.effect}">No Schedule</td>-->
-<!--                                        </tr>-->
-<!--                                        <tr>-->
-<!--                                            <td>-</td>-->
-<!--                                            <td>Exists</td>-->
-<!--                                            <td>Noschedule</td>-->
-<!--                                        </tr>-->
-<!--                                        <tr>-->
-<!--                                            <td>///</td>-->
-<!--                                            <td>hostpath</td>-->
-<!--                                            <td>///</td>-->
-<!--                                        </tr>-->
-<!--                                        </tbody>-->
-<!--                                    </table>-->
                                     <div class="row" th:each="item : ${daemonSet?.tolerations}" >
                                         <span class="madal_label"
                                               th:text="|Key : ${item?.key}, Operator : ${item?.operator}, Effect : ${item?.effect}|">
                                             Key : [], Operator : [], Effect : []
                                         </span>
                                     </div>
-
                                 </td>
                             </tr>
                             <tr>
@@ -241,7 +181,6 @@
                             <tr>
                                 <th>CPU</th>
                                 <td>
-<!--                                    <span th:text="${daemonSet?.resources?.requests.get('cpu')}" class="madal_label">Request 0,000</span>-->
                                     <span th:text="|Request ${#numbers.formatDecimal(daemonSet?.getRequestResource('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
                                     <span th:text="|Limit ${#numbers.formatDecimal(daemonSet?.getLimitsMetric('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
                                 </td>
@@ -251,7 +190,6 @@
                                 <td>
                                     <span th:text="|Request ${#numbers.formatDecimal(daemonSet?.getRequestResource('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
                                     <span th:text="|Limit ${#numbers.formatDecimal(daemonSet?.getLimitsMetric('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
-<!--                                    <span class="madal_label">Request 0,000Mi</span> <span class="madal_label">Limit 0,000Mi</span>-->
                                 </td>
                             </tr>
                         </table>
@@ -307,12 +245,6 @@
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>24일 15시 32분 (2020-05-24 15:32:08)</td>-->
                         <tbody>
                     </table>
                 </div>
@@ -320,13 +252,36 @@
         </div>
     </div>
     <!-- [Modal] End -->
+
+    <script th:src="@{/assets/js/common-charts.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
+    <input type="hidden" id="var-namespace" value=""/>
+    <input type="hidden" id="var-name" value=""/>
+
         <script type="text/javascript" th:inline="javascript">
+
+        var apiHost,
+            $namespace = $("#var-namespace"),
+            $name = $("#var-name");
+
         function daemonSetDetail(namespace, name) {
+            $namespace.val(namespace);
+            $name.val(name);
+
             $.ajax({
-                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/daemonsets/" + name,
+                url: "/api/v1/monitoring/cluster/workloads/namespace/" + namespace + "/daemonsets/" + name + "/metrics",
                 success: function (data) {
+
+                    apiHost = data.host;
+                    data.page.rows.forEach(row => row.pageRowPanels.forEach(panel => {
+                        commonChartsJs.removeChart(panel);
+                        commonChartsJs.createPanel(panel)
+                        }));
+
                     $('#myModal').text("");
-                    $('#myModal').html(data);
+                    $('#myModal').html(data.describe);
                     $('#myModal').modal();
                     $(".knob").knob();
                 },

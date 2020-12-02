@@ -112,41 +112,14 @@
                     <div class="table-title">
                         Overview
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-3">
+                    <div class="row" th:each="panelRow : ${page?.rows}">
+                        <div th:if= "${panelRow.title == 'pop-up (per POD)'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">
                             <div class="box_panel">
-                                <div class="box_modal-heading">CPU</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
+                                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Memory</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="box_panel">
-                                <div class="box_modal-heading">Network</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
-                            </div>
-                        </div>
-<!--                        <div class="col-md-12 col-lg-3">-->
-<!--                            <div class="box_panel">-->
-<!--                                <div class="box_modal-heading">Filesystem</div>-->
-<!--                                <div class="box_modal-body">-->
-<!--                                    <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                     </div>
-
                     <div class="row">
                         <table class="table-nt">
                             <tr>
@@ -164,9 +137,6 @@
                             <tr>
                                 <th>Labels</th>
                                 <td>
-<!--                                    <div class="row" th:each="entry : ${pod?.labels}" >-->
-<!--                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">label</span>-->
-<!--                                    </div>-->
                                     <div class="row" th:each="entry : ${pod?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
@@ -189,9 +159,6 @@
                                         label </span>
                                     </div>
 
-<!--                                    <div class="row" th:each="entry : ${pod?.annotations}" >-->
-<!--                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">label</span>-->
-<!--                                    </div>-->
                                 </td>
                             </tr>
                             <tr>
@@ -230,44 +197,20 @@
 
                     <div class="row" th:unless="${#arrays.isEmpty(pod?.containers)}"
                          th:each="container : ${pod?.containers}">
-                        <input th:id="|modal-answer-${container?.name}|" type="checkbox" name="accordion" id="modal-answer">
+                        <input th:id="|modal-answer-${container?.name}|" type="checkbox" name="accordion" id="modal-answer" >
                         <label th:for="|modal-answer-${container?.name}|" for="modal-answer">
                             <span th:text="${container?.name}">kube-state-metrics</span><em></em>
                         </label>
                         <div>
                             <div class="row">
-                                <div class="col-md-12 col-lg-3">
-                                    <div class="box_panel">
-                                        <div class="box_modal-heading">CPU</div>
-                                        <div class="box_modal-body">
-                                            <img th:src="@{/assets/img/chart1.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
+                                <div class="row" th:each="panelRow : ${page?.rows}">
+                                    <div th:if= "${panelRow.title == 'Pop-up (per Container)'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
+                                        <div class="box_panel">
+                                            <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                            <div th:id="|container-${container?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-lg-3">
-                                    <div class="box_panel">
-                                        <div class="box_modal-heading">Memory</div>
-                                        <div class="box_modal-body">
-                                            <img th:src="@{/assets/img/chart2.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 col-lg-3">
-                                    <div class="box_panel">
-                                        <div class="box_modal-heading">Network</div>
-                                        <div class="box_modal-body">
-                                            <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                        </div>
-                                    </div>
-                                </div>
-<!--                                <div class="col-md-12 col-lg-3">-->
-<!--                                    <div class="box_panel">-->
-<!--                                        <div class="box_modal-heading">Filesystem</div>-->
-<!--                                        <div class="box_modal-body">-->
-<!--                                            <img th:src="@{/assets/img/chart4.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
                             </div>
                             <div class="row">
                                 <table class="table-nt">
@@ -296,7 +239,7 @@
                                         <td style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.readinessProbe)}">Liveness</td>
                                     </tr>
                                     <tr>
-                                        <th>command</th>
+                                        <th>Command</th>
                                         <td th:text="${container?.command?.toString()}">command</td>
                                     </tr>
                                 </table>
@@ -358,23 +301,104 @@
         </div>
     </div>
     <!-- [Modal] End -->
+
+    <script th:src="@{/assets/js/common-charts.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
+    <input type="hidden" id="var-namespace" value=""/>
+    <input type="hidden" id="var-name" value=""/>
+    <input type="hidden" id="var-containerName" value=""/>
+
     <script type="text/javascript" th:inline="javascript">
+
+    /*<![CDATA[*/
+        let pageRows = [[${page?.rows}]];
+        let containerPanel = new Map();
+
+        /*]]>*/
+
+
+        var apiHost,
+            $namespace = $("#var-namespace"),
+            $name = $("#var-name"),
+            $containerName = $("#var-containerName")
+
+        function destroyContainerChart(){
+            containerPanel.forEach((panels, key) => {
+                panels.forEach(panel => commonChartsJs.removeChart(panel));
+            });
+            containerPanel.clear();
+        }
+
         function podDetail(namespace, name) {
+            destroyContainerChart();
+            $namespace.val(namespace);
+            $name.val(name);
+
             $.ajax({
-                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/pods/" + name,
+                url: "/api/v1/monitoring/cluster/workloads/namespace/" + namespace + "/pods/" + name + "/metrics",
                 success: function (data) {
+
+                    apiHost = data.host;
+
+                    var containers = data.pod.containers;
+                    var row = data.page.rows;
+
+                    for (var i=0; i<row.length; i++) {
+                        if ( row[i].title == 'pop-up (per POD)' ) {
+                            row[i].pageRowPanels.forEach(panel => {
+                                commonChartsJs.removeChart(panel);
+                                commonChartsJs.createPanel(panel);
+                            });
+                        } else {
+                            containers.forEach(container => {
+                                let panels = JSON.parse(JSON.stringify(row[i].pageRowPanels));
+                                panels.forEach(panel =>  {
+                                    panel.panelId = container.name + "-" + panel.panelId;
+                                    return panel;
+                                });
+                                containerPanel.set(container.name, panels);
+                            });
+                        }
+                    }
+
                     $('#myModal').text("");
-                    $('#myModal').html(data);
+                    $('#myModal').html(data.describe);
                     $('#myModal').modal();
                     $(".knob").knob();
                 },
                 error: function (e) {
                     if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
+                        $(location).attr('href',
+                        '/login?logout')
                     }
                 }
             });
         }
+
+        $(document).ready(function () {
+
+            $(document).on("change", "input[id^='modal-answer']", function(){
+
+                if($(this).val() === '1') {
+                    return;
+                }
+
+                var containerName = comnJs.replace($(this).attr('id'), 'modal-answer-', '');
+                $containerName.val(containerName);
+
+                let panels = containerPanel.get(containerName);
+                panels.forEach(panel => {
+                    commonChartsJs.createPanel(panel)
+                });
+
+                $(this).val(1);
+            });
+        });
+
+
+
     </script>
 
 </div>

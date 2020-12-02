@@ -54,9 +54,62 @@
                                 <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${node?.name} + '&quot;)'"
                                    th:utext="${node?.name}">Name</a>
                             </td>
-                            <td th:text="|- %|">CPU</td>
-                            <td th:text="|- %|">Memory</td>
-                            <td th:text="|- %|">Disk</td>
+
+<!--                            th:fragment="headless-card-panel-->
+                            <td>
+                                <div class="row" th:each="panelRow : ${page?.rows}">
+                                    <div th:if= "${panelRow.title ==  'node list'}" th:each="panel : ${panelRow.pageRowPanels}">
+                                        <div th:if ="${panel.title} == 'CPU'">
+
+                                            <div class="row">
+                                                <figure class="highcharts-figure">
+                                                    <div th:id="|container-${panel?.panelId}|"
+                                                         style="min-height: 160px; max-height: 130px;"></div>
+                                                </figure>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="row" th:each="panelRow : ${page?.rows}">
+                                    <div th:if= "${panelRow.title ==  'node list'}" th:each="panel : ${panelRow.pageRowPanels}">
+                                        <div th:if ="${panel.title} == 'Memory'">
+
+                                            <div class="row">
+                                                <figure class="highcharts-figure">
+                                                    <div th:id="|container-${panel?.panelId}|"
+                                                         style="min-height: 160px; max-height: 130px;"></div>
+                                                </figure>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="row" th:each="panelRow : ${page?.rows}">
+                                    <div th:if= "${panelRow.title ==  'node list'}" th:each="panel : ${panelRow.pageRowPanels}">
+                                        <div th:if ="${panel.title} == 'Disk'">
+
+                                            <div class="row">
+                                                <figure class="highcharts-figure">
+                                                    <div th:id="|container-${panel?.panelId}|"
+                                                         style="min-height: 160px; max-height: 130px;"></div>
+                                                </figure>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+<!--                            <td th:text="|- %|">Memory</td>-->
+<!--                            <td th:text="|- %|">Disk</td>-->
+
                             <td th:text="${node?.roles}">Role</td>
                             <td th:text="${node?.version}">Version</td>
                             <td th:text="${node?.age}">Age</td>
@@ -258,104 +311,34 @@
                                     <div class="table-title">
                                         Overview
                                     </div>
+                                    <div class="row" th:each="panelRow : ${page?.rows}">
+<!--                                        <th:block th:if= "${panelRow.title == 'pop-up'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">-->
+<!--                                            <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>-->
+<!--                                        </th:block>-->
+
+                                        <div th:if= "${panelRow.title == 'pop-up'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">
+                                            <div class="box_panel">
+<!--                                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>-->
+                                                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                                <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+<!--                                    <th:block th:fragment="headless-card-panel(panel)">-->
+<!--                                        <div class="col-md-12 col-lg-15">-->
+<!--                                            <figure class="highcharts-figure">-->
+<!--                                                <div th:id="|container-${panel?.panelId}|"-->
+<!--                                                     class="chart-container box_panel" style="min-height: 160px; max-height: 130px;"></div>-->
+<!--                                            </figure>-->
+<!--                                        </div>-->
+<!--                                    </th:block>-->
+
 
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-3 col-lg-3">
-                                            <div class="box_panel">
-                                                <div class="box_panel-heading_madal">CPU</div>
-                                                <div class="box_panel-text">
-                                                    <input th:value="${node?.getActivationRatio('cpu')}" value="58"
-                                                           class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
-                                                           data-thickness=".2" data-fgcolor="#a4df5d"  data-bgcolor="#eeeeee" readonly>
-                                                </div>
-                                                <table class="mini-table ">
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Cpapcity</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.getAllocatableMetric('cpu')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Request</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getRequestsMetric('cpu')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Limit</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getLimitsMetric('cpu')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-md-3 col-lg-3">
-                                            <div class="box_panel">
-                                                <div class="box_panel-heading_madal">Memory</div>
-                                                <div class="box_panel-text">
-                                                    <input th:value="${node?.getActivationRatio('memory')}" value="38"
-                                                           class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0"
-                                                           data-thickness=".2" data-fgcolor="#37d8ae"  data-bgcolor="#eeeeee" readonly>
-                                                </div>
-                                                <table class="mini-table ">
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Cpapcity</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.getAllocatableMetric('memory')?.number?.divide(1024), 0, 'COMMA', 0, 'POINT')} Ki|">0,000Mi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Request</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getRequestsMetric('memory')?.number?.divide(1024), 0, 'COMMA', 0, 'POINT')} Ki|">0,000Mi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Limit</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getLimitsMetric('memory')?.number?.divide(1024), 0, 'COMMA', 0, 'POINT')} Ki|">0,000Mi</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-md-3 col-lg-3">
-                                            <div class="box_panel">
-                                                <div class="box_panel-heading_madal">Disk</div>
-                                                <div class="box_panel-text">
-                                                    <input th:value="${node?.getActivationRatio('ephemeral-storage')}" value="77"
-                                                           class="knob" data-linecap="round" data-width="100"  data-height="100" data-angleoffset="0"
-                                                           data-thickness=".2" data-fgcolor="#50bee3"  data-bgcolor="#eeeeee" readonly>
-                                                </div>
-                                                <table class="mini-table ">
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Capacity</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.getAllocatableMetric('ephemeral-storage')?.number?.divide(1024), 0, 'COMMA', 0, 'POINT')} Ki|">0,000Mi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Request</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getRequestsMetric('ephemeral-storage')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Limit</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.allocateResources?.getLimitsMetric('ephemeral-storage')?.number?.multiply(1000), 0, 'COMMA', 0, 'POINT')} Mi|">0,000Mi</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-md-3 col-lg-3">
-                                            <div class="box_panel">
-                                                <div class="box_panel-heading_madal">POD</div>
-                                                <div class="box_panel-text">
-                                                    <input th:value="${node?.getActivationRatio('pods')}" value="61"
-                                                           class="knob" data-linecap="round" data-width="100" data-height="100" data-angleoffset="0"
-                                                           data-thickness=".2" data-fgcolor="#5da2e5"  data-bgcolor="#eeeeee" readonly>
-                                                </div>
-                                                <table class="mini-table ">
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Cpapcity</td>
-                                                        <td class="text-right" th:text="|${#numbers.formatDecimal(node?.getAllocatableMetric('pods')?.number, 0, 'COMMA', 0, 'POINT')}|">0,000Mi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><div class="circle_ss"></div>Request</td>
-                                                        <td class="text-right" th:text="${node?.pods?.size()}">0,000Mi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>&nbsp;</td>
-                                                        <td>&nbsp;</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </div>
+
                                         <table class="table-nt">
                                             <tr>
                                                 <th>Created</th>
@@ -404,10 +387,14 @@
                                             <tr>
                                                 <th>Labels</th>
                                                 <td>
-                                                    <div th:each="entry : ${node?.labels}">
+                                                    <div class="row" th:each="entry : ${node?.labels}" >
                                                         <div class="col-md-4">
-                                                            <span  class="madal_label"
-                                                                  th:text="|${entry.key} : ${entry.value}|">label</span>
+                                                            <span class="madal_label"
+                                                                th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                                            </span>
+                                                            <span class="madal_label"
+                                                                  th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -484,13 +471,57 @@
         </div>
         <!-- [Events] End-->
     </div>
+    <script th:src="@{/assets/js/common-charts.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
+    <input type="hidden" id="var-node" value=""/>
+
     <script type="text/javascript" th:inline="javascript">
+
+        /*<![CDATA[*/
+        let pageRows = [[${page?.rows}]],
+            node = [[${nodes}]],
+            apiHost = [[${host}]];
+        /*]]>*/
+
+        var $node = $("#var-node");
+
+       $(document).ready(function () {
+            for (var i = 0; i < node.length; i++) {
+                $node.val(node[i].name);
+                for (var j=0; j < pageRows.length; j++) {
+                    if (pageRows[j].title == 'node list' ) {
+                        pageRows[j].pageRowPanels.forEach(panel => {
+                        commonChartsJs.createPanel(panel);
+                        });
+                    }
+                }
+            }
+        });
+
         function nodeDetail(nodeName) {
+            $node.val(nodeName);
+
             $.ajax({
-                url: "/monitoring/cluster/nodes/" + nodeName,
+                url: "/api/v1/monitoring/cluster/nodes/" + nodeName + "/metrics",
                 success: function (data) {
+
+                    apiHost = data.host;
+
+                    var row = data.page.rows;
+
+                    for (var i=0; i<row.length; i++) {
+                        if ( row[i].title ==  'pop-up' ) {
+                            row[i].pageRowPanels.forEach(panel => {
+                                commonChartsJs.removeChart(panel);
+                                commonChartsJs.createPanel(panel);
+                            });
+                        }
+                    }
+
                     $('#myModal').text("");
-                    $('#myModal').html(data);
+                    $('#myModal').html(data.describe);
                     $('#myModal').modal();
                     $(".knob").knob();
                     // $('#myModal').modal('open');

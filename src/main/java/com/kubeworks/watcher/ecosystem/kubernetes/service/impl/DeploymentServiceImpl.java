@@ -35,6 +35,7 @@ public class DeploymentServiceImpl implements DeploymentService {
     private final EventService eventService;
     private final PodService podService;
 
+
     public DeploymentServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService) {
         this.k8sApiClient = k8sApiClient;
         this.appsV1Api = new AppsV1ApiExtendHandler(k8sApiClient);
@@ -79,6 +80,7 @@ public class DeploymentServiceImpl implements DeploymentService {
         return Optional.of(deploymentDescribe);
     }
 
+
     private void setDeployment(DeploymentDescribe.DeploymentDescribeBuilder builder, V1Deployment data) {
         if (data.getMetadata() != null) {
             V1ObjectMeta metadata = data.getMetadata();
@@ -103,6 +105,7 @@ public class DeploymentServiceImpl implements DeploymentService {
             builder.conditions(status.getConditions());
         }
     }
+
 
     private void setResources(DeploymentDescribe.DeploymentDescribeBuilder builder, V1DeploymentSpec spec) {
         V1PodTemplateSpec template = spec.getTemplate();
@@ -166,4 +169,5 @@ public class DeploymentServiceImpl implements DeploymentService {
             builder.strategy(type);
         }
     }
+
 }

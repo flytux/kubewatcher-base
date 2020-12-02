@@ -112,12 +112,6 @@
                             <td colspan="6" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(persistentVolumes)}" th:each="persistentVolume : ${persistentVolumes}">
-                            <!--                            <td>-->
-                            <!--                                <a th:text="${persistentVolume?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal2">Name</a>-->
-                            <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${persistentVolume?.name} + '&quot;)'"&ndash;&gt;-->
-                            <!--&lt;!&ndash;                                   th:utext="${persistentVolume?.name}">Name</a>&ndash;&gt;-->
-                            <!--                            </td>-->
-                            <!--                            <td th:text="${persistentVolume?.name}">Name</td>-->
                             <td>
                                 <a class="table2-link" th:href="'javascript:persistentVolumesDetail(&quot;'+ ${persistentVolume?.name} + '&quot;)'"
                                    th:utext="${persistentVolume?.name}">Name</a>
@@ -197,13 +191,11 @@
                     <div class="table-title">
                         Overview
                     </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-md-12 col-lg-5">
+                    <div class="row" th:each="panelRow : ${page?.rows}">
+                        <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-9">
                             <div class="box_panel">
-                                <div class="box_modal-heading">Disk</div>
-                                <div class="box_modal-body">
-                                    <img th:src="@{/assets/img/chart3.jpg}" class="img-responsive" alt="" style="width:100%; height:70%;">
-                                </div>
+                                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                             </div>
                         </div>
                     </div>
@@ -233,7 +225,6 @@
                                                   th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                         </div>
-                                        <!--                                        <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
                                     </td>
                                 </tr>
                                 <tr>
@@ -247,7 +238,6 @@
                                                   th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                         </div>
-                                        <!--                                        <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
                                     </td>
                                 </tr>
                                 <tr>
@@ -549,11 +539,34 @@
         </div>
     </div>
     <!-- [Modal : storageClass] End -->
+
+    <script th:src="@{/assets/js/common-charts.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
+    <input type="hidden" id="var-namespace" value=""/>
+    <input type="hidden" id="var-name" value=""/>
+
     <script type="text/javascript" th:inline="javascript">
+
+        var apiHost,
+            $namespace = $("#var-namespace"),
+            $name = $("#var-name");
+
         function persistentVolumesClaimDetail(namespace, name) {
+            $namespace.val(namespace);
+            $name.val(name);
+
             $.ajax({
-                url: "/monitoring/cluster/namespace/" + namespace + "/persistent-volume-claims/" + name,
+                url: "/api/v1/monitoring/cluster/namespace/" + namespace + "/persistent-volume-claims/" + name + "/metrics",
                 success: function (data) {
+
+                    apiHost = data.host;
+                    data.page.rows.forEach(row => row.pageRowPanels.forEach(panel =>  {
+                        commonChartsJs.removeChart(panel);
+                        commonChartsJs.createPanel(panel)
+                        }));
+
                     $('#myModal').text("");
                     $('#myModal').html(data);
                     $('#myModal').modal();

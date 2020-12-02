@@ -33,6 +33,8 @@
             apiHost = [[${host}]];
         /*]]>*/
 
+        console.log(pageRows);
+
         $(document).ready(function () {
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
         });
