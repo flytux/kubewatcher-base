@@ -1119,6 +1119,18 @@ textarea.form-control {
     text-align:center;
 }
 
+.box_up_s{
+    font-size:13px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    background-color:#81c369;
+    color:#ffffff;
+    font-weight:600;
+    padding:4px 6px 4px 6px;
+    float: right;
+    text-align:center;
+}
+
 .box_down{
     font-size:20px;
     margin-bottom: 10px;
@@ -1127,6 +1139,18 @@ textarea.form-control {
     color:#ffffff;
     font-weight:600;
     padding:10px 14px 10px 14px;
+    float: right;
+    text-align:center;
+}
+
+.box_down_s{
+    font-size:13px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    background-color:#bebebe;
+    color:#ffffff;
+    font-weight:600;
+    padding:4px 6px 4px 6px;
     float: right;
     text-align:center;
 }
@@ -1733,7 +1757,7 @@ textarea.form-control {
     border-radius: 3px;
     background-color:#81c369;
     color:#ffffff;
-    font-weight:600;
+    font-weight:100;
     padding:5px 0px 0px 0px;
     text-align:center;
 }
@@ -1763,6 +1787,17 @@ textarea.form-control {
 
 .box_middle_d{
     font-size:13px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    border:1px solid #121011;
+    color:#888888;
+    font-weight:600;
+    padding:1px 6px 1px 6px;
+    text-align:center;
+
+}
+.box_middle_d1{
+    font-size:20px;
     margin-bottom: 0px;
     border-radius: 3px;
     border:1px solid #121011;
