@@ -65,6 +65,15 @@
         </div>
     </th:block>
 
+    <th:block th:fragment="full-headless-card-panel(panel)">
+        <div class="col-md-12 col-lg-12">
+            <figure class="highcharts-figure">
+                <div th:id="|container-${panel?.panelId}|"
+                     class="chart-container box_panel" style="min-height: 160px; max-height: 130px;"></div>
+            </figure>
+        </div>
+    </th:block>
+
     <th:block th:fragment="col-3-headless-card-panel(panel)">
         <div class="col-md-12 col-lg-3">
             <figure class="highcharts-figure">
@@ -111,7 +120,7 @@
     </th:block>
 
     <th:block th:fragment="head-card-panel-in-table(panel)">
-        <div class="col-md-12 col-lg-6">
+        <div class="col-md-12 col-lg-3">
             <div class="box_panel">
                 <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
                 <div class="box_panel-body" style="min-height: 300px;">
@@ -119,6 +128,15 @@
                            class="list_table">
                     </table>
                 </div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="head-app-card-panel-in-table(panel)">
+        <div class="col-md-12 col-lg-12">
+            <div class="box_chart2">
+                <div th:text="${panel?.title}" class="title_chart">Panel Title</div>
+                <div th:id="|container-${panel?.panelId}|" class="list_table" style="min-height: 125px;"></div>
             </div>
         </div>
     </th:block>
@@ -164,7 +182,7 @@
                             <div th:id="|container-${dbNode?.panelId}|"></div>
                         </div>
                     </th:block>
-                    <th:block th:if="${dbNode.title} == 'CPU Usage'">
+                    <th:block th:if="${dbNode.title} == 'CPU'">
                         <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
                             <div class="col-xs-12">
                                 <figure class="highcharts-figure">
@@ -174,7 +192,7 @@
                             </div>
                         </div>
                     </th:block>
-                    <th:block th:if="${dbNode.title} == 'Memory Usage'">
+                    <th:block th:if="${dbNode.title} == 'Memory'">
                         <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
                             <div class="col-xs-12">
                                 <figure class="highcharts-figure">
@@ -189,6 +207,110 @@
         </div>
     </th:block>
 
-
+    <th:block th:fragment="head-card-app-dummy(appPanel, index)">
+        <!-- [card view] 1(5ea) start-->
+        <div class="col-md-12 col-lg-15">
+            <!--card view start -->
+            <div class="box_panel" >
+                <div class="row">
+                    <div th:each="appNode, order : ${appPanel}">
+                        <th:block th:if="${order.count} == 1">
+                            <div class="row  mb_5" >
+                                <div class="box_panel-stitle" style="color: #f37320" th:text="${appNode.title}">통합고객관리<span class="box_panel-sstext"></span></div><!-- box name -->
+                            </div>
+                        </th:block>
+                        <th:block th:if="${appNode.title} == 'Application Status'">
+                            <div class="row pt-5 col-xs-4">
+                                <div th:id="|container-${appNode?.panelId}|"></div>
+    <!--                            <div class="box_middle_g">정상</div>-->
+                            </div>
+                        </th:block>
+                        <th:block th:if="${appNode.title} == 'Application Transaction'">
+                            <div class="row pt-5 col-xs-8">
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${appNode?.panelId}|" class="box_middle_d point"></div>
+                                </figure>
+    <!--                            <div class="box_middle_d">Today <span class="point">2,304,040</span></div>-->
+                            </div>
+                        </th:block>
+                        <th:block th:if="${appNode.title} == 'Application POD'">
+                            <div class="row" style="height: 1px"></div>
+                            <div class="col-xs-4" >
+                                <div class="col-xs-12 box_chart4" >
+                                    <div class="txt fb">Container</div>
+                                    <div class="stxt text-center mb_20">00/00/00</div>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block th:if="${appNode.title} == 'CPU'">
+                            <div class="col-xs-4">
+                                <div class="col-xs-12">
+                                    <figure class="highcharts-figure">
+                                        <div th:id="|container-${appNode?.panelId}|"
+                                             class="chart-container box_panel" style="min-height: 110px; max-height: 90px;"></div>
+                                    </figure>
+    <!--                                <div class="txt text-center">CPU</div>-->
+    <!--                                <div class="t_chart_md text-center  mt_10">00%</div>-->
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block th:if="${appNode.title} == 'Memory'">
+                            <div class="col-xs-4" >
+                                <div class="col-xs-12">
+                                    <figure class="highcharts-figure">
+                                        <div th:id="|container-${appNode?.panelId}|"
+                                             class="chart-container box_panel" style="min-height: 110px; max-height: 90px;"></div>
+                                    </figure>
+    <!--                                <div class="txt text-center">Memory</div>-->
+    <!--                                <div class="t_chart_md text-center mt_10">00%</div>-->
+                                </div>
+                            </div>
+                            <!--                            </div>-->
+                        </th:block>
+                    </div>
+                </div>
+                <!--내용열림 시작 -->
+                <input type="checkbox" name="accordion" th:id="|answer${index}|">
+                <label th:for="|answer${index}|"><em></em></label>
+                <div class="row">
+                    <div th:each="appNode, order : ${appPanel}">
+                        <th:block th:if="${appNode.title} == 'Application histogram'">
+                            <div class="col-xs-7">
+                                <div class="box_panel">
+                                    <div class="box_panel-text3">응답시간 히스토그램</div>
+                                    <figure class="highcharts-figure">
+                                        <div th:id="|container-${appNode?.panelId}|"
+                                             class="chart-container box_panel" style="min-height: 110px; max-height: 90px;"></div>
+                                    </figure>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block th:if="${appNode.title} == 'Application avg. response time'">
+                            <!--                        <div class="row col-xs-5">-->
+                            <div class="row col-xs-5 box_chart2 mb_10">
+                                <div class="txt text-center">평균 응답시간</div>
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
+                                </figure>
+    <!--                            <div class="t_chart_md text-center">0.0s</div>-->
+                            </div>
+                        </th:block>
+                        <th:block th:if="${appNode.title} == 'Application error count'">
+                            <div class="row col-xs-5 box_chart_red">
+                                <div class="txt text-center">Error Count</div>
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
+                                </figure>
+    <!--                            <div class="t_chart_md text-center">00</div>-->
+                            </div>
+                            <!--                        </div>-->
+                        </th:block>
+                    </div>
+                </div>
+                <!--내용열림 끝-->
+                <!--card view end -->
+            </div>
+        </div>
+    </th:block>
 </body>
 </html>

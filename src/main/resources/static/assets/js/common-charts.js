@@ -220,6 +220,51 @@ let commonChartsJs = (function () {
         $('#container-' + panel.panelId).html(tableHeaderHtml + tableBodyHtml);
     }
 
+    //어플리케이션 현황판용 테이블 추가, 어플리케이션 느림 상태 업데이트 추가 해야
+    function renderAppTable(panel, tableData) {
+        if (tableData === undefined) {
+            $('#container-' + panel.panelId)
+                .html('<thead><tr><th>No Result</th></tr></thead>');
+            return;
+        }
+        const headers = tableData.headers;
+        const dataArray = tableData.data;
+        let trAppend = '';
+        let itemCount = 0;
+        let okCount = 0;
+        let errorCount = 0;
+        let slowCount = 0;
+        const tableBodyHtml = String.prototype.concat('<tbody class="table_mini">',
+            dataArray.map(item => {
+                for (let header of headers) {
+                    if (header != 'application' && item[header] == '1') {
+                        trAppend += '<td><div class="box_mini_g">' + item['application'] + '</div></td>';
+                        okCount++;
+                    } else if (header != 'application' && item[header] == '0') {
+                        trAppend += '<td><div class="box_mini_r">' + item['application'] + '</div></td>';
+                        errorCount++;
+                    }
+                }
+                itemCount++;
+                //5 컬럼
+                if (itemCount == 4) {
+                    itemCount = 0;
+                    let tdEnd = trAppend;
+                    trAppend = '';
+                    return String.prototype.concat('<tr>', tdEnd, '</tr>');
+                }
+            }), '</tbody>');
+
+        let tableBottomHtml = '<tbody class="table_mini mt_10">';
+        tableBottomHtml+= '<td>전체 :'+tableData.data.length+'</td>';
+        tableBottomHtml+= '<td><div class="circle c_normal"></div> 정상 : '+okCount+'</td>';
+        tableBottomHtml+= '<td><div class="circle c_danger"></div> 오류 : '+errorCount+'</td>';
+        tableBottomHtml+= '<td><div class="circle c_warning"></div> 느림 : '+slowCount+'</td>';
+        tableBottomHtml+= '</tbody>';
+
+        $('#container-' + panel.panelId).html(tableBodyHtml+tableBottomHtml);
+    }
+
     function convertTableData(data) {
         if (data === undefined || data.length === 0) {
             return undefined;
@@ -235,10 +280,10 @@ let commonChartsJs = (function () {
     }
 
     //스파크라인 차트 최초 생성시 마지막 데이터값 그려주는 함수
-    function drawOneLabel(chart, series) {
+    function drawOneLabel(chart, series, unit) {
         let render = chart.renderer;
         let v = series[0].points[series[0].points.length - 1];
-        let lastVal = addSparkUnitFormat(v.y);
+        let lastVal = addSparkUnitFormat(v.y, unit);
         chart.customText = render.label(lastVal, chart.plotWidth / 2, chart.plotHeight / 2).css({
             color: '#FFFFFF',
             fontSize: 40
@@ -249,17 +294,26 @@ let commonChartsJs = (function () {
     }
 
     //스파크라인 차트용 포맷
-    function addSparkUnitFormat(str) {
+    function addSparkUnitFormat(str, unit) {
         str = String(str);
-        if (str.indexOf(".") != -1) {
+        if (unit == '%') {
             var cFloat = parseFloat(str);
             cFloat = cFloat.toFixed(1);
-            str = cFloat + '%';
-        } else {
+            str = cFloat+'%';
+        } else if (unit == 'float'){
             var minus = str.substring(0, 1);
             str = str.replace(/[^\d]+/g, '');
             str = str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
             if (minus == "-") str = "-" + str;
+        } else if (unit == 'bytes') {
+            var bFloat = parseFloat(str);
+            var mibValue = bFloat / 1024 / 1024;
+            mibValue = mibValue.toFixed(1);
+            str = mibValue+'MiB';
+        } else if (unit == 'sec') {
+            var sFloat = parseFloat(str);
+            sFloat = sFloat.toFixed(1);
+            str = sFloat+' s'
         }
         return str;
     }
@@ -349,9 +403,17 @@ let commonChartsJs = (function () {
         createUpDown: function (panel, dataArray) {
             const upDown = convertSumBadgeData(dataArray);
             if (upDown == '1') {
-                $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up">UP</div>');
+                if (panel.title == 'Application Status') {
+                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up_s">UP</div>');
+                } else {
+                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up">UP</div>');
+                }
             } else {
-                $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down">DOWN</div>');
+                if (panel.title == 'Application Status') {
+                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down_s">DOWN</div>');
+                } else {
+                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down">DOWN</div>');
+                }
             }
             return panel;
         },
@@ -384,7 +446,13 @@ let commonChartsJs = (function () {
             } else if (panel.panelType === 'HTML_TABLE'){
                 tableData = dataArray[0];
             }
-            renderTable(panel, tableData);
+
+            //어플리케이션 현황판용 렌더링 기능 분기 추가.
+            if (panel.title == '보험코어 어플리케이션') {
+                renderAppTable(panel, tableData);
+            } else {
+                renderTable(panel, tableData);
+            }
             return panel;
         },
 
@@ -427,6 +495,7 @@ let commonChartsJs = (function () {
                         switch (panel.chartType) {
                             case "area":
                             case "sparkline":
+                            case "scatter":
                             case "line":
                                 seriesMap = new Map(series.map(i => [i.name, i]));
                                 for (let chartSeriesItem of chartSeries) {
@@ -445,7 +514,7 @@ let commonChartsJs = (function () {
                                 if (panel.chartType === 'sparkline') {
                                     const latestSeries = chartSeries[chartSeries.length - 1];
                                     let lastPoint = latestSeries.points[latestSeries.points.length - 1];
-                                    let lastVal = addSparkUnitFormat(lastPoint.y);
+                                    let lastVal = addSparkUnitFormat(lastPoint.y, panel.yaxisUnit);
                                     chart.customText.attr({
                                         //시리즈의 마지막 데이터 y 값 갱신
                                         text: lastVal
@@ -534,6 +603,9 @@ let commonChartsJs = (function () {
                 case "bar":
                     data = this.getBarChartData(panel, series);
                     break;
+                case "scatter":
+                    data = this.getScatterChartData(panel, series);
+                    break;
                 default:
                     console.warn("unsupported chart type");
             }
@@ -543,8 +615,8 @@ let commonChartsJs = (function () {
             let lineChartOption = {
                 chart: {
                     type: panel.chartType.toLowerCase(),
-                        styledMode: false,
-                        events: {
+                    styledMode: false,
+                    events: {
                         load: function () {
                             scheduleMap.set(panel.panelId,
                                 setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
@@ -782,7 +854,7 @@ let commonChartsJs = (function () {
                     tickPositions: []
                 },
                 yAxis: {
-                    min: parseFloat(panel.yaxisMin),
+                    min: 0,
                     max: 100,
                     endOnTick: false,
                     startOnTick: false,
@@ -899,6 +971,60 @@ let commonChartsJs = (function () {
                 series: series
             };
         },
+        //히스토그램용 차트 추가...
+        getScatterChartData: function (panel, series) {
+            return {
+                chart: {
+                    type: panel.chartType.toLowerCase(),
+                    styledMode: false,
+                    events: {
+                        load: function () {
+                            scheduleMap.set(panel.panelId,
+                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
+                        }
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: panel.xaxisMode
+                },
+                yAxis: {
+                    title: {
+                        text: panel.yaxisLabel
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    scatter: {
+                        marker: {
+                            radius: 2,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                    }
+                },
+                title: null,
+                series: series
+            }
+        },
         renderChart: function (panel, chartData) {
             if (chartData === undefined) {
                 console.log(panel.panelId, panel.title);
@@ -918,6 +1044,9 @@ let commonChartsJs = (function () {
                 case "area":
                     this.renderSparkLineHighChart(panel, chartData);
                     break;
+                case "scatter":
+                    this.renderScatterHighChart(panel, chartData);
+                    break;
                 default:
                     console.warn("unsupported chart type");
             }
@@ -935,6 +1064,12 @@ let commonChartsJs = (function () {
             chartMap.set(panelId, chart);
         },
         renderSparkLineHighChart: function (panel, chartData) {
+            const panelId = panel.panelId;
+            const chart = new Highcharts.chart('container-' + panelId, chartData);
+            chartMap.set(panelId, chart);
+        },
+        //어플리케이션 현황판용 스캐터 차트 추가..
+        renderScatterHighChart: function (panel, chartData) {
             const panelId = panel.panelId;
             const chart = new Highcharts.chart('container-' + panelId, chartData);
             chartMap.set(panelId, chart);
@@ -964,8 +1099,8 @@ let commonChartsJs = (function () {
             const scheduleId = scheduleMap.get(id);
             clearTimeout(scheduleId);
             scheduleMap.delete(id)
-            if (panel.panelType === 'CHART') {
-                const chart = chartMap.get(id);
+            const chart = chartMap.get(id);
+            if (panel.panelType === 'CHART' && chart) {
                 chart.destroy();
                 chartMap.delete(id);
             }

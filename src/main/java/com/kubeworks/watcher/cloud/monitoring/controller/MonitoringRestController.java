@@ -21,6 +21,7 @@ import java.util.Map;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class MonitoringRestController {
 
+    private static final long APPLICATION_OVERVIEW_MENU_ID = 100;
     private static final long CLUSTER_OVERVIEW_MENU_ID = 110;
     private static final long CLUSTER_WORKLOADS_OVERVIEW_MENU_ID = 112;
     private static final long DATABASE_MENU_ID = 130;
@@ -31,6 +32,12 @@ public class MonitoringRestController {
 
     private final PageViewService pageViewService;
     private final PrometheusProperties prometheusProperties;
+
+    @GetMapping(value = "/monitoring/application/overview", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> application() {
+        Page pageView = pageViewService.getPageView(APPLICATION_OVERVIEW_MENU_ID);
+        return responseData(pageView);
+    }
 
     @GetMapping(value = "/monitoring/cluster/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> clusterOverview() {

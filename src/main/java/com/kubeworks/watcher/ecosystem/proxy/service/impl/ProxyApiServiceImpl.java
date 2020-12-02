@@ -69,6 +69,23 @@ public class ProxyApiServiceImpl implements ProxyApiService {
             .collect(Collectors.toList());
     }
 
+    @Override
+    public List<String> multiValuesQuery(String query, String metricName) {
+
+        PrometheusApiResponse response = prometheusService.requestQuery(query);
+
+        if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
+            return Collections.singletonList(ExternalConstants.NONE_STR);
+        }
+        return response.getData().getResult().stream()
+            .map(PrometheusApiResponse.PrometheusApiData.PrometheusApiResult::getMetric)
+            .map(metric -> metric.get(metricName))
+            .filter(Objects::nonNull)
+            .distinct()
+            .sorted(String::compareTo)
+            .collect(Collectors.toList());
+    }
+
     private String singleValue(PrometheusApiResponse prometheusApiResponse) {
         List<PrometheusApiResponse.PrometheusApiData.PrometheusApiResult> result = prometheusApiResponse.getData().getResult();
         if (result.isEmpty()) {
@@ -80,7 +97,4 @@ public class ProxyApiServiceImpl implements ProxyApiService {
 
         return String.valueOf(result.get(0).getValue().get(1));
     }
-
-
-
 }

@@ -7,4 +7,6 @@ public interface ProxyApiService {
     String singleValueByQuery(String query);
 
     List<String> labelValuesQuery(String query);
+
+    List<String> multiValuesQuery(String query, String metricName);
 }

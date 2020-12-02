@@ -37,8 +37,9 @@ public class DatabaseController {
             for(PageRowPanel pageRowPanel : panels){
                 if (pageRowPanel.getFragmentName().equals("head-card-db-panel")){
                     dbPanel.add(pageRowPanel);
-                    System.out.println(">>>>> dbPanel List size : "+dbPanel.size() );
+
                     cnt++;
+                    //DB 로우 하위 판넬 (Status, CPU, Mem) 갯수 변경시 같이 변경해야됨...
                     if (cnt % 3 == 0) {
                         dbPanels.add(dbPanel);
                         dbPanel = new ArrayList<PageRowPanel>();
@@ -46,7 +47,7 @@ public class DatabaseController {
                 }
             }
         });
-        System.out.println(">>>>> dbPanels List size : "+dbPanels.size() );
+
         model.addAttribute("dbPanels",dbPanels);
         model.addAllAttributes(response);
 

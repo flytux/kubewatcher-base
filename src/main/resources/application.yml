@@ -12,7 +12,7 @@ spring:
     deserialization:
       fail-on-ignored-properties: false
       fail-on-unknown-properties: false
-    property-naming-strategy: SNAKE_CASE
+    property-naming-strategy: LOWER_CAMEL_CASE
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
   thymeleaf:
     cache: false
