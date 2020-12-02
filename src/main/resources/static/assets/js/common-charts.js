@@ -1099,8 +1099,8 @@ let commonChartsJs = (function () {
             const scheduleId = scheduleMap.get(id);
             clearTimeout(scheduleId);
             scheduleMap.delete(id)
-            if (panel.panelType === 'CHART') {
-                const chart = chartMap.get(id);
+            const chart = chartMap.get(id);
+            if (panel.panelType === 'CHART' && chart) {
                 chart.destroy();
                 chartMap.delete(id);
             }
