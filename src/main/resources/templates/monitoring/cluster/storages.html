@@ -59,11 +59,6 @@
                             <td colspan="6" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(persistentVolumeClaims)}" th:each="persistentVolumeClaim : ${persistentVolumeClaims}">
-                            <!--                            <td>-->
-                            <!--                                <a th:text="${persistentVolumeClaim?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
-                            <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${persistentVolumeClaim?.name} + '&quot;)'"&ndash;&gt;-->
-                            <!--&lt;!&ndash;                                   th:utext="${persistentVolumeClaim?.name}">Name</a>&ndash;&gt;-->
-                            <!--                            </td>-->
                             <td>
                                 <a class="table2-link" th:href="'javascript:persistentVolumesClaimDetail(&quot;' + ${persistentVolumeClaim?.namespace} + '&quot;, &quot;'+ ${persistentVolumeClaim?.name} + '&quot;)'"
                                    th:utext="${persistentVolumeClaim?.name}">Name</a>
@@ -156,11 +151,6 @@
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(storageClasses)}" th:each="storage : ${storageClasses}">
-                            <!--                            <td>-->
-                            <!--                                <a th:text="${storage?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal3">Name</a>-->
-                            <!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${storage?.name} + '&quot;)'"&ndash;&gt;-->
-                            <!--&lt;!&ndash;                                   th:utext="${storage?.name}">Name</a>&ndash;&gt;-->
-                            <!--                            </td>-->
                             <td>
                                 <a class="table2-link" th:href="'javascript:storageClassesDetail(&quot;'+ ${storage?.name} + '&quot;)'"
                                    th:utext="${storage?.name}">Name</a>
@@ -187,12 +177,12 @@
                         <span id="myModalLabel" th:text="|Persistent Volume Claim : ${persistentVolumeClaim?.name}|">Persistent Volume Claim : PVC 명</span>
                     </div>
                 </div>
-                <div class="modal-nbody">
+                <div class="modal-nbody row_scroll">
                     <div class="table-title">
                         Overview
                     </div>
                     <div class="row" th:each="panelRow : ${page?.rows}">
-                        <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-9">
+                        <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
                             <div class="box_panel">
                                 <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
                                 <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
@@ -200,7 +190,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 col-md-12 col-lg-7">
                             <table class="table-nt">
                                 <tr>
                                     <th>Created</th>
@@ -265,7 +254,6 @@
                                     <td th:text="${persistentVolumeClaim?.status}">Bound</td>
                                 </tr>
                             </table>
-                        </div>
                     </div>
 
                     <div class="table-title">
@@ -349,13 +337,11 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
-                                <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
                             </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
                                 <div class="row" th:each="entry : ${persistentVolume?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
@@ -475,7 +461,6 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
-                                <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
                             </td>
                         </tr>
                         <tr>
@@ -489,7 +474,6 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
-                                <!--                                <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span>-->
                             </td>
                         </tr>
                         <tr>
@@ -568,7 +552,7 @@
                         }));
 
                     $('#myModal').text("");
-                    $('#myModal').html(data);
+                    $('#myModal').html(data.describe);
                     $('#myModal').modal();
                     $(".knob").knob();
                 },
