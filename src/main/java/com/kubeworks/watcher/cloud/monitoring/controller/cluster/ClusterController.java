@@ -24,8 +24,8 @@ import java.util.Map;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class ClusterController {
 
-    private static final long NODE_MENU_ID = 111;
-    private static final long POD_MENU_ID  = 1120;
+    private static final long NODE_MENU_ID = 112;
+    private static final long POD_MENU_ID  = 1121;
 
     private final ClusterRestController clusterRestController;
     private final PageViewService pageViewService;
@@ -72,8 +72,6 @@ public class ClusterController {
 
     @GetMapping(value = "/monitoring/cluster/workloads/pods", produces = MediaType.APPLICATION_JSON_VALUE)
     public String pods(Model model) {
-//        List<PodTable> pods = clusterRestController.pods();
-//        model.addAttribute("pods", pods);
 
         List<PodTable> pods = clusterRestController.pods();
 

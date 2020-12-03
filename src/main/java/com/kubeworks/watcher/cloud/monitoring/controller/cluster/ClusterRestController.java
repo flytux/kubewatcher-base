@@ -29,11 +29,11 @@ import java.util.*;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class ClusterRestController {
 
-    private static final long NODE_MENU_ID = 111;
-    private static final long POD_MENU_ID = 1120;
-    private static final long DEPLOYMENT_MENU_ID = 1121;
-    private static final long DAEMONSET_MENU_ID = 1122;
-    private static final long STATEFULSET_MENU_ID = 1123;
+    private static final long NODE_MENU_ID = 112;
+    private static final long POD_MENU_ID = 1121;
+    private static final long DEPLOYMENT_MENU_ID = 1122;
+    private static final long DAEMONSET_MENU_ID = 1123;
+    private static final long STATEFULSET_MENU_ID = 1124;
     private static final long STORAGE_MENU_ID = 113;
 
     private final NodeService nodeService;

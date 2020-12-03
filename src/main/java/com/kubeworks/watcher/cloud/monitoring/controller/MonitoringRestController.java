@@ -22,8 +22,8 @@ import java.util.Map;
 public class MonitoringRestController {
 
     private static final long APPLICATION_OVERVIEW_MENU_ID = 100;
-    private static final long CLUSTER_OVERVIEW_MENU_ID = 110;
-    private static final long CLUSTER_WORKLOADS_OVERVIEW_MENU_ID = 112;
+    private static final long CLUSTER_OVERVIEW_MENU_ID = 111;
+    private static final long CLUSTER_WORKLOADS_OVERVIEW_MENU_ID = 1120;
     private static final long DATABASE_MENU_ID = 130;
     private static final long JVM_OVERVIEW_MENU_ID = 120;
     private static final long JVM_DETAIL_MENU_ID = 121;
