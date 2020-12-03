@@ -561,6 +561,11 @@ let commonChartsJs = (function () {
         },
 
         convertSeries: function (panel, responses) {
+
+            if (panel.chartType === 'counttilemap') {
+                return this.convertCountTileMapChartSeries(panel, responses);
+            }
+
             const chartQueries = panel.chartQueries;
             const series = chartQueries.flatMap(function (chartQuery, index) {
                 const responseElement = responses[index];
@@ -581,6 +586,23 @@ let commonChartsJs = (function () {
                 });
             }).filter(value => value !== undefined);
             return series;
+        },
+
+        convertCountTileMapChartSeries: function (panel, responses) {
+            const dataArray = responses.flatMap(res => res.data.result.flatMap(result => {
+                    const target = result.metric.target;
+                    const count = parseInt(result.value[1]);
+                    return Array.from({length: count}, (_, index) => {
+                        return target === 'available' ? {value: 1} : {value: 0};
+                    });
+                })
+            ).filter(value => value !== undefined);
+
+            dataArray.forEach((data, index) => {
+                data.x = parseInt(index / 3);
+                data.y = parseInt(index % 3);
+            })
+            return [{data: dataArray}];
         },
 
         getChartData: function (panel, series) {
@@ -606,6 +628,8 @@ let commonChartsJs = (function () {
                 case "scatter":
                     data = this.getScatterChartData(panel, series);
                     break;
+                case 'counttilemap':
+                    data = this.getTileMapChartData(panel, series);
                 default:
                     console.warn("unsupported chart type");
             }
@@ -1025,6 +1049,50 @@ let commonChartsJs = (function () {
                 series: series
             }
         },
+        getTileMapChartData: function (panel, series) {
+            return {
+                chart: {
+                    type: 'tilemap',
+                    // inverted: true,
+                },
+                title: null,
+                xAxis: {
+                    visible: false
+                },
+                yAxis: {
+                    visible: false
+                },
+                tooltip: {
+                    enabled: false
+                },
+                colorAxis: {
+                    dataClasses: [{
+                        from: 0,
+                        to: 0,
+                        color: Highcharts.color('#81c369').setOpacity(0.2).get(),
+                        name: 'Unavailable'
+                    }, {
+                        from: 1,
+                        to: 1,
+                        color: Highcharts.color('#81c369').get(),
+                        name: 'Available'
+                    }]
+                },
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.hc-a2}(x:{point.x}, y:{point.y})',
+                            color: '#000000',
+                            style: {
+                                textOutline: false
+                            }
+                        }
+                    }
+                },
+                series: series
+            };
+        },
         renderChart: function (panel, chartData) {
             if (chartData === undefined) {
                 console.log(panel.panelId, panel.title);
@@ -1033,6 +1101,7 @@ let commonChartsJs = (function () {
 
             const type = chartData.chart.type;
             switch (type) {
+                case "tilemap":
                 case "bar":
                 case "line":
                     this.renderLineHighChart(panel, chartData);

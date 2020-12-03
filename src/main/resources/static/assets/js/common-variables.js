@@ -2,7 +2,8 @@ let commonVariablesJs = (function () {
 
     let variables = new Map();
     let optionTitle = "<option value=\"\" selected disabled hidden> -- select variable -- </option>";
-    let apiQueryVariableRegEx = new RegExp('\\$\\w+', 'g');
+    // let apiQueryVariableRegEx = new RegExp('\\$\\w+', 'g');
+    let apiQueryVariableRegEx = new RegExp('\\$[^0-9]\\w+', 'g');
 
     /*공개 멤버*/
     return {
