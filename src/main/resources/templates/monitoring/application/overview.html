@@ -14,7 +14,7 @@
             <div class="row">
                 <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
             </div>
-            <div class="row_scroll">
+            <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
                     <th:block th:if="${panel?.mainYn} == 'Y'">
                         <th:block th:if="${panel?.fragmentName} == 'head-card-app-dummy'">

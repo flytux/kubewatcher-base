@@ -284,9 +284,9 @@ let commonChartsJs = (function () {
         let render = chart.renderer;
         let v = series[0].points[series[0].points.length - 1];
         let lastVal = addSparkUnitFormat(v.y, unit);
-        chart.customText = render.label(lastVal, chart.plotWidth / 2, chart.plotHeight / 2).css({
+        chart.customText = render.label(lastVal, chart.plotWidth / 2, chart.plotHeight / 1.5).css({
             color: '#FFFFFF',
-            fontSize: 40
+            fontSize: 'calc(' + chart.plotWidth + '* 0.01em)'
         }).attr({
             zIndex: 5,
             align: 'center'
@@ -1015,7 +1015,7 @@ let commonChartsJs = (function () {
                     enabled: false
                 },
                 xAxis: {
-                    type: panel.xaxisMode
+                    type: panel.xaxisMode,
                 },
                 yAxis: {
                     title: {
@@ -1043,6 +1043,12 @@ let commonChartsJs = (function () {
                                 }
                             }
                         },
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        return Highcharts.dateFormat('%b-%d, %H:%M', this.x) + '<br/>' +
+                            'Value: <b>' + this.y +'</b>';
                     }
                 },
                 title: null,
