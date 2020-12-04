@@ -388,10 +388,17 @@ let commonChartsJs = (function () {
 
         createBadge: function (panel, dataArray) {
             const badgeData = convertSumBadgeData(dataArray);
-            if(panel.chartType === 'text') {
-                $('#container-' + panel.panelId).text((badgeData) +panel.yaxisUnit);
+            if (panel.chartType === 'text') {
+                $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
             } else if (panel.chartType === 'date') {
                 $('#container-' + panel.panelId).text(moment(new Date(badgeData)).format('YYYY-MM-DD hh:mm:ss'));
+            } else if (panel.chartType === 'age') {
+                let duration = moment.duration(moment(new Date()).diff(new Date(badgeData)));
+                let age = duration.asDays() > 1 ? parseInt(duration.asDays()) + ' Day'
+                    : duration.asHours() > 1 ? parseInt(duration.asHours()) + ' Hour'
+                        : duration.asMinutes() > 1 ? parseInt(duration.asMinutes()) + ' Min.'
+                            : duration.asSeconds() > 1 ? parseInt(duration.asSeconds()) + ' Sec.' : 'N/A';
+                $('#container-' + panel.panelId).text(age);
             } else if(dataArray[0].data.result.length === 0) {
                 $('#container-' + panel.panelId).text('N/A');
             } else {
