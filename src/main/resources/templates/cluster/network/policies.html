@@ -148,7 +148,6 @@
                     <div class="table-title">
                         Ingress/Egress
                     </div>
-
                     <div class="row" >
                         <input type="checkbox" name="accordion" id="modal-answer">
                         <label for="modal-answer">
@@ -156,70 +155,64 @@
                         </label>
                         <div>
                             <div class="row">
-
-                        <table class="table-nt">
-                            <tbody>
                             <tr th:each = "ingress : ${policy?.ingresses}">
                                 <td>
                                     <table th:if="${ingress?.ports}" class="table-nt">
                                         <tr>
                                             <th>Ports</th>
-                                            <div th:each = "ports : ${ingress?.ports}">
-                                                <td th:each = "port : ${ports}" >
+                                                <div th:each = "ports : ${ingress?.ports}">
+                                                    <td th:each = "port : ${ports}" >
                                                     <span th:text="|${port.port}/${port.protocol} |"></span>
-                                                </td>
-                                            </div>
-                                        </tr>
+                                                    </td>
+                                                 </div>
+                                         </tr>
                                     </table>
                                     <div th:if="${ingress?.from}">
                                         <div class="table-title">
                                             from
                                         </div>
-                                        <table th:if="${ingress?.from}" class="table-nt">
-                                            <tr th:each = "from : ${ingress?.from}">
-                                                <div th:if="${from?.ipBlock}">
-                                                    <div th:each = "ip : ${from?.ipBlock}" >
-                                                        <th>IPBlock</th>
-                                                        <td>
-                                                            <table class="table-nt">
-                                                                <tr>
-                                                                    <th>CIDR</th>
-                                                                    <td>
-                                                                        <div class="row" th:text="${ip.cidr}"></div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>except</th>
-                                                                    <td th:each = "except : ${ip.except}" th:text="${except}"></td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </div>
-                                                </div>
-                                                <div th:if="${from?.namespaceSelector}">
-                                                    <th>Namespace Selector</th>
-                                                    <td>
-                                                    <div class="row" th:each="item : ${policy?.ingressNamespace}" >
-                                                        <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
-                                                    </div>
-                                                    </td>
-                                                </div>
-                                                <div th:if="${from?.podSelector}">
-                                                    <th>Pod Selector</th>
-                                                    <td>
-                                                        <div class="row" th:each="item : ${policy?.ingressPod}" >
-                                                            <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
-                                                        </div>
-                                                    </td>
-                                                </div>
-                                            </tr>
-                                        </table>
 
-                                    </div>
-                                </td>
-                            </tr>
-                            <tbody>
-                        </table>
+                                            <table th:if="${ingress?.from}" class="table-nt">
+                                                <tr th:each = "from : ${ingress?.from}">
+                                                    <div th:if="${from?.ipBlock}">
+                                                        <div th:each = "ip : ${from?.ipBlock}" >
+                                                            <th>IPBlock</th>
+                                                                <td>
+                                                                    <table class="table-nt" style="border-top: 0px;">
+                                                                        <tr>
+                                                                            <th> CIDR </th>
+                                                                            <td th:text="${ip.cidr}"></td>
+                                                                         </tr>
+                                                                         <tr>
+                                                                            <th>except</th>
+                                                                            <td th:each = "except : ${ip.except}" th:text="${except}"></td>
+                                                                        </tr>
+                                                                    </table>
+                                                                 </td>
+                                                            </div>
+                                                        </div>
+                                                        <div th:if="${from?.namespaceSelector}">
+                                                            <th>Namespace Selector</th>
+                                                            <td>
+                                                            <div class="row" th:each="item : ${policy?.ingressNamespace}" >
+                                                                <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
+                                                            </div>
+                                                            </td>
+                                                        </div>
+                                                        <div th:if="${from?.podSelector}">
+                                                            <th>Pod Selector</th>
+                                                            <td>
+                                                                <div class="row" th:each="item : ${policy?.ingressPod}" >
+                                                                    <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
+                                                                </div>
+                                                            </td>
+                                                        </div>
+                                                    </tr>
+                                             </table>
+                                        </div>
+                                     </td>
+                                </tr>
+                            </tbody>
                             </div>
                             </div>
                     </div>
@@ -231,8 +224,6 @@
                         </label>
                         <div>
                             <div class="row">
-                    <table class="table-nt">
-                        <tbody>
                         <tr th:each = "egress : ${policy?.egresses}">
                             <td>
                                 <table th:if="${egress?.ports}" class="table-nt">
@@ -255,12 +246,10 @@
                                                 <div th:each = "ip : ${to?.ipBlock}" >
                                                     <th>IPBlock</th>
                                                     <td>
-                                                        <table class="table-nt">
+                                                        <table class="table-nt" style="border-top: 0px;">
                                                             <tr>
                                                                 <th>CIDR</th>
-                                                                <td>
-                                                                    <div class="row" th:text="${ip.cidr}"></div>
-                                                                </td>
+                                                                <td th:text="${ip.cidr}"> </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>except</th>
@@ -292,8 +281,6 @@
                                 </div>
                             </td>
                         </tr>
-                        <tbody>
-                    </table>
                             </div>
                         </div>
                     </div>
