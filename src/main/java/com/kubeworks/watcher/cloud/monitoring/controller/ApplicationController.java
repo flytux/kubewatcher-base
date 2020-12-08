@@ -28,14 +28,10 @@ public class ApplicationController {
     @GetMapping(value = "/monitoring/application/overview", produces = MediaType.TEXT_HTML_VALUE)
     public String application(Model model) {
         // 어플리케이션 모니터링 바인딩 변수 가져오기 (변수 쿼리는 임시로 하드코딩)
-        // 1. namespace -> 2. pod, 3. application
-        List<String> namespaceList = proxyApiService.multiValuesQuery("count(kube_namespace_labels{namespace=~\"default\"}) by (namespace)", "namespace");
-
-        List<String> podList = proxyApiService.multiValuesQuery("count(kube_pod_info{namespace=~\"default\"}) by (pod)", "pod");
-
+        // 1. application --> 2. Pod 변수 (application 명 + "-.*")
         List<String> appList = proxyApiService.multiValuesQuery("count(up{job=\"jmx-metrics\"}) by (application)", "application");
-        Collections.sort(podList);
         Collections.sort(appList);
+
         Map<String, Object> response = monitoringRestController.application();
 
         Page page = (Page) response.get("page");
@@ -53,17 +49,6 @@ public class ApplicationController {
                 }
             });
         }
-//
-//        //TO-DO : 임시로 어플리케이션별 판넬 데이터 만들고함,,30개 어플리케이션 가능하도록 데이터 생성
-//        for (int appCnt = 0; appCnt < appList.size(); appCnt++){
-//            List<PageRowPanel> newPanels;
-//            List<PageRowPanel> copiedRowPanel = new ArrayList<PageRowPanel>();
-//
-//            newPanels = resetPanels();
-//            addAppPanelInfo(newPanels,appList.get(appCnt), podList.get(appCnt));
-//            copiedRowPanel.addAll(newPanels);
-//            appPanels.add(copiedRowPanel);
-//        }
 
         //어플리케이션별 상세 로우 ...
         List<PageRowPanel> appDetailPanels = pageRows.get(1).getPageRowPanels();
@@ -82,7 +67,8 @@ public class ApplicationController {
             }
             if (pageRowPanel.getFragmentName().equals("head-card-app-panel")) {
                 for (ChartQuery chartQuery : appPanelQueries) {
-                    chartQuery.setApiQuery(changeVariable(chartQuery.getApiQuery(), appList.get(appCnt), podList.get(appCnt) ));
+                    //chartQuery.setApiQuery(changeVariable(chartQuery.getApiQuery(), appList.get(appCnt), podList.get(appCnt) ));
+                    chartQuery.setApiQuery(changeVariable(chartQuery.getApiQuery(), appList.get(appCnt), appList.get(appCnt)+"-.*" ));
                 }
                 appPanel.add(pageRowPanel);
                 loopCnt++;
@@ -98,7 +84,7 @@ public class ApplicationController {
         model.addAttribute("appPanels",appPanels);
         model.addAllAttributes(response);
 
-        return "/monitoring/application/overview";
+        return "monitoring/application/overview";
     }
 
     private String changeVariable(String apiQuery, String app, String pod){
