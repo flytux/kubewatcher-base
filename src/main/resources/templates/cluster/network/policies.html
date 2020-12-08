@@ -64,7 +64,6 @@
                             <td th:text="${policy?.policyType}">Ingress/Egress</td>
                             <td th:text="${policy?.age}">000d</td>
                         </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -154,7 +153,7 @@
                             <span>Ingress</span> <em></em>
                         </label>
                         <div>
-                            <div class="row">
+                            <div class="row" style="padding-left: 20px;padding-right: 20px;">
                             <tr th:each = "ingress : ${policy?.ingresses}">
                                 <td>
                                     <table th:if="${ingress?.ports}" class="table-nt">
@@ -168,10 +167,9 @@
                                          </tr>
                                     </table>
                                     <div th:if="${ingress?.from}">
-                                        <div class="table-title">
+                                        <div class="table-title" style="color : #bebebe; font-size:13px">
                                             from
                                         </div>
-
                                             <table th:if="${ingress?.from}" class="table-nt">
                                                 <tr th:each = "from : ${ingress?.from}">
                                                     <div th:if="${from?.ipBlock}">
@@ -185,7 +183,8 @@
                                                                          </tr>
                                                                          <tr>
                                                                             <th>except</th>
-                                                                            <td th:each = "except : ${ip.except}" th:text="${except}"></td>
+                                                                             <td th:if="${#arrays.isEmpty(ip.except)}" th:text="|-|">  </td>
+                                                                             <td th:unless="${#arrays.isEmpty(ip.except)}" th:each = "except : ${ip.except}" th:text="${except}"></td>
                                                                         </tr>
                                                                     </table>
                                                                  </td>
@@ -212,9 +211,9 @@
                                         </div>
                                      </td>
                                 </tr>
-                            </tbody>
                             </div>
-                            </div>
+                        </div>
+
                     </div>
 
                     <div class="row" >
@@ -223,7 +222,7 @@
                             <span>Egress</span> <em></em>
                         </label>
                         <div>
-                            <div class="row">
+                            <div class="row" style="padding-left: 20px;padding-right: 20px;">
                         <tr th:each = "egress : ${policy?.egresses}">
                             <td>
                                 <table th:if="${egress?.ports}" class="table-nt">
@@ -237,7 +236,7 @@
                                     </tr>
                                 </table>
                                 <div th:if="${egress?.to}">
-                                    <div class="table-title">
+                                    <div class="table-title" style="color : #bebebe; font-size:13px">
                                         to
                                     </div>
                                     <table th:if="${egress?.to}" class="table-nt">
@@ -253,7 +252,8 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>except</th>
-                                                                <td th:each = "except : ${ip.except}" th:text="${except}"></td>
+                                                                <td th:if="${#arrays.isEmpty(ip.except)}" th:text="|-|">  </td>
+                                                                <td th:unless="${#arrays.isEmpty(ip.except)}" th:each = "except : ${ip.except}" th:text="${except}"></td>
                                                             </tr>
                                                         </table>
                                                     </td>
@@ -277,14 +277,12 @@
                                             </div>
                                         </tr>
                                     </table>
-
                                 </div>
                             </td>
                         </tr>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -308,7 +306,6 @@
             });
         }
     </script>
-
 </div>
 </body>
 </html>

@@ -12,7 +12,7 @@
 	<th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Container<i class=&quot;feather icon-chevron-right&quot; ></i>Config<i class=&quot;feather icon-chevron-right&quot; ></i>HPA')"/>
     <div id="main_contents">
 
-        <!-- [Configmaps] start -->
+        <!-- [hpa] start -->
         <div class="row">
             <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Horizontal Pod Autoscalers
                 <!--<div class="f_r">
@@ -81,7 +81,7 @@
                 </div>
             </div>
         </div>
-        <!-- [[Configmaps]] End-->
+        <!-- [[hpa]] End-->
     </div>
     <!-- [Modal] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
@@ -93,7 +93,7 @@
                         <span id="myModalLabel" th:text="|HPA : ${hpas?.name}|" >HPA : HPA명</span>
                     </div>
                 </div>
-                <div class="modal-nbody">
+                <div class="modal-nbody row_scroll">
                     <div class="table-title">
                         Overview
                     </div>
@@ -126,7 +126,6 @@
                         <tr>
                             <th>Annotation</th>
                             <td>
-<!--                                <span class="madal_label">kubenetes.io/service-account_name=default</span>-->
                                 <div class="row" th:each="entry : ${hpas?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
@@ -175,12 +174,6 @@
                             <td th:text="${condition?.reason}">Reason</td>
                             <td th:text="${condition?.message}">Message</td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>AbleToScale</td>-->
-<!--                            <td><span class="madal_label_true">True</span></td>-->
-<!--                            <td>ReadyForNew Scale</td>-->
-<!--                            <td>recommended size matches current size</td>-->
-<!--                        </tr>-->
 
                         <tbody>
                     </table>
@@ -205,18 +198,10 @@
                         <tr th:if="${hpas?.events}" th:each="event : ${hpas?.events}">
                             <td th:text="${event?.name}">Event</td>
                             <td th:text="${event?.source}">Source</td>
-                            <td th:text="${event?.count"}>Count</td>
+                            <td th:text="${event?.count}">Count</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">Last</td>
+                            <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
-<!--                        -->
-<!--                        <tr>-->
-<!--                            <td>Event Message</td>-->
-<!--                            <td>///</td>-->
-<!--                            <td>00</td>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>2020-06-23 (13:45:13)</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
 
