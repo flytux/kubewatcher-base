@@ -14,14 +14,14 @@
         <!-- [Pod Security policy 헤더] start -->
         <div class="row">
             <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Pod Security Polices
-                <div class="f_r">
-                    <div class=" d_ib">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="text" placeholder="Search" class="search_table">
-                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="f_r">-->
+<!--                    <div class=" d_ib">-->
+<!--                        <div class="form-group has-feedback d_ib">-->
+<!--                            <input type="text" placeholder="Search" class="search_table">-->
+<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
         <!-- [Pod Security policy 헤더] end -->
@@ -65,14 +65,14 @@
         <!-- [Modal] start -->
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
             <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
-                <div class="modal-content">
+                <div class="modal-content" >
                     <div class="modal-title_box">
                         <div class="modal-title">
                             <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <span id="myModalLabel" th:text="|Pod Security Policy : ${policyDescribe?.name}|"></span>
                         </div>
                     </div>
-                    <div class="modal-nbody">
+                    <div class="modal-nbody row_scroll">
                         <div class="table-title">
                             Overview
                         </div>
@@ -106,7 +106,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Allow Privileage Escalation</th>
+                                    <th>Allow Privilege Escalation</th>
                                     <td th:if="${policyDescribe?.specs?.allowPrivilegeEscalation} == true" th:text="Yes"></td>
                                     <td th:unless="${policyDescribe?.specs?.allowPrivilegeEscalation} == true" th:text="No"></td>
                                 </tr>

@@ -12,7 +12,7 @@
 	<th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Container<i class=&quot;feather icon-chevron-right&quot; ></i>Config<i class=&quot;feather icon-chevron-right&quot; ></i>Custom Resources')"/>
     <div id="main_contents">
 
-        <!-- [Configmaps] start -->
+        <!-- [customResources] start -->
         <div class="row">
             <div class="main_title" ><i class="feather icon-chevrons-right"></i> Custom Resources
 <!--                <div class="f_r">-->
@@ -110,7 +110,7 @@
                 </div>
             </div>
         </div>
-        <!-- [[Configmaps]] End-->
+        <!-- [[customResources]] End-->
     </div>
 
     <!-- [Modal] start -->
@@ -123,7 +123,7 @@
                         <span id="myModalLabel" th:text="|Custom Resources : ${customResource?.name}|">Custom Resources : Custom Resources 명</span>
                     </div>
                 </div>
-                <div class="modal-nbody">
+                <div class="modal-nbody row_scroll" >
                     <div class="table-title">
                         Overview
                     </div>
@@ -142,7 +142,12 @@
                         </tr>
                         <tr>
                             <th>Version</th>
-                            <td th:each="version : ${customResource?.versions}" th:text="${version}">v1</td>
+                            <td>
+                                <div th:if="${customResource?.versions}" th:each="version : ${customResource?.versions}"
+                                     th:text = "${version}">
+                                </div>
+                                <div th:unless="${customResource?.versions}" th:text ="|-|"> </div>
+                            </td>
                         </tr>
                         <tr>
                             <th>Scope</th>

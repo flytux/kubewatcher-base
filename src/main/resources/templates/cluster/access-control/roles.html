@@ -84,7 +84,7 @@
                             <span id="myModalLabel" th:text="|Role : ${roleDescribe?.name}|"></span>
                         </div>
                     </div>
-                    <div class="modal-nbody">
+                    <div class="modal-nbody row_scroll">
                         <div class="table-title">
                             Overview
                         </div>
@@ -143,9 +143,21 @@
                                     <td colspan="5" class="text-center">No rules</td>
                                 </tr>
                                 <tr th:if="${roleDescribe?.rules}" th:each="rule : ${roleDescribe?.rules}">
-                                    <td th:text="${rule?.resources}">Event Message</td>
-                                    <td th:text="${rule?.verbs}">///</td>
-                                    <td th:text="${rule?.apiGroups}">00</td>
+                                    <td>
+                                        <div th:if="${rule?.resources}" th:each="resource : ${rule?.resources}"
+                                             th:text = "${resource}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div th:if="${rule?.verbs}" th:each="verb : ${rule?.verbs}"
+                                             th:text = "${verb}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div th:if="${rule?.apiGroups}" th:each="apiGroup : ${rule?.apiGroups}"
+                                             th:text = "${apiGroup}">
+                                        </div>
+                                    </td>
                                 </tr>
                                 <tbody>
                             </table>
@@ -172,7 +184,7 @@
                                 <td th:text="${event?.source}">///</td>
                                 <td th:text="${event?.count}">00</td>
                                 <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                                <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${event?.lastSeen}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                             <tbody>
                         </table>

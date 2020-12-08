@@ -134,7 +134,7 @@
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(storageClasses) ? '0' : storageClasses.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(storages) ? '0' : storages.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table155">
@@ -147,15 +147,14 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(storageClasses)}">
+                        <tr th:if="${#arrays.isEmpty(storages)}">
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
-                        <tr th:unless="${#arrays.isEmpty(storageClasses)}" th:each="storage : ${storageClasses}">
+                        <tr th:unless="${#arrays.isEmpty(storages)}" th:each="storage : ${storages}">
                             <td>
                                 <a class="table2-link" th:href="'javascript:storageClassesDetail(&quot;'+ ${storage?.name} + '&quot;)'"
                                    th:utext="${storage?.name}">Name</a>
                             </td>
-                            <!--                            <td th:text="${storage?.name}">Name</td>-->
                             <td th:text="${storage?.provisioner}">Provisioner</td>
                             <td th:text="${storage?.reclaimPolicy}">Reclaim Policy</td>
                             <td th:text="${storage?.age}">Age</td>
@@ -243,11 +242,13 @@
                                 </tr>
                                 <tr>
                                     <th>Storage</th>
-                                    <td th:each="storage : ${persistentVolumeClaim?.capacity}" th:text="${storage.value.getNumber()}">000G</td>
+                                    <td th:if="${persistentVolumeClaim?.capacity}" th:each="storage : ${persistentVolumeClaim?.capacity}" th:text="${storage.value.getNumber()}">000G</td>
+                                    <td th:unless = "${persistentVolumeClaim?.capacity}"> - </td>
                                 </tr>
                                 <tr>
                                     <th>Pods</th>
-                                    <td th:text="${persistentVolumeClaim?.pods}"> </td>
+                                    <td th:if = "${persistentVolumeClaim?.pods}" th:each="pod : ${persistentVolumeClaim?.pods}" th:text="${pod}"> </td>
+                                    <td th:unless = "${persistentVolumeClaim?.pods}"> - </td>
                                 </tr>
                                 <tr>
                                     <th>Status</th>
@@ -262,11 +263,13 @@
                     <table class="table-nt">
                         <tr>
                             <th>Match Labels</th>
-                            <td th:text="${persistentVolumeClaim?.selector?.matchLabels}"> </td>
+                            <td th:if = "${persistentVolumeClaim?.selector}" th:text="${persistentVolumeClaim?.selector?.matchLabels}"> </td>
+                            <td th:unless = "${persistentVolumeClaim?.selector}"> - </td>
                         </tr>
                         <tr>
                             <th>Match Expressions</th>
-                            <td th:text="${persistentVolumeClaim?.selector?.matchExpressions}"></td>
+                            <td th:if = "${persistentVolumeClaim?.selector}" th:text="${persistentVolumeClaim?.selector?.matchExpressions}"></td>
+                            <td th:unless = "${persistentVolumeClaim?.selector}"> - </td>
                         </tr>
                     </table>
                     <div class="table-title">
@@ -286,12 +289,12 @@
                         <tr th:if="${#arrays.isEmpty(persistentVolumeClaim?.events)}">
                             <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr th:if="${persistentVolumeClaim?.events}" th:each="event : ${pod?.events}">
+                        <tr th:if="${persistentVolumeClaim?.events}" th:each="event : ${persistentVolumeClaim?.events}">
                             <td th:text="${event?.type}">Type</td>
                             <td th:text="${event?.reason}">Reason</td>
                             <td th:text="${event?.count}">Count</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">Last</td>
+                            <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
                         <tbody>
                     </table>
@@ -413,7 +416,7 @@
                             <td th:text="${event?.source}">///</td>
                             <td th:text="${event?.count}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <<td th:text="${event?.lastSeen}">Last</td>
                         </tr>
                         <tbody>
                     </table>
@@ -512,7 +515,7 @@
                             <td th:text="${event?.source}">///</td>
                             <td th:text="${event?.count}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
                         <tbody>
                     </table>
