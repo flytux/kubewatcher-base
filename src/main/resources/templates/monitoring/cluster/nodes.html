@@ -290,7 +290,7 @@
                                         Overview
                                     </div>
                                     <div class="row" th:each="panelRow : ${page?.rows}">
-                                        <div th:if= "${panelRow.title == 'pop-up'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
+                                        <div th:if= "${panelRow.title == 'pop-up'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">
                                             <div class="box_panel">
                                                 <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
                                                 <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
