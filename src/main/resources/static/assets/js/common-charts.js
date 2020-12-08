@@ -114,7 +114,7 @@ let commonChartsJs = (function () {
             console.warn("failed chart reload // empty reload data")
             return;
         }
-        serise.points[0].update(parseFloat(value[1]).toFixed(2) - 0);
+        serise.points[0].update(parseFloat(value[1]).toFixed(1) - 0);
     }
 
     function loadLineChartData(serise, tagetLegend, resultType, dataItem) {
@@ -127,14 +127,14 @@ let commonChartsJs = (function () {
                 dataItem.values.forEach(arr => {
                     serise.addPoint([
                         arr[0] * 1000,
-                        parseFloat(arr[1]).toFixed(2) - 0
+                        parseFloat(arr[1]).toFixed(1) - 0
                     ], true, true);
                 })
             } else {
                 dataItem.value.forEach(arr => {
                     serise.addPoint([
                         arr[0] * 1000,
-                        parseFloat(arr[1]).toFixed(2) - 0
+                        parseFloat(arr[1]).toFixed(1) - 0
                     ], true, true);
                 })
             }
@@ -155,7 +155,7 @@ let commonChartsJs = (function () {
 
                     serise.addPoint([
                         arr[0] * 1000,
-                        parseFloat(arr[1]).toFixed(2) - 0
+                        parseFloat(arr[1]).toFixed(1) - 0
                     ], true, true);
                     let chart = serise.chart;
 
@@ -170,7 +170,7 @@ let commonChartsJs = (function () {
                 dataItem.value.forEach(arr => {
                     serise.addPoint([
                         arr[0] * 1000,
-                        parseFloat(arr[1]).toFixed(2) - 0
+                        parseFloat(arr[1]).toFixed(1) - 0
                     ], true, true);
                 })
             }
@@ -330,6 +330,80 @@ let commonChartsJs = (function () {
         }).reduce((value1, value2) => value1 + value2)[0];
     }
 
+    function legendFunction (chart) {
+
+        if($(chart.container).children('div[name="legend"]')) {
+            $(chart.container).children('div[name="legend"]').remove();
+        }
+
+        var options = chart.options.legend;
+        /**
+         * What happens when the user clicks the legend item
+         */
+        function clickItem(series, $legendItem, $line) {
+            series.setVisible();
+            $legendItem.css(
+                options[series.visible ? 'itemStyle' : 'itemHiddenStyle']
+            );
+            $line.css({
+                borderTop: '2px solid ' + (series.visible ? series.color :
+                    options.itemHiddenStyle.color)
+            });
+        }
+        // Create the legend box
+        var $legend = $('<div name="legend">')
+            .css({
+                margin: 'auto',
+                width: '95%',
+                maxHeight: 20,
+                padding: 1,
+                position: 'relative',
+                overflow: 'auto',
+                bottom: 45,
+                /* right: 10, */
+                /* top: 40, */
+                /* borderColor: options.borderColor,
+                borderWidth: options.borderWidth,
+                borderStyle: 'solid',
+                borderRadius: options.borderRadius */
+            })
+            .appendTo(chart.container);
+
+
+        $.each(chart.series, function(i, series) {
+            var value = `<div class="col">${series.name}</div>`;
+
+            // crete the legend item
+            var $legendItem = $('<div class="row">')
+                .css({
+                    position: 'relative',
+                    marginLeft: 50
+                })
+                .css(options[series.visible ? 'itemStyle' : 'itemHiddenStyle'])
+                /* .html(series.name) */
+
+                .html(value)
+                .appendTo($legend);
+
+            // create the line with each series color
+            var $line = $('<div class="col">')
+                .css({
+                    width: 16,
+                    position: 'absolute',
+                    left: -20,
+                    top: 8,
+                    borderTop: '2px solid ' + (series.visible ? series.color :
+                        options.itemHiddenStyle.color)
+                })
+                .appendTo($legendItem);
+
+            // click handler
+            $legendItem.click(function() {
+                clickItem(series, $legendItem, $line);
+            });
+
+        });
+    }
 
     return {
         createPanel: function (panel) {
@@ -444,7 +518,7 @@ let commonChartsJs = (function () {
                                     element[key] = entry;
                                 }
                             }
-                            element[legend] = parseFloat(value.value[1]).toFixed(2) - 0;
+                            element[legend] = parseFloat(value.value[1]).toFixed(1) - 0;
                             data.set(key, element);
                         });
                     }
@@ -543,6 +617,9 @@ let commonChartsJs = (function () {
                         }
                         console.log("refreshChart completed", panel.panelId, panel.title, (new Date().getTime()) - start);
                     });
+                if (panel.chartType === 'line' || panel.chartType === 'area') {
+                    legendFunction(chart);
+                }
             }
         },
 
@@ -587,8 +664,8 @@ let commonChartsJs = (function () {
                     return {
                         "name": Mustache.render(chartQuery.legend, value.metric),
                         "data": chartQuery.resultType === 'matrix'
-                            ? value.values.map(arr => [arr[0] * 1000, parseFloat(arr[1]).toFixed(2) - 0])
-                            : [parseFloat(value.value[1]).toFixed(2) - 0]
+                            ? value.values.map(arr => [arr[0] * 1000, parseFloat(arr[1]).toFixed(1) - 0])
+                            : [parseFloat(value.value[1]).toFixed(1) - 0]
                     };
                 });
             }).filter(value => value !== undefined);
@@ -647,6 +724,7 @@ let commonChartsJs = (function () {
                 chart: {
                     type: panel.chartType.toLowerCase(),
                     styledMode: false,
+                    marginBottom: 80,
                     events: {
                         load: function () {
                             scheduleMap.set(panel.panelId,
@@ -659,6 +737,9 @@ let commonChartsJs = (function () {
                 },
                 exporting: {
                     enabled: false
+                },
+                legend: {
+                    enabled: false,
                 },
                 yAxis: {
                     // min: parseFloat(panel.yaxisMin),
@@ -1111,9 +1192,10 @@ let commonChartsJs = (function () {
                 console.log(panel.panelId, panel.title);
                 return;
             }
-
-            const type = chartData.chart.type;
+            // const type = chartData.chart.type;
+            const type = panel.chartType;
             switch (type) {
+                case "area":
                 case "tilemap":
                 case "bar":
                 case "line":
@@ -1123,7 +1205,7 @@ let commonChartsJs = (function () {
                 case "solidgauge":
                     this.renderGaugeHighChart(panel, chartData);
                     break;
-                case "area":
+                case "sparkline":
                     this.renderSparkLineHighChart(panel, chartData);
                     break;
                 case "scatter":
@@ -1135,7 +1217,7 @@ let commonChartsJs = (function () {
         },
         renderLineHighChart: function (panel, chartData) {
             const panelId = panel.panelId;
-            const chart = new Highcharts.chart('container-' + panelId, chartData);
+            const chart = new Highcharts.chart('container-' + panelId, chartData, (chart) => legendFunction(chart));
             chartMap.set(panelId, chart);
         },
         renderGaugeHighChart: function (panel, chartData) {
