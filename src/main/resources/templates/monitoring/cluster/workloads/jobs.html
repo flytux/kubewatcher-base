@@ -64,12 +64,6 @@
                             <td colspan="5" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(jobs)}" th:each="job : ${jobs}">
-<!--                            <td>-->
-<!--                                <a th:text="${job?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
-<!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${job?.name} + '&quot;)'"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:utext="${job?.name}">Name</a>&ndash;&gt;-->
-<!--                            </td>-->
-<!--                            <td th:text="${job?.name}">Name</td>-->
                             <td>
                             <a class="table2-link" th:href="'javascript:jobDetail(&quot;' + ${job?.namespace} + '&quot;, &quot;'+ ${job?.name} + '&quot;)'"
                                th:utext="${job?.name}">Name</a>
@@ -151,7 +145,6 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         kubectl.kubernets.io/last-applied-configuration </span>
                                     </div>
-<!--                                    <span class="madal_label" th:text="${job?.labels}">job-name=pi</span>-->
                                 </td>
                             </tr>
                             <tr>
@@ -165,9 +158,6 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         kubectl.kubernets.io/last-applied-configuration </span>
                                     </div>
-<!--                                    <div class="row" th:each="entry : ${job?.annotations}" >-->
-<!--                                        <span class="madal_label" th:text="|${entry.key} : ${entry.value}|">kubectl.kubernets.io/last-applied-configuration</span>-->
-<!--                                    </div>-->
                                 </td>
                             </tr>
                             <tr>
@@ -229,11 +219,10 @@
                             <td th:text="${event?.source}">///</td>
                             <td th:text="${event?.count}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${#dates.format(event?.lastSeen, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
                         <tbody>
                     </table>
-
 
                 </div>
             </div>
