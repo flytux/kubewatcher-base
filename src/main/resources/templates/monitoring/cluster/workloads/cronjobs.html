@@ -202,7 +202,7 @@
                             <td th:text="${event?.source}">///</td>
                             <td th:text="${event?.count}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${#dates.format(event?.c, 'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
                         <tbody>
                     </table>

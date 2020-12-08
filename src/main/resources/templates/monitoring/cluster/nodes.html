@@ -55,10 +55,39 @@
                                    th:utext="${node?.name}">Name</a>
                             </td>
 
-                            <td th:text="|- %|">CPU</td>
-                            <td th:text="|- %|">Memory</td>
-                            <td th:text="|- %|">Disk</td>
-
+                            <td>
+                                <div class="row" th:each="panelRow : ${page?.rows}">
+                                    <div th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                        <div th:if ="${panel.title} == 'CPU'">
+                                             <div class="row">
+                                                 <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row" th:each="panelRow : ${page?.rows}">
+                                    <div th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                        <div th:if ="${panel.title} == 'Memory'">
+                                            <div class="row">
+                                                <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row" th:each="panelRow : ${page?.rows}">
+                                    <div th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                        <div th:if ="${panel.title} == 'Disk'">
+                                            <div class="row">
+                                                <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                             <td th:text="${node?.roles}">Role</td>
                             <td th:text="${node?.version}">Version</td>
                             <td th:text="${node?.age}">Age</td>
@@ -261,31 +290,13 @@
                                         Overview
                                     </div>
                                     <div class="row" th:each="panelRow : ${page?.rows}">
-<!--                                        <th:block th:if= "${panelRow.title == 'pop-up'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">-->
-<!--                                            <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>-->
-<!--                                        </th:block>-->
-
                                         <div th:if= "${panelRow.title == 'pop-up'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">
                                             <div class="box_panel">
-<!--                                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>-->
                                                 <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
                                                 <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                                             </div>
                                         </div>
                                     </div>
-
-
-
-<!--                                    <th:block th:fragment="headless-card-panel(panel)">-->
-<!--                                        <div class="col-md-12 col-lg-15">-->
-<!--                                            <figure class="highcharts-figure">-->
-<!--                                                <div th:id="|container-${panel?.panelId}|"-->
-<!--                                                     class="chart-container box_panel" style="min-height: 160px; max-height: 130px;"></div>-->
-<!--                                            </figure>-->
-<!--                                        </div>-->
-<!--                                    </th:block>-->
-
-
                                     <div class="row">
 
                                         <table class="table-nt">
@@ -379,7 +390,7 @@
                                         <tr th:if="${node?.pods}" th:each="pod : ${node?.pods}">
                                             <td th:text="${pod?.name}">Name</td>
                                             <td th:text="${pod?.namespace}">Namespace</td>
-                                            <td th:text="${pod?.status}">Status</td>
+                                            <td> <span class="madal_label_active"th:text="${pod?.status}">Status </span></td>
                                         </tr>
                                         <tbody>
                                     </table>
@@ -432,6 +443,7 @@
         let pageRows = [[${page?.rows}]],
             node = [[${nodes}]],
             apiHost = [[${host}]];
+            let nodePanel = new Map();
         /*]]>*/
 
         var $node = $("#var-node");
@@ -441,11 +453,20 @@
                 $node.val(node[i].name);
                 for (var j=0; j < pageRows.length; j++) {
                     if (pageRows[j].title == 'node list' ) {
-                        pageRows[j].pageRowPanels.forEach(panel => {
-                        commonChartsJs.createPanel(panel);
-                        });
+                        let panels = JSON.parse(JSON.stringify(pageRows[j].pageRowPanels));
+                        panels.forEach(panel =>  {
+                                    panel.panelId = node[i].name + "-" + panel.panelId;
+                                    return panel;
+                                });
+                                nodePanel.set(node[i].name, panels);
                     }
                 }
+
+                var nodeName = node[i].name;
+                let nodePanels = nodePanel.get(nodeName);
+                nodePanels.forEach(panel => {
+                    commonChartsJs.createPanel(panel);
+                });
             }
         });
 
