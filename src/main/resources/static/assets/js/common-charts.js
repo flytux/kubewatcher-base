@@ -641,7 +641,7 @@ let commonChartsJs = (function () {
                         }
                         console.log("refreshChart completed", panel.panelId, panel.title, (new Date().getTime()) - start);
                     });
-                if (panel.chartType === 'line' || panel.chartType === 'area') {
+                if (panel.legendVisible && (panel.chartType === 'line' || panel.chartType === 'area')) {
                     legendFunction(chart);
                 }
             }
@@ -748,7 +748,6 @@ let commonChartsJs = (function () {
                 chart: {
                     type: panel.chartType.toLowerCase(),
                     styledMode: false,
-                    marginBottom: 80,
                     events: {
                         load: function () {
                             scheduleMap.set(panel.panelId,
@@ -794,6 +793,10 @@ let commonChartsJs = (function () {
                         fillOpacity: 0.3
                     }
                 };
+            }
+
+            if (panel.legendVisible) {
+                lineChartOption.chart.marginBottom = 80;
             }
 
             return lineChartOption;
@@ -854,9 +857,10 @@ let commonChartsJs = (function () {
                     enabled: false
                 },
                 tooltip: {
-                    enabled: false
+                    enabled: !panel.legendVisible,
                 },
                 legend: {
+                    enabled: panel.legendVisible,
                     layout: 'vertical',
                     // backgroundColor: '#FFFFFF',
                     floating: false,
@@ -1220,8 +1224,6 @@ let commonChartsJs = (function () {
             const type = panel.chartType;
             switch (type) {
                 case "area":
-                case "tilemap":
-                case "bar":
                 case "line":
                     this.renderLineHighChart(panel, chartData);
                     break;
@@ -1229,11 +1231,11 @@ let commonChartsJs = (function () {
                 case "solidgauge":
                     this.renderGaugeHighChart(panel, chartData);
                     break;
-                case "sparkline":
-                    this.renderSparkLineHighChart(panel, chartData);
-                    break;
                 case "scatter":
-                    this.renderScatterHighChart(panel, chartData);
+                case "tilemap":
+                case "bar":
+                case "sparkline":
+                    this.renderCommonHighChart(panel, chartData);
                     break;
                 default:
                     console.warn("unsupported chart type");
@@ -1241,7 +1243,7 @@ let commonChartsJs = (function () {
         },
         renderLineHighChart: function (panel, chartData) {
             const panelId = panel.panelId;
-            const chart = new Highcharts.chart('container-' + panelId, chartData, (chart) => legendFunction(chart));
+            const chart = new Highcharts.chart('container-' + panelId, chartData, (chart) => panel.legendVisible ? legendFunction(chart) : {});
             chartMap.set(panelId, chart);
         },
         renderGaugeHighChart: function (panel, chartData) {
@@ -1251,13 +1253,7 @@ let commonChartsJs = (function () {
                     : chartData);
             chartMap.set(panelId, chart);
         },
-        renderSparkLineHighChart: function (panel, chartData) {
-            const panelId = panel.panelId;
-            const chart = new Highcharts.chart('container-' + panelId, chartData);
-            chartMap.set(panelId, chart);
-        },
-        //어플리케이션 현황판용 스캐터 차트 추가..
-        renderScatterHighChart: function (panel, chartData) {
+        renderCommonHighChart: function (panel, chartData) {
             const panelId = panel.panelId;
             const chart = new Highcharts.chart('container-' + panelId, chartData);
             chartMap.set(panelId, chart);

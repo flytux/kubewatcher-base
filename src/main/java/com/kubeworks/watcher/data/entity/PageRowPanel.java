@@ -23,6 +23,7 @@ public class PageRowPanel extends BaseEntity {
 //    fragment_name  varchar(50)                                   null,
 //    chart_type     varchar(20)                               not null,
 //    refresh_interval  bigint unsigned       default 60000    not null,
+//    legend_visible  tinyint(1)       default 1    not null,
 //    yaxis_label    varchar(50)                               not null,
 //    yaxis_unit     varchar(20)                               not null,
 //    yaxis_min      varchar(10)                               not null,
@@ -58,6 +59,9 @@ public class PageRowPanel extends BaseEntity {
 
     @Column(name = "refresh_interval", columnDefinition = "bigint unsigned default 60000", nullable = false)
     int refreshIntervalMillis;
+
+    @Column(name = "legend_visible", columnDefinition = "tinyint(1) default 1", nullable = false)
+    boolean legendVisible;
 
     @Column(name = "yaxis_label", length = 50, nullable = false)
     String yaxisLabel;
