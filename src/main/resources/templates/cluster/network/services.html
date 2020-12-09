@@ -193,14 +193,16 @@
                         Endpoint
                     </div>
                     <table class="table-nt">
-                        <tr>
-                            <th>Name</th>
-                            <td th:text="${#strings.isEmpty(service?.endpoints?.name) ? '-' : service?.endpoints?.name}">Object-name</td>
-                        </tr>
-                        <tr>
-                            <th>Endpoints</th>
-                            <td th:text="${#strings.isEmpty(service?.endpoints?.endpoints) ? '-' : service?.endpoints?.endpoints}">Object-name</td>
-                        </tr>
+                        <div th:if="${service?.endpoints}" th:each = "endpoint : ${service?.endpoints}">
+                            <tr>
+                                <th>Name</th>
+                                <td th:text="${#strings.isEmpty(endpoint.name) ? '-' : endpoint.name}">Object-name</td>
+                            </tr>
+                            <tr>
+                                <th>Endpoints</th>
+                                <td th:text="${#strings.isEmpty(endpoint.endpoints) ? '-' : endpoint.endpoints}">Object-name</td>
+                            </tr>
+                        </div>
                     </table>
 
                     <div class="table-title">

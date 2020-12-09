@@ -1,7 +1,6 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ServiceDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ServiceTable;
@@ -65,10 +64,10 @@ public class ServiceKindServiceImpl implements ServiceKindService {
             serviceDescribe.getNamespace(), serviceDescribe.getName(), serviceDescribe.getUid());
         eventTableListOptional.ifPresent(v1EventTableList -> serviceDescribe.setEvents(v1EventTableList.getDataTable()));
 
-//        List<EndpointTable> endpoint = endpointService.endpointTable(serviceDescribe.getNamespace(),
-//            serviceDescribe.getName());
-//
-//        serviceDescribe.setEndpoints(endpoint);
+        List<EndpointTable> endpoint = endpointService.endpointTable(serviceDescribe.getNamespace(),
+            serviceDescribe.getName());
+
+        serviceDescribe.setEndpoints(endpoint);
 
         return Optional.of(serviceDescribe);
     }
