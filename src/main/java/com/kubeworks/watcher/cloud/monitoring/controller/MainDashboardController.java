@@ -13,8 +13,6 @@ import java.util.Map;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class MainDashboardController {
 
-    private static final long MAIN_MENU_ID = 0;
-
     private final MonitoringRestController monitoringRestController;
 
     @GetMapping(value = "/main", produces = MediaType.TEXT_HTML_VALUE)
