@@ -330,6 +330,17 @@ let commonChartsJs = (function () {
         }).reduce((value1, value2) => value1 + value2)[0];
     }
 
+    function SetDatas(dataArray) {
+         return dataArray.map(item => {
+             if (item.data.resultType === 'matrix') {
+                 console.warn("unsupported result type=" + item.data.data.resultType);
+                 return 0;
+             }
+               return item.data.result.map(resultItem =>
+                   parseInt(resultItem.value[1]));
+           });
+     }
+
     function legendFunction (chart) {
 
         if($(chart.container).children('div[name="legend"]')) {
@@ -449,6 +460,13 @@ let commonChartsJs = (function () {
                             setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
                         );
                     break;
+                case "SetSum":
+                    this.getDataByPanel(panel, true)
+                        .then(value => this.SetsSum(panel, value))
+                        .then(panel => scheduleMap.set(panel.panelId,
+                            setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
+                        );
+                    break;
                 default:
                     console.warn("unsupported panel type");
             }
@@ -457,6 +475,12 @@ let commonChartsJs = (function () {
        Boxversions: function (panel, dataArray) { //버전
             const boxsData = boxsDatas(dataArray);
             $('#container-' + panel.panelId).text(boxsData);
+            return panel;
+        },
+
+       SetsSum: function (panel, dataArray) { //박스
+            const SetData = SetDatas(dataArray);
+            $('#container-' + panel.panelId).text(SetData[0])+$('#container--' + panel.panelId).text(' '+'/'+' '+SetData[1]);
             return panel;
         },
 
