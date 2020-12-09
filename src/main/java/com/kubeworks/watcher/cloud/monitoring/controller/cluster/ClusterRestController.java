@@ -1,5 +1,7 @@
 package com.kubeworks.watcher.cloud.monitoring.controller.cluster;
 
+import com.kubeworks.watcher.base.ApiResponse;
+import com.kubeworks.watcher.base.MetricResponseData;
 import com.kubeworks.watcher.config.properties.PrometheusProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
@@ -311,6 +313,21 @@ public class ClusterRestController {
     @GetMapping(value = "/monitoring/cluster/events", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EventTable> events() {
         return eventService.allNamespaceEventTables();
+    }
+
+    @GetMapping(value = "/monitoring/cluster/events/count", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResponse<MetricResponseData> eventCount() {
+        ApiResponse<MetricResponseData> response = new ApiResponse<>();
+        try {
+            List<EventTable> eventTables = eventService.allNamespaceEventTables();
+            List<Object> results = Arrays.asList(System.currentTimeMillis() / 1000, eventTables.size());
+            response.setSuccess(true);
+            response.setMessage("");
+            response.setData(new MetricResponseData(Collections.singletonList(MetricResponseData.MetricResult.builder().value(results).build())));
+        } catch (Exception e) {
+            response.setSuccess(false);
+        }
+        return response;
     }
 
     @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events", produces = MediaType.APPLICATION_JSON_VALUE)

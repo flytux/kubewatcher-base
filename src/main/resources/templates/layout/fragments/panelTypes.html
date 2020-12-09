@@ -326,5 +326,116 @@
             </div>
         </div>
     </th:block>
+
+    <th:block th:fragment="box-chart-panel(panel)">
+        <figure class="highcharts-figure">
+            <div th:id="|container-${panel?.panelId}|"
+                 class="chart-container box_panel" style="height: 107px;"></div>
+        </figure>
+    </th:block>
+
+    <th:block th:fragment="head-charts-panel(panel)">
+        <div class="col-md-12 col-lg-3">
+            <div class="box_panel">
+                <div th:text="${panel?.title}" class="box_panel-heading1">VM</div>
+                <div style="font-size:2em; min-height: 178px;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">102</div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="count-card-panel(panel)">
+        <div class="col-xs-12 col-md-15 col-lg-2">
+            <div class="box_panel">
+                <div th:text="${panel?.title}" class="box_panel-heading1">Event</div>
+                <div th:id="|container-${panel?.panelId}|" class="box_panel-text4">
+                    15
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="count-card-sets-panel(panel)">
+        <div class="col-xs-12 col-md-15 col-lg-2">
+            <div class="box_panel">
+                <div class="box_panel-heading1" th:text="${panel?.title}">Node</div>
+                <th:block th:if="${panel?.panelType} == 'UP/DOWN'">
+                    <div class="box_panel-text4">
+                        <div class="box_big_g mb_7 mt_6 w70" th:id="|container-${panel?.panelId}|">UP</div>
+                    </div>
+                </th:block>
+                <th:block th:unless="${panel?.panelType} == 'UP/DOWN'">
+                    <div class="box_panel-text4">
+                        <span th:id="|container-${panel?.panelId}|" class="color_g">21</span><span th:id="|container--${panel?.panelId}|" class="st"> / 55</span>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="mini-table-panel(panel)">
+        <div class="col-lg-7">
+            <div class="col-xs-12 box1_p10" style="min-height: 350px;">
+                <div class="row col-xs-12">
+                    <div class="title_chart_c col-xs-12" th:text="${panel?.title}">보험코어 어플리케이션</div>
+                </div>
+                <div class="row col-xs-12">
+                    <table class="table_mini" th:id="|container-${panel?.panelId}|" style="min-height: 290px;"></table>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="dashboard-table-panel(panel)">
+        <div class="box_panel">
+            <!--            <div class="box_panel-heading2" th:text="${panel?.title}"><div class="circle c_normal"></div>Normal&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_warning"></div>Warning&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_danger"></div>Danger</div>-->
+            <div class="box_panel-heading" th:text="${panel?.title}">
+                <div class="box_table-body">
+                    <table class="list_system" th:id="|container-${panel?.panelId}|">
+                        <thead>
+                        <tr>
+                            <th>Alarm명</th>
+                            <th>Message</th>
+                            <th>Severity</th>
+                            <th>Category</th>
+                            <th>System</th>
+                            <th>Time</th>
+                            <th>Check</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>CPU High</td>
+                            <td>HLI1000 CPU 80%</td>
+                            <td><div class="circle c_normal"></div></td>
+                            <td>VM</td>
+                            <td>HLI1000</td>
+                            <td>2020-03-24   12:34:05</td>
+                            <td><button class="btn btn-md btn-outline-white"> Check</button></td>
+                        </tr>
+                        <tr>
+                            <td>CPU High</td>
+                            <td>HLI1000 CPU 80%</td>
+                            <td><div class="circle c_warning"></div></td>
+                            <td>VM</td>
+                            <td>HLI1000</td>
+                            <td>2020-03-24   12:34:05</td>
+                            <td><button class="btn btn-md btn-outline-white"><i class="feather icon-check-circle"></i> 확 인</button></td>
+                        </tr>
+                        <tr>
+                            <td>CPU High</td>
+                            <td>HLI1000 CPU 80%</td>
+                            <td><div class="circle c_danger"></div></td>
+                            <td>VM</td>
+                            <td>HLI1000</td>
+                            <td>2020-03-24   12:34:05</td>
+                            <td><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> Check</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
 </body>
 </html>
