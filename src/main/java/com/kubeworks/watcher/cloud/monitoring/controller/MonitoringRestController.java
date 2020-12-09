@@ -29,7 +29,7 @@ public class MonitoringRestController {
     private static final long JVM_DETAIL_MENU_ID = 121;
     private static final long VM_OVERVIEW_MENU_ID = 140;
     private static final long VM_DETAIL_MENU_ID = 141;
-    private static final long MAIN_MENU_ID = 0;
+    private static final long MAIN_MENU_ID = 99;
 
     private final PageViewService pageViewService;
     private final PrometheusProperties prometheusProperties;
