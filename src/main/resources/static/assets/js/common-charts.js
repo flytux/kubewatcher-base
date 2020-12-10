@@ -237,7 +237,7 @@ let commonChartsJs = (function () {
         const tableBodyHtml = String.prototype.concat('<tbody class="table_mini">',
             dataArray.map(item => {
                 for (let header of headers) {
-                    if (header != 'application' && item[header] == '1') {
+                    if (header != 'application' && item[header] != '0') {
                         trAppend += '<td><div class="box_mini_g">' + item['application'] + '</div></td>';
                         okCount++;
                     } else if (header != 'application' && item[header] == '0') {
