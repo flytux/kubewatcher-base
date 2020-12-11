@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface ServiceAccountService {
 
-    @SneakyThrows
     List<ServiceAccountTable> allNamespaceServiceAccountTables();
 
     Optional<ServiceAccountDescribe> serviceAccount(String namespace, String name);

@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface RoleBindingService {
 
-    @SneakyThrows
     List<RoleBindingTable> allNamespaceRoleBindingTables();
 
     Optional<RoleBindingDescribe> roleBinding(String namespace, String name);
