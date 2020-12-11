@@ -29,6 +29,7 @@ public class MonitoringRestController {
     private static final long JVM_DETAIL_MENU_ID = 121;
     private static final long VM_OVERVIEW_MENU_ID = 140;
     private static final long VM_DETAIL_MENU_ID = 141;
+    private static final long MAIN_MENU_ID = 99;
 
     private final PageViewService pageViewService;
     private final PrometheusProperties prometheusProperties;
@@ -78,6 +79,12 @@ public class MonitoringRestController {
     @GetMapping(value = "/monitoring/vm/monitoring", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> vmDetail() {
         Page pageView = pageViewService.getPageView(VM_DETAIL_MENU_ID);
+        return responseData(pageView);
+    }
+
+    @GetMapping(value = "/main", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> dashboard() {
+        Page pageView = pageViewService.getPageView(MAIN_MENU_ID);
         return responseData(pageView);
     }
 

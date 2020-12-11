@@ -174,7 +174,7 @@
                             </tr>
                             <tr>
                                 <th>Last schedule</th>
-                                <td th:text="${cronJob?.lastSchedule}">1d</td>
+                                <td th:text="${#dates.format(cronJob?.lastSchedule,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                         </table>
                     </div>

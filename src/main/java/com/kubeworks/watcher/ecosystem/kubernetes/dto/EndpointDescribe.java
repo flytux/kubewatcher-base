@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.joda.time.DateTime;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,8 @@ public class EndpointDescribe {
     Map<String, String> labels;
     Map<String, String> annotations;
 
-    List<V1EndpointSubset> subsets;
+    @Builder.Default
+    List<V1EndpointSubset> subsets = Collections.emptyList();
     List<V1beta1EndpointPort> ports;
 
     List<EventTable> events;
