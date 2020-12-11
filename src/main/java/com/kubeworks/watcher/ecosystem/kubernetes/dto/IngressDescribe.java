@@ -3,10 +3,7 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.kubernetes.client.openapi.models.NetworkingV1beta1IngressRule;
 import io.kubernetes.client.openapi.models.V1LoadBalancerStatus;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.joda.time.DateTime;
 
@@ -21,7 +18,7 @@ public class IngressDescribe {
     @Builder
     private IngressDescribe(String name, String namespace, String uid, DateTime creationTimestamp,
                             Map<String, String> annotations, List<NetworkingV1beta1IngressRule> rules,
-                            List<EventTable> events, List<EndpointTable> endpoints, V1LoadBalancerStatus loadBalancer) {
+                            List<EventTable> events, List<IngressDescribeRule> describeRules, V1LoadBalancerStatus loadBalancer) {
         this.name = name;
         this.namespace = namespace;
         this.uid = uid;
@@ -29,7 +26,7 @@ public class IngressDescribe {
         this.annotations = annotations;
         this.rules = rules;
         this.events = events;
-        this.endpoints = endpoints;
+        this.describeRules = describeRules;
         this.loadBalancer = loadBalancer;
     }
 
@@ -43,11 +40,30 @@ public class IngressDescribe {
     Map<String, String> annotations;
 
     List<NetworkingV1beta1IngressRule> rules;
+    List<IngressDescribeRule> describeRules;
+
     List<EventTable> events;
-    List<EndpointTable> endpoints;
 
     V1LoadBalancerStatus loadBalancer;
 
+    @Getter @Setter @FieldDefaults(level = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class IngressDescribeRule {
 
+        @Builder
+        private IngressDescribeRule(String host, String path, String backend, List<String> endpoints) {
+            this.host = host;
+            this.path = path;
+            this.backend = backend;
+            this.endpoints = endpoints;
+        }
 
+        String host;
+        String path;
+        String backend;
+        List<String> endpoints;
+
+    }
 }
+
+

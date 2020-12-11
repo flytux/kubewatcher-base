@@ -129,7 +129,6 @@
                                         nginx.ingress.kubernetes.io/rewrite-target=/ </span>
 
                                 </div>
-<!--                                <span class="madal_label">nginx.ingress.kubernetes.io/rewrite-target=/</span>-->
                             </td>
                         </tr>
                     </table>
@@ -143,26 +142,16 @@
                             <th>Host</th>
                             <th>Path</th>
                             <th>Backends</th>
+                            <th>Endpotins</th>
                         </tr>
                         </thead>
                         <tbody>
-
-                        <div th:if="${ingress?.rules}" th:each="rule : ${ingress?.rules}">
-                            <div th:each = "item : ${rule.http}">
-                                <div th:each="endpoint : ${ingress?.endpoints}">
-                                <tr th:each = "select : ${item.paths}">
-                                    <td th:text="${#strings.isEmpty(rule.host) ? '<none>' : rule.host}">foo.bar.com</td>
-                                    <td th:if="${#arrays.isEmpty(select.path)}"
-                                        th:text="|${'<none>'}|"></td>
-                                    <td th:unless="${#arrays.isEmpty(select.path)}"
-                                        th:text="${select.path}"></td>
-                                    <td th:each = "back : ${select.backend}" th:text = "|${back.serviceName}:${back.servicePort} ${endpoint.endpoints}|"></td>
-
-                                </tr>
-                            </div>
-                            </div>
-                        </div>
-
+                            <tr th:each="describeRule : ${ingress?.describeRules}">
+                                <td th:text="${describeRule?.host}">Host</td>
+                                <td th:text="${describeRule?.path}">Path</td>
+                                <td th:text="${describeRule?.backend}">Backends</td>
+                                <td th:text="${describeRule?.endpoints}">Endpotins</td>
+                            </tr>
                         <tbody>
                     </table>
 

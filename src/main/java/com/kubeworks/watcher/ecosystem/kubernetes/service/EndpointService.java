@@ -12,6 +12,8 @@ public interface EndpointService {
 
     List<EndpointTable> endpointTable(String namespace, String name);
 
+    Optional<EndpointDescribe> endpointWithoutEvent(String namespace, String name);
+
     Optional<EndpointDescribe> endpoint(String namespace, String name);
 
 }
