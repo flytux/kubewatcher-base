@@ -63,16 +63,18 @@
                                 <a class="table2-link" th:href="'javascript:persistentVolumesClaimDetail(&quot;' + ${persistentVolumeClaim?.namespace} + '&quot;, &quot;'+ ${persistentVolumeClaim?.name} + '&quot;)'"
                                    th:utext="${persistentVolumeClaim?.name}">Name</a>
                             </td>
-                            <!--                            <td th:text="${persistentVolumeClaim?.name}">Name</td>-->
                             <td th:text="${persistentVolumeClaim?.namespace}">Namespace</td>
                             <td th:text="${persistentVolumeClaim?.storageClass}">Storage class</td>
                             <td th:text="${persistentVolumeClaim?.capacity}">Size</td>
                             <td th:text="${persistentVolumeClaim?.age}">Age</td>
-                            <td>
-                                <span class="madal_label_active"
-                                      th:text="${persistentVolumeClaim?.status}">UP</span>
+                            <td th:switch="${persistentVolumeClaim?.status}">
+                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolumeClaim?.status}">Available</span>
+                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolumeClaim?.status}">Bound</span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolumeClaim?.status}">Pending</span>
+                                <span th:case="Released" class="madal_label" th:text="${persistentVolumeClaim?.status}">Released</span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolumeClaim?.status}">Failed</span>
+                                <span th:case="*" class="madal_label" th:text="${persistentVolumeClaim?.status}"></span>
                             </td>
-
                         </tr>
                         </tbody>
                     </table>
@@ -115,9 +117,13 @@
                             <td th:text="${persistentVolume?.capacity}">Capacity</td>
                             <td th:text="${persistentVolume?.claim}">Claim</td>
                             <td th:text="${persistentVolume?.age}">Age</td>
-                            <td>
-                                <span class="madal_label_active"
-                                      th:text="${persistentVolume?.status}">UP</span>
+                            <td th:switch="${persistentVolume?.status}">
+                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolume?.status}">Available</span>
+                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolume?.status}">Bound</span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolume?.status}">Pending</span>
+                                <span th:case="Released" class="madal_label" th:text="${persistentVolume?.status}">Released</span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolume?.status}">Failed</span>
+                                <span th:case="*" class="madal_label" th:text="${persistentVolume?.status}"></span>
                             </td>
                         </tr>
                         </tbody>
@@ -252,7 +258,14 @@
                                 </tr>
                                 <tr>
                                     <th>Status</th>
-                                    <td th:text="${persistentVolumeClaim?.status}">Bound</td>
+                                    <td th:switch="${persistentVolumeClaim?.status}">
+                                        <span th:case="Available" class="madal_label_active" th:text="${persistentVolumeClaim?.status}">Available</span>
+                                        <span th:case="Bound" class="madal_label_active" th:text="${persistentVolumeClaim?.status}">Bound</span>
+                                        <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolumeClaim?.status}">Pending</span>
+                                        <span th:case="Released" class="madal_label" th:text="${persistentVolumeClaim?.status}">Released</span>
+                                        <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolumeClaim?.status}">Failed</span>
+                                        <span th:case="*" class="madal_label" th:text="${persistentVolumeClaim?.status}"></span>
+                                    </td>
                                 </tr>
                             </table>
                     </div>
@@ -373,7 +386,14 @@
                         </tr>
                         <tr>
                             <th>Status</th>
-                            <td th:text="${persistentVolume?.status}">Bound</td>
+                            <td th:switch="${persistentVolume?.status}">
+                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolume?.status}">Available</span>
+                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolume?.status}">Bound</span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolume?.status}">Pending</span>
+                                <span th:case="Released" class="madal_label" th:text="${persistentVolume?.status}">Released</span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolume?.status}">Failed</span>
+                                <span th:case="*" class="madal_label" th:text="${persistentVolume?.status}"></span>
+                            </td>
                         </tr>
                     </table>
 

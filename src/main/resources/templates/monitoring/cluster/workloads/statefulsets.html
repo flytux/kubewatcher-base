@@ -41,7 +41,6 @@
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(statefulSets) ? '0' : statefulSets.size()}" class="point pr_10">20</span>
-<!--                    Page : <span class="point">1</span>/<span>2</span>-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">
@@ -137,7 +136,6 @@
                                         <span class="madal_label" th:text="|${item.key} : ${item.value}|">name=prometheus</span>
                                     </div>
                                 </td>
-<!--                                <td><span class="madal_label">name=prometheus</span></td>-->
                             </tr>
                             <tr>
                                 <th>Images</th>
@@ -149,10 +147,10 @@
                                     <div class="row" th:each="entry : ${statefulSet?.annotations}" >
                                             <span class="madal_label"
                                                   th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                            deprecated.daemonset.template.generation=1 </span>
+                                            deprecated.daemonSet.template.generation=1 </span>
                                         <span class="madal_label"
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                            deprecated.daemonset.template.generation=1 </span>
+                                            deprecated.daemonSet.template.generation=1 </span>
                                     </div>
                                 </td>
                             </tr>
@@ -177,7 +175,6 @@
                         </table>
                     </div>
 
-
                     <div class="table-title">
                         Pods
                     </div>
@@ -200,7 +197,15 @@
                             <td th:text="${pod?.namespace}">Namespace</td>
                             <td th:text="|- %|">CPU</td>
                             <td th:text="|- %|">Memory</td>
-                            <td> <span class="madal_label_active" th:text="${pod?.status}">Status </span></td>
+                            <td th:switch="${pod?.status}">
+                                <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
+                                <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}">Pending</span>
+                                <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}">Succeeded</span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}">Failed</span>
+                                <span th:case="Unknown" class="madal_label" th:text="${pod?.status}">Unknown</span>
+                                <span th:case="*" class="madal_label" th:text="${pod?.status}"></span>
+                            </td>
                         </tr>
                         <tbody>
                     </table>

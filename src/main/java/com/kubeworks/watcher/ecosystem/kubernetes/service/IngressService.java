@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface IngressService {
 
-    @SneakyThrows
     List<IngressTable> allNamespaceIngressTables();
 
     Optional<IngressDescribe> ingress(String namespace, String name);

@@ -61,12 +61,11 @@
                             <td colspan="8" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(services)}" th:each="service : ${services}">
-                            <td th:text="${service?.name}">Name</td>
                             <td>
-<!--                                th:text="${service?.namespace}"> -->
                                 <a class="table2-link" th:href="'javascript:serviceDetail(&quot;' + ${service?.namespace} + '&quot;, &quot;'+ ${service?.name} + '&quot;)'"
-                                   th:utext="${service?.namespace}">Namespace</a>
+                                   th:utext="${service?.name}">Name</a>
                             </td>
+                            <td  th:text="${service?.namespace}">Namespace</td>
                             <td th:text="${service?.type}">Type</td>
                             <td th:text="${service?.clusterIp}">Cluster IP</td>
                             <td th:text="${service?.ports}">Ports</td>
@@ -91,7 +90,7 @@
                 </div>
             </div>
         </div>
-        <!-- [Events] End-->
+        <!-- [Services] End-->
     </div>
 
     <!-- [Modal] start -->
@@ -134,7 +133,6 @@
 
                                 </div>
                             </td>
-<!--                            <td><span class="madal_label"> Kube-dns</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>-->
                         </tr>
                         <tr>
                             <th>Annotations</th>
@@ -149,7 +147,6 @@
 
                                 </div>
                             </td>
-<!--                            <td><span class="madal_label"> service/port=9999</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>-->
                         </tr>
                         <tr>
                             <th>Selector</th>
@@ -158,7 +155,6 @@
                                     <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
                                 </div>
                             </td>
-<!--                                <span class="madal_label"> K8s-app=myAPP</span> <span class="madal_label">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>-->
                         </tr>
                         <tr>
                             <th>Type</th>

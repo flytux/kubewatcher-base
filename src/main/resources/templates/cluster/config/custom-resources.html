@@ -58,11 +58,11 @@
                             <td colspan="5" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(customResources)}" th:each="customResource : ${customResources}">
-                            <td th:text="${customResource?.name}">Name</td>
                             <td>
                                 <a class="table2-link" th:href="'javascript:groupDetail(&quot;'+ ${customResource?.name} + '&quot;)'"
-                                   th:utext="${customResource?.group}">Group</a>
+                                   th:utext="${customResource?.name}">Name</a>
                             </td>
+                            <td th:text="${customResource?.group}">Group</td>
                             <td th:text="${customResource?.version}">Version</td>
                             <td th:text="${customResource?.scope}">Scope</td>
                             <td th:text="${customResource?.age}">Age</td>

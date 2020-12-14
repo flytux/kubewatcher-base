@@ -68,9 +68,13 @@
                             <td th:text="${pod?.ready}">Container</td>
                             <td th:text="${pod?.node}">Controlled</td>
                             <td th:text="${pod?.age}">Age</td>
-                            <td>
-                                <span class="madal_label"
-                                      th:text="${pod?.status}">UP</span>
+                            <td th:switch="${pod?.status}">
+                                <span th:case="Running" class="madal_label_active">Running</span>
+                                <span th:case="Completed" class="madal_label_active">Completed</span>
+                                <span th:case="Pending" class="madal_label_warning">Pending</span>
+                                <span th:case="Succeeded" class="madal_label_active">Pending</span>
+                                <span th:case="Failed" class="madal_label_danger">Pending</span>
+                                <span th:case="Unknown" class="madal_label">Pending</span>
                             </td>
                         </tr>
                         </tbody>
@@ -163,7 +167,15 @@
                             </tr>
                             <tr>
                                 <th>Status</th>
-                                <td th:text="${pod?.status}">Run/Ready/Waiting/Terminated/...</td>
+                                <td th:switch="${pod?.status}">
+                                    <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
+                                    <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>
+                                    <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}">Pending</span>
+                                    <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}">Succeeded</span>
+                                    <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}">Failed</span>
+                                    <span th:case="Unknown" class="madal_label" th:text="${pod?.status}">Unknown</span>
+                                    <span th:case="*" class="madal_label" th:text="${pod?.status}"></span>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Node</th>
@@ -266,7 +278,10 @@
                         <tr th:unless="${#arrays.isEmpty(pod?.volumes)}" th:each="volume : ${pod?.volumes}">
                             <td th:text="${volume?.name}">Name</td>
                             <td th:text="${volume?.type}">Type</td>
-                            <td th:text="${volume?.values == null ? '-' : volume?.values?.toString()}">Value</td>
+                            <td>
+                                <div th:if= "${volume?.values}" th:each="value : ${volume?.values}" th:text="${value}">Value</div>
+                                <div th:unless= "${volume?.values}" th:text="|-|">Value</div>
+                            </td>
                         </tr>
                         <tbody>
                     </table>

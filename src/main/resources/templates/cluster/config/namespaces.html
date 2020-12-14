@@ -61,9 +61,11 @@
                                    th:utext="${namespace?.name}">Name</a>
                             </td>
                             <td th:text="${namespace?.age}">Age</td>
-                            <td>
-                                <span class="madal_label_active"
-                                      th:text="${namespace?.status}">Conditions</span>
+                            <td th:switch="${namespace?.status}">
+                                <span th:case="Running" class="madal_label_active" th:text="${namespace?.status}">Available</span>
+                                <span th:case="Active" class="madal_label_active" th:text="${namespace?.status}">Bound</span>
+                                <span th:case="Ready" class="madal_label_active" th:text="${namespace?.status}">Pending</span>
+                                <span th:case="*" class="madal_label" th:text="${namespace?.status}"></span>
                             </td>
                         </tr>
                         </tbody>
@@ -113,7 +115,6 @@
                             <th>Annotation</th>
                             <td>
                                 <div class="row" th:each="entry : ${namespace?.annotations}" >
-                                    <!--                                    <span class="madal_label" th:text="|${entry.key} : ${entry.value}|"> deprecated.daemonset.template.generation=1</span>-->
                                     <span class="madal_label"
                                           th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                     </span>
@@ -126,9 +127,11 @@
                         </tr>
                         <tr>
                             <th>Status</th>
-                            <td>
-                                <span class="madal_label"
-                                      th:text="${namespace?.status}">Conditions</span>
+                            <td th:switch="${namespace?.status}">
+                                <span th:case="Running" class="madal_label_active" th:text="${namespace?.status}">Available</span>
+                                <span th:case="Active" class="madal_label_active" th:text="${namespace?.status}">Bound</span>
+                                <span th:case="Ready" class="madal_label_active" th:text="${namespace?.status}">Pending</span>
+                                <span th:case="*" class="madal_label" th:text="${namespace?.status}"></span>
                             </td>
                         </tr>
                             <th>Resource Quotas</th>
