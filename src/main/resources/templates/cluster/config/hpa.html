@@ -201,7 +201,7 @@
                         <tr th:if="${hpas?.events}" th:each="event : ${hpas?.events}">
                             <td th:text="${event?.name}">Event</td>
                             <td th:text="${event?.source}">Source</td>
-                            <td th:text="${event?.count}">Count</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${event?.lastSeen}">Last</td>
                         </tr>

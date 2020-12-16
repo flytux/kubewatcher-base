@@ -177,7 +177,7 @@
                         <tr th:if="${ingress?.events}" th:each="event : ${ingress?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
-                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Object-name</td>
                             <td th:text="${event?.lastSeen}">2020-05-22 12:41:05</td>
                         </tr>

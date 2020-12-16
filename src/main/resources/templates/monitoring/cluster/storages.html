@@ -64,7 +64,7 @@
                                    th:utext="${persistentVolumeClaim?.name}">Name</a>
                             </td>
                             <td th:text="${persistentVolumeClaim?.namespace}">Namespace</td>
-                            <td th:text="${persistentVolumeClaim?.storageClass}">Storage class</td>
+                            <td th:text="${#strings.isEmpty(persistentVolumeClaim?.storageClass) ? '-' : persistentVolumeClaim?.storageClass}">Storage class</td>
                             <td th:text="${persistentVolumeClaim?.capacity}">Size</td>
                             <td th:text="${persistentVolumeClaim?.age}">Age</td>
                             <td th:switch="${persistentVolumeClaim?.status}">
@@ -113,7 +113,7 @@
                                 <a class="table2-link" th:href="'javascript:persistentVolumesDetail(&quot;'+ ${persistentVolume?.name} + '&quot;)'"
                                    th:utext="${persistentVolume?.name}">Name</a>
                             </td>
-                            <td th:text="${persistentVolume?.storageClass}">Storage class</td>
+                            <td th:text="${#strings.isEmpty(persistentVolume?.storageClass) ? '-' : persistentVolume?.storageClass}">Storage class</td>
                             <td th:text="${persistentVolume?.capacity}">Capacity</td>
                             <td th:text="${persistentVolume?.claim}">Claim</td>
                             <td th:text="${persistentVolume?.age}">Age</td>
@@ -174,7 +174,7 @@
     </div>
     <!-- [Modal : persistentVolumeClaim] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div th:fragment="pvcModalContents" class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="pvcModalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
@@ -211,7 +211,7 @@
                                 <tr>
                                     <th>Labels</th>
                                     <td>
-                                        <div class="row" th:each="entry : ${persistentVolumeClaim?.labels}" >
+                                        <div class="row" th:if="${persistentVolumeClaim?.labels}" th:each="entry : ${persistentVolumeClaim?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
@@ -219,12 +219,13 @@
                                                   th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                         </div>
+                                        <div th:unless="${persistentVolumeClaim?.labels}">-</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Annotations</th>
                                     <td>
-                                        <div class="row" th:each="entry : ${persistentVolumeClaim?.annotations}" >
+                                        <div class="row" th:if="${persistentVolumeClaim?.annotations}" th:each="entry : ${persistentVolumeClaim?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
@@ -232,11 +233,12 @@
                                                   th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                         </div>
+                                        <div th:unless="${persistentVolumeClaim?.annotations}">-</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Finalizers</th>
-                                    <td><span class="madal_label" th:each="finalizer : ${persistentVolumeClaim?.finalizers}" th:text="${finalizer}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                                    <td th:each="finalizer : ${persistentVolumeClaim?.finalizers}" th:text="${finalizer}">&nbsp;&nbsp///&nbsp;&nbsp</td>
                                 </tr>
                                 <tr>
                                     <th>Access Modes</th>
@@ -244,7 +246,7 @@
                                 </tr>
                                 <tr>
                                     <th>Storage class name</th>
-                                    <td th:text="${persistentVolumeClaim?.storageClassName}">Standard</td>
+                                    <td th:text="${#strings.isEmpty(persistentVolumeClaim?.storageClassName) ? '-' :persistentVolumeClaim?.storageClassName}">Standard</td>
                                 </tr>
                                 <tr>
                                     <th>Storage</th>
@@ -305,7 +307,7 @@
                         <tr th:if="${persistentVolumeClaim?.events}" th:each="event : ${persistentVolumeClaim?.events}">
                             <td th:text="${event?.type}">Type</td>
                             <td th:text="${event?.reason}">Reason</td>
-                            <td th:text="${event?.count}">Count</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">Count</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
@@ -320,7 +322,7 @@
     <!-- [Modal : persistentVolumeClaim] End -->
     <!-- [Modal : persistentVolume] start -->
     <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true" >
-        <div th:fragment="pvModalContents" class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="pvModalContents" class="modal-dialog modal-lg" style="width:765px"; >
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
@@ -328,7 +330,7 @@
                         <span id="myModalLabel2" th:text="|Persistent Volume : ${persistentVolume?.name}|">Persistent Volume : PV 명</span>
                     </div>
                 </div>
-                <div class="modal-nbody">
+                <div class="modal-nbody row_scroll" >
                     <div class="table-title">
                         Overview
                     </div>
@@ -345,7 +347,7 @@
                         <tr>
                             <th>Labels</th>
                             <td>
-                                <div class="row" th:each="entry : ${persistentVolume?.labels}" >
+                                <div class="row" th:if="${persistentVolume?.labels}" th:each="entry : ${persistentVolume?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
@@ -353,12 +355,13 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
+                                <div th:unless="${persistentVolume?.labels}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <div class="row" th:each="entry : ${persistentVolume?.annotations}" >
+                                <div class="row" th:if="${persistentVolume?.annotations}" th:each="entry : ${persistentVolume?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
@@ -366,15 +369,24 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
+                                <div th:unless="${persistentVolume?.annotations}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Finalizers</th>
-                            <td><span class="madal_label" th:each="finalizer : ${persistentVolume?.finalizers}" th:text="${finalizer}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td>
+                                <div th:if="${persistentVolume?.finalizers}" th:each="finalizer : ${persistentVolume?.finalizers}" th:text="${finalizer}"> ///&nbsp;</div>
+                                <div th:unless="${persistentVolume?.finalizers}">-</div>
+                            </td>
                         </tr>
                         <tr>
                             <th>Access Modes</th>
-                            <td th:each="accessMode : ${persistentVolume?.accessModes}" th:text="${accessMode}">ReadWriteOnce</td>
+                            <td>
+                                <div th:if="${persistentVolume?.accessModes}" th:each="accessMode : ${persistentVolume?.accessModes}" th:text="${accessMode}">ReadWriteOnce</div>
+                                <div th:unless="${persistentVolume?.accessModes}">-</div>
+
+                            </td>
+
                         </tr>
                         <tr>
                             <th>Reclaim Policy</th>
@@ -382,7 +394,7 @@
                         </tr>
                         <tr>
                             <th>Storage Class Name</th>
-                            <td th:text="${persistentVolume?.storageClassName}">Standard</td>
+                            <td th:text="${#strings.isEmpty(persistentVolume?.storageClassName) ? '-' : persistentVolume?.storageClassName}">Standard</td>
                         </tr>
                         <tr>
                             <th>Status</th>
@@ -434,9 +446,9 @@
                         <tr th:if="${persistentVolume?.events}" th:each="event : ${persistentVolume?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
-                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <<td th:text="${event?.lastSeen}">Last</td>
+                            <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
                         <tbody>
                     </table>
@@ -447,7 +459,7 @@
     <!-- [Modal : persistentVolume] End -->
     <!-- [Modal : storageClass] start -->
     <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div th:fragment="storageModalContents" class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="storageModalContents" class="modal-dialog modal-lg" style="width:765px";>
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
@@ -455,7 +467,7 @@
                         <span id="myModalLabel3" th:text="|Storage Class : ${storageClass?.name}|">Storage Class : SC 명</span>
                     </div>
                 </div>
-                <div class="modal-nbody">
+                <div class="modal-nbody row_scroll">
                     <div class="table-title">
                         Overview
                     </div>
@@ -476,7 +488,7 @@
                         <tr>
                             <th>Labels</th>
                             <td>
-                                <div class="row" th:each="entry : ${storageClass?.labels}" >
+                                <div class="row" th:if="${storageClass?.labels}" th:each="entry : ${storageClass?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
@@ -484,12 +496,13 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
+                                <div th:unless="${storageClass?.labels}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <div class="row" th:each="entry : ${storageClass?.annotations}" >
+                                <div class="row" th:if="${storageClass?.annotations}" th:each="entry : ${storageClass?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
@@ -497,11 +510,12 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
+                                <div th:unless="${storageClass?.annotations}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Provisioner</th>
-                            <td><span class="madal_label" th:text="${storageClass?.provisioner}">&nbsp;&nbsp;///&nbsp;&nbsp;</span></td>
+                            <td th:text="${storageClass?.provisioner}"></td>
                         </tr>
                         <tr>
                             <th>Volume Binding Mode</th>
@@ -533,13 +547,12 @@
                         <tr th:if="${storageClass?.events}" th:each="event : ${storageClass?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
-                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
                         <tbody>
                     </table>
-
 
                 </div>
             </div>

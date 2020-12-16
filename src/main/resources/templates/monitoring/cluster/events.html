@@ -36,13 +36,7 @@
 <!--                </div>-->
             </div>
         </div>
-        <div class="row">
-            <div class="box_panel">
-                <div class="box_panel-body">
-                    <img th:src="@{/assets/img/chart7.jpg}" class="img-responsive" alt="" style="width:100%;">
-                </div>
-            </div>
-        </div>
+
         <!-- 테이블 width css -->
         <style>
             .list_table155 > thead > tr > th:last-child { width:25%;}
@@ -52,10 +46,9 @@
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(events) ? '0' : events.size()}" class="point pr_10">6</span>
-                    <!--                    Page : <span class="point">1</span>/6-->
                 </div>
                 <div class="box_table-body">
-                    <table th:fragment="listContents" class="list_table155">
+                    <table class="list_table">
                         <thead>
                         <tr>
                             <th>Type</th>
@@ -76,12 +69,11 @@
                             <td>
                                 <a class="table2-link" th:href="'javascript:eventDetail(&quot;' + ${event?.namespace} + '&quot;, &quot;'+ ${event?.name} + '&quot;)'"
                                    th:utext="${event?.reason}">Reason</a>
-                                <!--                            <td th:text="${event?.reason}">Reason</td>-->
                             </td>
                             <td th:text="${event?.namespace}">Namespace</td>
                             <td th:text="${event?.object}">Involved Object</td>
                             <td th:text="${event?.source}">Source</td>
-                            <td th:text="${event?.count}">Count</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">Count</td>
                             <td th:text="${event?.lastSeen}">Time</td>
                         </tr>
                         </tbody>
@@ -93,7 +85,7 @@
     </div>
     <!-- [Modal] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div th:fragment="modalContents"  class="modal-dialog modal-lg"style="width:765px;">
+        <div th:fragment="modalContents"  class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
@@ -101,7 +93,7 @@
                         <span id="myModalLabel" th:text="|Event : ${event?.message}|">Event : Event Message</span>
                     </div>
                 </div>
-                <div class="modal-nbody">
+                <div class="modal-nbody row_scroll">
                     <div class="table-title">
                         Overview
                     </div>
@@ -121,15 +113,15 @@
                         </tr>
                         <tr>
                             <th>Message</th>
-                            <td th:text="${event?.message}">Error creating///</td>
+                            <td th:text="${#strings.isEmpty(event?.message) ? '-' : event?.message}">Error creating///</td>
                         </tr>
                         <tr>
                             <th>Reason</th>
-                            <td th:text="${event?.reason}">Unhealthy</td>
+                            <td th:text="${#strings.isEmpty(event?.reason) ? '-' : event?.reason}">Unhealthy</td>
                         </tr>
                         <tr>
                             <th>Source</th>
-                            <td th:text="|${event?.source?.component}, ${event?.source?.host}"|>kubelet</td>
+                            <td th:text="|${#strings.isEmpty(event?.source?.component) ? '-' : event?.source?.component}, ${#strings.isEmpty(event?.source?.host) ? '-' : event?.source?.host}"|>kubelet</td>
                         </tr>
                         <tr>
                             <th>First seen</th>
@@ -141,7 +133,7 @@
                         </tr>
                         <tr>
                             <th>Count</th>
-                            <td th:text="${event?.count}">000</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">000</td>
                         </tr>
                         <tr>
                             <th>Type</th>
@@ -167,17 +159,11 @@
                             <td colspan="4" class="text-center">No results</td>
                         </tr>
                         <tr th:if="${event?.involvedObject}" th:each="involved : ${event?.involvedObject}">
-                            <td th:text="${involved?.name}">Event Message</td>
-                            <td th:text="${involved?.namespace}">///</td>
-                            <td th:text="${involved?.kind}">00</td>
-                            <td th:text="${involved?.fieldPath}">Sub-Object</td>
+                            <td th:text="${#strings.isEmpty(involved?.name) ? '-' : involved?.name}">Event Message</td>
+                            <td th:text="${#strings.isEmpty(involved?.namespace) ? '-' : involved?.namespace}">///</td>
+                            <td th:text="${#strings.isEmpty(involved?.kind) ? '-' : involved?.kind}">00</td>
+                            <td th:text="${#strings.isEmpty(involved?.fieldPath) ? '-' : involved?.fieldPath}">Sub-Object</td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>Object name</td>-->
-<!--                            <td>kube-system</td>-->
-<!--                            <td>pod</td>-->
-<!--                            <td>spec.containers(coredns)</td>-->
-<!--                        </tr>-->
                         <tbody>
                     </table>
                 </div>
