@@ -136,10 +136,13 @@
                             </td>
                         </tr>
                             <th>Resource Quotas</th>
-                            <td th:if="${#arrays.isEmpty(namespace?.resourceQuotas)}">-</td>
-                            <td th:unless="${#arrays.isEmpty(namespace?.resourceQuotas)}"
-                                th:each = "resourceQuota : ${namespace?.resourceQuotas}"
-                                th:text="${resourceQuota}"></td>
+                            <td>
+                                <div th:if="${#arrays.isEmpty(namespace?.resourceQuotas)}">-</div>
+                                <div th:unless="${#arrays.isEmpty(namespace?.resourceQuotas)}"
+                                     th:each = "resourceQuota : ${namespace?.resourceQuotas}"
+                                     th:text="${resourceQuota}">
+                                </div>
+                            </td>
 
                         </tr>
                     </table>

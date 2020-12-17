@@ -244,14 +244,14 @@
                                     <tr>
                                         <th>Environment</th>
                                         <td>
-                                            <div th:if="${container?.env != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.env)}"> </div>
+                                            <div th:if="${container?.env != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.env)}"> </div>
                                             <div th:if="${container?.env == null}">-</div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Mounts</th>
                                         <td>
-                                            <div th:if="${container?.volumeMounts != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.volumeMounts)}"> </div>
+                                            <div th:if="${container?.volumeMounts != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.volumeMounts)}"> </div>
                                             <div th:if="${container?.volumeMounts == null}">-</div>
                                         </td>
 
@@ -259,14 +259,14 @@
                                     <tr>
                                         <th>Liveness</th>
                                         <td>
-                                            <div th:if="${container?.livenessProbe != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.livenessProbe)}"> </div>
+                                            <div th:if="${container?.livenessProbe != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.livenessProbe)}"> </div>
                                             <div th:if="${container?.livenessProbe == null}"> - </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Readness</th>
                                         <td>
-                                            <div th:if="${container?.readinessProbe != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.readinessProbe)}"> </div>
+                                            <div th:if="${container?.readinessProbe != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.readinessProbe)}"> </div>
                                             <div th:if="${container?.readinessProbe == null}"> - </div>
                                         </td>
                                     </tr>

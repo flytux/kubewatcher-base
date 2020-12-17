@@ -120,25 +120,28 @@
                         </tr>
                         </thead>
                     </table>
-                    <div class="table-title">
-                        Configuration
-                    </div>
-<!--                    <div class="scrollBoard">-->
-                        <div class="pre-title" th:each="codeId : ${configMap?.data}">
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/vs2015.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            <input th:id="|modal-answer-${codeId?.key}|"
-                                   type="checkbox" name="accordion" id="modal-answer">
-                            <label th:for="|modal-answer-${codeId?.key}|" for="modal-answer" style="height:30px">
-                                <span th:text="${codeId?.key}">kube-state-metrics</span><em></em>
-                            </label>
-                            <div class="row">
-                            <pre style="color:gray"><code id ="code-area" th:text="${codeId.value}"> </code></pre>
-                            <pre style="color:gray"><code id ="code-area2" th:text="${configMap?.binaryData}"> </code></pre>
-                            </div>
+
+                    <div th:if="${configMap?.data}">
+                        <div class="table-title">
+                            Configuration
                         </div>
-<!--                    </div>-->
+                        <!-- <div class="scrollBoard">-->
+                            <div class="pre-title" th:each="codeId : ${configMap?.data}">
+                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/vs2015.min.css">
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+                                <script>hljs.initHighlightingOnLoad();</script>
+                                <input th:id="|modal-answer-${codeId?.key}|"
+                                       type="checkbox" name="accordion" id="modal-answer">
+                                <label th:for="|modal-answer-${codeId?.key}|" for="modal-answer" style="height:30px">
+                                    <span th:text="${codeId?.key}">kube-state-metrics</span><em></em>
+                                </label>
+                                <div class="row">
+                                <pre style="color:gray"><code id ="code-area" th:text="${codeId.value}"> </code></pre>
+                                <pre style="color:gray"><code id ="code-area2" th:text="${configMap?.binaryData}"> </code></pre>
+                                </div>
+                            </div>
+    <!--                    </div>-->
+                    </div>
                 </div>
             </div>
         </div>
