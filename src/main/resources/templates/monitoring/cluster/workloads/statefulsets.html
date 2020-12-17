@@ -139,12 +139,12 @@
                             </tr>
                             <tr>
                                 <th>Images</th>
-                                <td th:text="${statefulSet?.images}">docker.io/prom/Prometheus:v2.17.2</td>
+                                <td th:text="${#strings.isEmpty(statefulSet?.images) ? '-' : statefulSet?.images}">docker.io/prom/Prometheus:v2.17.2</td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-                                    <div class="row" th:each="entry : ${statefulSet?.annotations}" >
+                                    <div class="row" th:if="${statefulSet?.annotations}" th:each="entry : ${statefulSet?.annotations}" >
                                             <span class="madal_label"
                                                   th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                             deprecated.daemonSet.template.generation=1 </span>
@@ -152,11 +152,12 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                             deprecated.daemonSet.template.generation=1 </span>
                                     </div>
+                                    <div th:unless="${statefulSet?.annotations}">-</div>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Pod Status</th>
-                                <td th:text="${statefulSet?.podStatus}">Running  : 2 </td>
+                                <td th:text="${#strings.isEmpty(statefulSet?.podStatus) ? '-' : statefulSet?.podStatus}">Running  : 2 </td>
                             </tr>
                             <tr>
                                 <th>CPU</th>
@@ -229,7 +230,7 @@
                         <tr th:if="${statefulSet?.events}" th:each="event : ${statefulSet?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
-                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${event?.lastSeen}">Last</td>
                         </tr>

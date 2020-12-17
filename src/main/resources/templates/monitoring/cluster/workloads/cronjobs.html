@@ -41,7 +41,6 @@
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(cronJobs) ? '0' : cronJobs.size()}" class="point pr_10">6</span>
-<!--                    Page : <span class="point">1</span>/6-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">
@@ -61,12 +60,6 @@
                             <td colspan="7" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(cronJobs)}" th:each="cronJob : ${cronJobs}">
-<!--                            <td>-->
-<!--                                <a th:text="${cronJob?.name}" href="" class="table2-link" data-toggle="modal" data-target="#myModal">Name</a>-->
-<!--&lt;!&ndash;                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${cronJob?.name} + '&quot;)'"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:utext="${cronJob?.name}">Name</a>&ndash;&gt;-->
-<!--                            </td>-->
-<!--                            <td th:text="${cronJob?.name}">Name</td>-->
                             <td>
                                 <a class="table2-link" th:href="'javascript:cronJobDetail(&quot;' + ${cronJob?.namespace} + '&quot;, &quot;'+ ${cronJob?.name} + '&quot;)'"
                                    th:utext="${cronJob?.name}">Name</a>
@@ -75,7 +68,7 @@
                             <td th:text="${cronJob?.schedule}">Schedule</td>
                             <td th:text="${cronJob?.suspend}">Suspend</td>
                             <td th:text="${cronJob?.active}">Active</td>
-                            <td th:text="${cronJob?.lastSchedule}">Last Schedule</td>
+                            <td th:text="${#dates.format(cronJob?.lastSchedule,'yyyy-MM-dd HH:mm:ss')}">Last Schedule</td>
                             <td th:text="${cronJob?.age}">Age</td>
                         </tr>
                         </tbody>
@@ -135,7 +128,7 @@
                             <tr>
                                 <th>Labels</th>
                                 <td>
-                                    <div class="row" th:each="entry : ${cronJob?.labels}" >
+                                    <div class="row" th:if="${cronJob?.labels}" th:each="entry : ${cronJob?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
@@ -143,14 +136,13 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                     </div>
-<!--                                    <span class="madal_label" th:text="${cronJob?.labels}">app.kubernetes.io/name=heartbeat</span>-->
+                                    <div th:unless="${cronJob?.labels}">-</div>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-<!--                                    <span class="madal_label">linkerd.io/created-by=linkered/cli stable-2.9</span>-->
-                                    <div class="row" th:each="entry : ${cronJob?.annotations}" >
+                                    <div class="row" th:if="${cronJob?.annotations}" th:each="entry : ${cronJob?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
@@ -158,11 +150,12 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                     </div>
+                                    <div th:unless="${cronJob?.annotations}">-</div>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Schedule</th>
-                                <td th:text="${cronJob?.schedule}">25 8****</td>
+                                <td th:text="${#strings.isEmpty(cronJob?.schedule) ? '-' : cronJob?.schedule}">25 8****</td>
                             </tr>
                             <tr>
                                 <th>Active</th>
@@ -173,12 +166,11 @@
                                 <td th:text="${cronJob?.suspend}">false</td>
                             </tr>
                             <tr>
-                                <th>Last schedule</th>
+                                <th>Last Schedule</th>
                                 <td th:text="${#dates.format(cronJob?.lastSchedule,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
                             </tr>
                         </table>
                     </div>
-
 
                     <div class="table-title">
                         Events
@@ -200,13 +192,12 @@
                         <tr th:if="${cronJob?.events}" th:each="event : ${cronJob?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
-                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
                         <tbody>
                     </table>
-
 
                 </div>
             </div>

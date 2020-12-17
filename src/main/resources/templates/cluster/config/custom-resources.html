@@ -67,44 +67,6 @@
                             <td th:text="${customResource?.scope}">Scope</td>
                             <td th:text="${customResource?.age}">Age</td>
                         </tr>
-<!--                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">example-resource</a>-->
-<!--                                &lt;!&ndash; [Modal] start &ndash;&gt;-->
-<!--                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >-->
-<!--                                    <div class="modal-dialog modal-lg"style="width:765px;">-->
-<!--                                        <div class="modal-content">-->
-<!--                                            <div class="modal-title_box">-->
-<!--                                                <div class="modal-title">-->
-<!--                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-<!--                                                    <span id="myModalLabel">Custom Resources 명</span>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div class="modal-nbody">-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>"CRD Object type별 상세 보기화면"-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                                <br>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                &lt;!&ndash; [Modal] End &ndash;&gt;-->
-<!--                            </td>-->
                         </tbody>
                     </table>
                 </div>
@@ -143,19 +105,18 @@
                         <tr>
                             <th>Version</th>
                             <td>
-                                <div th:if="${customResource?.versions}" th:each="version : ${customResource?.versions}"
-                                     th:text = "${version}">
+                                <div th:if="${customResource?.versions}" th:text = "${#strings.arrayJoin(customResource?.versions, ', ')}">
                                 </div>
-                                <div th:unless="${customResource?.versions}" th:text ="|-|"> </div>
+                                <div th:unless="${customResource?.versions}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Scope</th>
-                            <td th:text="${customResource?.scope}">Cluster</td>
+                            <td th:text="${#strings.isEmpty(customResource?.scope) ? '-' : customResource?.scope}">Cluster</td>
                         </tr>
                         <tr>
                             <th>Conversion</th>
-                            <td th:text="${customResource?.conversion}">{"strategy","None"}</td>
+                            <td th:text="${#strings.isEmpty(customResource?.conversion) ? '-' : customResource?.conversion}">{"strategy","None"}</td>
                         </tr>
                     </table>
 

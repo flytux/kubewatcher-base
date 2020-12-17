@@ -90,20 +90,17 @@
                                 <tr>
                                     <th>Labels</th>
                                     <td>
-                                        <div class="row" th:each="entry : ${policyDescribe?.labels}" >
+                                        <div class="row" th:if="${policyDescribe?.labels}" th:each="entry : ${policyDescribe?.labels}" >
                                             <span class="madal_label"
                                                   th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|"></span>
                                             <span class="madal_label" th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|"></span>
                                         </div>
+                                        <div th:unless="${policyDescribe?.labels}">-</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Volumes</th>
-                                    <td>
-                                        <div class="row" th:each="entry : ${policyDescribe?.specs?.volumes}" >
-                                            <span class="madal_label" th:text="|${entry}|"></span>
-                                        </div>
-                                    </td>
+                                     <td th:if="${policyDescribe?.specs?.volumes}" th:text ="${#strings.arrayJoin(policyDescribe?.specs?.volumes,', ')}"> </td>
                                 </tr>
                                 <tr>
                                     <th>Allow Privilege Escalation</th>

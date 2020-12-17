@@ -101,7 +101,7 @@
                         <tr>
                             <th>Labels</th>
                             <td>
-                                <div class="row" th:each="entry : ${policy?.labels}" >
+                                <div class="row" th:if="${policy?.labels}" th:each="entry : ${policy?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
@@ -109,20 +109,21 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
                                 </div>
+                                <div th:unless="${policy?.labels}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <div class="row" th:each="entry : ${policy?.annotations}" >
+                                <div class="row" th:if="${policy?.annotations}" th:each="entry : ${policy?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         /// </span>
                                 <span class="madal_label"
                                       th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         /// </span>
-
                             </div>
+                                <div th:unless="${policy?.annotations}">-</div>
                             </td>
                         </tr>
                     </table>
@@ -134,9 +135,6 @@
                     <table class="table-nt">
                         <tr>
                             <th>Pod Selector</th>
-<!--                            <div th:each = "pod : ${policy?.podSelector}">-->
-<!--                                <td th:each = "item : ${pod?.matchLabels}" th:text="${item}"></td>-->
-<!--                            </div>-->
 
                             <div class="row" th:each="pod : ${policy?.podSelector}" >
                                 <td> <span class="madal_label" th:text="|${pod.key} : ${pod.value}|">label </span></td>
@@ -182,7 +180,7 @@
                                                                             <td th:text="${ip.cidr}"></td>
                                                                          </tr>
                                                                          <tr>
-                                                                            <th>except</th>
+                                                                            <th>Except</th>
                                                                              <td th:if="${#arrays.isEmpty(ip.except)}" th:text="|-|">  </td>
                                                                              <td th:unless="${#arrays.isEmpty(ip.except)}" th:each = "except : ${ip.except}" th:text="${except}"></td>
                                                                         </tr>
@@ -251,7 +249,7 @@
                                                                 <td th:text="${ip.cidr}"> </td>
                                                             </tr>
                                                             <tr>
-                                                                <th>except</th>
+                                                                <th>Except</th>
                                                                 <td th:if="${#arrays.isEmpty(ip.except)}" th:text="|-|">  </td>
                                                                 <td th:unless="${#arrays.isEmpty(ip.except)}" th:each = "except : ${ip.except}" th:text="${except}"></td>
                                                             </tr>

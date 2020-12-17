@@ -40,7 +40,6 @@
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-<!--                    Total : <span class="point pr_10">10</span>  Page : <span class="point">1</span>/1-->
                     Total : <span th:text="${#arrays.isEmpty(roleBindings) ? '0' : roleBindings.size()}" class="point pr_10">6</span>
 
                 </div>
@@ -126,7 +125,7 @@
                             <tr>
                                 <th>Labels</th>
                                 <td>
-                                    <div class="row" th:each="entry : ${roleBinding?.labels}" >
+                                    <div class="row" th:if="${roleBinding?.labels}" th:each="entry : ${roleBinding?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         kubernetes.io/bootstrapping=rbac-default </span>
@@ -134,12 +133,13 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         kubernetes.io/bootstrapping=rbac-default </span>
                                     </div>
+                                    <div th:unless="${roleBinding?.labels}">-</div>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-                                    <div class="row" th:each="entry : ${roleBinding?.annotations}" >
+                                    <div class="row" th:if="${roleBinding?.annotations}" th:each="entry : ${roleBinding?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         rbac.authorization.kubernetes.io/autoupdate=ture </span>
@@ -147,6 +147,7 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         rbac.authorization.kubernetes.io/autoupdate=ture </span>
                                     </div>
+                                    <div th:unless="${roleBinding?.annotations}">-</div>
                                 </td>
                             </tr>
                         </table>
@@ -164,10 +165,13 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <tr th:if="${#arrays.isEmpty(roleBinding?.roleRefs)}">
+                                <td colspan="3" class="text-center">No results</td>
+                            </tr>
                             <tr th:if="${roleBinding?.roleRefs}" th:each = "roleRef : ${roleBinding?.roleRefs}">
-                                <td th:text="${roleRef.kind}">Cluster</td>
-                                <td th:text="${roleRef.name}">cluster-admin</td>
-                                <td th:text="${roleRef.apiGroup}">rbac.authorization.k8s.io</td>
+                                <td th:text="${#strings.isEmpty(roleRef.kind) ? '-' : roleRef.kind}">Cluster</td>
+                                <td th:text="${#strings.isEmpty(roleRef.name) ? '-' : roleRef.name}">cluster-admin</td>
+                                <td th:text="${#strings.isEmpty(roleRef.apiGroup) ? '-' : roleRef.apiGroup}">rbac.authorization.k8s.io</td>
                             </tr>
                             <tbody>
                         </table>
@@ -189,9 +193,9 @@
                                 <td colspan="3" class="text-center">No results</td>
                             </tr>
                             <tr th:if="${roleBinding?.subjects}" th:each="binding : ${roleBinding?.subjects}">
-                                <td th:text="${binding?.kind}">system:master</td>
-                                <td th:text="${binding?.name}">Group</td>
-                                <td th:text="${roleBinding?.namespace}">kube-system</td>
+                                <td th:text="${#strings.isEmpty(binding?.kind) ? '-' : binding.kind}">system:master</td>
+                                <td th:text="${#strings.isEmpty(binding?.name) ? '-' : binding.name}">Group</td>
+                                <td th:text="${#strings.isEmpty(roleBinding?.namespace) ? '-' : roleBinding.namespace}">kube-system</td>
                             </tr>
                             <tbody>
                         </table>

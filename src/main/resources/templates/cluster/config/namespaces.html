@@ -101,7 +101,7 @@
                         <tr>
                             <th>Labels</th>
                             <td>
-                                <div class="row" th:each="entry : ${namespace?.labels}" >
+                                <div class="row" th:if="${namespace?.labels}" th:each="entry : ${namespace?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
@@ -109,20 +109,21 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                 </div>
+                                <div th:unless="${namespace?.labels}">-</div>
                             </td>
                         </tr>
                         <tr>
-                            <th>Annotation</th>
+                            <th>Annotations</th>
                             <td>
-                                <div class="row" th:each="entry : ${namespace?.annotations}" >
+                                <div class="row" th:if="${namespace?.annotations}" th:each="entry : ${namespace?.annotations}" >
                                     <span class="madal_label"
                                           th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                     </span>
                                     <span class="madal_label"
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                     </span>
-
                                 </div>
+                                <div th:unless="${namespace?.annotations}">-</div>
                             </td>
                         </tr>
                         <tr>

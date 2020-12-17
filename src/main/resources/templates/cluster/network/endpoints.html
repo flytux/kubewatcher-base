@@ -102,9 +102,9 @@
                             <td th:text="${endpoint?.namespace}">default</td>
                         </tr>
                         <tr>
-                            <th>labels</th>
+                            <th>Labels</th>
                             <td>
-                                <div class="row" th:each="entry : ${endpoint?.labels}" >
+                                <div class="row" th:if="${endpoint?.labels}" th:each="entry : ${endpoint?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         service/port=9999 </span>
@@ -112,20 +112,21 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         service/port=9999 </span>
                                 </div>
+                                <div th:unless="${endpoint?.labels}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <div class="row" th:each="entry : ${endpoint?.annotations}" >
+                                <div class="row" th:if="${endpoint?.annotations}" th:each="entry : ${endpoint?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         service/port=9999 </span>
                                     <span class="madal_label"
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         service/port=9999 </span>
-
                                 </div>
+                                <div th:unless="${endpoint?.annotations}">-</div>
                             </td>
                         </tr>
                     </table>
@@ -142,15 +143,21 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr th:if="${#arrays.isEmpty(endpoint?.subsets)}">
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
                         <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
                             <tr th:each=" address : ${subset.addresses}">
-                                <td th:text = "${address.ip}"></td>
-                                <td th:text = "${address.hostname}"></td>
+                                <td th:text = "${#strings.isEmpty(address.ip)? '-' : address.ip}"></td>
+                                <td th:text = "${#strings.isEmpty(address.hostname)? '-' : address.hostname}"></td>
                                 <td th:each = "target : ${address.targetRef}" th:text = "|${target.kind} / ${target.name}|"> Target </td>
                             </tr>
                         </div>
                         <tbody>
                     </table>
+
                     <table class="list_mtable_100">
                         <thead>
                         <tr>
@@ -162,9 +169,9 @@
                         <tbody>
                         <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
                             <tr th:each=" port : ${subset.ports}">
-                                <td th:text = "${port.port}"></td>
-                                <td th:text = "${port.name}"></td>
-                                <td th:text = "${port.protocol}"></td>
+                                <td th:text = "${#strings.isEmpty(port.port)? '-' : port?.port}"></td>
+                                <td th:text = "${#strings.isEmpty(port.name)? '-' : port?.name}"></td>
+                                <td th:text = "${#strings.isEmpty(port.protocol)? '-' : port?.protocol}"></td>
                              </tr>
                         </div>
                         <tbody>
@@ -190,7 +197,7 @@
                         <tr th:if="${endpoint?.events}" th:each="event : ${service?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
-                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Object-name</td>
                             <td th:text="${event?.lastSeen}">2020-05-22 12:41:05</td>
                         </tr>

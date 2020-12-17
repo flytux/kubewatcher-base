@@ -46,7 +46,6 @@
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(jobs) ? '0' : jobs.size()}" class="point pr_10">6</span>
-<!--                    Page : <span class="point">1</span>/1-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">
@@ -137,12 +136,16 @@
                             </tr>
                             <tr>
                                 <th>Selector</th>
-                                <td><span class="madal_label" th:text="${job?.selector}">controller-uid=c99483s</span></td>
+                                <td>
+                                    <div class="row" th:each="item : ${job?.selector}" >
+                                        <span class="madal_label" th:text="|${item.key} : ${item.value} |">controller-uid=c99483s</span>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Labels</th>
                                 <td>
-                                    <div class="row" th:each="entry : ${job?.labels}" >
+                                    <div class="row" th:if="${job?.labels}" th:each="entry : ${job?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         kubectl.kubernets.io/last-applied-configuration </span>
@@ -150,12 +153,13 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         kubectl.kubernets.io/last-applied-configuration </span>
                                     </div>
+                                    <div th:unless="${job?.labels}">-</div>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-                                    <div class="row" th:each="entry : ${job?.annotations}" >
+                                    <div class="row" th:if="${job?.annotations}" th:each="entry : ${job?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         kubectl.kubernets.io/last-applied-configuration </span>
@@ -163,10 +167,11 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         kubectl.kubernets.io/last-applied-configuration </span>
                                     </div>
+                                    <div th:unless="${job?.annotations}">-</div>
                                 </td>
                             </tr>
                             <tr>
-                                <th>parallelism</th>
+                                <th>Parallelism</th>
                                 <td th:text="${job?.parallelism}">1</td>
                             </tr>
                             <tr>
@@ -178,8 +183,8 @@
                                 <td th:text="${#dates.format(job?.startTime,'yyyy-MM-dd HH:mm:ss')}">Mon, 02 Dec 2019 14:20:11 +200</td>
                             </tr>
                             <tr>
-                                <th>Completed at</th>
-                                <td th:text="${#dates.format(job?.completionTime,'yyyy-MM-dd HH:mm:ss')}">Mon, 02 Dec 2019 14:20:11 +200</td>
+                                <th>Completed At</th>
+                                <td th:text="${#strings.isEmpty(job?.completionTime) ? '-' : #dates.format(job?.completionTime,'yyyy-MM-dd HH:mm:ss')}">Mon, 02 Dec 2019 14:20:11 +200</td>
                             </tr>
                             <tr>
                                 <th>Duration</th>
@@ -187,20 +192,19 @@
                             </tr>
                             <tr>
                                 <th>Pod Status</th>
-                                <td th:text="${job?.jobStatus}">0 Running / 1 Succeded / 0 Failed</td>
+                                <td th:text="${job?.jobStatus}">0 Running / 1 Succeeded / 0 Failed</td>
                             </tr>
                             <tr>
-                                <th>Pod template</th>
+                                <th>Pod Template</th>
                                 <td>
                                     <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
                                     <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
                                     <script>hljs.initHighlightingOnLoad();</script>
-                                    <pre><code th:each="template : ${job?.podTemplate}" th:text="${template}"></code></pre>
+                                    <pre style="color:gray"><code th:each="template : ${job?.podTemplate}" th:text="${template}" ></code></pre>
                                 </td>
                             </tr>
                         </table>
                     </div>
-
 
                     <div class="table-title">
                         Events
@@ -222,7 +226,7 @@
                         <tr th:if="${job?.events}" th:each="event : ${job?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
-                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${event?.lastSeen}">Last</td>
                         </tr>

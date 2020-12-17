@@ -41,7 +41,6 @@
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(daemonSets) ? '0' : daemonSets.size()}" class="point pr_10">6</span>
-<!--                    Page : <span class="point">1</span>/1-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">
@@ -135,17 +134,17 @@
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-                                <div class="row" th:each="entry : ${daemonSet?.annotations}" >
-<!--                                    <span class="madal_label" th:text="|${entry.key} : ${entry.value}|"> deprecated.daemonset.template.generation=1</span>-->
-                                    <span class="madal_label"
-                                          th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        deprecated.daemonset.template.generation=1 </span>
-                                    <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        deprecated.daemonset.template.generation=1 </span>
-
-                                </div>
+                                    <div class="row" th:if="${daemonSet?.annotations}" th:each="entry : ${daemonSet?.annotations}" >
+                                        <span class="madal_label"
+                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
+                                            deprecated.daemonset.template.generation=1 </span>
+                                        <span class="madal_label"
+                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
+                                            deprecated.daemonset.template.generation=1 </span>
+                                    </div>
+                                    <div th:unless="${daemonSet?.annotations}">-</div>
                                 </td>
+
                             </tr>
                             <tr>
                                 <th>Selector</th>
@@ -157,16 +156,17 @@
                             </tr>
                             <tr>
                                 <th>Images</th>
-                                <td th:text="${daemonSet?.images}">docker.io/prom/node-exporter.v1.0.0-rc.0</td>
+                                <td th:text="${#strings.isEmpty(daemonSet?.images) ? '-' : daemonSet?.images}">docker.io/prom/node-exporter.v1.0.0-rc.0</td>
                             </tr>
                             <tr>
                                 <th>Strategy Type</th>
-                                <td th:text="${daemonSet?.strategy}">RollingUpdate</td>
+                                <td th:text="${#strings.isEmpty(daemonSet?.strategy) ? '-' :daemonSet?.strategy}">RollingUpdate</td>
                             </tr>
                             <tr>
                                 <th>Tolerations</th>
                                 <td>
-                                    <div class="row" th:each="item : ${daemonSet?.tolerations}" >
+                                    <div th:if="${#arrays.isEmpty(daemonSet?.tolerations)}">-</div>
+                                    <div class = "row" th:unless="${#arrays.isEmpty(daemonSet?.tolerations)}" th:each="item : ${daemonSet?.tolerations}" >
                                         <span class="madal_label"
                                               th:text="|Key : ${item?.key}, Operator : ${item?.operator}, Effect : ${item?.effect}|">
                                             Key : [], Operator : [], Effect : []
@@ -176,7 +176,7 @@
                             </tr>
                             <tr>
                                 <th>Pod Status</th>
-                                <td th:text="${daemonSet?.podStatus}">Running  : 2</td>
+                                <td th:text="${#strings.isEmpty(daemonSet?.podStatus) ? '-' : daemonSet?.podStatus}">Running  : 2</td>
                             </tr>
                             <tr>
                                 <th>CPU</th>
@@ -249,7 +249,7 @@
                         <tr th:if="${daemonSet?.events}" th:each="event : ${daemonSet?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
-                            <td th:text="${event?.count}">00</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${event?.lastSeen}">Last</td>
                         </tr>

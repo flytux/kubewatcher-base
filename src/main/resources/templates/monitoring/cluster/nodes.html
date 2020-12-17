@@ -334,20 +334,20 @@
                                             </tr>
                                             <tr>
                                                 <th>OS (Image)</th>
-                                                <td th:text="${node?.systemInfo?.osImage}">kublet</td>
+                                                <td th:text="${node?.systemInfo?.osImage}">kubelet</td>
                                             </tr>
                                             <tr>
                                                 <th>Container Runtime</th>
                                                 <td th:text="${node?.systemInfo?.containerRuntimeVersion}">00d ago(2020-05-20 15:23:11)</td>
                                             </tr>
                                             <tr>
-                                                <th>Kubelet version</th>
+                                                <th>Kubelet Version</th>
                                                 <td th:text="${node?.systemInfo?.kubeletVersion}">00d ago(2020-05-20 15:23:11)</td>
                                             </tr>
                                             <tr>
                                                 <th>Labels</th>
                                                 <td>
-                                                    <div class="row" th:each="entry : ${node?.labels}" >
+                                                    <div class="row" th:if="${node?.labels}" th:each="entry : ${node?.labels}" >
                                                         <div class="col-md-4">
                                                             <span class="madal_label"
                                                                 th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
@@ -357,17 +357,19 @@
                                                             </span>
                                                         </div>
                                                     </div>
+                                                    <div th:unless="${node?.labels}">-</div>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>Annotations</th>
                                                 <td>
-                                                    <div th:each="entry : ${node?.annotations}">
+                                                    <div th:if="${node?.annotations}" th:each="entry : ${node?.annotations}">
                                                         <div class="col-md-4">
                                                             <span  class="madal_label"
                                                                    th:text="|${entry.key} : ${entry.value}|">label</span>
                                                         </div>
                                                     </div>
+                                                    <div th:unless="${node?.annotations}">-</div>
                                                 </td>
                                             </tr>
                                         </table>
@@ -422,7 +424,7 @@
                                         <tr th:if="${node?.events}" th:each="event : ${node?.events}">
                                             <td th:text="${event?.type}">Type</td>
                                             <td th:text="${event?.reason}">Reason</td>
-                                            <td th:text="${event?.count}">Count</td>
+                                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">Count</td>
                                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                                             <td th:text="${event?.lastSeen}">Last</td>
                                         </tr>
@@ -458,19 +460,21 @@
 
        $(document).ready(function () {
             for (var i = 0; i < node.length; i++) {
-                $node.val(node[i].name);
+                let nodeName = node[i].name;
                 for (var j=0; j < pageRows.length; j++) {
-                    if (pageRows[j].title == 'node list' ) {
+                    if ( pageRows[j].title == 'node list' ) {
                         let panels = JSON.parse(JSON.stringify(pageRows[j].pageRowPanels));
                         panels.forEach(panel =>  {
-                                    panel.panelId = node[i].name + "-" + panel.panelId;
-                                    return panel;
-                                });
-                                nodePanel.set(node[i].name, panels);
+                            panel.panelId = nodeName + "-" + panel.panelId;
+                            panel.chartQueries.forEach(query => {
+                                query.apiQuery = query.apiQuery.replace(new RegExp('\\$node', 'g'), nodeName);
+                            });
+                            return panel;
+                        });
+                        nodePanel.set(nodeName, panels);
                     }
                 }
 
-                var nodeName = node[i].name;
                 let nodePanels = nodePanel.get(nodeName);
                 nodePanels.forEach(panel => {
                     commonChartsJs.createPanel(panel);
@@ -486,9 +490,7 @@
                 success: function (data) {
 
                     apiHost = data.host;
-
                     var row = data.page.rows;
-
                     for (var i=0; i<row.length; i++) {
                         if ( row[i].title ==  'pop-up' ) {
                             row[i].pageRowPanels.forEach(panel => {

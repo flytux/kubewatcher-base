@@ -41,7 +41,6 @@
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(pods) ? '0' : pods.size()}" class="point pr_10">20</span>
-<!--                    Page : <span class="point">1</span>/2-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">
@@ -72,9 +71,9 @@
                                 <span th:case="Running" class="madal_label_active">Running</span>
                                 <span th:case="Completed" class="madal_label_active">Completed</span>
                                 <span th:case="Pending" class="madal_label_warning">Pending</span>
-                                <span th:case="Succeeded" class="madal_label_active">Pending</span>
-                                <span th:case="Failed" class="madal_label_danger">Pending</span>
-                                <span th:case="Unknown" class="madal_label">Pending</span>
+                                <span th:case="Succeeded" class="madal_label_active">Succeeded</span>
+                                <span th:case="Failed" class="madal_label_danger">Failed</span>
+                                <span th:case="Unknown" class="madal_label">Unknown</span>
                             </td>
                         </tr>
                         </tbody>
@@ -141,7 +140,7 @@
                             <tr>
                                 <th>Labels</th>
                                 <td>
-                                    <div class="row" th:each="entry : ${pod?.labels}" >
+                                    <div class="row" th:if="${pod?.labels}" th:each="entry : ${pod?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
@@ -149,12 +148,13 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                     </div>
+                                    <div th:unless="${pod?.labels}">-</div>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-                                    <div class="row" th:each="entry : ${pod?.annotations}" >
+                                    <div class="row" th:if="${pod?.annotations}" th:each="entry : ${pod?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
@@ -162,7 +162,7 @@
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                     </div>
-
+                                    <div th:unless="${pod?.annotations}">-</div>
                                 </td>
                             </tr>
                             <tr>
@@ -179,20 +179,21 @@
                             </tr>
                             <tr>
                                 <th>Node</th>
-                                <td th:text="${pod?.node}">Node 명</td>
+                                <td th:text="${#strings.isEmpty(pod?.node) ? '-' : pod?.node}">Node 명</td>
                             </tr>
                             <tr>
                                 <th>POP IP</th>
-                                <td th:text="${pod?.podIp}">000.000.000.000</td>
+                                <td th:text="${#strings.isEmpty(pod?.podIp) ? '-' : pod?.podIp}">000.000.000.000</td>
                             </tr>
                             <tr>
                                 <th>Priority Class</th>
-                                <td th:text="${pod?.priority}">system-cluster-critical</td>
+                                <td th:text="${#strings.isEmpty(pod?.priority) ? '-' : pod?.priority}">system-cluster-critical</td>
                             </tr>
                             <tr>
                                 <th>Tolerations</th>
                                 <td>
-                                    <div class="row" th:each="item : ${pod?.tolerations}" >
+                                    <div th:if="${#arrays.isEmpty(pod?.tolerations)}">-</div>
+                                    <div class="row" th:unless="${#arrays.isEmpty(pod?.tolerations)}" th:each="item : ${pod?.tolerations}" >
                                         <span class="madal_label"
                                               th:text="|Key : ${item?.key}, Operator : ${item?.operator}, Effect : ${item?.effect}|">
                                             Key : [], Operator : [], Effect : []
@@ -228,31 +229,53 @@
                                 <table class="table-nt">
                                     <tr>
                                         <th>Status</th>
-                                        <td th:text="${container?.status}">Status</td>
+                                        <td th:switch="${container?.status}">
+                                            <span th:case="running" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}">running</span>
+                                            <span th:case="terminated" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}">terminated</span>
+                                            <span th:case="completed" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}">completed</span>
+                                            <span th:case="waiting" class="madal_label_warning" th:text="${#strings.capitalize(container?.status)}">waiting</span>
+                                            <span th:case="*" class="madal_label" th:text="${container?.status}"></span>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Image</th>
-                                        <td th:text="${container?.image}">Image</td>
+                                        <td th:text="${#strings.isEmpty(container?.image) ? '-' : container?.image}">Image</td>
                                     </tr>
                                     <tr>
                                         <th>Environment</th>
-                                        <td style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.env)}">Environment</td>
+                                        <td>
+                                            <div th:if="${container?.env != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.env)}"> </div>
+                                            <div th:if="${container?.env == null}">-</div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Mounts</th>
-                                        <td style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.volumeMounts)}">Mounts</td>
+                                        <td>
+                                            <div th:if="${container?.volumeMounts != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.volumeMounts)}"> </div>
+                                            <div th:if="${container?.volumeMounts == null}">-</div>
+                                        </td>
+
                                     </tr>
                                     <tr>
                                         <th>Liveness</th>
-                                        <td style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.livenessProbe)}">Liveness</td>
+                                        <td>
+                                            <div th:if="${container?.livenessProbe != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.livenessProbe)}"> </div>
+                                            <div th:if="${container?.livenessProbe == null}"> - </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Readness</th>
-                                        <td style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.readinessProbe)}">Liveness</td>
+                                        <td>
+                                            <div th:if="${container?.readinessProbe != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.readinessProbe)}"> </div>
+                                            <div th:if="${container?.readinessProbe == null}"> - </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Command</th>
-                                        <td th:text="${container?.command?.toString()}">command</td>
+                                        <td>
+                                            <div th:if="${container?.command != null}" th:text="${#strings.arrayJoin(container?.command,', ')}"></div>
+                                            <div th:if="${container?.command == null}"> - </div>
+                                        </td>
                                     </tr>
                                 </table>
 
@@ -276,8 +299,8 @@
                             <td colspan="3" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(pod?.volumes)}" th:each="volume : ${pod?.volumes}">
-                            <td th:text="${volume?.name}">Name</td>
-                            <td th:text="${volume?.type}">Type</td>
+                            <td th:text="${#strings.isEmpty(volume?.name) ? '-' : volume?.name}">Name</td>
+                            <td th:text="${#strings.isEmpty(volume?.type) ? '-' : volume?.type}">Type</td>
                             <td>
                                 <div th:if= "${volume?.values}" th:each="value : ${volume?.values}" th:text="${value}">Value</div>
                                 <div th:unless= "${volume?.values}" th:text="|-|">Value</div>
@@ -305,7 +328,7 @@
                         <tr th:if="${pod?.events}" th:each="event : ${pod?.events}">
                             <td th:text="${event?.type}">Type</td>
                             <td th:text="${event?.reason}">Reason</td>
-                            <td th:text="${event?.count}">Count</td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">Count</td>
                             <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
                             <td th:text="${event?.lastSeen}">Last</td>
                         </tr>
