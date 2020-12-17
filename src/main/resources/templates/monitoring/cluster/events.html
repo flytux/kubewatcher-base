@@ -124,11 +124,11 @@
                             <td th:text="|${#strings.isEmpty(event?.source?.component) ? '-' : event?.source?.component}, ${#strings.isEmpty(event?.source?.host) ? '-' : event?.source?.host}"|>kubelet</td>
                         </tr>
                         <tr>
-                            <th>First seen</th>
+                            <th>First Seen</th>
                             <td th:text="${#dates.format(event?.firstTimestamp,'yyyy-MM-dd HH:mm:ss')}">00d ago(2020-05-20 15:23:11)</td>
                         </tr>
                         <tr>
-                            <th>Last seen</th>
+                            <th>Last Seen</th>
                             <td th:text="${#dates.format(event?.lastTimestamp,'yyyy-MM-dd HH:mm:ss')}">00d ago(2020-05-20 15:23:11)</td>
                         </tr>
                         <tr>

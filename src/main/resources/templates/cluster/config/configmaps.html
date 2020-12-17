@@ -47,7 +47,6 @@
                     Total : <span th:text="${#arrays.isEmpty(configMaps) ? '0' : configMaps.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
-                    <!--  -->
                     <table class="list_table">
                         <thead>
                         <tr>
@@ -70,15 +69,8 @@
                             <td th:text="${configMap?.dataCount}">Keys</td>
                             <td th:text="${configMap?.age}">Age</td>
                         </tr>
-                        <!--                        <tr>-->
-                        <!--                            <td>Kube-proxy</td>-->
-                        <!--                            <td>Kube-system</td>-->
-                        <!--                            <td>config.conf, kubeconfig.conf</td>-->
-                        <!--                            <td>000d</td>-->
-                        <!--                        </tr>-->
                         </tbody>
                     </table>
-                    <!--  -->
                 </div>
             </div>
         </div>
@@ -115,7 +107,7 @@
                         <tr>
                             <th>Labels</th>
                             <td>
-                                <div class="row" th:each="entry : ${configMap?.labels}" >
+                                <div class="row" th:if="${configMap?.labels}" th:each="entry : ${configMap?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         label </span>
@@ -123,32 +115,30 @@
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         label </span>
                                 </div>
+                                <div th:unless="${configMap?.labels}">-</div>
                             </td>
-                            <!--                            <td><span class="madal_label">app=kube-proxyt</span></td>-->
                         </tr>
                         </thead>
                     </table>
                     <div class="table-title">
                         Configuration
                     </div>
-                    <div class="scrollBoard">
+<!--                    <div class="scrollBoard">-->
                         <div class="pre-title" th:each="codeId : ${configMap?.data}">
                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/vs2015.min.css">
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
                             <script>hljs.initHighlightingOnLoad();</script>
-<!--                            <span th:text="${codeId.key}"></span>-->
                             <input th:id="|modal-answer-${codeId?.key}|"
                                    type="checkbox" name="accordion" id="modal-answer">
-                            <label th:for="|modal-answer-${codeId?.key}|" for="modal-answer">
+                            <label th:for="|modal-answer-${codeId?.key}|" for="modal-answer" style="height:30px">
                                 <span th:text="${codeId?.key}">kube-state-metrics</span><em></em>
                             </label>
                             <div class="row">
-                            <pre><code id ="code-area" th:text="${codeId.value}"> </code></pre>
-                            <pre><code id ="code-area2" th:text="${configMap?.binaryData}"> </code></pre>
+                            <pre style="color:gray"><code id ="code-area" th:text="${codeId.value}"> </code></pre>
+                            <pre style="color:gray"><code id ="code-area2" th:text="${configMap?.binaryData}"> </code></pre>
                             </div>
                         </div>
-<!--                        <div class="pre-title"  th:text="${configMap?.binaryData}"> </div>-->
-                    </div>
+<!--                    </div>-->
                 </div>
             </div>
         </div>

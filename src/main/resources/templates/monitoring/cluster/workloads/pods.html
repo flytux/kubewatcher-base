@@ -267,13 +267,13 @@
                                         <th>Readness</th>
                                         <td>
                                             <div th:if="${container?.readinessProbe != null}" style="font-size: 80%" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.readinessProbe)}"> </div>
-                                            <div th:if="${container?.livenessProbe == null}"> - </div>
+                                            <div th:if="${container?.readinessProbe == null}"> - </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Command</th>
                                         <td>
-                                            <div th:if="${container?.command != null}" th:text="${#strings.arrayJoin(container?.command,',')}"></div>
+                                            <div th:if="${container?.command != null}" th:text="${#strings.arrayJoin(container?.command,', ')}"></div>
                                             <div th:if="${container?.command == null}"> - </div>
                                         </td>
                                     </tr>

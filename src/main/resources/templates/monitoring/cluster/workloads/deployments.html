@@ -152,10 +152,9 @@
                             <tr>
                                 <th>Selector</th>
                                 <td>
-                                    <div class="row" th:if="${deployment?.selector}" th:each="item : ${deployment?.selector}" >
+                                    <div class="row" th:each="item : ${deployment?.selector}" >
                                         <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
                                     </div>
-                                    <div th:unless="${deployment?.selector}">-</div>
                                 </td>
                             </tr>
                             <tr>

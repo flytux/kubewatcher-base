@@ -123,29 +123,29 @@
                         <tr>
                             <th>Labels</th>
                             <td>
-                                <div class="row" th:each="entry : ${service?.labels}" >
+                                <div class="row" th:if="${service?.labels}" th:each="entry : ${service?.labels}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         service/port=9999 </span>
                                     <span class="madal_label"
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         service/port=9999 </span>
-
                                 </div>
+                                <div th:unless="${service?.labels}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <div class="row" th:each="entry : ${service?.annotations}" >
+                                <div class="row" th:if="${service?.annotations}" th:each="entry : ${service?.annotations}" >
                                         <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
                                         service/port=9999 </span>
                                     <span class="madal_label"
                                           th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
                                         service/port=9999 </span>
-
                                 </div>
+                                <div th:unless="${service?.annotations}">-</div>
                             </td>
                         </tr>
                         <tr>
@@ -173,7 +173,8 @@
                         <tr>
                             <th>Ports</th>
                             <td>
-                               <div class="row"  th:each="port : ${service?.ports}" th:text = "|${port.port}/${port.protocol}|"></div>
+                               <div th:if="${service?.ports}" th:each="port : ${service?.ports}" th:text = "|${port.port}/${port.protocol}|"></div>
+                                <div th:unless="${service?.ports}">-</div>
                             </td>
                         </tr>
                     </table>

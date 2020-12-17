@@ -245,7 +245,7 @@
                                     <td th:each="accessMode : ${persistentVolumeClaim?.accessModes}" th:text="${accessMode}">ReadWriteOnce</td>
                                 </tr>
                                 <tr>
-                                    <th>Storage class name</th>
+                                    <th>Storage Class Name</th>
                                     <td th:text="${#strings.isEmpty(persistentVolumeClaim?.storageClassName) ? '-' :persistentVolumeClaim?.storageClassName}">Standard</td>
                                 </tr>
                                 <tr>

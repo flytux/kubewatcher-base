@@ -42,7 +42,6 @@
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-<!--                    Total : <span class="point pr_10">10</span>  Page : <span class="point">1</span>/1-->
                     Total : <span th:text="${#arrays.isEmpty(roles) ? '0' : roles.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
@@ -63,7 +62,6 @@
                                 <a class="table2-link" th:href="'javascript:roleDetail(&quot;' + ${role?.namespace} + '&quot;, &quot;'+ ${role?.name} + '&quot;)'"
                                    th:utext="${role?.name}"></a>
                             </td>
-<!--                            <td th:text="${role?.name}"></td>-->
                             <td th:text="${role?.namespace}"></td>
                             <td th:text="${role?.age}"></td>
                         </tr>
@@ -106,22 +104,24 @@
                                 <tr>
                                     <th>Labels</th>
                                     <td>
-                                        <div class="row" th:each="entry : ${roleDescribe?.labels}" >
+                                        <div class="row" th:if="${roleDescribe?.labels}" th:each="entry : ${roleDescribe?.labels}" >
                                             <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|"></span>
                                             <span class="madal_label" th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|"></span>
                                         </div>
+                                        <div th:unless="${roleDescribe?.labels}">-</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Annotations</th>
                                     <td>
-                                        <div class="row" th:each="entry : ${roleDescribe?.annotations}" >
+                                        <div class="row" th:if="${roleDescribe?.annotations}" th:each="entry : ${roleDescribe?.annotations}" >
                                             <span class="madal_label"
                                               th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|"></span>
                                             <span class="madal_label"
                                               th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|"></span>
                                         </div>
+                                        <div th:unless="${roleDescribe?.annotations}">-</div>
                                     </td>
                                 </tr>
                             </table>
@@ -143,21 +143,9 @@
                                     <td colspan="5" class="text-center">No rules</td>
                                 </tr>
                                 <tr th:if="${roleDescribe?.rules}" th:each="rule : ${roleDescribe?.rules}">
-                                    <td>
-                                        <div th:if="${rule?.resources}" th:each="resource : ${rule?.resources}"
-                                             th:text = "${resource}">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div th:if="${rule?.verbs}" th:each="verb : ${rule?.verbs}"
-                                             th:text = "${verb}">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div th:if="${rule?.apiGroups}" th:each="apiGroup : ${rule?.apiGroups}"
-                                             th:text = "${apiGroup}">
-                                        </div>
-                                    </td>
+                                    <td th:if="${rule?.resources}" th:text ="${#strings.arrayJoin(rule?.resources,', ')}"> </td>
+                                    <td th:if="${rule?.verbs}" th:text = "${#strings.arrayJoin(rule?.verbs,', ')}"> </td>
+                                    <td th:if="${rule?.apiGroups}" th:text = "${#strings.arrayJoin(rule?.apiGroups,', ')}"></td>
                                 </tr>
                                 <tbody>
                             </table>
