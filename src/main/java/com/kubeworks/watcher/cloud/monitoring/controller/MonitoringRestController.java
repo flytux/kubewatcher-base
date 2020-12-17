@@ -1,5 +1,7 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
+import com.kubeworks.watcher.cloud.monitoring.service.PageMetricService;
+import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
 import com.kubeworks.watcher.config.properties.PrometheusProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.preference.service.PageViewService;
@@ -33,11 +35,15 @@ public class MonitoringRestController {
 
     private final PageViewService pageViewService;
     private final PrometheusProperties prometheusProperties;
+    private final PageMetricService<Page> applicationPageMetricService;
+    private final ApplicationServiceProperties applicationServiceProperties;
+
 
     @GetMapping(value = "/monitoring/application/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> application() {
-        Page pageView = pageViewService.getPageView(APPLICATION_OVERVIEW_MENU_ID);
-        return responseData(pageView);
+        Map<String, Object> response = responseData(applicationPageMetricService.pageMetrics(APPLICATION_OVERVIEW_MENU_ID));
+        response.put("services", applicationServiceProperties.getServiceNamesOfPromQL());
+        return response;
     }
 
     @GetMapping(value = "/monitoring/cluster/overview", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,8 +90,9 @@ public class MonitoringRestController {
 
     @GetMapping(value = "/main", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> dashboard() {
-        Page pageView = pageViewService.getPageView(MAIN_MENU_ID);
-        return responseData(pageView);
+        Map<String, Object> response = responseData(pageViewService.getPageView(MAIN_MENU_ID));
+        response.put("services", applicationServiceProperties.getServiceNamesOfPromQL());
+        return response;
     }
 
     private Map<String, Object> responseData(Page page) {

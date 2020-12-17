@@ -1,5 +1,7 @@
 package com.kubeworks.watcher.ecosystem.proxy.service.impl;
 
+import com.kubeworks.watcher.data.entity.PageVariable;
+import com.kubeworks.watcher.data.vo.VariableType;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.grafana.service.GrafanaSerivce;
 import com.kubeworks.watcher.ecosystem.prometheus.dto.PrometheusApiResponse;
@@ -60,23 +62,33 @@ public class ProxyApiServiceImpl implements ProxyApiService {
         if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
             return Collections.singletonList(ExternalConstants.NONE_STR);
         }
-        return response.getData().getResult().stream()
-            .map(PrometheusApiResponse.PrometheusApiData.PrometheusApiResult::getMetric)
-            .map(metric -> metric.get(metricName))
-            .filter(Objects::nonNull)
-            .distinct()
-            .sorted(String::compareTo)
-            .collect(Collectors.toList());
+        return getMetricLabelValues(metricName, response);
     }
 
     @Override
     public List<String> multiValuesQuery(String query, String metricName) {
-
         PrometheusApiResponse response = prometheusService.requestQuery(query);
-
         if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
             return Collections.singletonList(ExternalConstants.NONE_STR);
         }
+        return getMetricLabelValues(metricName, response);
+    }
+
+    @Override
+    public List<String> query(PageVariable variable) {
+        if (variable.getVariableType() == VariableType.METRIC_LABEL_VALUES) {
+            PrometheusApiResponse response = prometheusService.requestQuery(variable.getApiQuery());
+            if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
+                return Collections.emptyList();
+            }
+            return getMetricLabelValues(variable.getName(), response);
+        } else {
+            log.warn("unsupported variableType={}", variable.getVariableType());
+        }
+        return Collections.emptyList();
+    }
+
+    private List<String> getMetricLabelValues(String metricName, PrometheusApiResponse response) {
         return response.getData().getResult().stream()
             .map(PrometheusApiResponse.PrometheusApiData.PrometheusApiResult::getMetric)
             .map(metric -> metric.get(metricName))

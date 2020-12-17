@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -51,6 +52,9 @@ public class PageRowPanel extends BaseEntity {
     @Column(name = "fragment_name", length = 50, nullable = true)
     String fragmentName;
 
+    @Column(name = "repeat_variable", length = 50, nullable = true)
+    String repeatVariable;
+
     @Column(name = "chart_type", length = 20, nullable = false)
     String chartType;
 
@@ -85,4 +89,14 @@ public class PageRowPanel extends BaseEntity {
 
     @OneToMany(targetEntity = ChartQuery.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "pageRowPanel")
     List<ChartQuery> chartQueries;
+
+    @Transient
+    List<PageRowPanel> subPanel;
+
+    public void addSubPanel(PageRowPanel subPanel) {
+        if (this.subPanel == null) {
+            this.subPanel = new ArrayList<>();
+        }
+        this.subPanel.add(subPanel);
+    }
 }

@@ -5,7 +5,7 @@
 -- grant all privileges on `kube-watcher`.* to kwuser@'%';
 -- grant all privileges on `kube-watcher`.* to kwuser@'localhost';
 -- flush privileges;
---drop table page, page_row, page_row_panel, chart_query, page_variable, variable_query;
+-- drop table page, page_row, page_row_panel, chart_query, page_variable, variable_query;
 
 create table page
 (

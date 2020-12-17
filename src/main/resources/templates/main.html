@@ -9,6 +9,12 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot;></i>Dashboard')"/>
+    <style>
+        .application-board-height {
+            min-height: 185px;
+            max-height: 185px;
+        }
+    </style>
     <div id="main_contents">
         <div th:each="pageRows : ${page?.rows}">
             <div class="row">
@@ -16,14 +22,14 @@
                     <div class="row">
                         <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
                     </div>
-                    <div class="col-lg-6" style="min-height: 200px;">
+                    <div class="col-lg-6" style="padding-right: 0px; min-height: 200px;">
                         <th:block th:each="panel : ${pageRows?.pageRowPanels}">
                             <th:block  th:if="${panel?.fragmentName} == 'head-charts-panel'">
                                 <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
                             </th:block>
                         </th:block>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-6" style="padding-left: 0px;">
                         <th:block th:each="panel : ${pageRows?.pageRowPanels}">
                             <th:block  th:if="${panel?.fragmentName} == 'count-card-panel' or ${panel?.fragmentName} == 'count-card-sets-panel'">
                                 <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
@@ -35,7 +41,7 @@
         </div>
         <div th:each="pageRows : ${page?.rows}">
             <th:block th:if="${pageRows?.pageRowId == 33}">
-                <div class="col-lg-5">
+                <div class="col-lg-4" style="padding-right: 0px;">
                     <div class="row">
                         <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
                     </div>
@@ -46,7 +52,7 @@
                                     <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
                                 </th:block>
                             </th:block>
-                            <div class="col-lg-12 col-lg-5">
+                            <div class="col-lg-12 col-lg-4">
                                 <th:block th:each="panel : ${pageRows?.pageRowPanels}">
                                     <th:block  th:unless="${panel?.fragmentName} == 'mini-table-panel'">
                                         <div class="row">
@@ -60,7 +66,7 @@
                 </div>
             </th:block>
             <th:block th:if="${pageRows?.pageRowId == 34}">
-                <div class="col-lg-7">
+                <div class="col-lg-8" style="padding-left: 0px;">
                     <div class="row">
                         <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
                     </div>
@@ -83,6 +89,7 @@
             </th:block>
         </div>
     </div>
+    <input type="hidden" id="var-services" th:value="${services}">
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>

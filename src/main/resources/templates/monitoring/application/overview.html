@@ -8,7 +8,13 @@
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Application<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
+    <style>
+        .application-board-height {
+            min-height: 174px;
+            max-height: 175px;
+        }
+    </style>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
     <div id="main_contents">
         <div th:each="panelRow : ${page?.rows}">
             <div class="row">
@@ -16,24 +22,16 @@
             </div>
             <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
-                    <th:block th:if="${panel?.mainYn} == 'Y'">
-                        <th:block th:if="${panel?.fragmentName} == 'head-card-app-dummy'">
-                            <th:block th:each="appPanel, index : ${appPanels}">
-                                <th:block th:replace="layout/fragments/panelTypes :: head-card-app-dummy (${appPanel}, ${index.count})"/>
-                            </th:block>
-                        </th:block>
-                        <th:block th:unless="${panel?.fragmentName} == 'head-card-app-dummy'">
-                            <div class="col-lg-3">
-                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel}) "/>
-                            </div>
-                        </th:block>
-                    </th:block>
+                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
                 </th:block>
             </div>
         </div>
     </div>
+
+    <input type="hidden" id="var-services" th:value="${services}">
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/axios/axios.min.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
 
     <script type="text/javascript" th:inline="javascript">
@@ -43,10 +41,16 @@
         /*]]>*/
 
         $(document).ready(function () {
-            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+            pageRows.forEach(row => row.pageRowPanels.forEach(panel => {
+                commonChartsJs.createPanel(panel);
+                if (panel.subPanel !== null) {
+                    panel.subPanel.forEach(sPanel => commonChartsJs.createPanel(sPanel));
+                }
+            }));
         });
 
     </script>
+
 </div>
 </body>
 </html>

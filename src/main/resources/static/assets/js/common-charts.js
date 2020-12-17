@@ -237,7 +237,7 @@ let commonChartsJs = (function () {
         const tableBodyHtml = String.prototype.concat('<tbody class="table_mini">',
             dataArray.map(item => {
                 for (let header of headers) {
-                    if (header != 'application' && item[header] == '1') {
+                    if (header != 'application' && item[header] != '0') {
                         trAppend += '<td><div class="box_mini_g">' + item['application'] + '</div></td>';
                         okCount++;
                     } else if (header != 'application' && item[header] == '0') {
@@ -416,6 +416,16 @@ let commonChartsJs = (function () {
         });
     }
 
+    function getBoardItem(data, colSize) {
+        let classColSize = parseInt(12 / colSize);
+        let grade = "box_mini_d";
+        if (data.pods > 0) {
+            grade = data.avgResponseTime < 3 ? "box_mini_g"
+                : data.avgResponseTime < 5 ? "box_mini_y" : "box_mini_r";
+        }
+        return `<td class="col-xs-${classColSize} col-lg-${classColSize}"><div class="${grade}">${data.name}</div></td>`;
+    }
+
     return {
         createPanel: function (panel) {
             if (panel.refreshIntervalMillis === undefined || panel.refreshIntervalMillis <= 0) {
@@ -436,6 +446,14 @@ let commonChartsJs = (function () {
                 case "HTML_TABLE":
                     this.getDataByPanel(panel, true)
                         .then(value => this.createTable(panel, value))
+                        .then(panel => scheduleMap.set(panel.panelId,
+                            setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
+                        )
+                    break;
+                case "APPLICATION_BOARD":
+                    this.getDataByPanel(panel, true)
+                        .then(responses => this.convertBoardData(panel, responses))
+                        .then(dataMap => this.createBoard(panel, dataMap))
                         .then(panel => scheduleMap.set(panel.panelId,
                             setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
                         )
@@ -467,8 +485,9 @@ let commonChartsJs = (function () {
                             setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
                         );
                     break;
+                case "PANEL_GROUP":
                 default:
-                    console.warn("unsupported panel type");
+                    console.warn(panelType, "unsupported panel type");
             }
         },
 
@@ -534,7 +553,7 @@ let commonChartsJs = (function () {
                     } else {
                         item.data.result.forEach(value => {
                             const key = Object.values(value.metric).toString();
-                            const legend = item.legend;
+                            const legend = panel.chartQueries[i].legend;
                             let element = data.get(key);
                             if (element === undefined) {
                                 element = {};
@@ -561,6 +580,86 @@ let commonChartsJs = (function () {
             return panel;
         },
 
+        convertBoardData: function (panel, responses) {
+            const chartQueries = panel.chartQueries;
+            const boardMap = new Map();
+            chartQueries.forEach(function (chartQuery, index) {
+                let isResponseTimeQuery = chartQuery.legend.indexOf("responsetime") > -1
+                const responseElement = responses[index];
+                responseElement.data.result.forEach(value => {
+                    let applicationName = Mustache.render(chartQuery.legend, value.metric);
+                    if (isResponseTimeQuery) {
+                        applicationName = applicationName.substring(applicationName.indexOf("-") + 1, applicationName.length);
+                    }
+                    let application = boardMap.get(applicationName);
+                    const metric = isResponseTimeQuery ? parseFloat(value.value[1]).toFixed(2) - 0
+                        : parseInt(value.value[1]);
+                    if (application === undefined) {
+                        boardMap.set(applicationName, {
+                            name: applicationName,
+                            avgResponseTime: isResponseTimeQuery ? metric : undefined,
+                            pods: !isResponseTimeQuery ? metric : undefined,
+                        });
+                    } else {
+                        if (isResponseTimeQuery) {
+                            application.avgResponseTime = metric;
+                        } else {
+                            application.pods = metric;
+                        }
+                    }
+                });
+            });
+            return boardMap;
+        },
+
+        createBoard: function (panel, dataMap) {
+            let colSize = $.isNumeric(panel.yaxisMax) ? parseInt(panel.yaxisMax) : 4
+            if (dataMap === undefined || dataMap.size === 0) {
+                $('#container-' + panel.panelId)
+                    .html('<thead><tr><th>No Result</th></tr></thead>');
+                return;
+            }
+            let services = [...dataMap.values()];
+            const boardHtml = String.prototype.concat(
+                '<div class="row col-xs-12 row_scroll application-board-height"><table class="table_mini">',
+                '<tbody><tr>', services.map((value, index) => {
+                    let append = '';
+                    if (index % colSize === 0) {
+                        append += '</tr><tr>';
+                    }
+                    append += getBoardItem(value, colSize);
+                    if (index === services.length - 1) {
+                        const remainder = index % colSize;
+                        for (let i = 1; i < colSize - remainder; i++) {
+                            append += '<td></td>';
+                        }
+                    }
+                    return append;
+                }).join("").trim(),
+                '</tr></tbody>',
+                '</table></div>');
+
+            const summary = {total: 0, up: 0, normal: 0, warn: 0, critical: 0};
+            services.forEach(value => {
+                summary.total++;
+                value.pods > 0 ? summary.up++ : {};
+                value.avgResponseTime < 3 ? summary.normal++
+                    : value.avgResponseTime < 5 ? summary.warn++ : summary.critical++;
+            });
+
+            let tableBottomHtml = '<div class="row col-xs-12"><table class="table_mini"><tbody class="table_mini mt_10">';
+            tableBottomHtml += '<td>전체 : ' + summary.total + '</td>';
+            tableBottomHtml += '<td>UP : ' + summary.up + '</td>';
+            tableBottomHtml += '<td>DOWN : ' + (summary.total - summary.up) + '</td>';
+            tableBottomHtml += '<td><div class="circle c_normal"></div> 정상 : ' + summary.normal + '</td>';
+            tableBottomHtml += '<td><div class="circle c_warning"></div> 느림 : ' + summary.warn + '</td>';
+            tableBottomHtml += '<td><div class="circle c_danger"></div> 지연 : ' + summary.critical + '</td>';
+            tableBottomHtml += '</tbody></table></div>';
+            $('#container-' + panel.panelId).html(boardHtml + tableBottomHtml);
+
+            return panel;
+        },
+
         refreshFunction: function (panel) {
             const panelType = panel.panelType;
             panel.readyTimestamp = panel.readyTimestamp + panel.refreshIntervalMillis;
@@ -575,6 +674,11 @@ let commonChartsJs = (function () {
                     commonChartsJs.getDataByPanel(panel)
                         .then(value => commonChartsJs.createTable(panel, value));
                     break;
+                case "APPLICATION_BOARD":
+                    commonChartsJs.getDataByPanel(panel, true)
+                        .then(responses => commonChartsJs.convertBoardData(panel, responses))
+                        .then(dataMap => commonChartsJs.createBoard(panel, dataMap));
+                    break;
                 case "BADGE":
                     commonChartsJs.getDataByPanel(panel)
                         .then(value => commonChartsJs.createBadge(panel, value));
@@ -584,7 +688,7 @@ let commonChartsJs = (function () {
                         .then(value => commonChartsJs.createUpDown(panel, value));
                     break;
                 default:
-                    console.warn("unsupported panel type");
+                    console.warn(panelType, "unsupported panel type");
             }
         },
 
@@ -595,14 +699,19 @@ let commonChartsJs = (function () {
                 this.getDataByPanel(panel, false)
                     .then(responses => this.convertSeries(panel, responses))
                     .then(series => {
+                        if (series === undefined || series.length === 0) {
+                            console.warn("empty data");
+                            return;
+                        }
+
                         const start = new Date().getTime();
-                        let seriesMap;
                         switch (panel.chartType) {
                             case "area":
                             case "sparkline":
                             case "scatter":
                             case "line":
-                                seriesMap = new Map(series.map(i => [i.name, i]));
+                                let seriesMap = new Map(series.map(i => [i.name, i]));
+                                console.log(seriesMap);
                                 for (let chartSeriesItem of chartSeries) {
                                     const seriesData = seriesMap.get(chartSeriesItem.name);
                                     if (seriesData.data.length) {
@@ -632,12 +741,13 @@ let commonChartsJs = (function () {
                                     chartSeries[0].points[0].update(series[0].data[0]);
                                 }
                                 break;
+                            case "counttilemap":
                             case "bar":
                             case "multiplegauge":
                                 chart.update({series: series});
                                 break;
                             default:
-                                console.warn("unsupported chart type");
+                                console.warn(panel.chartType, "unsupported chart type");
                         }
                         console.log("refreshChart completed", panel.panelId, panel.title, (new Date().getTime()) - start);
                     });
@@ -736,10 +846,11 @@ let commonChartsJs = (function () {
                 case "scatter":
                     data = this.getScatterChartData(panel, series);
                     break;
-                case 'counttilemap':
+                case "counttilemap":
                     data = this.getTileMapChartData(panel, series);
+                    break;
                 default:
-                    console.warn("unsupported chart type");
+                    console.warn(type, "unsupported chart type");
             }
             return data;
         },
@@ -966,7 +1077,7 @@ let commonChartsJs = (function () {
                                 setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
                         }
                     },
-                    margin: [60, 0, 0, 0],
+                    margin: [40, 0, 0, 0],
                     style: {
                         overflow: 'visible'
                     },
@@ -1122,7 +1233,7 @@ let commonChartsJs = (function () {
                             scheduleMap.set(panel.panelId,
                                 setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
                         }
-                    }
+                    },
                 },
                 credits: {
                     enabled: false
@@ -1175,41 +1286,82 @@ let commonChartsJs = (function () {
             return {
                 chart: {
                     type: 'tilemap',
-                    // inverted: true,
+                    styledMode: false,
+                    inverted: true,
+                    margin: [15, 0, 0, 0],
+                    events: {
+                        load: function () {
+                            scheduleMap.set(panel.panelId,
+                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
+                        }
+                    }
                 },
-                title: null,
-                xAxis: {
-                    visible: false
+                title: {
+                    text: panel.title,
+                    style: {
+                        fontSize: '120%',
+                        color: '#bebebe',
+                        fontWeight: 'bold'
+                    }
                 },
-                yAxis: {
-                    visible: false
+                credits: {
+                    enabled: false
                 },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: { visible:false, startendOnTick: true, endOnTick: true},
+                yAxis: { visible:false, startendOnTick: true, endOnTick: true},
                 tooltip: {
                     enabled: false
                 },
                 colorAxis: {
                     dataClasses: [{
-                        from: 0,
-                        to: 0,
-                        color: Highcharts.color('#81c369').setOpacity(0.2).get(),
-                        name: 'Unavailable'
-                    }, {
                         from: 1,
                         to: 1,
-                        color: Highcharts.color('#81c369').get(),
+                        color: Highcharts.color('#0e51d6').get(),
                         name: 'Available'
+                    },{
+                        from: 0,
+                        to: 0,
+                        color: Highcharts.color('#9aa7ec').setOpacity(0.2).get(),
+                        name: 'Unavailable'
                     }]
                 },
+                // plotOptions: {
+                //     series: {
+                //         dataLabels: {
+                //             enabled: true,
+                //             //format: '{point.hc-a2}(x:{point.x}, y:{point.y})',
+                //             color: '#efe625',
+                //             style: {
+                //                 textOutline: false
+                //             }
+                //         }
+                //     }
+                // },
                 plotOptions: {
                     series: {
-                        dataLabels: {
-                            enabled: true,
-                            format: '{point.hc-a2}(x:{point.x}, y:{point.y})',
-                            color: '#000000',
-                            style: {
-                                textOutline: false
-                            }
-                        }
+                        pointPadding: 1,
+                        pointRange: 0.5
+                    },
+                    tilemap: {
+                        animation:        true,
+                        tileShape:       'hexagon',
+                    }
+                },
+                legend: {
+                    enabled: true,
+                    layout: 'horizontal',
+                    verticalAlign: 'bottom',
+                    align: 'left',
+                    itemMarginTop: 0,
+                    itemMarginBottom: 0,
+                    y:15,
+                    backgroundColor: 'transparent',
+                    itemStyle : {
+                        fontSize: '8px',
+                        color: '#E0E0E3'
                     }
                 },
                 series: series
@@ -1232,13 +1384,14 @@ let commonChartsJs = (function () {
                     this.renderGaugeHighChart(panel, chartData);
                     break;
                 case "scatter":
+                case "counttilemap":
                 case "tilemap":
                 case "bar":
                 case "sparkline":
                     this.renderCommonHighChart(panel, chartData);
                     break;
                 default:
-                    console.warn("unsupported chart type");
+                    console.warn(type, "unsupported chart type");
             }
         },
         renderLineHighChart: function (panel, chartData) {

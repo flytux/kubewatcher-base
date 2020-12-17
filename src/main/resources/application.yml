@@ -78,6 +78,24 @@ application:
         name: local
         url: "https://rancher.do/k8s/clusters/local"
         api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
+    services:
+      - code: AGW
+        name: api-gateway
+        namespace: default
+        displayName: API Gateway
+      - code: CUS
+        name: customers
+        namespace: default
+        displayName: Customers
+      - code: VET
+        name: vets
+        namespace: default
+        displayName: Vets
+      - code: VIT
+        name: visits
+        namespace: default
+        displayName: Visits
+
 
 ---
 spring:

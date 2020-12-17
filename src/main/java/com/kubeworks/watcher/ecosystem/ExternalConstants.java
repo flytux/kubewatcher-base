@@ -1,8 +1,10 @@
 package com.kubeworks.watcher.ecosystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.ecosystem.grafana.dto.TemplateVariable;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
@@ -13,9 +15,11 @@ import org.yaml.snakeyaml.Yaml;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class ExternalConstants {
@@ -118,6 +122,13 @@ public class ExternalConstants {
     public String getBetweenPeriodDay(long startDurationInMillis) {
         long days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis()-startDurationInMillis);
         return days+"d";
+    }
+
+    public Map<String, PageRowPanel> thymeleafConvertList2Map(List<PageRowPanel> list) {
+        if (CollectionUtils.isEmpty(list)) {
+            return Collections.emptyMap();
+        }
+        return list.stream().collect(Collectors.toMap(PageRowPanel::getTitle, panel -> panel));
     }
 
 }
