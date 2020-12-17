@@ -229,7 +229,15 @@
                             <td th:text="${pod?.namespace}">Namespace</td>
                             <td th:text="|- %|">CPU</td>
                             <td th:text="|- %|">Memory</td>
-                            <td> <span class="madal_label_active"th:text="${pod?.status}">Status </span></td>
+                            <td th:switch="${pod?.status}">
+                                <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
+                                <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}">Pending</span>
+                                <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}">Succeeded</span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}">Failed</span>
+                                <span th:case="Unknown" class="madal_label" th:text="${pod?.status}">Unknown</span>
+                                <span th:case="*" class="madal_label" th:text="${pod?.status}"></span>
+                            </td>
                         </tr>
                         <tbody>
                     </table>

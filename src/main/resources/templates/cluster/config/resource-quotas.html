@@ -63,14 +63,6 @@
                             <td th:text="${resourceQuota?.namespace}">Namespace</td>
                             <td th:text="${resourceQuota?.age}">Age</td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td><a  href="" class="table2-link" data-toggle="modal" data-target="#myModal">cpmpute-resources</a>-->
-
-<!--                            </td>-->
-<!--                            <td>default</td>-->
-<!--                            <td>000d</td>-->
-<!--                        </tr>-->
-
                         </tbody>
                     </table>
                 </div>
@@ -102,17 +94,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="resource : ${resourceQuota?.hard}">
-                            <td th:text="${resource.key}">limits.cpu</td>
-                            <td th:text="${resourceQuota?.used.value}">Used</td>
-                            <td th:text="${resource.value}">Hard</td>
+                        <tr th:each="entry : ${resourceQuota?.getUsedHard()}">
+                            <td th:text = "${entry.key}"></td>
+                            <td th:text = "${entry.value?.used.getNumber()}"></td>
+                            <td th:text = "${entry.value?.hard.getNumber()}"></td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>limits.memory</td>-->
-<!--                            <td>00Gi</td>-->
-<!--                            <td>000Gi</td>-->
-<!--                        </tr>-->
-
                         <tbody>
                     </table>
 

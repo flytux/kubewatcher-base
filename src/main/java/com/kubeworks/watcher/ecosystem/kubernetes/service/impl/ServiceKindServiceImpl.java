@@ -1,11 +1,13 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ServiceDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ServiceTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1ServiceTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler;
+import com.kubeworks.watcher.ecosystem.kubernetes.service.EndpointService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.ServiceKindService;
 import io.kubernetes.client.openapi.ApiClient;
@@ -28,11 +30,13 @@ public class ServiceKindServiceImpl implements ServiceKindService {
 
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
+    private final EndpointService endpointService;
     private final EventService eventService;
 
-    public ServiceKindServiceImpl(ApiClient k8sApiClient, EventService eventService){
+    public ServiceKindServiceImpl(ApiClient k8sApiClient, EndpointService endpointService, EventService eventService){
         this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
+        this.endpointService = endpointService;
         this.eventService = eventService;
     }
 
@@ -70,6 +74,11 @@ public class ServiceKindServiceImpl implements ServiceKindService {
 
         Optional<ServiceDescribe> serviceDescribeOptional = serviceWithoutEvents(namespace, name);
         serviceDescribeOptional.ifPresent(serviceDescribe -> {
+            List<EndpointTable> endpoint = endpointService.endpointTable(serviceDescribe.getNamespace(),
+                serviceDescribe.getName());
+
+            serviceDescribe.setEndpoints(endpoint);
+
             Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Service",
                 serviceDescribe.getNamespace(), serviceDescribe.getName(), serviceDescribe.getUid());
             eventTableListOptional.ifPresent(v1EventTableList -> serviceDescribe.setEvents(v1EventTableList.getDataTable()));

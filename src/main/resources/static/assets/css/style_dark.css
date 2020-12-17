@@ -2241,6 +2241,7 @@ textarea.form-control {
 
 .list_table td{
     padding:10px;
+    word-break: break-all;
 }
 
 .list_table > tbody > tr:nth-of-type(odd) {
@@ -2604,6 +2605,7 @@ textarea.form-control {
 .list_mtable td{
     padding:4px 0 4px 0;
     color: #888888;
+    word-break: break-all;
 }
 
 
@@ -2659,6 +2661,7 @@ textarea.form-control {
 
 .list_mtable_200 td{
     padding:4px 0 4px 0;
+    word-break: break-all;
 }
 
 
@@ -2722,6 +2725,7 @@ textarea.form-control {
 
 .list_mtable_100 td{
     padding:4px 0 4px 0;
+    word-break: break-all;
 }
 
 .list_mtable_100 > tbody > tr:nth-of-type(odd) {
@@ -2786,6 +2790,7 @@ textarea.form-control {
 
 .list_mtable_100_no td{
     padding:4px 0 4px 0;
+    word-break: break-all;
 }
 
 .list_mtable_100_no > tbody > tr:nth-of-type(odd) {
@@ -2839,6 +2844,7 @@ textarea.form-control {
 
 .list_mtable_50 td{
     padding:4px 0 4px 0;
+    word-break: break-all;
 }
 
 
@@ -2900,6 +2906,7 @@ textarea.form-control {
 
 .list_mtable_cs td{
     padding:4px 0 4px 0;
+    word-break: break-all;
 }
 
 

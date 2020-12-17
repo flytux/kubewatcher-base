@@ -71,9 +71,14 @@
                             <td th:text="${job?.namespace}">Namespace</td>
                             <td th:text="${job?.completions}">Completions</td>
                             <td th:text="${job?.age}">Age</td>
-                            <td>
-                                <span class="madal_label_active"
-                                      th:text="${job?.statusCondition}">Conditions</span>
+                            <td th:switch="${job?.statusCondition}">
+                                <span th:case="Complete" class="madal_label_active" th:text="${job?.statusCondition}">Complete</span>
+                                <span th:case="Running" class="madal_label_warning" th:text="${job?.statusCondition}">Running</span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${job?.statusCondition}">Pending</span>
+                                <span th:case="Succeeded" class="madal_label_active" th:text="${job?.statusCondition}">Succeeded</span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${job?.statusCondition}">Failed</span>
+                                <span th:case="Unknown" class="madal_label" th:text="${job?.statusCondition}">Unknown</span>
+                                <span th:case="*" class="madal_label" th:text="${job?.statusCondition}"></span>
                             </td>
                         </tr>
                         </tbody>

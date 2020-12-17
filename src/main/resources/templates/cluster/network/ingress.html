@@ -58,11 +58,11 @@
                             <td colspan="5" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(ingresses)}" th:each="ingress : ${ingresses}">
-                            <td th:text="${ingress?.name}">test</td>
                             <td>
                                 <a class="table2-link" th:href="'javascript:ingressDetail(&quot;' + ${ingress?.namespace} + '&quot;, &quot;'+ ${ingress?.name} + '&quot;)'"
-                                   th:utext="${ingress?.namespace}">Namespace</a>
+                                   th:utext="${ingress?.name}">Name</a>
                             </td>
+                            <td th:text="${ingress?.namespace}"></td>
                             <td th:text="${#strings.equals(ingress?.hosts, 'null') ? '<none>' : ingress?.hosts}">foo.bar.com</td>
                             <td th:text="${#strings.equals(ingress?.paths, 'null') ? '<none>' : ingress?.paths}">path</td>
                             <td th:text="${ingress?.age}">000d</td>
@@ -142,7 +142,7 @@
                             <th>Host</th>
                             <th>Path</th>
                             <th>Backends</th>
-                            <th>Endpotins</th>
+                            <th>Endpoints</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -150,7 +150,9 @@
                                 <td th:text="${describeRule?.host}">Host</td>
                                 <td th:text="${describeRule?.path}">Path</td>
                                 <td th:text="${describeRule?.backend}">Backends</td>
-                                <td th:text="${describeRule?.endpoints}">Endpotins</td>
+                                <td>
+                                    <div th:each="endpoint : ${describeRule?.endpoints}" th:text="${endpoint}">Endpoint</div>
+                                </td>
                             </tr>
                         <tbody>
                     </table>

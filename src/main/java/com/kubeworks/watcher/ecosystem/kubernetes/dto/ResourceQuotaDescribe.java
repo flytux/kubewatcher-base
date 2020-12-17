@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.joda.time.DateTime;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,4 +51,22 @@ public class ResourceQuotaDescribe {
     List<String> scopes;
     Map<String, String> scopeSelector;
 
-}
+    public Map<String, Resource> getUsedHard() {
+        Map <String, Resource> usedHard = new HashMap<>();
+        for (String key : hard.keySet()) {
+            Resource resource = new Resource(hard.get(key));
+            resource.setUsed(used.get(key));
+            usedHard.put(key, resource);
+        }
+        return usedHard;
+    }
+
+    @Getter
+    @Setter
+    public static class Resource {
+        public Resource(Quantity hard) { this.hard = hard; }
+        Quantity hard;
+        Quantity used;
+    }
+
+    }

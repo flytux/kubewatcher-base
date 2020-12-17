@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface NetworkPolicyService {
 
-    @SneakyThrows
     List<NetworkPolicyTable> allNamespaceNetworkPolicyTables();
 
     Optional<NetworkPolicyDescribe> networkPolicy(String namespace, String name);
