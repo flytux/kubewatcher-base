@@ -10,12 +10,19 @@
 <div layout:fragment="content" th:remove="tag">
 
     <th:block
-        th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
+        th:replace="layout/header :: header(${page?.nav})"/>
     <div id="main_contents">
         <div th:each="panelRow : ${page?.rows}">
-            <div class="row">
+<!--            <div class="row">-->
+<!--                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>-->
+<!--            </div>-->
+            <div th:if="${panelRow?.rowType == T(com.kubeworks.watcher.data.vo.PageRowType).VARIABLE}" class="row">
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-variable-header-db(${page?.variables}, ${panelRow?.title})"/>
+            </div>
+            <div th:unless="${panelRow?.rowType == T(com.kubeworks.watcher.data.vo.PageRowType).VARIABLE}" class="row">
                 <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
             </div>
+
             <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
                     <th:block th:if="${panel?.mainYn} == 'Y'">
@@ -43,7 +50,26 @@
         /*]]>*/
 
         $(document).ready(function () {
-            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+            commonVariablesJs.createVariables([[${page?.variables}]]);
+            commonVariablesJs.generateVariable();
+
+            if (commonVariablesJs.isSelectedAllVariable()) {
+                pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+            }
+
+            $("select[name^='var-']").change(function () {
+                const selectedId = comnJs.replace($(this).attr('id'), 'var-', '');
+                let variable = commonVariablesJs.getVariable(selectedId);
+                commonVariablesJs.refreshEdgeVariableData(selectedId);
+                if (commonVariablesJs.isSelectedAllVariable()) {
+                    commonChartsJs.resetReadyTimestamp();
+                    pageRows.forEach(row => row.pageRowPanels.forEach(panel => {
+                        commonChartsJs.removeChart(panel);
+                        commonChartsJs.createPanel(panel)
+                    }));
+                }
+            });
+
         });
 
     </script>
