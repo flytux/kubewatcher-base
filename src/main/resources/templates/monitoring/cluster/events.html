@@ -48,7 +48,7 @@
                     Total : <span th:text="${#arrays.isEmpty(events) ? '0' : events.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table">
+                    <table th:fragment="listContents" class="list_table">
                         <thead>
                         <tr>
                             <th>Type</th>
