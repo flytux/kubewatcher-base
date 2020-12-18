@@ -106,7 +106,7 @@
                 </div>
                 <div class="modal-nbody row_scroll">
                     <div class="table-title">
-                        Overview
+                        Metadata
                     </div>
                     <div class="row">
                         <table class="table-nt">
@@ -125,13 +125,8 @@
                             <tr>
                                 <th>Labels</th>
                                 <td>
-                                    <div class="row" th:if="${roleBinding?.labels}" th:each="entry : ${roleBinding?.labels}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        kubernetes.io/bootstrapping=rbac-default </span>
-                                        <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        kubernetes.io/bootstrapping=rbac-default </span>
+                                    <div class="row" th:if="${roleBinding?.labels}" th:each="entry : ${roleBinding?.labels}">
+                                        <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                     </div>
                                     <div th:unless="${roleBinding?.labels}">-</div>
                                 </td>
@@ -139,13 +134,8 @@
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-                                    <div class="row" th:if="${roleBinding?.annotations}" th:each="entry : ${roleBinding?.annotations}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        rbac.authorization.kubernetes.io/autoupdate=ture </span>
-                                        <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        rbac.authorization.kubernetes.io/autoupdate=ture </span>
+                                    <div class="row" th:if="${roleBinding?.annotations}" th:each="entry : ${roleBinding?.annotations}">
+                                        <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                     </div>
                                     <div th:unless="${roleBinding?.annotations}">-</div>
                                 </td>

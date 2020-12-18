@@ -60,7 +60,7 @@ public class NetworkingV1beta1IngressTableList extends V1ObjectTableList<Ingress
 
                 String paths = rules.stream().map(NetworkingV1beta1IngressRule::getHttp)
                     .filter(Objects::nonNull)
-                    .map(http -> http.getPaths().stream().map(NetworkingV1beta1HTTPIngressPath::getPath).collect(Collectors.joining(", ")))
+                    .map(http -> http.getPaths().stream().map(NetworkingV1beta1HTTPIngressPath::getPath).filter(Objects::nonNull).collect(Collectors.joining(", ")))
                     .collect(Collectors.joining(", "));
 
                 data.setHosts(hosts);

@@ -107,7 +107,7 @@
 
                 <div class="modal-nbody row_scroll">
                     <div class="table-title">
-                        Overview
+                        Metadata
                     </div>
                     <div class="row" th:each="panelRow : ${page?.rows}">
                         <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
@@ -134,13 +134,8 @@
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-                                    <div class="row" th:if="${deployment?.annotations}" th:each="entry : ${deployment?.annotations}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        deprecated.daemonet.template.generation=1 </span>
-                                        <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        deprecated.daemonset.template.generation=1 </span>
+                                    <div class="row" th:if="${deployment?.annotations}" th:each="entry : ${deployment?.annotations}">
+                                        <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                     </div>
                                     <div th:unless="${deployment?.annotations}">-</div>
                                 </td>

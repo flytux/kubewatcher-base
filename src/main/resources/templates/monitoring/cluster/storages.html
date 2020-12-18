@@ -48,7 +48,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Namespace</th>
-                            <th>Storage class</th>
+                            <th>Storage Class</th>
                             <th>Size</th>
                             <th>Age</th>
                             <th>Status</th>
@@ -97,7 +97,7 @@
                         <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Storage class</th>
+                            <th>Storage Class</th>
                             <th>Capacity</th>
                             <th>Claim</th>
                             <th>Age</th>
@@ -184,10 +184,10 @@
                 </div>
                 <div class="modal-nbody row_scroll">
                     <div class="table-title">
-                        Overview
+                        Metadata
                     </div>
                     <div class="row" th:each="panelRow : ${page?.rows}">
-                        <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
+                        <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-12">
                             <div class="box_panel">
                                 <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
                                 <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
@@ -211,13 +211,8 @@
                                 <tr>
                                     <th>Labels</th>
                                     <td>
-                                        <div class="row" th:if="${persistentVolumeClaim?.labels}" th:each="entry : ${persistentVolumeClaim?.labels}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        label </span>
-                                            <span class="madal_label"
-                                                  th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        label </span>
+                                        <div class="row" th:if="${persistentVolumeClaim?.labels}" th:each="entry : ${persistentVolumeClaim?.labels}">
+                                            <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                         </div>
                                         <div th:unless="${persistentVolumeClaim?.labels}">-</div>
                                     </td>
@@ -225,13 +220,8 @@
                                 <tr>
                                     <th>Annotations</th>
                                     <td>
-                                        <div class="row" th:if="${persistentVolumeClaim?.annotations}" th:each="entry : ${persistentVolumeClaim?.annotations}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        label </span>
-                                            <span class="madal_label"
-                                                  th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        label </span>
+                                        <div class="row" th:if="${persistentVolumeClaim?.annotations}" th:each="entry : ${persistentVolumeClaim?.annotations}">
+                                            <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                         </div>
                                         <div th:unless="${persistentVolumeClaim?.annotations}">-</div>
                                     </td>
@@ -332,7 +322,7 @@
                 </div>
                 <div class="modal-nbody row_scroll" >
                     <div class="table-title">
-                        Overview
+                        Metadata
                     </div>
 
                     <table class="table-nt">
@@ -347,13 +337,8 @@
                         <tr>
                             <th>Labels</th>
                             <td>
-                                <div class="row" th:if="${persistentVolume?.labels}" th:each="entry : ${persistentVolume?.labels}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        /// </span>
-                                    <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        /// </span>
+                                <div class="row" th:if="${persistentVolume?.labels}" th:each="entry : ${persistentVolume?.labels}">
+                                    <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                 </div>
                                 <div th:unless="${persistentVolume?.labels}">-</div>
                             </td>
@@ -361,13 +346,8 @@
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <div class="row" th:if="${persistentVolume?.annotations}" th:each="entry : ${persistentVolume?.annotations}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        /// </span>
-                                    <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        /// </span>
+                                <div class="row" th:if="${persistentVolume?.annotations}" th:each="entry : ${persistentVolume?.annotations}">
+                                    <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                 </div>
                                 <div th:unless="${persistentVolume?.annotations}">-</div>
                             </td>
@@ -469,7 +449,7 @@
                 </div>
                 <div class="modal-nbody row_scroll">
                     <div class="table-title">
-                        Overview
+                        Metadata
                     </div>
 
                     <table class="table-nt">
@@ -488,13 +468,8 @@
                         <tr>
                             <th>Labels</th>
                             <td>
-                                <div class="row" th:if="${storageClass?.labels}" th:each="entry : ${storageClass?.labels}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        /// </span>
-                                    <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        /// </span>
+                                <div class="row" th:if="${storageClass?.labels}" th:each="entry : ${storageClass?.labels}">
+                                    <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                 </div>
                                 <div th:unless="${storageClass?.labels}">-</div>
                             </td>
@@ -502,13 +477,8 @@
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <div class="row" th:if="${storageClass?.annotations}" th:each="entry : ${storageClass?.annotations}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        /// </span>
-                                    <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        /// </span>
+                                <div class="row" th:if="${storageClass?.annotations}" th:each="entry : ${storageClass?.annotations}">
+                                    <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                 </div>
                                 <div th:unless="${storageClass?.annotations}">-</div>
                             </td>

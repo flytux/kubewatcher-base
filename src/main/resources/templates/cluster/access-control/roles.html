@@ -84,7 +84,7 @@
                     </div>
                     <div class="modal-nbody row_scroll">
                         <div class="table-title">
-                            Overview
+                            Metadata
                         </div>
                         <div class="row">
                             <table class="table-nt">
@@ -104,10 +104,8 @@
                                 <tr>
                                     <th>Labels</th>
                                     <td>
-                                        <div class="row" th:if="${roleDescribe?.labels}" th:each="entry : ${roleDescribe?.labels}" >
-                                            <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|"></span>
-                                            <span class="madal_label" th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|"></span>
+                                        <div class="row" th:if="${roleDescribe?.labels}" th:each="entry : ${roleDescribe?.labels}">
+                                            <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                         </div>
                                         <div th:unless="${roleDescribe?.labels}">-</div>
                                     </td>
@@ -115,11 +113,8 @@
                                 <tr>
                                     <th>Annotations</th>
                                     <td>
-                                        <div class="row" th:if="${roleDescribe?.annotations}" th:each="entry : ${roleDescribe?.annotations}" >
-                                            <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|"></span>
-                                            <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|"></span>
+                                        <div class="row" th:if="${roleDescribe?.annotations}" th:each="entry : ${roleDescribe?.annotations}">
+                                            <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                         </div>
                                         <div th:unless="${roleDescribe?.annotations}">-</div>
                                     </td>
