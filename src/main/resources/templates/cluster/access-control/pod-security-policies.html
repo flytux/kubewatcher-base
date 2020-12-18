@@ -74,7 +74,7 @@
                     </div>
                     <div class="modal-nbody row_scroll">
                         <div class="table-title">
-                            Overview
+                            Metadata
                         </div>
                         <div class="row">
                             <table class="table-nt">
@@ -90,10 +90,8 @@
                                 <tr>
                                     <th>Labels</th>
                                     <td>
-                                        <div class="row" th:if="${policyDescribe?.labels}" th:each="entry : ${policyDescribe?.labels}" >
-                                            <span class="madal_label"
-                                                  th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|"></span>
-                                            <span class="madal_label" th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|"></span>
+                                        <div class="row" th:if="${policyDescribe?.labels}" th:each="entry : ${policyDescribe?.labels}">
+                                            <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                         </div>
                                         <div th:unless="${policyDescribe?.labels}">-</div>
                                     </td>

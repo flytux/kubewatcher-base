@@ -109,7 +109,7 @@
                 </div>
                 <div class="modal-nbody row_scroll">
                     <div class="table-title">
-                        Overview
+                        Metadata
                     </div>
                     <div class="row">
                         <table class="table-nt">
@@ -128,13 +128,8 @@
                             <tr>
                                 <th>Labels</th>
                                 <td>
-                                    <div class="row" th:if="${cronJob?.labels}" th:each="entry : ${cronJob?.labels}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        label </span>
-                                        <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        label </span>
+                                    <div class="row" th:if="${cronJob?.labels}" th:each="entry : ${cronJob?.labels}">
+                                        <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                     </div>
                                     <div th:unless="${cronJob?.labels}">-</div>
                                 </td>
@@ -142,13 +137,8 @@
                             <tr>
                                 <th>Annotations</th>
                                 <td>
-                                    <div class="row" th:if="${cronJob?.annotations}" th:each="entry : ${cronJob?.annotations}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        label </span>
-                                        <span class="madal_label"
-                                              th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        label </span>
+                                    <div class="row" th:if="${cronJob?.annotations}" th:each="entry : ${cronJob?.annotations}">
+                                        <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                     </div>
                                     <div th:unless="${cronJob?.annotations}">-</div>
                                 </td>

@@ -64,7 +64,7 @@
                             </td>
                             <td th:text="${ingress?.namespace}"></td>
                             <td th:text="${#strings.equals(ingress?.hosts, 'null') ? '<none>' : ingress?.hosts}">foo.bar.com</td>
-                            <td th:text="${#strings.equals(ingress?.paths, 'null') ? '<none>' : ingress?.paths}">path</td>
+                            <td th:utext="${ingress?.getPathsHtml()}">path</td>
                             <td th:text="${ingress?.age}">000d</td>
                         </tr>
 
@@ -88,7 +88,7 @@
                 </div>
                 <div class="modal-nbody row_scroll">
                     <div class="table-title">
-                        Overview
+                        Metadata
                     </div>
                     <table class="table-nt">
                         <tr>
@@ -116,13 +116,8 @@
                         <tr>
                             <th>Annotations</th>
                             <td>
-                                <div class="row" th:if="${ingress?.annotations}"th:each="entry : ${ingress?.annotations}" >
-                                        <span class="madal_label"
-                                              th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                        nginx.ingress.kubernetes.io/rewrite-target=/ </span>
-                                    <span class="madal_label"
-                                          th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                        nginx.ingress.kubernetes.io/rewrite-target=/ </span>
+                                <div class="row" th:if="${ingress?.annotations}" th:each="entry : ${ingress?.annotations}">
+                                    <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                 </div>
                                 <div th:unless="${ingress?.annotations}">-</div>
                             </td>
