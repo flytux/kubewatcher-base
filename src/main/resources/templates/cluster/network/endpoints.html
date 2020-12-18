@@ -131,6 +131,7 @@
                         </tr>
                     </table>
 
+                    <div>
                     <div class="table-title">
                         Subsets
                     </div>
@@ -144,9 +145,7 @@
                         </thead>
                         <tbody>
                         <tr th:if="${#arrays.isEmpty(endpoint?.subsets)}">
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
+                            <td colspan="3" class="text-center">No results</td>
                         </tr>
                         <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
                             <tr th:each=" address : ${subset.addresses}">
@@ -157,7 +156,8 @@
                         </div>
                         <tbody>
                     </table>
-
+                        </div>
+                    <div style="padding: 2px 2px 2px 2px;"></div>
                     <table class="list_mtable_100">
                         <thead>
                         <tr>
@@ -167,6 +167,9 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr th:if="${#arrays.isEmpty(endpoint?.subsets)}">
+                            <td colspan="3" class="text-center">No results</td>
+                        </tr>
                         <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
                             <tr th:each=" port : ${subset.ports}">
                                 <td th:text = "${#strings.isEmpty(port.port)? '-' : port?.port}"></td>
@@ -194,7 +197,7 @@
                         <tr th:if="${#arrays.isEmpty(endpoint?.events)}">
                             <td colspan="5" class="text-center">No events</td>
                         </tr>
-                        <tr th:if="${endpoint?.events}" th:each="event : ${service?.events}">
+                        <tr th:if="${endpoint?.events}" th:each="event : ${endpoint?.events}">
                             <td th:text="${event?.type}">Event Message</td>
                             <td th:text="${event?.source}">///</td>
                             <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
