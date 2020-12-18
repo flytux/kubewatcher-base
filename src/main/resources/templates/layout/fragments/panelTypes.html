@@ -29,6 +29,28 @@
         </div>
     </th:block>
 
+    <th:block th:fragment="page-row-variable-header-db(variables, title)">
+        <div class="row" style="height: 1px"></div>
+        <div th:if="${#strings.isEmpty(title)}" class="main_title col-xs-8">
+        </div>
+        <div th:unless="${#strings.isEmpty(title)}" class="main_title col-xs-8">
+            <i class="feather icon-chevrons-right"></i> [[${title}]]
+        </div>
+        <div class="main_title03">
+            <div class="f_r">
+                <div th:each="variable : ${variables}" class="dropdown d_ib">
+                    <select th:name="|var-${variable?.name}|" th:id="|var-${variable?.name}|"
+                            th:disabled="${variable?.values == null ? 'true' : 'false'}" class="custom-select">
+                        <option value="" selected disabled hidden> -- select variable -- </option>
+                        <option th:each="value : ${variable?.values}"
+                                th:value="${variable}" th:text="${value}" value="">value</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+
     <th:block th:fragment="value-card-panel(panel)">
         <div class="col-md-12 col-lg-15">
             <div class="box1">

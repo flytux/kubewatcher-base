@@ -307,9 +307,9 @@ let commonChartsJs = (function () {
             if (minus == "-") str = "-" + str;
         } else if (unit == 'bytes') {
             var bFloat = parseFloat(str);
-            var mibValue = bFloat / 1024 / 1024;
-            mibValue = mibValue.toFixed(1);
-            str = mibValue+'MiB';
+            var mbValue = bFloat / 1024 / 1024;
+            mbValue = mbValue.toFixed(1);
+            str = mbValue+'MB';
         } else if (unit == 'sec') {
             var sFloat = parseFloat(str);
             sFloat = sFloat.toFixed(1);
@@ -884,10 +884,18 @@ let commonChartsJs = (function () {
                     labels: {
                         // format: '{value} '+ panel.yaxisUnit,
                         formatter: function () {
-                            if (Math.abs(this.value) > 1000) {
-                                return Highcharts.numberFormat(this.value / 1024, 0) + " K" + panel.yaxisUnit;
-                            }
-                            return this.value + ' ' + panel.yaxisUnit;
+                            // if (Math.abs(this.value) > 1000) {
+                            //     return Highcharts.numberFormat(this.value / 1024, 0) + " K" + panel.yaxisUnit;
+                            // }
+                            // return this.value + ' ' + panel.yaxisUnit;
+                            let unit = panel.yaxisUnit === 'float' ? "" : panel.yaxisUnit;
+                            return Math.abs(this.value) > 1000000000
+                                ? Highcharts.numberFormat(this.value / 1024 / 1024 / 1024, 0) + " G" + unit
+                                : Math.abs(this.value) > 1000000
+                                    ? Highcharts.numberFormat(this.value / 1024 / 1024, 0) + " M" + unit
+                                    : Math.abs(this.value) > 1000
+                                        ? Highcharts.numberFormat(this.value / 1024, 0) + " K" + unit
+                                        : this.value + ' ' + unit;
                         }
                     }
                 },
@@ -918,11 +926,13 @@ let commonChartsJs = (function () {
                 if (index === 0) {
                     const valueHtml = item.name === 'N/A' ? '<span style="font-size:calc({series.chart.plotWidth} * 0.0066em);font-weight:bold;opacity:0.7;">' + item.name + '</span><br/>'
                         : '<span style="font-size:calc({series.chart.plotWidth} * 0.0066em);font-weight:bold;opacity:0.7;">{y}</span><br/>';
+
+                    let unit = panel.yaxisUnit === '' || panel.yaxisUnit === 'float'  ? '' : ' [' + panel.yaxisUnit + ']';
                     item.dataLabels = {
                         format:
                             '<div style="text-align:center">' +
                             valueHtml +
-                            '<span style="font-size:10px;opacity:0.4">' + panel.title + ' [' + panel.yaxisUnit + ']' +
+                            '<span style="font-size:10px;opacity:0.4">' + panel.title + unit +
                             '</span>' +
                             '</div>'
                     };
@@ -1121,14 +1131,14 @@ let commonChartsJs = (function () {
                     series: {
                         enableMouseTracking: false,
                         animation: false,
-                        lineWidth: 0,
+                        lineWidth: 2,
                         shadow: false,
-                        fillColor: '#5a5c69',
+                        color: '#256eb0',
                         marker: {
                             enabled: false
                         },
-                        showInNavigator: true
-                        //fillOpacity: 0.2
+                        showInNavigator: true,
+                        fillOpacity: 0.2
                     }
                 },
                 tooltip: {
@@ -1197,6 +1207,7 @@ let commonChartsJs = (function () {
                 plotOptions: {
                     bar: {
                         dataLabels: {
+                            lineWidth: 0,
                             enabled: true,
                             useHTML: true,
                             padding: 0,

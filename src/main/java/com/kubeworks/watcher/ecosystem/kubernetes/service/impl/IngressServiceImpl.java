@@ -156,6 +156,10 @@ public class IngressServiceImpl implements IngressService {
         EndpointDescribe endpointDescribe = endpointOptional.get();
         List<V1EndpointSubset> subsets = endpointDescribe.getSubsets();
 
+        if (CollectionUtils.isEmpty(subsets)) {
+            return Collections.emptyList();
+        }
+
         return subsets.stream()
             .filter(subset -> subset.getAddresses() != null)
             .map(subset -> {

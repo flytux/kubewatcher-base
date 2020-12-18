@@ -82,9 +82,60 @@
                     <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
                 </div>
                 <div class="row">
-                    <th:block th:each="panel : ${pageRows?.pageRowPanels}">
-                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
-                    </th:block>
+<!--                    <th:block th:each="panel : ${pageRows?.pageRowPanels}">-->
+<!--                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>-->
+<!--                    </th:block>-->
+                    <div class="box_panel">
+                        <div class="box_panel-heading2">
+                            <div class="circle c_normal"></div>Normal&nbsp;&nbsp;&nbsp;&nbsp;
+                            <div class="circle c_warning"></div>Warning&nbsp;&nbsp;&nbsp;&nbsp;
+                            <div class="circle c_danger"></div>Danger
+                        </div>
+                        <div class="box_table-body">
+                            <table class="list_system">
+                                <thead>
+                                <tr>
+                                    <th>Alarm명</th>
+                                    <th>Message</th>
+                                    <th>Severity</th>
+                                    <th>Category</th>
+                                    <th>System</th>
+                                    <th>Time</th>
+                                    <th>Check</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>CPU High</td>
+                                    <td>HLI1000 CPU 80%</td>
+                                    <td><div class="circle c_normal"></div></td>
+                                    <td>VM</td>
+                                    <td>HLI1000</td>
+                                    <td>2020-03-24   12:34:05</td>
+                                    <td><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> Check</button></td>
+                                </tr>
+                                <tr>
+                                    <td>CPU High</td>
+                                    <td>HLI1000 CPU 80%</td>
+                                    <td><div class="circle c_warning"></div></td>
+                                    <td>VM</td>
+                                    <td>HLI1000</td>
+                                    <td>2020-03-24   12:34:05</td>
+                                    <td><button class="btn btn-md btn-outline-white"><i class="feather icon-check-circle"></i> 확&nbsp;&nbsp;&nbsp;인</button></td>
+                                </tr>
+                                <tr>
+                                    <td>CPU High</td>
+                                    <td>HLI1000 CPU 80%</td>
+                                    <td><div class="circle c_danger"></div></td>
+                                    <td>VM</td>
+                                    <td>HLI1000</td>
+                                    <td>2020-03-24   12:34:05</td>
+                                    <td><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> Check</button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </th:block>
         </div>
