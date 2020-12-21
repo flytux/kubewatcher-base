@@ -140,14 +140,15 @@
             </th:block>
         </div>
     </div>
-    <input type="hidden" id="var-services" th:value="${services}">
+    <input type="hidden" id="var-services" th:value="${services?.serviceNamesOfPromQL}">
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         let pageRows = [[${page?.rows}]],
-            apiHost = [[${host}]];
+            apiHost = [[${host}]],
+            serviceMap = [[${services?.serviceMap}]];;
         /*]]>*/
         $(document).ready(function () {
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));

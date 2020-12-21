@@ -22,13 +22,20 @@
             </div>
             <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
-                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                    <th:block th:if="${#strings.equalsIgnoreCase(panel.panelType, 'PANEL_GROUP')}">
+                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel}, ${services})"/>
+                    </th:block>
+
+                    <th:block th:unless="${#strings.equalsIgnoreCase(panel.panelType, 'PANEL_GROUP')}">
+                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                    </th:block>
+
                 </th:block>
             </div>
         </div>
     </div>
 
-    <input type="hidden" id="var-services" th:value="${services}">
+    <input type="hidden" id="var-services" th:value="${services?.serviceNamesOfPromQL}">
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/axios/axios.min.js}"></script>
@@ -37,7 +44,8 @@
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         let pageRows = [[${page?.rows}]],
-            apiHost = [[${host}]];
+            apiHost = [[${host}]],
+            serviceMap = [[${services?.serviceMap}]];
         /*]]>*/
 
         $(document).ready(function () {

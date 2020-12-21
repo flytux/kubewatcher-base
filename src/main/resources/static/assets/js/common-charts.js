@@ -198,7 +198,6 @@ let commonChartsJs = (function () {
         if (panel.panelType === 'HTML_TABLE') {
             const tableHtml = tableData.substring(tableData.indexOf('<thead>'),
                 tableData.indexOf('</tbody>') + 8);
-
             $('#container-' + panel.panelId)
                 .html(tableHtml);
             return;
@@ -417,13 +416,14 @@ let commonChartsJs = (function () {
     }
 
     function getBoardItem(data, colSize) {
+        let displayName = data.code !== undefined ? data.code : data.name;
         let classColSize = parseInt(12 / colSize);
         let grade = "box_mini_d";
         if (data.pods > 0) {
             grade = data.avgResponseTime < 3 ? "box_mini_g"
                 : data.avgResponseTime < 5 ? "box_mini_y" : "box_mini_r";
         }
-        return `<td class="col-xs-${classColSize} col-lg-${classColSize}"><div class="${grade}">${data.name}</div></td>`;
+        return `<td class="col-xs-${classColSize} col-lg-${classColSize}"><div class="${grade}">${displayName}</div></td>`;
     }
 
     return {
@@ -592,6 +592,8 @@ let commonChartsJs = (function () {
                         applicationName = applicationName.substring(applicationName.indexOf("-") + 1, applicationName.length);
                     }
                     let application = boardMap.get(applicationName);
+                    const service = typeof serviceMap !== "undefined" ? serviceMap[applicationName] : undefined;
+
                     const metric = isResponseTimeQuery ? parseFloat(value.value[1]).toFixed(2) - 0
                         : parseInt(value.value[1]);
                     if (application === undefined) {
@@ -599,6 +601,7 @@ let commonChartsJs = (function () {
                             name: applicationName,
                             avgResponseTime: isResponseTimeQuery ? metric : undefined,
                             pods: !isResponseTimeQuery ? metric : undefined,
+                            code: service !== undefined ? service.code : undefined
                         });
                     } else {
                         if (isResponseTimeQuery) {
@@ -620,6 +623,10 @@ let commonChartsJs = (function () {
                 return;
             }
             let services = [...dataMap.values()];
+            services.sort(function (s1, s2) {
+                return s1.name.toUpperCase() > s2.name.toUpperCase() ? 1
+                    : s1.name.toUpperCase() === s2.name.toUpperCase() ? 0 : -1;
+            })
             const boardHtml = String.prototype.concat(
                 '<div class="row col-xs-12 row_scroll application-board-height"><table class="table_mini">',
                 '<tbody><tr>', services.map((value, index) => {

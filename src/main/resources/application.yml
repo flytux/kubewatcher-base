@@ -147,3 +147,270 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
+
+---
+spring:
+  profiles: test-cluster
+application:
+  properties:
+    services:
+      - code: BAC
+        name: dev-core-bac-deploy
+        namespace: dev-core-ns
+        displayName: 입금
+      - code: BNC
+        name: dev-core-bnc-deploy
+        namespace: dev-core-ns
+        displayName: 방카BNC
+      - code: CHE
+        name: dev-core-che-deploy
+        namespace: dev-core-ns
+        displayName: 건강검진
+      - code: CLM
+        name: dev-core-clm-deploy
+        namespace: dev-core-ns
+        displayName: 클레임처리
+      - code: COM
+        name: dev-core-com-deploy
+        namespace: dev-core-ns
+        displayName: 공통업무
+      - code: COP
+        name: dev-core-cop-deploy
+        namespace: dev-core-ns
+        displayName: 클레임지급
+      - code: CTC
+        name: dev-core-ctc-deploy
+        namespace: dev-core-ns
+        displayName: 계약변경
+      - code: FHB
+        name: dev-core-fhb-deploy
+        namespace: dev-core-ns
+        displayName: 재무HUB
+      - code: IBC
+        name: dev-core-ibc-deploy
+        namespace: dev-core-ns
+        displayName: 산출공통
+      - code: IFR
+        name: dev-core-ifr-deploy
+        namespace: dev-core-ns
+        displayName: 보험사기관리
+      - code: IPM
+        name: dev-core-ipm-deploy
+        namespace: dev-core-ns
+        displayName: 통합입출금
+      - code: MGM
+        name: dev-core-mgm-deploy
+        namespace: dev-core-ns
+        displayName: 사차관리
+      - code: MRM
+        name: dev-core-mrm-deploy
+        namespace: dev-core-ns
+        displayName: 병력관리
+      - code: NCT
+        name: dev-core-nct-deploy
+        namespace: dev-core-ns
+        displayName: 신계약청약
+      - code: QOT
+        name: dev-core-qot-deploy
+        namespace: dev-core-ns
+        displayName: 가입설계
+      - code: SVP
+        name: dev-core-svp-deploy
+        namespace: dev-core-ns
+        displayName: 생존지급
+      - code: UDW
+        name: dev-core-udw-deploy
+        namespace: dev-core-ns
+        displayName: 언더라이딩
+      - code: VRI
+        name: dev-core-vri-deploy
+        namespace: dev-core-ns
+        displayName: 변액
+      - code: CEB
+        name: dev-cust-ceb-deploy
+        namespace: dev-cust-ns
+        displayName: 고객이벤트버스
+      - code: ICM
+        name: dev-cust-icm-deploy
+        namespace: dev-cust-ns
+        displayName: 통합고객관리
+      - code: ICS
+        name: dev-cust-ics-deploy
+        namespace: dev-cust-ns
+        displayName: 통합고객지원(신원확인)
+      - code: HCG
+        name: dev-pica-hcg-deploy
+        namespace: dev-pica-ns
+        displayName: 솔루션설정
+      - code: HDM
+        name: dev-pica-hdm-deploy
+        namespace: dev-pica-ns
+        displayName: 모니터링
+      - code: HGW
+        name: dev-pica-hgw-deploy
+        namespace: dev-pica-ns
+        displayName: 인증/권한/워크플로우
+      - code: HMS
+        name: dev-pica-hms-deploy
+        namespace: dev-pica-ns
+        displayName: 메타관리
+      - code: HPA
+        name: dev-pica-hpa-deploy
+        namespace: dev-pica-ns
+        displayName: HPAS관리페이지
+      - code: HPF
+        name: dev-pica-hpf-deploy
+        namespace: dev-pica-ns
+        displayName: 상품팩토리
+      - code: HPS
+        name: dev-pica-hps-deploy
+        namespace: dev-pica-ns
+        displayName: 계약구조정보
+      - code: HQI
+        name: dev-pica-hqi-deploy
+        namespace: dev-pica-ns
+        displayName: HPAS가입설계(데모)
+      - code: HRS
+        name: dev-pica-hrs-deploy
+        namespace: dev-pica-ns
+        displayName: Rule Engine
+      - code: HST
+        name: dev-pica-hst-deploy
+        namespace: dev-pica-ns
+        displayName: 이관
+      - code: PT
+        name: dev-core-pt-deploy
+        namespace: dev-core-ns
+        displayName: Unknown
+
+---
+spring:
+  profiles: dev-cluster
+
+application:
+  properties:
+    services:
+      - code: BAC
+        name: dev-core-bac-deploy
+        namespace: dev-core-ns
+        displayName: 입금
+      - code: BNC
+        name: dev-core-bnc-deploy
+        namespace: dev-core-ns
+        displayName: 방카BNC
+      - code: CHE
+        name: dev-core-che-deploy
+        namespace: dev-core-ns
+        displayName: 건강검진
+      - code: CLM
+        name: dev-core-clm-deploy
+        namespace: dev-core-ns
+        displayName: 클레임처리
+      - code: COM
+        name: dev-core-com-deploy
+        namespace: dev-core-ns
+        displayName: 공통업무
+      - code: COP
+        name: dev-core-cop-deploy
+        namespace: dev-core-ns
+        displayName: 클레임지급
+      - code: CTC
+        name: dev-core-ctc-deploy
+        namespace: dev-core-ns
+        displayName: 계약변경
+      - code: FHB
+        name: dev-core-fhb-deploy
+        namespace: dev-core-ns
+        displayName: 재무HUB
+      - code: IBC
+        name: dev-core-ibc-deploy
+        namespace: dev-core-ns
+        displayName: 산출공통
+      - code: IFR
+        name: dev-core-ifr-deploy
+        namespace: dev-core-ns
+        displayName: 보험사기관리
+      - code: IPM
+        name: dev-core-ipm-deploy
+        namespace: dev-core-ns
+        displayName: 통합입출금
+      - code: MGM
+        name: dev-core-mgm-deploy
+        namespace: dev-core-ns
+        displayName: 사차관리
+      - code: MRM
+        name: dev-core-mrm-deploy
+        namespace: dev-core-ns
+        displayName: 병력관리
+      - code: NCT
+        name: dev-core-nct-deploy
+        namespace: dev-core-ns
+        displayName: 신계약청약
+      - code: QOT
+        name: dev-core-qot-deploy
+        namespace: dev-core-ns
+        displayName: 가입설계
+      - code: SVP
+        name: dev-core-svp-deploy
+        namespace: dev-core-ns
+        displayName: 생존지급
+      - code: UDW
+        name: dev-core-udw-deploy
+        namespace: dev-core-ns
+        displayName: 언더라이딩
+      - code: VRI
+        name: dev-core-vri-deploy
+        namespace: dev-core-ns
+        displayName: 변액
+      - code: CEB
+        name: dev-cust-ceb-deploy
+        namespace: dev-cust-ns
+        displayName: 고객이벤트버스
+      - code: ICM
+        name: dev-cust-icm-deploy
+        namespace: dev-cust-ns
+        displayName: 통합고객관리
+      - code: ICS
+        name: dev-cust-ics-deploy
+        namespace: dev-cust-ns
+        displayName: 통합고객지원(신원확인)
+      - code: HCG
+        name: dev-pica-hcg-deploy
+        namespace: dev-pica-ns
+        displayName: 솔루션설정
+      - code: HDM
+        name: dev-pica-hdm-deploy
+        namespace: dev-pica-ns
+        displayName: 모니터링
+      - code: HGW
+        name: dev-pica-hgw-deploy
+        namespace: dev-pica-ns
+        displayName: 인증/권한/워크플로우
+      - code: HMS
+        name: dev-pica-hms-deploy
+        namespace: dev-pica-ns
+        displayName: 메타관리
+      - code: HPA
+        name: dev-pica-hpa-deploy
+        namespace: dev-pica-ns
+        displayName: HPAS관리페이지
+      - code: HPF
+        name: dev-pica-hpf-deploy
+        namespace: dev-pica-ns
+        displayName: 상품팩토리
+      - code: HPS
+        name: dev-pica-hps-deploy
+        namespace: dev-pica-ns
+        displayName: 계약구조정보
+      - code: HQI
+        name: dev-pica-hqi-deploy
+        namespace: dev-pica-ns
+        displayName: HPAS가입설계(데모)
+      - code: HRS
+        name: dev-pica-hrs-deploy
+        namespace: dev-pica-ns
+        displayName: Rule Engine
+      - code: HST
+        name: dev-pica-hst-deploy
+        namespace: dev-pica-ns
+        displayName: 이관

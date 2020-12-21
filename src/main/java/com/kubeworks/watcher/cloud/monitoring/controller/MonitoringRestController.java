@@ -42,7 +42,7 @@ public class MonitoringRestController {
     @GetMapping(value = "/monitoring/application/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> application() {
         Map<String, Object> response = responseData(applicationPageMetricService.pageMetrics(APPLICATION_OVERVIEW_MENU_ID));
-        response.put("services", applicationServiceProperties.getServiceNamesOfPromQL());
+        response.put("services", applicationServiceProperties);
         return response;
     }
 
@@ -91,7 +91,7 @@ public class MonitoringRestController {
     @GetMapping(value = "/main", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> dashboard() {
         Map<String, Object> response = responseData(pageViewService.getPageView(MAIN_MENU_ID));
-        response.put("services", applicationServiceProperties.getServiceNamesOfPromQL());
+        response.put("services", applicationServiceProperties);
         return response;
     }
 
