@@ -541,12 +541,25 @@
                 <div class="box_panel-heading1" th:text="${panel?.title}">Node</div>
                 <th:block th:if="${panel?.panelType} == 'UP/DOWN'">
                     <div class="box_panel-text4">
-                        <div class="box_big_g mb_7 mt_6 w70" th:id="|container-${panel?.panelId}|">UP</div>
+                        <div class="box_big_g mb_7 mt_6 w70" th:id="|container-${panel?.panelId}|">
+                            <div class="col-lg-12 text-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </th:block>
                 <th:block th:unless="${panel?.panelType} == 'UP/DOWN'">
                     <div class="box_panel-text4">
-                        <span th:id="|container-${panel?.panelId}|" class="color_g">21</span><span th:id="|container--${panel?.panelId}|" class="st"> / 55</span>
+                        <span th:id="|container-${panel?.panelId}|" class="color_g">
+                            <div class="col-lg-12 text-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </span>
+                        <span th:id="|container--${panel?.panelId}|" class="st"></span>
                     </div>
                 </th:block>
             </div>

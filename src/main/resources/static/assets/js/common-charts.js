@@ -183,7 +183,7 @@ let commonChartsJs = (function () {
                 console.warn("unsupported result type=" + item.data.data.resultType);
                 return 0;
             }
-            return item.data.result.map(resultItem =>
+            return item.data.result.flatMap(resultItem =>
                 parseInt(resultItem.value[1]));
         }).reduce((value1, value2) => value1 + value2)[0];
     }
@@ -526,14 +526,17 @@ let commonChartsJs = (function () {
 
         createUpDown: function (panel, dataArray) {
             const upDown = convertSumBadgeData(dataArray);
-            if (upDown == '1') {
-                if (panel.title == 'Application Status') {
+            if (upDown !== undefined) {
+                $('#container-' + panel.panelId).html('');
+            }
+            if (upDown > 0) {
+                if (panel.title === 'Application Status') {
                     $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up_s">UP</div>');
                 } else {
                     $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up">UP</div>');
                 }
             } else {
-                if (panel.title == 'Application Status') {
+                if (panel.title === 'Application Status') {
                     $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down_s">DOWN</div>');
                 } else {
                     $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down">DOWN</div>');
