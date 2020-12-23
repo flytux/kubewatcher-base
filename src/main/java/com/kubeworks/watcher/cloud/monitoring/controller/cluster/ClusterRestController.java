@@ -48,6 +48,7 @@ public class ClusterRestController {
     private final PersistentVolumeService persistentVolumeService;
     private final StorageService storageService;
     private final EventService eventService;
+    private final ComponentStatusService componentStatusService;
 
     private final PageViewService pageViewService;
 
@@ -329,6 +330,13 @@ public class ClusterRestController {
         }
         return response;
     }
+
+    @GetMapping(value = "/monitoring/cluster/component/status/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResponse<MetricResponseData> eventCount(@PathVariable String name) {
+        return componentStatusService.componentStatusMetric(name);
+    }
+
+
 
     @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EventTable> events(@PathVariable String namespace) {

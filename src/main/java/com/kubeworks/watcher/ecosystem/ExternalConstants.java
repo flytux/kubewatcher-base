@@ -64,6 +64,7 @@ public class ExternalConstants {
     public final String SUCCESS_STATUS_STR = "success";
     public final String NONE_STR = "None";
 
+    public final String UNKNOWN = "Unknown";
     public final String NONE = "<None>";
     public final String NODE_ROLE_KUBERNETES_IO = "node-role.kubernetes.io/";
     public final String KUBERNETES_IO_ROLE = "kubernetes.io/role";
