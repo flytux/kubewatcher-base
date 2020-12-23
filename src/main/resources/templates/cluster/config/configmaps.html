@@ -13,7 +13,7 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Container<i class=&quot;feather icon-chevron-right&quot; ></i>Config<i class=&quot;feather icon-chevron-right&quot; ></i>Configmaps')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Configuration<i class=&quot;feather icon-chevron-right&quot; ></i>ConfigMaps')"/>
     <div id="main_contents">
 
         <!-- [Configmaps] start -->
@@ -128,7 +128,7 @@
                                 <input th:id="|modal-answer-${codeId?.key}|"
                                        type="checkbox" name="accordion" id="modal-answer">
                                 <label th:for="|modal-answer-${codeId?.key}|" for="modal-answer" style="height:30px">
-                                    <span th:text="${codeId?.key}">kube-state-metrics</span><em></em>
+                                    <span style="color:#bebebe" th:text="${codeId?.key}">kube-state-metrics</span><em></em>
                                 </label>
                                 <div class="row">
                                 <pre style="color:gray"><code id ="code-area" th:text="${codeId.value}"> </code></pre>

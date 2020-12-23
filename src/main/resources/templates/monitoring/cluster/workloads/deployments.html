@@ -9,16 +9,16 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Deployments')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Deployments')"/>
     <div id="main_contents">
 
         <!-- [클러스터 Pods] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Deployment
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Deployments
 <!--                <div class="f_r">-->
 <!--                    <div class=" d_ib">-->
 <!--                        <div class="form-group has-feedback d_ib">-->
-<!--                            <input type="text" placeholder="Search" class="search_table">-->
+<!--                            <input th:id="namespace" type="text" placeholder="Search" class="search_table">-->
 <!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
 <!--                        </div>-->
 <!--                    </div>-->
@@ -169,7 +169,7 @@
                         <tr>
                             <th>Type</th>
                             <th>Reason</th>
-                            <th>LastTime</th>
+                            <th>Last Time</th>
                             <th>Message</th>
                         </tr>
                         </thead>
@@ -315,7 +315,6 @@
                 }
             });
         }
-
 
     </script>
 
