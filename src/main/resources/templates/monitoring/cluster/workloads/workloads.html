@@ -9,7 +9,7 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
     <div id="main_contents">
         <div th:each="panelRow : ${page?.rows}">
             <div th:if="${panelRow?.rowType == T(com.kubeworks.watcher.data.vo.PageRowType).VARIABLE}" class="row">
