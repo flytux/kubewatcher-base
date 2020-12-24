@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
+import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleBindingTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectAsTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
@@ -59,8 +60,19 @@ public class RbacV1RoleBindingTableList extends V1ObjectTableList<RoleBindingTab
                 makeObject(data, fieldName, value);
             });
             if (row.getObject().getMetadata() != null) {
+                data.setName(row.getObject().getMetadata().getName());
                 data.setNamespace(row.getObject().getMetadata().getNamespace());
+                if (row.getObject().getMetadata().getCreationTimestamp() != null) {
+                    String age = ExternalConstants.getCurrentBetweenPeriod(row.getObject().getMetadata().getCreationTimestamp().toInstant().getMillis());
+                    data.setAge(age);
+                }
             }
+
+            if (row.getObject().getRoleRef() != null) {
+                String role = row.getObject().getRoleRef().getKind() + "/" + row.getObject().getRoleRef().getName();
+                data.setRole(role);
+            }
+
             list.add(data);
         }
         return list;

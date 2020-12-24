@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,10 +34,29 @@ public class RoleBindingServiceImpl implements RoleBindingService {
     @SneakyThrows
     @Override
     public List<RoleBindingTable> allNamespaceRoleBindingTables() {
-        ApiResponse<RbacV1RoleBindingTableList> apiResponse = rbacApi.allNamespaceRoleBindingAsTables("true");
+//        ApiResponse<RbacV1RoleBindingTableList> apiResponse = rbacApi.allNamespaceRoleBindingAsTables("true");
+        ApiResponse<V1RoleBindingList> apiResponse = rbacApi.listRoleBindingForAllNamespacesWithHttpInfo(null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, "false", null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
+
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
-            RbacV1RoleBindingTableList roleBindings = apiResponse.getData();
-            return roleBindings.getDataTable();
+            V1RoleBindingList data = apiResponse.getData();
+
+            return data.getItems().stream().map(v1RoleBinding -> {
+                RoleBindingTable roleBindingTable = new RoleBindingTable();
+                if (v1RoleBinding.getMetadata() != null) {
+                    roleBindingTable.setName(v1RoleBinding.getMetadata().getName());
+                    roleBindingTable.setNamespace(v1RoleBinding.getMetadata().getNamespace());
+                    if (v1RoleBinding.getMetadata().getCreationTimestamp() != null) {
+                        String age = ExternalConstants.getCurrentBetweenPeriod(v1RoleBinding.getMetadata().getCreationTimestamp().toInstant().getMillis());
+                        roleBindingTable.setAge(age);
+                    }
+                }
+
+                if (v1RoleBinding.getRoleRef() != null) {
+                    String role = v1RoleBinding.getRoleRef().getKind() + "/" + v1RoleBinding.getRoleRef().getName();
+                    roleBindingTable.setRole(role);
+                }
+                return roleBindingTable;
+            }).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
