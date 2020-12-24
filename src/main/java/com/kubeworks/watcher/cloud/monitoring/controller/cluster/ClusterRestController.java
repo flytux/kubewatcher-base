@@ -291,7 +291,7 @@ public class ClusterRestController {
         Page pageView = pageViewService.getPageView(STORAGE_MENU_ID);
         persistentVolumeClaim.put("page", pageView);
 
-        String persistentVolumeClaimDescribeHtml = springTemplateEngine.process("/monitoring/cluster/storages",
+        String persistentVolumeClaimDescribeHtml = springTemplateEngine.process("monitoring/cluster/storages",
             Collections.singleton("pvcModalContents"), new Context(Locale.KOREA, persistentVolumeClaim));
 
         persistentVolumeClaim.put("describe", persistentVolumeClaimDescribeHtml);
