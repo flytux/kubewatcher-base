@@ -9,7 +9,7 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-	<th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Access Control<i class=&quot;feather icon-chevron-right&quot; ></i>Role Bindings')"/>
+	<th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Access Control<i class=&quot;feather icon-chevron-right&quot; ></i>Role Bindings')"/>
     <div id="main_contents">
 
         <!-- [Alarm 설정 목록] start -->
@@ -48,8 +48,8 @@
                         <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Role</th>
                             <th>Namespace</th>
+                            <th>Role</th>
                             <th>Age</th>
                         </tr>
                         </thead>
@@ -62,8 +62,8 @@
                                 <a class="table2-link" th:href="'javascript:roleBindingDetail(&quot;' + ${roleBinding?.namespace} + '&quot;, &quot;'+ ${roleBinding?.name} + '&quot;)'"
                                    th:utext="${roleBinding?.name}">Name</a>
                             </td>
-                            <td th:text="${roleBinding?.role}">system:master</td>
                             <td th:text="${roleBinding?.namespace}">kube-system</td>
+                            <td th:text="${roleBinding?.role}">system:master</td>
                             <td th:text="${roleBinding?.age}">2020-06-29 14:21:05</td>
                         </tr>
                         </tbody>

@@ -9,30 +9,39 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Deployments')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Deployments')"/>
     <div id="main_contents">
 
         <!-- [클러스터 Pods] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Deployment
-                <div class="f_r">
-                    <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
-                            <option value="all" selected> All </option>
-                            <option th:each="namesapce : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${namesapce?.name}" th:text="${namesapce?.name}">value</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Deployments
+<!--                <div class="f_r">-->
+<!--                    <div class=" d_ib">-->
+<!--                        <div class="form-group has-feedback d_ib">-->
+<!--                            <input th:id="namespace" type="text" placeholder="Search" class="search_table">-->
+<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="dropdown d_ib">-->
+<!--                        <select id="multi-select-box">-->
+<!--                            <option value="통합관리환경 admin">통합관리환경 admin</option>-->
+<!--                            <option value="보험코어 monitor">보험코어 monitor</option>-->
+<!--                            <option value="Cluster monitor">Cluster monitor</option>-->
+<!--                            <option value="Cluster log viewer">Cluster log viewer</option>-->
+<!--                            <option value="On-premise monitor">On-premise monitor</option>-->
+<!--                            <option value="Cluster admin">Cluster admin</option>-->
+<!--                            <option value="Dashboard operator">Dashboard operator</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
 
-        <div id="contentList" class="row">
-            <div th:fragment="contentList" class="box_panel">
+        <div class="row">
+            <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(deployments) ? '0' : deployments.size()}" class="point pr_10">8</span>
+<!--                    Page : <span class="point">1</span>/1-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">
@@ -160,7 +169,7 @@
                         <tr>
                             <th>Type</th>
                             <th>Reason</th>
-                            <th>LastTime</th>
+                            <th>Last Time</th>
                             <th>Message</th>
                         </tr>
                         </thead>
@@ -275,9 +284,7 @@
 
         var apiHost,
             $namespace = $("#var-namespace"),
-            $name = $("#var-name"),
-            $contentList = $("#contentList"),
-            linkUrl= [[${link}]]
+            $name = $("#var-name");
 
 
         function deployDetail(namespace, name) {
@@ -308,30 +315,6 @@
                 }
             });
         }
-
-        $(document).ready(function () {
-
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
-            });
-
-        });
-
 
     </script>
 
