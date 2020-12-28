@@ -292,6 +292,35 @@ let commonChartsJs = (function () {
         }).add();
     }
 
+    function drawOneLabelByGauge(chart, series, unit, title) {
+        let displayValue = "";
+        let positionX = chart.chartWidth / 2;
+        let positionY = (chart.chartHeight - (chart.legend.display ? chart.legend.legendHeight : 0) - chart.plotTop) / 2;
+        if (series.length === 2 && unit === '%') {
+            displayValue = ((series[1].yData[series[1].yData.length - 1] / series[0].yData[series[0].yData.length - 1]) * 100).toFixed(1) + "%";
+        } else {
+            let v = series[0].points[series[0].points.length - 1];
+            displayValue = addSparkUnitFormat(v.y, unit);
+        }
+
+        if (chart.customText !== undefined) {
+            chart.customText.textStr = displayValue;
+            chart.customText.x = positionX;
+            chart.customText.y = positionY;
+            chart.customText.onAdd();
+            return;
+        }
+
+        let render = chart.renderer;
+        chart.customText = render.label(displayValue, positionX, positionY, 'rect', 0, 0, false, true, title).css({
+            color: '#FFFFFF',
+            fontSize: 'calc(' + chart.plotHeight + '* 0.013em)'
+        }).attr({
+            zIndex: 5,
+            align: 'center',
+        }).add();
+    }
+
     //스파크라인 차트용 포맷
     function addSparkUnitFormat(str, unit) {
         str = String(str);
@@ -313,6 +342,8 @@ let commonChartsJs = (function () {
             var sFloat = parseFloat(str);
             sFloat = sFloat.toFixed(1);
             str = sFloat+' s'
+        } else {
+            str = str + unit;
         }
         return str;
     }
@@ -970,13 +1001,19 @@ let commonChartsJs = (function () {
                 })
             });
 
+            let yAxisMax = series[0].data[0].y > panel.yaxisMax ? series[0].data[0].y : panel.yaxisMax;
+
             return {
                 chart: {
                     type: 'solidgauge',
                     events: {
                         load: function () {
+                            drawOneLabelByGauge(this, this.series, panel.yaxisUnit, panel.title);
                             scheduleMap.set(panel.panelId,
                                 setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
+                        },
+                        redraw: function () {
+                            drawOneLabelByGauge(this, this.series, panel.yaxisUnit, panel.title);
                         }
                     }
                 },
@@ -1016,13 +1053,14 @@ let commonChartsJs = (function () {
 
                 yAxis: {
                     min: parseFloat(panel.yaxisMin),
-                    max: parseFloat(panel.yaxisMax),
+                    max: parseFloat(yAxisMax),
                     lineWidth: 0,
                     tickPositions: []
                 },
                 plotOptions: {
                     solidgauge: {
                         dataLabels: {
+                            enabled: false,
                             x: 0,
                             y: -40,
                             borderWidth: 0,

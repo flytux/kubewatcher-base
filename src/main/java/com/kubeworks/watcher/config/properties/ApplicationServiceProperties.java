@@ -29,7 +29,7 @@ public class ApplicationServiceProperties {
 
     @JsonIgnore
     public String getServiceNamesOfPromQL() {
-        return services.stream().map(Service::getName).collect(Collectors.joining("|"));
+        return services.stream().map(Service::getName).collect(Collectors.joining(".*|","", ".*"));
     }
 
     @JsonIgnore
