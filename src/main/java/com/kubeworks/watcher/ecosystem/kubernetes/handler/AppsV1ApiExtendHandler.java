@@ -29,6 +29,11 @@ public class AppsV1ApiExtendHandler extends AppsV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1DeploymentTableList.class).getType());
     }
 
+    public ApiResponse<AppsV1DeploymentTableList> namespaceDeploymentAsTable(String namespace, String pretty) throws ApiException {
+        Call call = listDeploymentAsTableNamespacesCall(namespace, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1DeploymentTableList.class).getType());
+    }
+
     public ApiResponse<AppsV1DaemonSetTableList> allNamespaceDaemonSetAsTable(String pretty) throws ApiException {
         Call call = listDaemonSetAsTablesForAllNamespacesCall(pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1DaemonSetTableList.class).getType());
@@ -41,6 +46,18 @@ public class AppsV1ApiExtendHandler extends AppsV1Api implements BaseExtendHandl
 
     public Call listDeploymentAsTableAllNamespacesCall(String pretty) throws ApiException {
         String localVarPath = "/apis/apps/v1/deployments";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listDeploymentAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/apis/apps/v1/namespaces/{namespace}/deployments".replaceAll("\\{" + "namespace" + "}", namespace);
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
 
         if (pretty != null) {

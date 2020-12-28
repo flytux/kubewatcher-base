@@ -12,6 +12,8 @@ public interface PodService {
 
     List<PodTable> allNamespacePodTables();
 
+    List<PodTable> podTables(String namespace);
+
     List<PodTable> podTables(String namespace, Map<String, String> selector);
 
     Optional<PodDescribe> pod(String namespace, String podName);

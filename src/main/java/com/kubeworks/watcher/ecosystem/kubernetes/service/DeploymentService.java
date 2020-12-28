@@ -10,6 +10,8 @@ public interface DeploymentService {
 
     List<DeploymentTable> allNamespaceDeploymentTables();
 
+    List<DeploymentTable> deployments(String namespace);
+
     Optional<DeploymentDescribe> deployment(String namespace, String name);
 
 }

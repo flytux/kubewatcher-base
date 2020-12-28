@@ -53,6 +53,14 @@ public class PodServiceImpl implements PodService {
         return Collections.emptyList();
     }
 
+    @Override
+    public List<PodTable> podTables(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespacePodTables();
+        }
+        return podTables(namespace, Collections.emptyMap());
+    }
+
     @SneakyThrows
     @Override
     public List<PodTable> podTables(String namespace, Map<String, String> selector) {

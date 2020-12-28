@@ -56,6 +56,20 @@ public class DeploymentServiceImpl implements DeploymentService {
 
     @SneakyThrows
     @Override
+    public List<DeploymentTable> deployments(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceDeploymentTables();
+        }
+        ApiResponse<AppsV1DeploymentTableList> apiResponse = appsV1Api.namespaceDeploymentAsTable(namespace, "true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            AppsV1DeploymentTableList deployments = apiResponse.getData();
+            return deployments.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
     public Optional<DeploymentDescribe> deployment(String namespace, String deploymentName) {
         ApiResponse<V1Deployment> apiResponse = appsV1Api.readNamespacedDeploymentWithHttpInfo(deploymentName, namespace, "true", true, false);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
