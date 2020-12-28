@@ -3,21 +3,21 @@ package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleTable;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.RbacV1RoleTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.RbacV1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.RoleService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
-import io.kubernetes.client.openapi.models.*;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1Role;
+import io.kubernetes.client.openapi.models.V1RoleList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,10 +38,24 @@ public class RoleServiceImpl implements RoleService {
     @SneakyThrows
     @Override
     public List<RoleTable> allNamespaceRoleTables() {
-        ApiResponse<RbacV1RoleTableList> apiResponse = rbacV1Api.allNamespaceRoleAsTables("true");
+//        ApiResponse<RbacV1RoleTableList> apiResponse = rbacV1Api.allNamespaceRoleAsTables("true");
+
+        ApiResponse<V1RoleList> apiResponse = rbacV1Api.listRoleForAllNamespacesWithHttpInfo(null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, "false", null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
-            RbacV1RoleTableList secrets = apiResponse.getData();
-            return secrets.getDataTable();
+            V1RoleList data = apiResponse.getData();
+
+            return data.getItems().stream().map(v1Role -> {
+                RoleTable roleTable = new RoleTable();
+                if (v1Role.getMetadata() != null) {
+                    roleTable.setName(v1Role.getMetadata().getName());
+                    roleTable.setNamespace(v1Role.getMetadata().getNamespace());
+                    if (v1Role.getMetadata().getCreationTimestamp() != null) {
+                        String age = ExternalConstants.getCurrentBetweenPeriod(v1Role.getMetadata().getCreationTimestamp().toInstant().getMillis());
+                        roleTable.setAge(age);
+                    }
+                }
+                return roleTable;
+            }).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }

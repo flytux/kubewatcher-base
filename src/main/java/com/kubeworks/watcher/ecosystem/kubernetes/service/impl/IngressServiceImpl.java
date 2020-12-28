@@ -151,7 +151,12 @@ public class IngressServiceImpl implements IngressService {
             .filter(v1ServicePort -> {
                 return (servicePort.isInteger() && servicePort.getIntValue().equals(v1ServicePort.getPort()))
                     || (!servicePort.isInteger() && StringUtils.equalsAnyIgnoreCase(servicePort.getStrValue(), v1ServicePort.getName()));
-            }).map(V1ServicePort::getName).findFirst().orElse("");
+            }).map(v1ServicePort -> {
+                if (v1ServicePort.getName() != null) {
+                    return v1ServicePort.getName();
+                }
+                return v1ServicePort.getPort().toString();
+            }).findFirst().orElse("");
 
         EndpointDescribe endpointDescribe = endpointOptional.get();
         List<V1EndpointSubset> subsets = endpointDescribe.getSubsets();

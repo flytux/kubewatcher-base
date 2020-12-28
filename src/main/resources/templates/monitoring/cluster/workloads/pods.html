@@ -9,7 +9,7 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Pods')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Pods')"/>
     <div id="main_contents">
 
         <!-- [클러스터 Pods] start -->
@@ -196,7 +196,7 @@
                     <div class="row" th:unless="${#arrays.isEmpty(pod?.containers)}"
                          th:each="container : ${pod?.containers}">
                         <input th:id="|modal-answer-${container?.name}|" type="checkbox" name="accordion" id="modal-answer" >
-                        <label th:for="|modal-answer-${container?.name}|" for="modal-answer">
+                        <label th:for="|modal-answer-${container?.name}|" for="modal-answer" style="color:#bebebe">
                             <span th:text="${container?.name}">kube-state-metrics</span><em></em>
                         </label>
                         <div>

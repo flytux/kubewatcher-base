@@ -14,7 +14,7 @@
             max-height: 175px;
         }
     </style>
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Virtual Machine<i class=&quot;feather icon-chevron-right&quot; ></i>Overview')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Dashboard<i class=&quot;feather icon-chevron-right&quot; ></i>Application')"/>
     <div id="main_contents">
         <div th:each="panelRow : ${page?.rows}">
             <div class="row">
