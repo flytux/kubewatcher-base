@@ -9,7 +9,7 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-	<th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Access Control<i class=&quot;feather icon-chevron-right&quot; ></i>Pod Security Polices')"/>
+	<th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Access Control<i class=&quot;feather icon-chevron-right&quot; ></i>Pod Security Polices')"/>
     <div id="main_contents">
         <!-- [Pod Security policy 헤더] start -->
         <div class="row">
@@ -118,9 +118,10 @@
                                 <tr>
                                     <th>Required Drop Capabilities</th>
                                     <td>
-                                        <div class="row" th:each="entry : ${policyDescribe?.specs?.requiredDropCapabilities}" >
-                                            <span class="madal_label" th:text="|${entry}|"></span>
+                                        <div class="row" th:if="${policyDescribe?.specs?.requiredDropCapabilities}"
+                                             th:each="entry : ${policyDescribe?.specs?.requiredDropCapabilities}" th:text="|${entry}|">
                                         </div>
+                                        <div class="row" th:unless="${policyDescribe?.specs?.requiredDropCapabilities}">-</div>
                                     </td>
                                 </tr>
                                 <tr>
