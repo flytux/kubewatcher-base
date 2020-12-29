@@ -14,6 +14,7 @@ import io.kubernetes.client.openapi.models.V1ConfigMap;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,6 +37,20 @@ public class ConfigMapServiceImpl implements ConfigMapService {
     @Override
     public List<ConfigMapTable> allNamespaceConfigMapTables() {
         ApiResponse<V1ConfigMapTableList> apiResponse = coreV1Api.allNamespaceConfigMapAsTable("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1ConfigMapTableList configMaps = apiResponse.getData();
+            return configMaps.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<ConfigMapTable> configMaps(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceConfigMapTables();
+        }
+        ApiResponse<V1ConfigMapTableList> apiResponse = coreV1Api.namespaceConfigMapAsTable(namespace, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ConfigMapTableList configMaps = apiResponse.getData();
             return configMaps.getDataTable();

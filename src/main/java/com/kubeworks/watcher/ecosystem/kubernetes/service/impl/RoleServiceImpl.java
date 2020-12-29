@@ -11,9 +11,11 @@ import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Role;
+import io.kubernetes.client.openapi.models.V1RoleBindingList;
 import io.kubernetes.client.openapi.models.V1RoleList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -50,7 +52,34 @@ public class RoleServiceImpl implements RoleService {
                     roleTable.setName(v1Role.getMetadata().getName());
                     roleTable.setNamespace(v1Role.getMetadata().getNamespace());
                     if (v1Role.getMetadata().getCreationTimestamp() != null) {
-                        String age = ExternalConstants.getCurrentBetweenPeriod(v1Role.getMetadata().getCreationTimestamp().toInstant().getMillis());
+                        String age = ExternalConstants.getBetweenPeriodDay(v1Role.getMetadata().getCreationTimestamp().toInstant().getMillis());
+                        roleTable.setAge(age);
+                    }
+                }
+                return roleTable;
+            }).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<RoleTable> roles(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceRoleTables();
+        }
+        ApiResponse<V1RoleList> apiResponse = rbacV1Api.listNamespacedRoleWithHttpInfo(namespace, "true", null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS,null);
+
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1RoleList data = apiResponse.getData();
+
+            return data.getItems().stream().map(v1Role -> {
+                RoleTable roleTable = new RoleTable();
+                if (v1Role.getMetadata() != null) {
+                    roleTable.setName(v1Role.getMetadata().getName());
+                    roleTable.setNamespace(v1Role.getMetadata().getNamespace());
+                    if (v1Role.getMetadata().getCreationTimestamp() != null) {
+                        String age = ExternalConstants.getBetweenPeriodDay(v1Role.getMetadata().getCreationTimestamp().toInstant().getMillis());
                         roleTable.setAge(age);
                     }
                 }

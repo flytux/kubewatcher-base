@@ -10,6 +10,8 @@ public interface JobService {
 
     List<JobTable> allNamespaceJobTables();
 
+    List<JobTable> jobs(String namespace);
+
     Optional<JobDescribe> job(String namespace, String name);
 
 }

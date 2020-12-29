@@ -24,10 +24,25 @@ public class NetworkingV1beta1ApiExtendHandler extends NetworkingV1beta1Api impl
         Call call = listIngressAsTableAllNamespacesCall(pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(NetworkingV1beta1IngressTableList.class).getType());
     }
-
+    public ApiResponse<NetworkingV1beta1IngressTableList> namespaceIngressAsTables(String namespace, String pretty) throws ApiException {
+        Call call = listIngressAsTableNamespacesCall(namespace, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(NetworkingV1beta1IngressTableList.class).getType());
+    }
 
     public Call listIngressAsTableAllNamespacesCall(String pretty) throws ApiException {
         String localVarPath = "/apis/networking.k8s.io/v1beta1/ingresses";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{"application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listIngressAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/apis/networking.k8s.io/v1beta1/namespaces/{namespace}/ingresses".replaceAll("\\{" + "namespace" + "}", namespace);
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
 
         if (pretty != null) {

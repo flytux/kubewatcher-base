@@ -25,8 +25,25 @@ public class NetworkingV1ApiExtendHandler extends NetworkingV1Api implements Bas
         return super.getApiClient().execute(call, TypeToken.getParameterized(NetworkingV1NetworkPolicyTableList.class).getType());
     }
 
+    public ApiResponse<NetworkingV1NetworkPolicyTableList> namespaceNetworkPolicyAsTables(String namespace, String pretty) throws ApiException {
+        Call call = listNetworkPolicyAsTableNamespacesCall(namespace, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(NetworkingV1NetworkPolicyTableList.class).getType());
+    }
+
     public Call listNetworkPolicyAsTableAllNamespacesCall(String pretty) throws ApiException {
         String localVarPath = "/apis/networking.k8s.io/v1/networkpolicies";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{"application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listNetworkPolicyAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/apis/networking.k8s.io/v1/namespaces/{namespace}/networkpolicies".replaceAll("\\{" + "namespace" + "}", namespace);
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
 
         if (pretty != null) {

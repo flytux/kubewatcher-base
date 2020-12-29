@@ -20,9 +20,9 @@
                         <select th:disabled="${namespaces == null ? 'true' : 'false'}"
                                 class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="namesapce : ${namespaces}"
+                            <option th:each="value : ${namespaces}"
                                     th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${namesapce?.name}" th:text="${namesapce?.name}">value</option>
+                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
                         </select>
                     </div>
                 </div>

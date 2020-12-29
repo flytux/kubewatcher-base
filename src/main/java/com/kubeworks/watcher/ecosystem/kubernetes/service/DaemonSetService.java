@@ -10,6 +10,8 @@ public interface DaemonSetService {
 
     List<DaemonSetTable> allNamespaceDaemonSetTables();
 
+    List<DaemonSetTable> daemonSets(String namespace);
+
     Optional<DaemonSetDescribe> daemonSet(String namespace, String name);
 
 }

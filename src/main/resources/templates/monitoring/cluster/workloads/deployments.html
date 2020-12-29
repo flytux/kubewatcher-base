@@ -12,7 +12,7 @@
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Workloads<i class=&quot;feather icon-chevron-right&quot; ></i>Deployments')"/>
     <div id="main_contents">
 
-        <!-- [클러스터 Pods] start -->
+        <!-- [클러스터 Deployments] start -->
         <div class="row">
             <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Deployment
                 <div class="f_r">
@@ -20,9 +20,9 @@
                         <select th:disabled="${namespaces == null ? 'true' : 'false'}"
                                 class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="namesapce : ${namespaces}"
+                            <option th:each="value : ${namespaces}"
                                     th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${namesapce?.name}" th:text="${namesapce?.name}">value</option>
+                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
                         </select>
                     </div>
                 </div>
@@ -310,7 +310,6 @@
         }
 
         $(document).ready(function () {
-
             $("#namespace").on("change", function () {
                 const $namespace = $(this);
                 const selectedNamespace = $namespace.val();
@@ -329,9 +328,7 @@
                     }
                 });
             });
-
         });
-
 
     </script>
 

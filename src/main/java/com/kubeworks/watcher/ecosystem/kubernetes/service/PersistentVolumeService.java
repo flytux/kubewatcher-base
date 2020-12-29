@@ -16,6 +16,7 @@ public interface PersistentVolumeService {
 
     List<PersistentVolumeClaimTable> allNamespacePersistentVolumeClaimTables();
 
-    Optional<PersistentVolumeClaimDescribe> persistentVolumeClaim(String namespace, String name);
+    List<PersistentVolumeClaimTable> persistentVolumeClaims(String namespace);
 
+    Optional<PersistentVolumeClaimDescribe> persistentVolumeClaim(String namespace, String name);
 }

@@ -51,6 +51,20 @@ public class HPAServiceImpl implements HPAService {
 
     @SneakyThrows
     @Override
+    public List<HPATable> hpa(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceHPATables();
+        }
+        ApiResponse<AutoScalingV1HPATableList> apiResponse = autoscalingV1Api.namespaceHPAAsTable(namespace, "true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            AutoScalingV1HPATableList hpaTableList = apiResponse.getData();
+            return hpaTableList.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
     public Optional<HPADescribe> hpa(String namespace, String name) {
 
         Optional<HPADescribe> hpaDescribe;

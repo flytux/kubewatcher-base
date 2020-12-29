@@ -49,6 +49,11 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1EventTableList.class).getType());
     }
 
+    public ApiResponse<V1EventTableList> listNamespaceEventAsTable(String namespace, String pretty, String fieldSelector) throws ApiException {
+        Call call = listEventAsTableNamespacesCall(namespace, pretty, fieldSelector);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1EventTableList.class).getType());
+    }
+
     public ApiResponse<V1PersistentVolumeTableList> allPersistentVolumeAsTable(String pretty) throws ApiException {
         Call call = listPersistentVolumeAsTableCall(pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1PersistentVolumeTableList.class).getType());
@@ -59,8 +64,18 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1PersistentVolumeClaimTableList.class).getType());
     }
 
+    public ApiResponse<V1PersistentVolumeClaimTableList> namespacePersistentVolumeClaimAsTable(String namespace, String pretty) throws ApiException {
+        Call call = listPersistentVolumeClaimAsTableNamespacesCall(namespace, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1PersistentVolumeClaimTableList.class).getType());
+    }
+
     public ApiResponse<V1ConfigMapTableList> allNamespaceConfigMapAsTable(String pretty) throws ApiException {
         Call call = listConfigMapAsTableAllNamespacesCall(pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1ConfigMapTableList.class).getType());
+    }
+
+    public ApiResponse<V1ConfigMapTableList> namespaceConfigMapAsTable(String namespace, String pretty) throws ApiException {
+        Call call = listConfigMapAsTableNamespacesCall(namespace, pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1ConfigMapTableList.class).getType());
     }
 
@@ -69,8 +84,18 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1SecretTableList.class).getType());
     }
 
+    public ApiResponse<V1SecretTableList> namespaceSecretAsTable(String namespace, String pretty) throws ApiException {
+        Call call = listSecretAsTableNamespacesCall(namespace, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1SecretTableList.class).getType());
+    }
+
     public ApiResponse<V1ResourceQuotaTableList> allNamespaceResourceQuotaAsTable(String pretty) throws ApiException {
         Call call = listResourceQuotaAsTableAllNamespacesCall(pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1ResourceQuotaTableList.class).getType());
+    }
+
+    public ApiResponse<V1ResourceQuotaTableList> namespaceResourceQuotaAsTable(String namespace, String pretty) throws ApiException {
+        Call call = listResourceQuotaAsTableNamespacesCall(namespace, pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1ResourceQuotaTableList.class).getType());
     }
 
@@ -89,8 +114,18 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1ServiceTableList.class).getType());
     }
 
+    public ApiResponse<V1ServiceTableList> namespaceServiceAsTables(String namespace, String pretty) throws ApiException {
+        Call call = listServiceAsTableNamespacesCall(namespace, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1ServiceTableList.class).getType());
+    }
+
     public ApiResponse<V1EndpointTableList> allNamespaceEndpointAsTables(String pretty) throws ApiException {
         Call call = listEndpointAsTableAllNamespacesCall(pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1EndpointTableList.class).getType());
+    }
+
+    public ApiResponse<V1EndpointTableList> namespaceEndpointAsTables(String namespace, String pretty) throws ApiException {
+        Call call = listEndpointAsTableNamespacesCall(namespace, pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1EndpointTableList.class).getType());
     }
 
@@ -101,6 +136,11 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
 
     public ApiResponse<V1ServiceAccountTableList> allNamespaceServiceAccountAsTables(String pretty) throws ApiException {
         Call call = listServiceAccountAsTableAllNamespacesCall(pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1ServiceAccountTableList.class).getType());
+    }
+
+    public ApiResponse<V1ServiceAccountTableList> namespaceServiceAccountAsTables(String namespace, String pretty) throws ApiException {
+        Call call = listServiceAccountAsTableNamespacesCall(namespace, pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1ServiceAccountTableList.class).getType());
     }
 
@@ -141,6 +181,18 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
 
+    private Call listResourceQuotaAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/api/v1/namespaces/{namespace}/resourcequotas".replaceAll("\\{" + "namespace" + "}", namespace);
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
 
     private Call listSecretAsTableAllNamespacesCall(String pretty) throws ApiException {
         String localVarPath = "/api/v1/secrets";
@@ -154,8 +206,32 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
 
+    private Call listSecretAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/api/v1/namespaces/{namespace}/secrets".replaceAll("\\{" + "namespace" + "}", namespace);
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
     private Call listConfigMapAsTableAllNamespacesCall(String pretty) throws ApiException {
         String localVarPath = "/api/v1/configmaps";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    private Call listConfigMapAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/api/v1/namespaces/{namespace}/configmaps".replaceAll("\\{" + "namespace" + "}", namespace);
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
 
         if (pretty != null) {
@@ -190,8 +266,33 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
 
+    private Call listPersistentVolumeClaimAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/api/v1/namespaces/{namespace}/persistentvolumeclaims".replaceAll("\\{" + "namespace" + "}", namespace);
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
     private Call listEventAsTableCall(String pretty, String fieldSelector) throws ApiException {
         String localVarPath = "/api/v1/events";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+        if (fieldSelector != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("fieldSelector", fieldSelector));
+        }
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    private Call listEventAsTableNamespacesCall(String namespace, String pretty, String fieldSelector) throws ApiException {
+        String localVarPath = "/api/v1/namespaces/{namespace}/events".replaceAll("\\{" + "namespace" + "}", namespace);
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
         if (pretty != null) {
             localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
@@ -277,8 +378,32 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
 
+    public Call listServiceAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/api/v1/namespaces/{namespace}/services".replaceAll("\\{" + "namespace" + "}", namespace);
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
     public Call listEndpointAsTableAllNamespacesCall(String pretty) throws ApiException {
         String localVarPath = "/api/v1/endpoints";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listEndpointAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/api/v1/namespaces/{namespace}/endpoints".replaceAll("\\{" + "namespace" + "}", namespace);
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
 
         if (pretty != null) {
@@ -313,6 +438,15 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
 
+    public Call listServiceAccountAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/api/v1/namespaces/{namespace}/serviceaccounts".replaceAll("\\{" + "namespace" + "}", namespace);
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
 
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
 
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
 }

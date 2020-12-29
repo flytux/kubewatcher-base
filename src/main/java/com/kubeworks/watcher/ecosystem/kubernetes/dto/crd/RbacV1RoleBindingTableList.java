@@ -63,7 +63,7 @@ public class RbacV1RoleBindingTableList extends V1ObjectTableList<RoleBindingTab
                 data.setName(row.getObject().getMetadata().getName());
                 data.setNamespace(row.getObject().getMetadata().getNamespace());
                 if (row.getObject().getMetadata().getCreationTimestamp() != null) {
-                    String age = ExternalConstants.getCurrentBetweenPeriod(row.getObject().getMetadata().getCreationTimestamp().toInstant().getMillis());
+                    String age = ExternalConstants.getBetweenPeriodDay(row.getObject().getMetadata().getCreationTimestamp().toInstant().getMillis());
                     data.setAge(age);
                 }
             }

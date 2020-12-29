@@ -9,18 +9,17 @@ import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.PersistentVolumeService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.PodService;
-import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -75,6 +74,20 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
     @Override
     public List<PersistentVolumeClaimTable> allNamespacePersistentVolumeClaimTables() {
         ApiResponse<V1PersistentVolumeClaimTableList> apiResponse = coreV1ApiExtendHandler.allNamespacePersistentVolumeClaimAsTable("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1PersistentVolumeClaimTableList persistentVolumeClaims = apiResponse.getData();
+            return persistentVolumeClaims.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<PersistentVolumeClaimTable> persistentVolumeClaims(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespacePersistentVolumeClaimTables();
+        }
+        ApiResponse<V1PersistentVolumeClaimTableList> apiResponse = coreV1ApiExtendHandler.namespacePersistentVolumeClaimAsTable(namespace, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PersistentVolumeClaimTableList persistentVolumeClaims = apiResponse.getData();
             return persistentVolumeClaims.getDataTable();

@@ -15,6 +15,7 @@ import io.kubernetes.client.openapi.models.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
@@ -43,6 +44,20 @@ public class CronJobServiceImpl implements CronJobService {
     @SneakyThrows
     @Override
     public List<CronJobTable> allNamespaceCronJobTables() {
+        ApiResponse<BatchV1beta1CronJobTableList> apiResponse = batchV1beta1Api.allNamespaceCronJobAsTable("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            BatchV1beta1CronJobTableList statefulSets = apiResponse.getData();
+            return statefulSets.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<CronJobTable> cronJobs(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceCronJobTables();
+        }
         ApiResponse<BatchV1beta1CronJobTableList> apiResponse = batchV1beta1Api.allNamespaceCronJobAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             BatchV1beta1CronJobTableList statefulSets = apiResponse.getData();

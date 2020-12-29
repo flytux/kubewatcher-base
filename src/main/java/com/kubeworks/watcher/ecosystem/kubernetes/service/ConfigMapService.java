@@ -10,6 +10,8 @@ public interface ConfigMapService {
 
     List<ConfigMapTable> allNamespaceConfigMapTables();
 
+    List<ConfigMapTable> configMaps(String namespace);
+
     Optional<ConfigMapDescribe> configMap(String namespace, String name);
 
 }
