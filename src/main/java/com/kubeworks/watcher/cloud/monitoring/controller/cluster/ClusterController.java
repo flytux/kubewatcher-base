@@ -1,9 +1,11 @@
 package com.kubeworks.watcher.cloud.monitoring.controller.cluster;
 
+import com.kubeworks.watcher.cloud.container.controller.config.ConfigRestController;
 import com.kubeworks.watcher.config.properties.PrometheusProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.cloud.monitoring.controller.MonitoringRestController;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
+import com.kubeworks.watcher.preference.service.PageConstants;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ public class ClusterController {
     private final PageViewService pageViewService;
     private final MonitoringRestController monitoringRestController;
     private final PrometheusProperties prometheusProperties;
+    private final ConfigRestController configRestController;
 
     @GetMapping(value = "/monitoring/cluster/overview", produces = MediaType.TEXT_HTML_VALUE)
     public String clusterOverview(Model model) {
@@ -74,16 +77,26 @@ public class ClusterController {
     public String pods(Model model) {
 
         List<PodTable> pods = clusterRestController.pods();
+        List<NamespaceTable> namespaces = configRestController.namespaces();
 
         Map<String, Object> response = new HashMap<>();
         Page pageView = pageViewService.getPageView(POD_MENU_ID);
         response.put("page", pageView);
         response.put("user", getUser());
         response.put("host", prometheusProperties.getUrl());
+        response.put("namespaces", namespaces);
+        response.put("link", PageConstants.API_URL_BY_NAMESPACED_PODS);
 
         model.addAttribute("pods", pods);
         model.addAllAttributes(response);
         return "monitoring/cluster/workloads/pods";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/pods", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String pods(Model model, @PathVariable String namespace) {
+        List<PodTable> pods = clusterRestController.pods(namespace);
+        model.addAttribute("pods", pods);
+        return "monitoring/cluster/workloads/pods :: contentList";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/pods/{podName}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -96,8 +109,18 @@ public class ClusterController {
     @GetMapping(value = "/monitoring/cluster/workloads/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
     public String deployments(Model model) {
         List<DeploymentTable> deployments = clusterRestController.deployments();
+        List<NamespaceTable> namespaces = configRestController.namespaces();
         model.addAttribute("deployments", deployments);
+        model.addAttribute("namespaces", namespaces);
+        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_DEPLOYMENTS);
         return "monitoring/cluster/workloads/deployments";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String deployments(Model model, @PathVariable String namespace) {
+        List<DeploymentTable> deployments = clusterRestController.deployments(namespace);
+        model.addAttribute("deployments", deployments);
+        return "monitoring/cluster/workloads/deployments :: contentList";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)

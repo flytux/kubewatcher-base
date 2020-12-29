@@ -247,7 +247,7 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
     }
 
     public Call listPodAsTableCall(String namespace, String fieldSelector, String labelSelector, String pretty) throws ApiException {
-        String localVarPath = "/api/v1/namespaces/{namespace}/pods".replaceAll("\\{namespace\\}", super.getApiClient().escapeString(namespace));
+        String localVarPath = "/api/v1/namespaces/{namespace}/pods".replaceAll("\\{namespace}", super.getApiClient().escapeString(namespace));
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
 
         if (fieldSelector != null) {

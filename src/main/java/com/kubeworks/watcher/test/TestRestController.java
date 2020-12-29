@@ -71,6 +71,11 @@ public class TestRestController {
         return podService.allNamespacePodTables();
     }
 
+    @GetMapping(value = "/k8s/pod/namespace/{namespace}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PodTable> allPod(@PathVariable String namespace) {
+        return podService.podTables(namespace);
+    }
+
     @GetMapping(value = "/k8s/namespace/{namespace}/pod/{podName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public PodDescribe pod(@PathVariable String namespace, @PathVariable String podName) {
         Optional<PodDescribe> podDescribeOptional = podService.pod(namespace, podName);

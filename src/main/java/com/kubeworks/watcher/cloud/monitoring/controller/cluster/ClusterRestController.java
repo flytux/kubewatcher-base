@@ -85,11 +85,14 @@ public class ClusterRestController {
         return node;
     }
 
-//    @GetMapping(value = "/monitoring/cluster/workloads/overview", produces = MediaType.APPLICATION_JSON_VALUE)
-
     @GetMapping(value = "/monitoring/cluster/workloads/pods", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PodTable> pods() {
         return podService.allNamespacePodTables();
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/pods", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PodTable> pods(@PathVariable String namespace) {
+        return podService.podTables(namespace);
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/pods/{podName}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -124,23 +127,11 @@ public class ClusterRestController {
         return deploymentService.allNamespaceDeploymentTables();
     }
 
-//    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public DeploymentDescribe deployment(@PathVariable String namespace, @PathVariable String name) {
-//
-//        DeploymentDescribe deploymentDescribe = deploymentService.deployment(namespace, name).orElse(null);
-//        Map<String, Object> deployment = new HashMap<>();
-//        deployment.put("deployment", deploymentDescribe);
-//
-//        String template = "monitoring/cluster/workloads/deployments";
-//        Set<String> selector = new HashSet<>();
-//        selector.add("modalContents");
-//
-////        String template = "monitoring/cluster/workloads/deployments";
-//        Context iContext = new Context(Locale.KOREA, deployment);
-//        String deploymentDescribeHtml = springTemplateEngine.process(template, selector, iContext);
-//
-//        return deploymentDescribe;
-//    }
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DeploymentTable> deployments(@PathVariable String namespace) {
+        return deploymentService.deployments(namespace);
+    }
+
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public DeploymentDescribe deployment(@PathVariable String namespace, @PathVariable String name) {
