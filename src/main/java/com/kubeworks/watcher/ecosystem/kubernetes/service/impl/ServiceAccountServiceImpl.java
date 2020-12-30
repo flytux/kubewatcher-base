@@ -17,6 +17,7 @@ import io.kubernetes.client.openapi.models.V1ObjectReference;
 import io.kubernetes.client.openapi.models.V1ServiceAccount;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -45,6 +46,20 @@ public class ServiceAccountServiceImpl implements ServiceAccountService {
     @Override
     public List<ServiceAccountTable> allNamespaceServiceAccountTables() {
         ApiResponse<V1ServiceAccountTableList> apiResponse = coreApi.allNamespaceServiceAccountAsTables("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1ServiceAccountTableList serviceAccounts = apiResponse.getData();
+            return serviceAccounts.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<ServiceAccountTable> serviceAccounts(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceServiceAccountTables();
+        }
+        ApiResponse<V1ServiceAccountTableList> apiResponse = coreApi.namespaceServiceAccountAsTables(namespace, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ServiceAccountTableList serviceAccounts = apiResponse.getData();
             return serviceAccounts.getDataTable();

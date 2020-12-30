@@ -13,6 +13,7 @@ import io.kubernetes.client.openapi.models.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,6 +37,20 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
     @Override
     public List<NetworkPolicyTable> allNamespaceNetworkPolicyTables() {
         ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.allNamespaceNetworkPolicyAsTables("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            NetworkingV1NetworkPolicyTableList networkPolicies = apiResponse.getData();
+            return networkPolicies.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<NetworkPolicyTable> policies(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceNetworkPolicyTables();
+        }
+        ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.namespaceNetworkPolicyAsTables(namespace, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             NetworkingV1NetworkPolicyTableList networkPolicies = apiResponse.getData();
             return networkPolicies.getDataTable();

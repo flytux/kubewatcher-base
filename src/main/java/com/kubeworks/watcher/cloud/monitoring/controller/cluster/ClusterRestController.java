@@ -9,9 +9,7 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.*;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
-import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.context.IContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import java.util.*;
@@ -121,7 +118,6 @@ public class ClusterRestController {
         return pod;
     }
 
-
     @GetMapping(value = "/monitoring/cluster/workloads/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DeploymentTable> deployments() {
         return deploymentService.allNamespaceDeploymentTables();
@@ -138,7 +134,6 @@ public class ClusterRestController {
         Optional<DeploymentDescribe> DeploymentDescribeOptional = deploymentService.deployment(namespace, name);
         return DeploymentDescribeOptional.orElse(null);
     }
-
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String,Object> deploymentMetrics(@PathVariable String namespace, @PathVariable String name) {
@@ -160,39 +155,14 @@ public class ClusterRestController {
         return deployment;
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DaemonSetTable> daemonSets() {
-        return daemonSetService.allNamespaceDaemonSetTables();
-    }
-
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public DaemonSetDescribe daemonSet(@PathVariable String namespace, @PathVariable String name) {
-        return daemonSetService.daemonSet(namespace, name).orElse(null);
-    }
-
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets/{name}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String,Object> daemonSetMetrics(@PathVariable String namespace, @PathVariable String name) {
-
-        DaemonSetDescribe daemonSetDescribe = daemonSetService.daemonSet(namespace, name).orElse(null);
-
-        Map<String, Object> daemonSet = new HashMap<>();
-        daemonSet.put("daemonSet", daemonSetDescribe);
-        Page pageView = pageViewService.getPageView(DAEMONSET_MENU_ID);
-        daemonSet.put("page", pageView);
-
-        String daemonSetDescribeHtml = springTemplateEngine.process("monitoring/cluster/workloads/daemonsets",
-            Collections.singleton("modalContents"), new Context(Locale.KOREA, daemonSet));
-
-        daemonSet.put("describe", daemonSetDescribeHtml);
-        daemonSet.put("user", getUser());
-        daemonSet.put("host", prometheusProperties.getUrl());
-
-        return daemonSet;
-    }
-
     @GetMapping(value = "/monitoring/cluster/workloads/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StatefulSetTable> statefulSets() {
         return statefulSetService.allNamespaceStatefulSetTables();
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<StatefulSetTable> statefulSets(@PathVariable String namespace) {
+        return statefulSetService.statefulSets(namespace);
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -220,9 +190,49 @@ public class ClusterRestController {
         return statefulSet;
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DaemonSetTable> daemonSets() {
+        return daemonSetService.allNamespaceDaemonSetTables();
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DaemonSetTable> daemonSets(@PathVariable String namespace) {
+        return daemonSetService.daemonSets(namespace);
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public DaemonSetDescribe daemonSet(@PathVariable String namespace, @PathVariable String name) {
+        return daemonSetService.daemonSet(namespace, name).orElse(null);
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets/{name}/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> daemonSetMetrics(@PathVariable String namespace, @PathVariable String name) {
+
+        DaemonSetDescribe daemonSetDescribe = daemonSetService.daemonSet(namespace, name).orElse(null);
+
+        Map<String, Object> daemonSet = new HashMap<>();
+        daemonSet.put("daemonSet", daemonSetDescribe);
+        Page pageView = pageViewService.getPageView(DAEMONSET_MENU_ID);
+        daemonSet.put("page", pageView);
+
+        String daemonSetDescribeHtml = springTemplateEngine.process("monitoring/cluster/workloads/daemonsets",
+            Collections.singleton("modalContents"), new Context(Locale.KOREA, daemonSet));
+
+        daemonSet.put("describe", daemonSetDescribeHtml);
+        daemonSet.put("user", getUser());
+        daemonSet.put("host", prometheusProperties.getUrl());
+
+        return daemonSet;
+    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/jobs", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<JobTable> jobs() {
         return jobService.allNamespaceJobTables();
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/jobs", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<JobTable> jobs(@PathVariable String namespace) {
+        return jobService.jobs(namespace);
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/jobs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -235,6 +245,11 @@ public class ClusterRestController {
         return cronJobService.allNamespaceCronJobTables();
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/cronjobs", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CronJobTable> cronJobs(@PathVariable String namespace) {
+        return cronJobService.cronJobs(namespace);
+    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/cronjobs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CronJobDescribe cronJob(@PathVariable String namespace, @PathVariable String name) {
         return cronJobService.cronJob(namespace, name).orElse(null);
@@ -245,6 +260,20 @@ public class ClusterRestController {
         List<PersistentVolumeClaimTable> persistentVolumeClaimTables = persistentVolumeClaims();
         List<PersistentVolumeTable> persistentVolumeTables = persistentVolumes();
         List<StorageClassTable> storageClassTables = storageClasses();
+
+        Map<String, Object> response = new HashMap<>(3);
+        response.put("persistentVolumeClaims", persistentVolumeClaimTables);
+        response.put("persistentVolumes", persistentVolumeTables);
+        response.put("storages", storageClassTables);
+        return response;
+    }
+
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/storages", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> storages(@PathVariable String namespace) {
+        List<PersistentVolumeClaimTable> persistentVolumeClaimTables = persistentVolumeService.persistentVolumeClaims(namespace);
+        List<PersistentVolumeTable> persistentVolumeTables = persistentVolumes();
+        List<StorageClassTable> storageClassTables = storageClasses();
+
         Map<String, Object> response = new HashMap<>(3);
         response.put("persistentVolumeClaims", persistentVolumeClaimTables);
         response.put("persistentVolumes", persistentVolumeTables);
@@ -307,6 +336,11 @@ public class ClusterRestController {
         return eventService.allNamespaceEventTables();
     }
 
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events/contentList", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EventTable> events(@PathVariable String namespace, String contentList) {
+        return eventService.events(namespace);
+    }
+
     @GetMapping(value = "/monitoring/cluster/events/count", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<MetricResponseData> eventCount() {
         ApiResponse<MetricResponseData> response = new ApiResponse<>();
@@ -326,8 +360,6 @@ public class ClusterRestController {
     public ApiResponse<MetricResponseData> eventCount(@PathVariable String name) {
         return componentStatusService.componentStatusMetric(name);
     }
-
-
 
     @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EventTable> events(@PathVariable String namespace) {

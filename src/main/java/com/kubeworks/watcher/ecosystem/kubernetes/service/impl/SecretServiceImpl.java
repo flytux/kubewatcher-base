@@ -13,6 +13,7 @@ import io.kubernetes.client.openapi.models.V1Secret;
 import io.kubernetes.client.openapi.models.V1SecretList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -37,6 +38,20 @@ public class SecretServiceImpl implements SecretService {
     @Override
     public List<SecretTable> allNamespaceSecretTables() {
         ApiResponse<V1SecretTableList> apiResponse = coreV1Api.allNamespaceSecretAsTable("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1SecretTableList secrets = apiResponse.getData();
+            return secrets.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<SecretTable> secrets(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceSecretTables();
+        }
+        ApiResponse<V1SecretTableList> apiResponse = coreV1Api.namespaceSecretAsTable(namespace, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1SecretTableList secrets = apiResponse.getData();
             return secrets.getDataTable();

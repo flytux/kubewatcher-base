@@ -10,8 +10,9 @@ public interface ResourceQuotaService {
 
     List<ResourceQuotaTable> allNamespaceResourceQuotaTables();
 
+    List<ResourceQuotaTable> resourceQuotas(String namespace);
+
     List<ResourceQuotaDescribe> listNamespacedResourceQuota(String namespace);
 
     Optional<ResourceQuotaDescribe> resourceQuota(String namespace, String name);
-
 }

@@ -18,6 +18,7 @@ import io.kubernetes.client.openapi.models.V1ServiceSpec;
 import io.kubernetes.client.openapi.models.V1ServiceStatus;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -44,6 +45,20 @@ public class ServiceKindServiceImpl implements ServiceKindService {
     @Override
     public List<ServiceTable> allNamespaceServiceTables() {
         ApiResponse<V1ServiceTableList> apiResponse = coreApi.allNamespaceServiceAsTables("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1ServiceTableList services = apiResponse.getData();
+            return services.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<ServiceTable> services(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceServiceTables();
+        }
+        ApiResponse<V1ServiceTableList> apiResponse = coreApi.namespaceServiceAsTables(namespace,"true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ServiceTableList services = apiResponse.getData();
             return services.getDataTable();

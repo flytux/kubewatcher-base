@@ -12,6 +12,7 @@ import io.kubernetes.client.openapi.models.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,6 +35,21 @@ public class ResourceQuotaServiceImpl implements ResourceQuotaService {
     @Override
     public List<ResourceQuotaTable> allNamespaceResourceQuotaTables() {
         ApiResponse<V1ResourceQuotaTableList> apiResponse = coreV1Api.allNamespaceResourceQuotaAsTable("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1ResourceQuotaTableList resourceQuotas = apiResponse.getData();
+            return resourceQuotas.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<ResourceQuotaTable> resourceQuotas(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceResourceQuotaTables();
+        }
+
+        ApiResponse<V1ResourceQuotaTableList> apiResponse = coreV1Api.namespaceResourceQuotaAsTable(namespace, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ResourceQuotaTableList resourceQuotas = apiResponse.getData();
             return resourceQuotas.getDataTable();

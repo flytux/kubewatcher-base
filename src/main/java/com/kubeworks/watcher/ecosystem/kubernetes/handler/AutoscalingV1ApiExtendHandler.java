@@ -33,8 +33,25 @@ public class AutoscalingV1ApiExtendHandler extends AutoscalingV1Api implements B
         return super.getApiClient().execute(call, TypeToken.getParameterized(AutoScalingV1HPATableList.class).getType());
     }
 
+    public ApiResponse<AutoScalingV1HPATableList> namespaceHPAAsTable(String namespace, String pretty) throws ApiException {
+        Call call = listHPAAsTableNamespacesCall(namespace, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(AutoScalingV1HPATableList.class).getType());
+    }
+
     public Call listHPAAsTableAllNamespacesCall(String pretty) throws ApiException {
         String localVarPath = "/apis/autoscaling/v1/horizontalpodautoscalers";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listHPAAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
+        String localVarPath = "/apis/autoscaling/v1/namespaces/{namespace}/horizontalpodautoscalers".replaceAll("\\{" + "namespace" + "}", namespace);
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
 
         if (pretty != null) {

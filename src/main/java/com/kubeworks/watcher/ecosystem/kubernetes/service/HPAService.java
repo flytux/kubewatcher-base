@@ -11,6 +11,8 @@ public interface HPAService {
 
     List<HPATable> allNamespaceHPATables();
 
+    List<HPATable> hpa(String namespace);
+
     Optional<HPADescribe> hpa(String namespace, String name);
 
 }

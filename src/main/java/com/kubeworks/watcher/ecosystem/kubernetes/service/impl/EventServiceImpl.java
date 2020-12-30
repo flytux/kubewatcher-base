@@ -12,6 +12,7 @@ import io.kubernetes.client.openapi.models.V1Event;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -34,6 +35,20 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventTable> allNamespaceEventTables() {
         ApiResponse<V1EventTableList> apiResponse = eventTables(null);
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1EventTableList eventTableList = apiResponse.getData();
+            return eventTableList.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<EventTable> events(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceEventTables();
+        }
+        ApiResponse<V1EventTableList> apiResponse = coreApi.listNamespaceEventAsTable(namespace, "true", null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EventTableList eventTableList = apiResponse.getData();
             return eventTableList.getDataTable();

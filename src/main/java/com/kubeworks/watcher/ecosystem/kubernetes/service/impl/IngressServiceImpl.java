@@ -60,6 +60,20 @@ public class IngressServiceImpl implements IngressService {
 
     @SneakyThrows
     @Override
+    public List<IngressTable> ingresses(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceIngressTables();
+        }
+        ApiResponse<NetworkingV1beta1IngressTableList> apiResponse = networkingApi.namespaceIngressAsTables(namespace, "true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            NetworkingV1beta1IngressTableList ingresses = apiResponse.getData();
+            return ingresses.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
     public Optional<IngressDescribe> ingress(String namespace, String name) {
         ApiResponse<NetworkingV1beta1Ingress> apiResponse = networkingApi.readNamespacedIngressWithHttpInfo(name, namespace, "true", true, false);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {

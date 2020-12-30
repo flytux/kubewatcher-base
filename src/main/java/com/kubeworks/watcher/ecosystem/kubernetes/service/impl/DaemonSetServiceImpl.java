@@ -47,8 +47,22 @@ public class DaemonSetServiceImpl implements DaemonSetService {
     public List<DaemonSetTable> allNamespaceDaemonSetTables() {
         ApiResponse<AppsV1DaemonSetTableList> apiResponse = appsV1Api.allNamespaceDaemonSetAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
-            AppsV1DaemonSetTableList deployments = apiResponse.getData();
-            return deployments.getDataTable();
+            AppsV1DaemonSetTableList daemonSets = apiResponse.getData();
+            return daemonSets.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<DaemonSetTable> daemonSets(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceDaemonSetTables();
+        }
+        ApiResponse<AppsV1DaemonSetTableList> apiResponse = appsV1Api.namespaceDaemonSetAsTable(namespace, "true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            AppsV1DaemonSetTableList daemonSets = apiResponse.getData();
+            return daemonSets.getDataTable();
         }
         return Collections.emptyList();
     }
