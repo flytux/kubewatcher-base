@@ -2,7 +2,7 @@ package com.kubeworks.watcher.cloud.monitoring.controller;
 
 import com.kubeworks.watcher.cloud.monitoring.service.PageMetricService;
 import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
-import com.kubeworks.watcher.config.properties.PrometheusProperties;
+import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ public class MonitoringRestController {
     private static final long MAIN_MENU_ID = 99;
 
     private final PageViewService pageViewService;
-    private final PrometheusProperties prometheusProperties;
+    private final MonitoringProperties monitoringProperties;
     private final PageMetricService<Page> applicationPageMetricService;
     private final ApplicationServiceProperties applicationServiceProperties;
 
@@ -98,7 +98,7 @@ public class MonitoringRestController {
     private Map<String, Object> responseData(Page page) {
         Map<String, Object> response = new HashMap<>();
         response.put("user", getUser());
-        response.put("host", prometheusProperties.getUrl());
+        response.put("host", monitoringProperties.getDefaultPrometheusUrl());
         response.put("page", page);
         return response;
     }

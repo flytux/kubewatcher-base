@@ -2,16 +2,14 @@ package com.kubeworks.watcher.cloud.monitoring.controller.cluster;
 
 import com.kubeworks.watcher.base.ApiResponse;
 import com.kubeworks.watcher.base.MetricResponseData;
-import com.kubeworks.watcher.config.properties.PrometheusProperties;
+import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.*;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
-import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.context.IContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import java.util.*;
@@ -53,7 +50,7 @@ public class ClusterRestController {
     private final PageViewService pageViewService;
 
     private final SpringTemplateEngine springTemplateEngine;
-    private final PrometheusProperties prometheusProperties;
+    private final MonitoringProperties monitoringProperties;
 
     @GetMapping(value = "/monitoring/cluster/nodes", produces = MediaType.TEXT_HTML_VALUE)
     public List<NodeTable> nodes() {
@@ -80,7 +77,7 @@ public class ClusterRestController {
 
         node.put("describe", nodeDescribeHtml);
         node.put("user", getUser());
-        node.put("host", prometheusProperties.getUrl());
+        node.put("host", monitoringProperties.getDefaultPrometheusUrl());
 
         return node;
     }
@@ -116,7 +113,7 @@ public class ClusterRestController {
 
         pod.put("describe", podDescribeHtml);
         pod.put("user", getUser());
-        pod.put("host", prometheusProperties.getUrl());
+        pod.put("host", monitoringProperties.getDefaultPrometheusUrl());
 
         return pod;
     }
@@ -155,7 +152,7 @@ public class ClusterRestController {
 
         deployment.put("describe", deploymentDescribeHtml);
         deployment.put("user", getUser());
-        deployment.put("host", prometheusProperties.getUrl());
+        deployment.put("host", monitoringProperties.getDefaultPrometheusUrl());
 
         return deployment;
     }
@@ -185,7 +182,7 @@ public class ClusterRestController {
 
         daemonSet.put("describe", daemonSetDescribeHtml);
         daemonSet.put("user", getUser());
-        daemonSet.put("host", prometheusProperties.getUrl());
+        daemonSet.put("host", monitoringProperties.getDefaultPrometheusUrl());
 
         return daemonSet;
     }
@@ -215,7 +212,7 @@ public class ClusterRestController {
 
         statefulSet.put("describe", statefulSetDescribeHtml);
         statefulSet.put("user", getUser());
-        statefulSet.put("host", prometheusProperties.getUrl());
+        statefulSet.put("host", monitoringProperties.getDefaultPrometheusUrl());
 
         return statefulSet;
     }
@@ -287,7 +284,7 @@ public class ClusterRestController {
 
         persistentVolumeClaim.put("describe", persistentVolumeClaimDescribeHtml);
         persistentVolumeClaim.put("user", getUser());
-        persistentVolumeClaim.put("host", prometheusProperties.getUrl());
+        persistentVolumeClaim.put("host", monitoringProperties.getDefaultPrometheusUrl());
 
         return persistentVolumeClaim;
     }

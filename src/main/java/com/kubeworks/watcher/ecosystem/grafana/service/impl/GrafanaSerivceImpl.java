@@ -1,7 +1,7 @@
 package com.kubeworks.watcher.ecosystem.grafana.service.impl;
 
 import com.kubeworks.watcher.config.properties.GrafanaProperties;
-import com.kubeworks.watcher.config.properties.PrometheusProperties;
+import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.grafana.dto.Dashboard;
 import com.kubeworks.watcher.ecosystem.grafana.dto.DashboardDetail;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class GrafanaSerivceImpl implements GrafanaSerivce {
 
-    private final PrometheusProperties prometheusProperties;
+    private final MonitoringProperties monitoringProperties;
     private final GrafanaFeignClient grafanaFeignClient;
     private final GrafanaProperties grafanaProperties;
     private final PrometheusService prometheusService;
@@ -44,7 +44,7 @@ public class GrafanaSerivceImpl implements GrafanaSerivce {
     public DashboardDetail dashboard(String uid) {
         DashboardDetail dashboardDetail = grafanaFeignClient.getDashboard(uid);
         dashboardDetail.getMeta().setHost(grafanaProperties.getUrl());
-        dashboardDetail.getMeta().setPromHost(prometheusProperties.getUrl());
+        dashboardDetail.getMeta().setPromHost(monitoringProperties.getDefaultPrometheusUrl());
         settingTemplateVariable(dashboardDetail.getDashboard());
         log.debug("dashboard = {}", dashboardDetail.toString());
         getPanel(dashboardDetail);

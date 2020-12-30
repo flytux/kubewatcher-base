@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 public class ApplicationServiceProperties {
 
     List<Service> services;
+    List<String> namespaces;
+
 
     public Map<String, Service> getServiceMap() {
         return services.stream().collect(Collectors.toConcurrentMap(Service::getName, service -> service));
@@ -25,6 +27,7 @@ public class ApplicationServiceProperties {
 
     public void setServices(List<Service> services) {
         this.services = services;
+        this.namespaces = services.stream().map(Service::getNamespace).distinct().collect(Collectors.toList());
     }
 
     @JsonIgnore

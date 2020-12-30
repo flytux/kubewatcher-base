@@ -1,9 +1,9 @@
 package com.kubeworks.watcher.cloud.monitoring.controller.cluster;
 
 import com.kubeworks.watcher.cloud.container.controller.config.ConfigRestController;
-import com.kubeworks.watcher.config.properties.PrometheusProperties;
-import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.cloud.monitoring.controller.MonitoringRestController;
+import com.kubeworks.watcher.config.properties.MonitoringProperties;
+import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.preference.service.PageConstants;
 import com.kubeworks.watcher.preference.service.PageViewService;
@@ -32,7 +32,7 @@ public class ClusterController {
     private final ClusterRestController clusterRestController;
     private final PageViewService pageViewService;
     private final MonitoringRestController monitoringRestController;
-    private final PrometheusProperties prometheusProperties;
+    private final MonitoringProperties monitoringProperties;
     private final ConfigRestController configRestController;
 
     @GetMapping(value = "/monitoring/cluster/overview", produces = MediaType.TEXT_HTML_VALUE)
@@ -51,7 +51,7 @@ public class ClusterController {
         Page pageView = pageViewService.getPageView(NODE_MENU_ID);
         response.put("page", pageView);
         response.put("user", getUser());
-        response.put("host", prometheusProperties.getUrl());
+        response.put("host", monitoringProperties.getDefaultPrometheusUrl());
 
         model.addAttribute("nodes", nodes);
         model.addAllAttributes(response);
@@ -83,7 +83,7 @@ public class ClusterController {
         Page pageView = pageViewService.getPageView(POD_MENU_ID);
         response.put("page", pageView);
         response.put("user", getUser());
-        response.put("host", prometheusProperties.getUrl());
+        response.put("host", monitoringProperties.getDefaultPrometheusUrl());
         response.put("namespaces", namespaces);
         response.put("link", PageConstants.API_URL_BY_NAMESPACED_PODS);
 
