@@ -2,6 +2,7 @@ package com.kubeworks.watcher.cloud.container.controller.config;
 
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.preference.service.PageConstants;
+import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,8 +17,15 @@ import java.util.List;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class ConfigController {
 
-    private final ConfigRestController configRestController;
+    private static final long CONFIGMAP_MENU_ID = 300;
+    private static final long SECRET_MENU_ID = 301;
+    private static final long RESOURCEQUOTA_MENU_ID = 302;
+    private static final long HPA_MENU_ID = 303;
+    private static final long NAMESPACE_MENU_ID = 304;
+    private static final long CUSTOMRESOURCE_MENU_ID = 305;
 
+    private final PageViewService pageViewService;
+    private final ConfigRestController configRestController;
 
     @GetMapping(value = "/cluster/config/configmaps", produces = MediaType.TEXT_HTML_VALUE)
     public String configMaps(Model model) {
@@ -25,6 +33,7 @@ public class ConfigController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("configMaps", configMaps);
+        model.addAttribute("page", pageViewService.getPageView(CONFIGMAP_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_CONFIGMAPS);
         return "cluster/config/configmaps";
@@ -50,6 +59,7 @@ public class ConfigController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("secrets", secrets);
+        model.addAttribute("page", pageViewService.getPageView(SECRET_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_SECRETS);
         return "cluster/config/secrets";
@@ -75,6 +85,7 @@ public class ConfigController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("resourceQuotas", resourceQuotas);
+        model.addAttribute("page", pageViewService.getPageView(RESOURCEQUOTA_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_RESOURCEQUOTAS);
         return "cluster/config/resource-quotas";
@@ -100,6 +111,7 @@ public class ConfigController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("hpa", hpa);
+        model.addAttribute("page", pageViewService.getPageView(HPA_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_HPA);
         return "cluster/config/hpa";
@@ -122,6 +134,7 @@ public class ConfigController {
     @GetMapping(value = "/cluster/config/namespaces", produces = MediaType.TEXT_HTML_VALUE)
     public String namespaces(Model model) {
         List<NamespaceTable> namespaces = configRestController.namespaces();
+        model.addAttribute("page", pageViewService.getPageView(NAMESPACE_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         return "cluster/config/namespaces";
     }
@@ -136,6 +149,7 @@ public class ConfigController {
     @GetMapping(value = "/cluster/config/custom-resources", produces = MediaType.TEXT_HTML_VALUE)
     public String customResources(Model model) {
         List<CustomResourceTable> customResources = configRestController.customResources();
+        model.addAttribute("page", pageViewService.getPageView(CUSTOMRESOURCE_MENU_ID));
         model.addAttribute("customResources", customResources);
         return "cluster/config/custom-resources";
     }

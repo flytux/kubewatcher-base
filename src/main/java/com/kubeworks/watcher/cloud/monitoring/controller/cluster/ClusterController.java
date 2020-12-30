@@ -28,6 +28,13 @@ public class ClusterController {
 
     private static final long NODE_MENU_ID = 112;
     private static final long POD_MENU_ID  = 1121;
+    private static final long DEPLOYMENT_MENU_ID = 1122;
+    private static final long DAEMONSET_MENU_ID = 1123;
+    private static final long STATEFULSET_MENU_ID = 1124;
+    private static final long JOB_MENU_ID = 1125;
+    private static final long CRONJOB_MENU_ID = 1126;
+    private static final long STORAGE_MENU_ID = 113;
+    private static final long EVENT_MENU_ID = 114;
 
     private final ClusterRestController clusterRestController;
     private final PageViewService pageViewService;
@@ -112,6 +119,7 @@ public class ClusterController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("deployments", deployments);
+        model.addAttribute("page", pageViewService.getPageView(DEPLOYMENT_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_DEPLOYMENTS);
         return "monitoring/cluster/workloads/deployments";
@@ -124,12 +132,20 @@ public class ClusterController {
         return "monitoring/cluster/workloads/deployments :: contentList";
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String deployment(Model model, @PathVariable String namespace, @PathVariable String name) {
+        DeploymentDescribe deployment = clusterRestController.deployment(namespace, name);
+        model.addAttribute("deployment", deployment);
+        return "monitoring/cluster/workloads/deployments :: modalContents";
+    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
     public String statefulSets(Model model) {
         List<StatefulSetTable> statefulSets = clusterRestController.statefulSets();
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("statefulSets", statefulSets);
+        model.addAttribute("page", pageViewService.getPageView(STATEFULSET_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_STATEFULSETS);
         return "monitoring/cluster/workloads/statefulsets";
@@ -149,19 +165,13 @@ public class ClusterController {
         return "monitoring/cluster/workloads/statefulsets :: modalContents";
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deployment(Model model, @PathVariable String namespace, @PathVariable String name) {
-        DeploymentDescribe deployment = clusterRestController.deployment(namespace, name);
-        model.addAttribute("deployment", deployment);
-        return "monitoring/cluster/workloads/deployments :: modalContents";
-    }
-
     @GetMapping(value = "/monitoring/cluster/workloads/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
     public String daemonSets(Model model) {
         List<DaemonSetTable> daemonSets = clusterRestController.daemonSets();
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("daemonSets", daemonSets);
+        model.addAttribute("page", pageViewService.getPageView(DAEMONSET_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_DAEMONSETS);
         return "monitoring/cluster/workloads/daemonsets";
@@ -187,6 +197,7 @@ public class ClusterController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("jobs", jobs);
+        model.addAttribute("page", pageViewService.getPageView(JOB_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_JOBS);
         return "monitoring/cluster/workloads/jobs";
@@ -212,6 +223,7 @@ public class ClusterController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("cronJobs", cronJobs);
+        model.addAttribute("page", pageViewService.getPageView(CRONJOB_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_CRONJOBS);
         return "monitoring/cluster/workloads/cronjobs";
@@ -237,6 +249,7 @@ public class ClusterController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAllAttributes(storages);
+        model.addAttribute("page", pageViewService.getPageView(STORAGE_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_PVC);
         return "monitoring/cluster/storages";
@@ -276,6 +289,7 @@ public class ClusterController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("events", events);
+        model.addAttribute("page", pageViewService.getPageView(EVENT_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_EVENTS);
         return "monitoring/cluster/events";

@@ -3,6 +3,7 @@ package com.kubeworks.watcher.cloud.container.controller.network;
 import com.kubeworks.watcher.cloud.container.controller.config.ConfigRestController;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.preference.service.PageConstants;
+import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,6 +18,12 @@ import java.util.List;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class NetworkController {
 
+    private static final long SERVICE_MENU_ID = 310;
+    private static final long INGRESS_MENU_ID = 311;
+    private static final long ENDPOINT_MENU_ID = 312;
+    private static final long POLICY_MENU_ID = 313;
+
+    private final PageViewService pageViewService;
     private final NetworkRestController networkRestController;
     private final ConfigRestController configRestController;
 
@@ -26,6 +33,7 @@ public class NetworkController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("services", services);
+        model.addAttribute("page", pageViewService.getPageView(SERVICE_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_SERVICES);
         return "cluster/network/services";
@@ -51,6 +59,7 @@ public class NetworkController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("ingresses", ingresses);
+        model.addAttribute("page", pageViewService.getPageView(INGRESS_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_INGRESS);
         return "cluster/network/ingress";
@@ -76,6 +85,7 @@ public class NetworkController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("endpoints", endpoints);
+        model.addAttribute("page", pageViewService.getPageView(ENDPOINT_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_ENDPOINTS);
         return "cluster/network/endpoints";
@@ -101,6 +111,7 @@ public class NetworkController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("policies", policies);
+        model.addAttribute("page", pageViewService.getPageView(POLICY_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_POLICIES);
         return "cluster/network/policies";
