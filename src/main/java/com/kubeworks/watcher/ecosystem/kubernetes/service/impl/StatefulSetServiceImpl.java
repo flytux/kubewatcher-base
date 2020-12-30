@@ -53,6 +53,21 @@ public class StatefulSetServiceImpl implements StatefulSetService {
         return Collections.emptyList();
     }
 
+
+    @SneakyThrows
+    @Override
+    public List<StatefulSetTable> statefulSets(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceStatefulSetTables();
+        }
+        ApiResponse<AppsV1StatefulSetTableList> apiResponse = appsV1Api.namespaceStatefulSetAsTable(namespace, "true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            AppsV1StatefulSetTableList statefulSets = apiResponse.getData();
+            return statefulSets.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
     @SneakyThrows
     @Override
     public Optional<StatefulSetDescribe> statefulSet(String namespace, String name) {

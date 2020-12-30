@@ -15,21 +15,12 @@
         <!-- [Events] start -->
         <div class="row">
             <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Nodes
-<!--                <div class="f_r">-->
-<!--                    <div class=" d_ib">-->
-<!--                        <div class="form-group has-feedback d_ib">-->
-<!--                            <input type="text" placeholder="Search" class="search_table">-->
-<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
         </div>
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(nodes) ? '0' : nodes.size()}" class="point pr_10">8</span>
-                    <!--                    Page : <span class="point">1</span>/1-->
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">

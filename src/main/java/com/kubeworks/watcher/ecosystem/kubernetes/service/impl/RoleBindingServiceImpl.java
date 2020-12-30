@@ -3,15 +3,16 @@ package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleBindingDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleBindingTable;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.RbacV1RoleBindingTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.RbacV1ApiExtendHandler;
-import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.RoleBindingService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
-import io.kubernetes.client.openapi.models.*;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1RoleBinding;
+import io.kubernetes.client.openapi.models.V1RoleBindingList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -46,7 +47,40 @@ public class RoleBindingServiceImpl implements RoleBindingService {
                     roleBindingTable.setName(v1RoleBinding.getMetadata().getName());
                     roleBindingTable.setNamespace(v1RoleBinding.getMetadata().getNamespace());
                     if (v1RoleBinding.getMetadata().getCreationTimestamp() != null) {
-                        String age = ExternalConstants.getCurrentBetweenPeriod(v1RoleBinding.getMetadata().getCreationTimestamp().toInstant().getMillis());
+                        String age = ExternalConstants.getBetweenPeriodDay(v1RoleBinding.getMetadata().getCreationTimestamp().toInstant().getMillis());
+                        roleBindingTable.setAge(age);
+                    }
+                }
+
+                if (v1RoleBinding.getRoleRef() != null) {
+                    String role = v1RoleBinding.getRoleRef().getKind() + "/" + v1RoleBinding.getRoleRef().getName();
+                    roleBindingTable.setRole(role);
+                }
+                return roleBindingTable;
+            }).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<RoleBindingTable> roleBindings(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceRoleBindingTables();
+        }
+
+        ApiResponse<V1RoleBindingList> apiResponse = rbacApi.listNamespacedRoleBindingWithHttpInfo(namespace, "true", null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS,null);
+
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1RoleBindingList data = apiResponse.getData();
+
+            return data.getItems().stream().map(v1RoleBinding -> {
+                RoleBindingTable roleBindingTable = new RoleBindingTable();
+                if (v1RoleBinding.getMetadata() != null) {
+                    roleBindingTable.setName(v1RoleBinding.getMetadata().getName());
+                    roleBindingTable.setNamespace(v1RoleBinding.getMetadata().getNamespace());
+                    if (v1RoleBinding.getMetadata().getCreationTimestamp() != null) {
+                        String age = ExternalConstants.getBetweenPeriodDay(v1RoleBinding.getMetadata().getCreationTimestamp().toInstant().getMillis());
                         roleBindingTable.setAge(age);
                     }
                 }
@@ -96,6 +130,4 @@ public class RoleBindingServiceImpl implements RoleBindingService {
             builder.subjects(data.getSubjects());
         }
     }
-
-
 }

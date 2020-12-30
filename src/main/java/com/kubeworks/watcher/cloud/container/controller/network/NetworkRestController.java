@@ -29,6 +29,11 @@ public class NetworkRestController {
         return serviceKindService.allNamespaceServiceTables();
     }
 
+    @GetMapping(value = "/cluster/network/namespace/{namespace}/services", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ServiceTable> services(@PathVariable String namespace) {
+        return serviceKindService.services(namespace);
+    }
+
     @GetMapping(value = "/cluster/network/services/namespace/{namespace}/service/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ServiceDescribe service(@PathVariable String namespace, @PathVariable String name) {
         return serviceKindService.service(namespace, name).orElse(null);
@@ -36,6 +41,11 @@ public class NetworkRestController {
 
     @GetMapping(value = "/cluster/network/ingress", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<IngressTable> ingresses() { return ingressService.allNamespaceIngressTables();
+    }
+
+    @GetMapping(value = "/cluster/network/namespace/{namespace}/ingress", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<IngressTable> ingresses(@PathVariable String namespace) {
+        return ingressService.ingresses(namespace);
     }
 
     @GetMapping(value = "/cluster/network/ingress/namespace/{namespace}/ingresses/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,6 +57,11 @@ public class NetworkRestController {
     public List<EndpointTable> endpoints() { return endpointService.allNamespaceEndpointTables();
     }
 
+    @GetMapping(value = "/cluster/network/namespace/{namespace}/endpoints", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EndpointTable> endpoints(@PathVariable String namespace) {
+        return endpointService.endpoints(namespace);
+    }
+
     @GetMapping(value = "/cluster/network/endpoints/namespace/{namespace}/endpoint/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public EndpointDescribe endpoint(@PathVariable String namespace, @PathVariable String name) {
         return endpointService.endpoint(namespace, name).orElse(null);
@@ -54,6 +69,11 @@ public class NetworkRestController {
 
     @GetMapping(value = "/cluster/network/policies", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NetworkPolicyTable> policies() { return networkPolicyService.allNamespaceNetworkPolicyTables();
+    }
+
+    @GetMapping(value = "/cluster/network/namespace/{namespace}/policies", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<NetworkPolicyTable> policies(@PathVariable String namespace) {
+        return networkPolicyService.policies(namespace);
     }
 
     @GetMapping(value = "/cluster/network/policies/namespace/{namespace}/policy/{name}", produces = MediaType.APPLICATION_JSON_VALUE)

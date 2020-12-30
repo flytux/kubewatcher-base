@@ -16,6 +16,7 @@ import io.kubernetes.client.openapi.models.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Seconds;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
@@ -51,6 +52,21 @@ public class JobServiceImpl implements JobService {
             return statefulSets.getDataTable();
         }
         return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<JobTable> jobs(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceJobTables();
+        }
+        ApiResponse<BatchV1JobTableList> apiResponse = batchV1Api.namespaceJobAsTable(namespace, "true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            BatchV1JobTableList statefulSets = apiResponse.getData();
+            return statefulSets.getDataTable();
+        }
+        return Collections.emptyList();
+
     }
 
     @SneakyThrows

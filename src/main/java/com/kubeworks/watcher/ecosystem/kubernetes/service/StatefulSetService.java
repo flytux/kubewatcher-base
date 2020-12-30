@@ -10,6 +10,8 @@ public interface StatefulSetService {
 
     List<StatefulSetTable> allNamespaceStatefulSetTables();
 
+    List<StatefulSetTable> statefulSets(String namespace);
+
     Optional<StatefulSetDescribe> statefulSet(String namespace, String name);
 
 }

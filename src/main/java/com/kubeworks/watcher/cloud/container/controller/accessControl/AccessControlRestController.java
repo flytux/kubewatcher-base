@@ -29,6 +29,11 @@ public class AccessControlRestController {
         return serviceAccountService.allNamespaceServiceAccountTables();
     }
 
+    @GetMapping(value = "/cluster/acl/namespace/{namespace}/service-accounts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ServiceAccountTable> serviceAccounts(@PathVariable String namespace) {
+        return serviceAccountService.serviceAccounts(namespace);
+    }
+
     @GetMapping(value = "/cluster/acl/service-accounts/namespace/{namespace}/service-account/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ServiceAccountDescribe serviceAccount(@PathVariable String namespace, @PathVariable String name) {
         return serviceAccountService.serviceAccount(namespace, name).orElse(null);
@@ -37,6 +42,11 @@ public class AccessControlRestController {
     @GetMapping(value = "/cluster/acl/role-bindings", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RoleBindingTable> roleBindings() {
         return roleBindingService.allNamespaceRoleBindingTables();
+    }
+
+    @GetMapping(value = "/cluster/acl/namespace/{namespace}/role-binding", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<RoleBindingTable> roleBindings(@PathVariable String namespace) {
+        return roleBindingService.roleBindings(namespace);
     }
 
     @GetMapping(value = "/cluster/acl/role-bindings/namespace/{namespace}/role-binding/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,6 +61,13 @@ public class AccessControlRestController {
     public List<RoleTable> roles() {
 
         return roleService.allNamespaceRoleTables();
+    }
+    /*
+        Role namespace 리스트 조회
+     */
+    @GetMapping(value = "/cluster/acl/namespace/{namespace}/roles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<RoleTable> roles(@PathVariable String namespace) {
+        return roleService.roles(namespace);
     }
 
     /*

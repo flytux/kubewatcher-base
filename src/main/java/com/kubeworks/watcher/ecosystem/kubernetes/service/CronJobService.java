@@ -10,6 +10,8 @@ public interface CronJobService {
 
     List<CronJobTable> allNamespaceCronJobTables();
 
+    List<CronJobTable> cronJobs(String namespace);
+
     Optional<CronJobDescribe> cronJob(String namespace, String name);
 
 }

@@ -13,6 +13,7 @@ import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.V1EndpointSubset;
 import io.kubernetes.client.openapi.models.V1Endpoints;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import org.apache.commons.lang3.StringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,20 @@ public class EndpointServiceImpl implements EndpointService {
     @Override
     public List<EndpointTable> allNamespaceEndpointTables() {
         ApiResponse<V1EndpointTableList> apiResponse = coreApi.allNamespaceEndpointAsTables("true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1EndpointTableList endpoints = apiResponse.getData();
+            return endpoints.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<EndpointTable> endpoints(String namespace) {
+        if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
+            return allNamespaceEndpointTables();
+        }
+        ApiResponse<V1EndpointTableList> apiResponse = coreApi.namespaceEndpointAsTables(namespace, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EndpointTableList endpoints = apiResponse.getData();
             return endpoints.getDataTable();

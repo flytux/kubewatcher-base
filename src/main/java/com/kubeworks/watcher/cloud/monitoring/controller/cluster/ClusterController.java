@@ -110,6 +110,7 @@ public class ClusterController {
     public String deployments(Model model) {
         List<DeploymentTable> deployments = clusterRestController.deployments();
         List<NamespaceTable> namespaces = configRestController.namespaces();
+
         model.addAttribute("deployments", deployments);
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_DEPLOYMENTS);
@@ -123,6 +124,31 @@ public class ClusterController {
         return "monitoring/cluster/workloads/deployments :: contentList";
     }
 
+    @GetMapping(value = "/monitoring/cluster/workloads/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String statefulSets(Model model) {
+        List<StatefulSetTable> statefulSets = clusterRestController.statefulSets();
+        List<NamespaceTable> namespaces = configRestController.namespaces();
+
+        model.addAttribute("statefulSets", statefulSets);
+        model.addAttribute("namespaces", namespaces);
+        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_STATEFULSETS);
+        return "monitoring/cluster/workloads/statefulsets";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String statefulSets(Model model, @PathVariable String namespace) {
+        List<StatefulSetTable> statefulSets = clusterRestController.statefulSets(namespace);
+        model.addAttribute("statefulSets", statefulSets);
+        return "monitoring/cluster/workloads/statefulsets :: contentList";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String statefulSet(Model model, @PathVariable String namespace, @PathVariable String name) {
+        StatefulSetDescribe statefulSetDescribe = clusterRestController.statefulSet(namespace, name);
+        model.addAttribute("statefulSet", statefulSetDescribe);
+        return "monitoring/cluster/workloads/statefulsets :: modalContents";
+    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String deployment(Model model, @PathVariable String namespace, @PathVariable String name) {
         DeploymentDescribe deployment = clusterRestController.deployment(namespace, name);
@@ -133,8 +159,19 @@ public class ClusterController {
     @GetMapping(value = "/monitoring/cluster/workloads/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
     public String daemonSets(Model model) {
         List<DaemonSetTable> daemonSets = clusterRestController.daemonSets();
+        List<NamespaceTable> namespaces = configRestController.namespaces();
+
         model.addAttribute("daemonSets", daemonSets);
+        model.addAttribute("namespaces", namespaces);
+        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_DAEMONSETS);
         return "monitoring/cluster/workloads/daemonsets";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String daemonSets(Model model, @PathVariable String namespace) {
+        List<DaemonSetTable> daemonSets = clusterRestController.daemonSets(namespace);
+        model.addAttribute("daemonSets", daemonSets);
+        return "monitoring/cluster/workloads/daemonsets :: contentList";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -144,25 +181,22 @@ public class ClusterController {
         return "monitoring/cluster/workloads/daemonsets :: modalContents";
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String statefulSets(Model model) {
-        List<StatefulSetTable> statefulSets = clusterRestController.statefulSets();
-        model.addAttribute("statefulSets", statefulSets);
-        return "monitoring/cluster/workloads/statefulsets";
-    }
-
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String statefulSet(Model model, @PathVariable String namespace, @PathVariable String name) {
-        StatefulSetDescribe statefulSetDescribe = clusterRestController.statefulSet(namespace, name);
-        model.addAttribute("statefulSet", statefulSetDescribe);
-        return "monitoring/cluster/workloads/statefulsets :: modalContents";
-    }
-
     @GetMapping(value = "/monitoring/cluster/workloads/jobs", produces = MediaType.APPLICATION_JSON_VALUE)
     public String jobs(Model model) {
         List<JobTable> jobs = clusterRestController.jobs();
+        List<NamespaceTable> namespaces = configRestController.namespaces();
+
         model.addAttribute("jobs", jobs);
+        model.addAttribute("namespaces", namespaces);
+        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_JOBS);
         return "monitoring/cluster/workloads/jobs";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/jobs", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String jobs(Model model, @PathVariable String namespace) {
+        List<JobTable> jobs = clusterRestController.jobs(namespace);
+        model.addAttribute("jobs", jobs);
+        return "monitoring/cluster/workloads/jobs :: contentList";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/jobs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -175,8 +209,19 @@ public class ClusterController {
     @GetMapping(value = "/monitoring/cluster/workloads/cronjobs", produces = MediaType.APPLICATION_JSON_VALUE)
     public String cronJobs(Model model) {
         List<CronJobTable> cronJobs = clusterRestController.cronJobs();
+        List<NamespaceTable> namespaces = configRestController.namespaces();
+
         model.addAttribute("cronJobs", cronJobs);
+        model.addAttribute("namespaces", namespaces);
+        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_CRONJOBS);
         return "monitoring/cluster/workloads/cronjobs";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/cronjobs", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String cronJobs(Model model, @PathVariable String namespace) {
+        List<CronJobTable> cronJobs = clusterRestController.cronJobs(namespace);
+        model.addAttribute("cronJobs", cronJobs);
+        return "monitoring/cluster/workloads/cronjobs :: contentList";
     }
 
     @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/cronjobs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -189,15 +234,19 @@ public class ClusterController {
     @GetMapping(value = "/monitoring/cluster/storages", produces = MediaType.APPLICATION_JSON_VALUE)
     public String storages(Model model) {
         Map<String, Object> storages = clusterRestController.storages();
+        List<NamespaceTable> namespaces = configRestController.namespaces();
+
         model.addAllAttributes(storages);
+        model.addAttribute("namespaces", namespaces);
+        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_PVC);
         return "monitoring/cluster/storages";
     }
 
-    @GetMapping(value = "/monitoring/cluster/persistent-volumes/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String persistentVolume(Model model, @PathVariable String name) {
-        PersistentVolumeDescribe persistentVolumeDescribe = clusterRestController.persistentVolume(name);
-        model.addAttribute("persistentVolume", persistentVolumeDescribe);
-        return "monitoring/cluster/storages :: pvModalContents";
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/storages", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String storages(Model model, @PathVariable String namespace) {
+        Map<String, Object> storages = clusterRestController.storages(namespace);
+        model.addAllAttributes(storages);
+        return "monitoring/cluster/storages :: contentList";
     }
 
     @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/persistent-volume-claims/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -205,6 +254,13 @@ public class ClusterController {
         PersistentVolumeClaimDescribe persistentVolumeClaimDescribe = clusterRestController.persistentVolumeClaim(namespace, name);
         model.addAttribute("persistentVolumeClaim", persistentVolumeClaimDescribe);
         return "monitoring/cluster/storages :: pvcModalContents";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/persistent-volumes/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String persistentVolume(Model model, @PathVariable String name) {
+        PersistentVolumeDescribe persistentVolumeDescribe = clusterRestController.persistentVolume(name);
+        model.addAttribute("persistentVolume", persistentVolumeDescribe);
+        return "monitoring/cluster/storages :: pvModalContents";
     }
 
     @GetMapping(value = "/monitoring/cluster/storage-classes/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -217,8 +273,19 @@ public class ClusterController {
     @GetMapping(value = "/monitoring/cluster/events", produces = MediaType.APPLICATION_JSON_VALUE)
     public String events(Model model) {
         List<EventTable> events = clusterRestController.events();
+        List<NamespaceTable> namespaces = configRestController.namespaces();
+
         model.addAttribute("events", events);
+        model.addAttribute("namespaces", namespaces);
+        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_EVENTS);
         return "monitoring/cluster/events";
+    }
+
+    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events/contentList", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String events(Model model, @PathVariable String namespace, String contentList) {
+        List<EventTable> events = clusterRestController.events(namespace, contentList);
+        model.addAttribute("events", events);
+        return "monitoring/cluster/events :: contentList";
     }
 
     @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events", produces = MediaType.TEXT_HTML_VALUE)
