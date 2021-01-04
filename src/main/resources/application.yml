@@ -315,15 +315,15 @@ spring:
 application:
   properties:
     monitoring:
-      default-cluster-name: local
+      default-cluster-name: dev-app
       clusters:
         local:
-          cluster-name: local
+          cluster-name: dev-app
           prometheus:
-            url: "http://prometheus.do"
+            url: "http://prom.dev"
           k8s:
-            url: "https://rancher.do/k8s/clusters/local"
-            api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
+            url: "https://rancher/k8s/clusters/c-wlnwk"
+            api-token: "kubeconfig-user-9dqpx:7x8x66n84wmlmqxcw62q72lndlpff5fmvnwd2tzxcrdvjvxklxjd42"
     services:
       - code: BAC
         name: dev-core-bac
