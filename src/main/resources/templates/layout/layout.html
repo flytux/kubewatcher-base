@@ -42,8 +42,10 @@
 
 
         <script>
+            let collapseKey = "collapsed=true;Path=/;";
             //if(sessionStorage.getItem('sidebarStatus') === 'fold')   console.log('fold');
             (function ($) {
+
                 let lnbUI = {
                     click: function (target) {
                         let _self = this,
@@ -114,6 +116,17 @@
 
             }(jQuery));
 
+            // $(document).ready(function () {
+            //     if (getCookie("collapsed") === 'true') {
+            //         fnFold($("#sidebarToggle"));
+            //     }
+            // });
+
+            function getCookie(name) {
+                let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+                return value? value[2] : null;
+            }
+
             //full : 1depth / fold : 1depth
             function fnAccordion(target) {
                 let $this = $(target),
@@ -159,9 +172,21 @@
                 $this.attr('aria-expanded', $this.css('display') == 'none');
             }
 
+            function switchCollapseCookie() {
+                if ($("#lnb").hasClass("fold")) {
+                    let date = new Date();
+                    date.setTime(date.getTime() + 24*60*60*1000);
+                    document.cookie = collapseKey + "Expires=" + date.toUTCString() + ";";
+                } else {
+                    document.cookie = collapseKey + 'Expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+                }
+            }
+
+
             function fnFold(target) {
                 $(".lef-nav").toggleClass("toggled");
                 $("#lnb").toggleClass("fold");
+                // switchCollapseCookie();
                 $(".lef-sidebar-brand-text").toggleClass("fold");
                 $(".lef-sidebar-brand-sub-text").toggleClass("fold");
 

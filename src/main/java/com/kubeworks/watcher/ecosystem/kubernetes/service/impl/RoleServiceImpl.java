@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
@@ -11,7 +12,6 @@ import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Role;
-import io.kubernetes.client.openapi.models.V1RoleBindingList;
 import io.kubernetes.client.openapi.models.V1RoleList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +30,13 @@ public class RoleServiceImpl implements RoleService {
     private final ApiClient k8sApiClient;
     private final RbacV1ApiExtendHandler rbacV1Api;
     private final EventService eventService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public RoleServiceImpl(ApiClient k8sApiClient,EventService eventService) {
+    public RoleServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.rbacV1Api = new RbacV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -45,21 +47,25 @@ public class RoleServiceImpl implements RoleService {
         ApiResponse<V1RoleList> apiResponse = rbacV1Api.listRoleForAllNamespacesWithHttpInfo(null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, "false", null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1RoleList data = apiResponse.getData();
-
-            return data.getItems().stream().map(v1Role -> {
-                RoleTable roleTable = new RoleTable();
-                if (v1Role.getMetadata() != null) {
-                    roleTable.setName(v1Role.getMetadata().getName());
-                    roleTable.setNamespace(v1Role.getMetadata().getNamespace());
-                    if (v1Role.getMetadata().getCreationTimestamp() != null) {
-                        String age = ExternalConstants.getBetweenPeriodDay(v1Role.getMetadata().getCreationTimestamp().toInstant().getMillis());
-                        roleTable.setAge(age);
-                    }
-                }
-                return roleTable;
-            }).collect(Collectors.toList());
+            return data.getItems().stream()
+                .map(this::convertRoleTable)
+                .sorted((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()))
+                .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    private RoleTable convertRoleTable(V1Role v1Role) {
+        RoleTable roleTable = new RoleTable();
+        if (v1Role.getMetadata() != null) {
+            roleTable.setName(v1Role.getMetadata().getName());
+            roleTable.setNamespace(v1Role.getMetadata().getNamespace());
+            if (v1Role.getMetadata().getCreationTimestamp() != null) {
+                String age = ExternalConstants.getBetweenPeriodDay(v1Role.getMetadata().getCreationTimestamp().toInstant().getMillis());
+                roleTable.setAge(age);
+            }
+        }
+        return roleTable;
     }
 
     @SneakyThrows
@@ -68,23 +74,11 @@ public class RoleServiceImpl implements RoleService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceRoleTables();
         }
-        ApiResponse<V1RoleList> apiResponse = rbacV1Api.listNamespacedRoleWithHttpInfo(namespace, "true", null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS,null);
-
+        ApiResponse<V1RoleList> apiResponse = rbacV1Api.listNamespacedRoleWithHttpInfo(namespace, "true", null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1RoleList data = apiResponse.getData();
-
-            return data.getItems().stream().map(v1Role -> {
-                RoleTable roleTable = new RoleTable();
-                if (v1Role.getMetadata() != null) {
-                    roleTable.setName(v1Role.getMetadata().getName());
-                    roleTable.setNamespace(v1Role.getMetadata().getNamespace());
-                    if (v1Role.getMetadata().getCreationTimestamp() != null) {
-                        String age = ExternalConstants.getBetweenPeriodDay(v1Role.getMetadata().getCreationTimestamp().toInstant().getMillis());
-                        roleTable.setAge(age);
-                    }
-                }
-                return roleTable;
-            }).collect(Collectors.toList());
+            return data.getItems().stream()
+                .map(this::convertRoleTable).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -110,6 +104,7 @@ public class RoleServiceImpl implements RoleService {
 
         return Optional.of(roleDescribe);
     }
+
     private void setRole(RoleDescribe.RoleDescribeBuilder builder, V1Role data) {
 
         if (data.getMetadata() != null) {

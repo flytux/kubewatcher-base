@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PersistentVolumeClaimTableList;
@@ -30,12 +31,15 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
     private final CoreV1ApiExtendHandler coreV1ApiExtendHandler;
     private final PodService podService;
     private final EventService eventService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public PersistentVolumeServiceImpl(ApiClient k8sApiClient, PodService podService, EventService eventService) {
+    public PersistentVolumeServiceImpl(ApiClient k8sApiClient, PodService podService, EventService eventService,
+                                       K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreV1ApiExtendHandler = new CoreV1ApiExtendHandler(k8sApiClient);
         this.podService = podService;
         this.eventService = eventService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -76,7 +80,9 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
         ApiResponse<V1PersistentVolumeClaimTableList> apiResponse = coreV1ApiExtendHandler.allNamespacePersistentVolumeClaimAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PersistentVolumeClaimTableList persistentVolumeClaims = apiResponse.getData();
-            return persistentVolumeClaims.getDataTable();
+            List<PersistentVolumeClaimTable> dataTable = persistentVolumeClaims.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

@@ -18,7 +18,7 @@ let commonVariablesJs = (function () {
             }
             const extractVariables = this.extractVariables(variable.apiQuery);
             if (extractVariables === null) {
-                const responseData = this.callApiQuery(variable.apiQuery);
+                const responseData = this.callApiQuery(variable.queryType, variable.apiQuery);
                 this.renderVariableData(variable, isGenerated, responseData);
             } else {
                 let apiQuery = variable.apiQuery;
@@ -29,7 +29,7 @@ let commonVariablesJs = (function () {
                     apiQuery = apiQuery.replace(new RegExp('\\$' + edgeField, 'g'), $("#var-" + edgeField).val())
                 });
 
-                const responseData = this.callApiQuery(apiQuery);
+                const responseData = this.callApiQuery(variable.queryType, apiQuery);
                 this.renderVariableData(variable, isGenerated, responseData);
             }
         },
@@ -41,9 +41,18 @@ let commonVariablesJs = (function () {
             let $selector = $("#var-" + variable.name);
             const variableType = variable.variableType;
             let renderHtml = "";
+            let values = undefined;
             switch (variableType) {
                 case "METRIC_LABEL_VALUES":
-                    const values = responseData.data.result.map(data => data.metric[variable.name]).sort();
+                    values = responseData.data.result.map(data => data.metric[variable.name]).sort();
+                    for (let value of values) {
+                        if (value !== undefined) {
+                            renderHtml += "<option value=\"" + value + "\">" + value + "</option>";
+                        }
+                    }
+                    break;
+                case "API_LABEL_VALUES":
+                    values = responseData.map(data => data[variable.name]);
                     for (let value of values) {
                         if (value !== undefined) {
                             renderHtml += "<option value=\"" + value + "\">" + value + "</option>";
@@ -64,8 +73,11 @@ let commonVariablesJs = (function () {
                 $selector.attr("disabled", false);
             }
         },
-        callApiQuery: function (apiQuery) {
-            return this.ajaxRequest(apiQuery);
+        callApiQuery: function (queryType, apiQuery) {
+            if (queryType === "METRIC") {
+                return this.ajaxRequest(apiHost + apiQuery.replace(/\+/g, "%2B"));
+            }
+            return this.ajaxRequest(apiQuery.replace(/\+/g, "%2B"));
         },
         addVariable: function (variable) {
             variables.set(variable.name, variable);
@@ -78,13 +90,13 @@ let commonVariablesJs = (function () {
                 object.forEach(variable => this.addVariable(variable));
             }
         },
-        getRequest: function (uri) {
-            return axios.get(apiHost + uri.replace(/\+/g, "%2B"));
+        getRequest: function (url) {
+            return axios.get(url);
         },
-        ajaxRequest: function (uri) {
+        ajaxRequest: function (url) {
             let response = null;
             $.ajax({
-                url: apiHost + uri.replace(/\+/g, "%2B"),
+                url: url,
                 type: "GET",
                 async: false,
                 success: function (json) {

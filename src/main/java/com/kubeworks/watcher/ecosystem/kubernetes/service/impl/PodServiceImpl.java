@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1ContainerExtends;
@@ -35,11 +36,13 @@ public class PodServiceImpl implements PodService {
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public PodServiceImpl(ApiClient k8sApiClient, EventService eventService) {
+    public PodServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -48,7 +51,9 @@ public class PodServiceImpl implements PodService {
         ApiResponse<V1PodTableList> apiResponse = coreApi.allNamespacePodAsTable("true", null, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodTableList pod = apiResponse.getData();
-            return pod.getDataTable();
+            List<PodTable> dataTable = pod.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }
@@ -73,7 +78,8 @@ public class PodServiceImpl implements PodService {
         ApiResponse<V1PodTableList> apiResponse = coreApi.namespacePodAsTable(namespace,null, labelSelectors, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodTableList pod = apiResponse.getData();
-            return pod.getDataTable();
+            List<PodTable> dataTable = pod.getDataTable();
+            return dataTable;
         }
 
         return Collections.emptyList();

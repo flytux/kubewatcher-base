@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.CronJobDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.CronJobTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.BatchV1beta1CronJobTableList;
@@ -32,13 +33,16 @@ public class CronJobServiceImpl implements CronJobService {
     private final EventService eventService;
     private final PodService podService;
     private final Yaml yaml;
+    private final K8sObjectManager k8sObjectManager;
 
-    public CronJobServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService, Yaml yaml) {
+    public CronJobServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService, Yaml yaml,
+                              K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.batchV1beta1Api = new BatchV1beta1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.podService = podService;
         this.yaml = yaml;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -47,7 +51,9 @@ public class CronJobServiceImpl implements CronJobService {
         ApiResponse<BatchV1beta1CronJobTableList> apiResponse = batchV1beta1Api.allNamespaceCronJobAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             BatchV1beta1CronJobTableList statefulSets = apiResponse.getData();
-            return statefulSets.getDataTable();
+            List<CronJobTable> dataTable = statefulSets.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

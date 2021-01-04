@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.SecretDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.SecretTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1SecretTableList;
@@ -28,10 +29,12 @@ public class SecretServiceImpl implements SecretService {
 
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
+    private final K8sObjectManager k8sObjectManager;
 
-    public SecretServiceImpl(ApiClient k8sApiClient) {
+    public SecretServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -40,7 +43,9 @@ public class SecretServiceImpl implements SecretService {
         ApiResponse<V1SecretTableList> apiResponse = coreV1Api.allNamespaceSecretAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1SecretTableList secrets = apiResponse.getData();
-            return secrets.getDataTable();
+            List<SecretTable> dataTable = secrets.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

@@ -16,7 +16,6 @@
                     <div class="lef-sidebar-brand-text">한화생명<br>통합관리시스템</div>
                 </div>
                 <div id="lnb">
-
                     <ul>
                         <li class="heading lef-sidebar-brand-sub-text">
                             <div class="row">
@@ -30,7 +29,17 @@
                                 </div>
                             </div>
                         </li>
-                        <li>
+                        <li th:classappend="${T(org.apache.commons.lang3.StringUtils)
+                                .containsAny(#httpServletRequest.requestURI,
+                                '/main',
+                                '/monitoring/application/overview',
+                                '/monitoring/cluster/overview',
+                                '/monitoring/vm/overview',
+                                '/monitoring/vm/monitoring',
+                                '/monitoring/jvm/overview',
+                                '/monitoring/jvm/application',
+                                '/monitoring/database'
+                                ) ? 'on open' : ''}">
                             <a href="#none" role="button">
                                 <i class="feather icon-bar-chart-2"></i> <span class="lef-sidebar-brand-sub-text">Dashboard</span>
                             </a>
@@ -55,7 +64,33 @@
                                 <li><a th:href="@{/monitoring/database}">Database</a></li>
                             </ul>
                         </li>
-                        <li>
+                        <li th:classappend="${T(org.apache.commons.lang3.StringUtils)
+                                .containsAny(#httpServletRequest.requestURI,
+                                '/monitoring/cluster/nodes',
+                                '/monitoring/cluster/workloads/overview',
+                                '/monitoring/cluster/workloads/pods',
+                                '/monitoring/cluster/workloads/deployments',
+                                '/monitoring/cluster/workloads/statefulsets',
+                                '/monitoring/cluster/workloads/daemonsets',
+                                '/monitoring/cluster/workloads/jobs',
+                                '/monitoring/cluster/workloads/cronjobs',
+                                '/monitoring/cluster/storages',
+                                '/cluster/config/configmaps',
+                                '/cluster/config/resource-quotas',
+                                '/cluster/config/hpa',
+                                '/cluster/config/namespaces',
+                                '/cluster/config/custom-resources',
+                                '/cluster/network/services',
+                                '/cluster/network/ingress',
+                                '/cluster/network/endpoints',
+                                '/cluster/network/policies',
+                                '/cluster/acl/service-accounts',
+                                '/cluster/acl/role-bindings',
+                                '/cluster/acl/roles',
+                                '/cluster/config/secrets',
+                                '/cluster/acl/pod-security-policies',
+                                '/monitoring/cluster/events'
+                                ) ? 'on open' : ''}">
                             <a href="#none" role="button">
                                 <i class="feather icon-box"></i> <span class="lef-sidebar-brand-sub-text">K8s Cluster</span>
                             </a>
@@ -106,7 +141,11 @@
                                 <li><a th:href="@{/monitoring/cluster/events}">Events</a></li>
                             </ul>
                         </li>
-                        <li>
+                        <li th:classappend="${T(org.apache.commons.lang3.StringUtils)
+                                .containsAny(#httpServletRequest.requestURI,
+                                '/monitoring/alarm/list',
+                                '/setting/alarm/list'
+                                ) ? 'on open' : ''}">
                             <a href="#none" role="button">
                                 <i class="feather icon-bell"></i> <span class="lef-sidebar-brand-sub-text">Alarm</span>
                             </a>
@@ -115,7 +154,12 @@
                                 <li><a th:href="@{/setting/alarm/list}">Config</a></li>
                             </ul>
                         </li>
-                        <li>
+                        <li th:classappend="${T(org.apache.commons.lang3.StringUtils)
+                                .containsAny(#httpServletRequest.requestURI,
+                                '/security/groups',
+                                '/security/users',
+                                '/security/roles/user-role-management'
+                                ) ? 'on open' : ''}">
                             <a href="#none" role="button">
                                 <i class="feather icon-user"></i> <span class="lef-sidebar-brand-sub-text">Users</span>
                             </a>
@@ -125,10 +169,16 @@
                                 <li><a th:href="@{/security/roles/user-role-management}">Roles</a></li>
                             </ul>
                         </li>
-                        <li class="noDepth off">
+                        <li class="off" th:class="${T(org.apache.commons.lang3.StringUtils)
+                                .containsIgnoreCase(#httpServletRequest.requestURI,
+                                '/application/usage/usage-overview'
+                                ) ? 'noDepth on' : ''}">
                             <a th:href="@{/application/usage/usage-overview}"><i class="feather icon-pie-chart"></i> <span class="lef-sidebar-brand-sub-text">Cluster Usage</span></a>
                         </li>
-                        <li class="noDepth off">
+                        <li class="off" th:class="${T(org.apache.commons.lang3.StringUtils)
+                                .containsIgnoreCase(#httpServletRequest.requestURI,
+                                '/setting/preference'
+                                ) ? 'noDepth on' : ''}">
                             <a th:href="@{/setting/preference}"><i class="feather icon-settings"></i> <span class="lef-sidebar-brand-sub-text">Preference</span></a>
                         </li>
                     </ul>

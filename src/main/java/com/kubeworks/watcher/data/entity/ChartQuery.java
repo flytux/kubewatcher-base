@@ -1,6 +1,8 @@
 package com.kubeworks.watcher.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kubeworks.watcher.data.converter.QueryTypeConverter;
+import com.kubeworks.watcher.data.vo.QueryType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +31,8 @@ public class ChartQuery extends BaseEntity {
     long cQueryId;
 
     @Column(name = "query_type", columnDefinition = "VARCHAR(10) default 'METRIC'", length = 10, nullable = false)
-    String queryType;
+    @Convert(converter = QueryTypeConverter.class)
+    QueryType queryType;
 
     @Column(name = "api_query", length = 1000, nullable = false)
     String apiQuery;

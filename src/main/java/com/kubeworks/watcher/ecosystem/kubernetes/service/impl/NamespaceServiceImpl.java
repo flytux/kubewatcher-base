@@ -1,7 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
-import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.LimitRangeDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NamespaceDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NamespaceTable;
@@ -33,16 +33,16 @@ public class NamespaceServiceImpl implements NamespaceService {
     private final CoreV1ApiExtendHandler coreV1Api;
     private final ResourceQuotaService resourceQuotaService;
     private final LimitRangeService limitRangeService;
-    private final ApplicationServiceProperties applicationServiceProperties;
+    private final K8sObjectManager k8sObjectManager;
 
 
     public NamespaceServiceImpl(ApiClient k8sApiClient, ResourceQuotaService resourceQuotaService,
-                                LimitRangeService limitRangeService, ApplicationServiceProperties applicationServiceProperties) {
+                                LimitRangeService limitRangeService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.resourceQuotaService = resourceQuotaService;
         this.limitRangeService = limitRangeService;
-        this.applicationServiceProperties = applicationServiceProperties;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -52,17 +52,7 @@ public class NamespaceServiceImpl implements NamespaceService {
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1NamespaceTableList namespaces = apiResponse.getData();
             List<NamespaceTable> dataTable = namespaces.getDataTable();
-            dataTable.sort((o1, o2) -> {
-                int index1 = applicationServiceProperties.getNamespaces().indexOf(o1.getName());
-                if (index1 >= 0 ) {
-                    int index2 = applicationServiceProperties.getNamespaces().indexOf(o2.getName());
-                    if (index2 >= 0) {
-                        return index1 - index2;
-                    }
-                    return Integer.MIN_VALUE;
-                }
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            });
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getName(), o2.getName()));
             return dataTable;
         }
         return Collections.emptyList();

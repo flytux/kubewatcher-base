@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleBindingDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleBindingTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.RbacV1ApiExtendHandler;
@@ -26,10 +27,12 @@ public class RoleBindingServiceImpl implements RoleBindingService {
 
     private final ApiClient k8sApiClient;
     private final RbacV1ApiExtendHandler rbacApi;
+    private final K8sObjectManager k8sObjectManager;
 
-    public RoleBindingServiceImpl(ApiClient k8sApiClient) {
+    public RoleBindingServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.rbacApi = new RbacV1ApiExtendHandler(k8sApiClient);
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -37,28 +40,14 @@ public class RoleBindingServiceImpl implements RoleBindingService {
     public List<RoleBindingTable> allNamespaceRoleBindingTables() {
 //        ApiResponse<RbacV1RoleBindingTableList> apiResponse = rbacApi.allNamespaceRoleBindingAsTables("true");
         ApiResponse<V1RoleBindingList> apiResponse = rbacApi.listRoleBindingForAllNamespacesWithHttpInfo(null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, "false", null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
-
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1RoleBindingList data = apiResponse.getData();
-
-            return data.getItems().stream().map(v1RoleBinding -> {
-                RoleBindingTable roleBindingTable = new RoleBindingTable();
-                if (v1RoleBinding.getMetadata() != null) {
-                    roleBindingTable.setName(v1RoleBinding.getMetadata().getName());
-                    roleBindingTable.setNamespace(v1RoleBinding.getMetadata().getNamespace());
-                    if (v1RoleBinding.getMetadata().getCreationTimestamp() != null) {
-                        String age = ExternalConstants.getBetweenPeriodDay(v1RoleBinding.getMetadata().getCreationTimestamp().toInstant().getMillis());
-                        roleBindingTable.setAge(age);
-                    }
-                }
-
-                if (v1RoleBinding.getRoleRef() != null) {
-                    String role = v1RoleBinding.getRoleRef().getKind() + "/" + v1RoleBinding.getRoleRef().getName();
-                    roleBindingTable.setRole(role);
-                }
-                return roleBindingTable;
-            }).collect(Collectors.toList());
+            return data.getItems().stream()
+                .map(this::convertRoleBindingTable)
+                .sorted((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()))
+                .collect(Collectors.toList());
         }
+
         return Collections.emptyList();
     }
 
@@ -68,29 +57,10 @@ public class RoleBindingServiceImpl implements RoleBindingService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceRoleBindingTables();
         }
-
-        ApiResponse<V1RoleBindingList> apiResponse = rbacApi.listNamespacedRoleBindingWithHttpInfo(namespace, "true", null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS,null);
-
+        ApiResponse<V1RoleBindingList> apiResponse = rbacApi.listNamespacedRoleBindingWithHttpInfo(namespace, "true", null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1RoleBindingList data = apiResponse.getData();
-
-            return data.getItems().stream().map(v1RoleBinding -> {
-                RoleBindingTable roleBindingTable = new RoleBindingTable();
-                if (v1RoleBinding.getMetadata() != null) {
-                    roleBindingTable.setName(v1RoleBinding.getMetadata().getName());
-                    roleBindingTable.setNamespace(v1RoleBinding.getMetadata().getNamespace());
-                    if (v1RoleBinding.getMetadata().getCreationTimestamp() != null) {
-                        String age = ExternalConstants.getBetweenPeriodDay(v1RoleBinding.getMetadata().getCreationTimestamp().toInstant().getMillis());
-                        roleBindingTable.setAge(age);
-                    }
-                }
-
-                if (v1RoleBinding.getRoleRef() != null) {
-                    String role = v1RoleBinding.getRoleRef().getKind() + "/" + v1RoleBinding.getRoleRef().getName();
-                    roleBindingTable.setRole(role);
-                }
-                return roleBindingTable;
-            }).collect(Collectors.toList());
+            return data.getItems().stream().map(this::convertRoleBindingTable).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -110,6 +80,24 @@ public class RoleBindingServiceImpl implements RoleBindingService {
         RoleBindingDescribe roleBindingDescribe = builder.build();
 
         return Optional.of(roleBindingDescribe);
+    }
+
+    private RoleBindingTable convertRoleBindingTable(V1RoleBinding v1RoleBinding) {
+        RoleBindingTable roleBindingTable = new RoleBindingTable();
+        if (v1RoleBinding.getMetadata() != null) {
+            roleBindingTable.setName(v1RoleBinding.getMetadata().getName());
+            roleBindingTable.setNamespace(v1RoleBinding.getMetadata().getNamespace());
+            if (v1RoleBinding.getMetadata().getCreationTimestamp() != null) {
+                String age = ExternalConstants.getBetweenPeriodDay(v1RoleBinding.getMetadata().getCreationTimestamp().toInstant().getMillis());
+                roleBindingTable.setAge(age);
+            }
+        }
+
+        if (v1RoleBinding.getRoleRef() != null) {
+            String role = v1RoleBinding.getRoleRef().getKind() + "/" + v1RoleBinding.getRoleRef().getName();
+            roleBindingTable.setRole(role);
+        }
+        return roleBindingTable;
     }
 
     private void setRoleBinding(RoleBindingDescribe.RoleBindingDescribeBuilder builder, V1RoleBinding data) {

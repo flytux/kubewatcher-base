@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NetworkPolicyDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NetworkPolicyTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.NetworkingV1NetworkPolicyTableList;
@@ -26,11 +27,13 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
     private final ApiClient k8sApiClient;
     private final NetworkingV1ApiExtendHandler networkApi;
     private final EventService eventService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public NetworkPolicyServiceImpl(ApiClient k8sApiClient, EventService eventService) {
+    public NetworkPolicyServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.networkApi = new NetworkingV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -39,7 +42,9 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
         ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.allNamespaceNetworkPolicyAsTables("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             NetworkingV1NetworkPolicyTableList networkPolicies = apiResponse.getData();
-            return networkPolicies.getDataTable();
+            List<NetworkPolicyTable> dataTable = networkPolicies.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }
