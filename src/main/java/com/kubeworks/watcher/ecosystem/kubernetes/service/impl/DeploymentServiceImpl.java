@@ -88,7 +88,7 @@ public class DeploymentServiceImpl implements DeploymentService {
 
         DeploymentDescribe deploymentDescribe = builder.build();
 
-        List<PodTable> pods = podService.podTables(deploymentDescribe.getNamespace(), deploymentDescribe.getSelector());
+        List<PodTable> pods = podService.podTables(deploymentDescribe.getNamespace(), deploymentDescribe.getTemplateLabels());
         if (CollectionUtils.isNotEmpty(pods)) {
             deploymentDescribe.setPods(pods);
         }
@@ -116,8 +116,10 @@ public class DeploymentServiceImpl implements DeploymentService {
             builder.replicas(spec.getReplicas());
             setStrategy(builder, spec);
             setSelector(builder, spec);
-
             setResources(builder, spec);
+            if (data.getSpec().getTemplate().getMetadata() != null) {
+                builder.templateLabels(data.getSpec().getTemplate().getMetadata().getLabels());
+            }
         }
 
         if (data.getStatus() != null) {
