@@ -9,20 +9,11 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-	<th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Access Control<i class=&quot;feather icon-chevron-right&quot; ></i>Pod Security Polices')"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})"/>
     <div id="main_contents">
         <!-- [Pod Security policy 헤더] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Pod Security Polices
-<!--                <div class="f_r">-->
-<!--                    <div class=" d_ib">-->
-<!--                        <div class="form-group has-feedback d_ib">-->
-<!--                            <input type="text" placeholder="Search" class="search_table">-->
-<!--                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-            </div>
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Pod Security Polices </div>
         </div>
         <!-- [Pod Security policy 헤더] end -->
 

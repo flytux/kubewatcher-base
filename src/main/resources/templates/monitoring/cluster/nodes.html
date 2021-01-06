@@ -8,14 +8,12 @@
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Nodes')"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})"/>
     <div id="main_contents">
 
-        <!-- [Events] start -->
+        <!-- [Nodes] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Nodes
-            </div>
+            <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${page?.title})"/>
         </div>
         <div class="row">
             <div class="box_panel">

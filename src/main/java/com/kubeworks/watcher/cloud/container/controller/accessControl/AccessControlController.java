@@ -3,6 +3,7 @@ package com.kubeworks.watcher.cloud.container.controller.accessControl;
 import com.kubeworks.watcher.cloud.container.controller.config.ConfigRestController;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.preference.service.PageConstants;
+import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,6 +18,12 @@ import java.util.List;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class AccessControlController {
 
+    private static final long SERVICEACCOUNT_MENU_ID = 320;
+    private static final long ROLEBINDING_MENU_ID = 321;
+    private static final long ROLE_MENU_ID = 322;
+    private static final long PODSECURITYPOLICY_MENU_ID = 323;
+
+    private final PageViewService pageViewService;
     private final AccessControlRestController accessControlRestController;
     private final ConfigRestController configRestController;
 
@@ -26,6 +33,7 @@ public class AccessControlController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("serviceAccounts", serviceAccounts);
+        model.addAttribute("page", pageViewService.getPageView(SERVICEACCOUNT_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_SERVICEACCOUNTS);
         return "cluster/access-control/service-accounts";
@@ -51,6 +59,7 @@ public class AccessControlController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("roleBindings", roleBindings);
+        model.addAttribute("page", pageViewService.getPageView(ROLEBINDING_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_ROLEBINDINGS);
         return "cluster/access-control/role-bindings";
@@ -79,6 +88,7 @@ public class AccessControlController {
         List<NamespaceTable> namespaces = configRestController.namespaces();
 
         model.addAttribute("roles", roles);
+        model.addAttribute("page", pageViewService.getPageView(ROLE_MENU_ID));
         model.addAttribute("namespaces", namespaces);
         model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_ROLES);
         return "cluster/access-control/roles";
@@ -107,6 +117,7 @@ public class AccessControlController {
     @GetMapping(value = "/cluster/acl/pod-security-policies", produces = MediaType.TEXT_HTML_VALUE)
     public String podSecurityPolicies(Model model) {
         List<PodSecurityPolicyTable> podSecurityPolicies = accessControlRestController.podSecurityPolicies();
+        model.addAttribute("page", pageViewService.getPageView(PODSECURITYPOLICY_MENU_ID));
         model.addAttribute("podSecurityPolicies", podSecurityPolicies);
         return "cluster/access-control/pod-security-policies";
     }

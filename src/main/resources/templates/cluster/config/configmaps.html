@@ -13,7 +13,7 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>K8s Cluster<i class=&quot;feather icon-chevron-right&quot; ></i>Configuration<i class=&quot;feather icon-chevron-right&quot; ></i>ConfigMaps')"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})"/>
     <div id="main_contents">
 
         <!-- [Configmaps] start -->
