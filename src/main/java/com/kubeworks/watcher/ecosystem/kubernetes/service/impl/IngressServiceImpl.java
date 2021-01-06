@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.IngressDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.IngressTable;
@@ -37,14 +38,16 @@ public class IngressServiceImpl implements IngressService {
     private final EventService eventService;
     private final EndpointService endpointService;
     private final ServiceKindService serviceKindService;
+    private final K8sObjectManager k8sObjectManager;
 
     public IngressServiceImpl(ApiClient k8sApiClient, EventService eventService,
-                              EndpointService endpointService, ServiceKindService serviceKindService) {
+                              EndpointService endpointService, ServiceKindService serviceKindService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.networkingApi = new NetworkingV1beta1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.endpointService = endpointService;
         this.serviceKindService = serviceKindService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -53,7 +56,9 @@ public class IngressServiceImpl implements IngressService {
         ApiResponse<NetworkingV1beta1IngressTableList> apiResponse = networkingApi.allNamespaceIngressAsTables("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             NetworkingV1beta1IngressTableList ingresses = apiResponse.getData();
-            return ingresses.getDataTable();
+            List<IngressTable> dataTable = ingresses.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

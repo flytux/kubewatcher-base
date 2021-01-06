@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EndpointTableList;
@@ -13,9 +14,9 @@ import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.V1EndpointSubset;
 import io.kubernetes.client.openapi.models.V1Endpoints;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
-import org.apache.commons.lang3.StringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -29,11 +30,13 @@ public class EndpointServiceImpl implements EndpointService {
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public EndpointServiceImpl(ApiClient k8sApiClient, EventService eventService) {
+    public EndpointServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -42,7 +45,9 @@ public class EndpointServiceImpl implements EndpointService {
         ApiResponse<V1EndpointTableList> apiResponse = coreApi.allNamespaceEndpointAsTables("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EndpointTableList endpoints = apiResponse.getData();
-            return endpoints.getDataTable();
+            List<EndpointTable> dataTable = endpoints.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

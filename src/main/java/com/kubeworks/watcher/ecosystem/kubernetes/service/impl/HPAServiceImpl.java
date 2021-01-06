@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.HPADescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.HPAMetric;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.HPATable;
@@ -31,11 +32,13 @@ public class HPAServiceImpl implements HPAService {
     private final ApiClient k8sApiClient;
     private final AutoscalingV1ApiExtendHandler autoscalingV1Api;
     private final EventService eventService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public HPAServiceImpl(ApiClient k8sApiClient, EventService eventService) {
+    public HPAServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.autoscalingV1Api = new AutoscalingV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -44,7 +47,9 @@ public class HPAServiceImpl implements HPAService {
         ApiResponse<AutoScalingV1HPATableList> apiResponse = autoscalingV1Api.allNamespaceHPAAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AutoScalingV1HPATableList hpaTableList = apiResponse.getData();
-            return hpaTableList.getDataTable();
+            List<HPATable> dataTable = hpaTableList.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

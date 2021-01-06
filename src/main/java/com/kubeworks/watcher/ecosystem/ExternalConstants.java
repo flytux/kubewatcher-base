@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -65,6 +65,7 @@ public class ExternalConstants {
     public final String NONE_STR = "None";
 
     public final String UNKNOWN = "Unknown";
+    public final String UNKNOWN_DASH = "-";
     public final String NONE = "<None>";
     public final String NODE_ROLE_KUBERNETES_IO = "node-role.kubernetes.io/";
     public final String KUBERNETES_IO_ROLE = "kubernetes.io/role";

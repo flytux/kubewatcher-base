@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EndpointTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ServiceDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ServiceTable;
@@ -33,12 +34,15 @@ public class ServiceKindServiceImpl implements ServiceKindService {
     private final CoreV1ApiExtendHandler coreApi;
     private final EndpointService endpointService;
     private final EventService eventService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public ServiceKindServiceImpl(ApiClient k8sApiClient, EndpointService endpointService, EventService eventService){
+    public ServiceKindServiceImpl(ApiClient k8sApiClient, EndpointService endpointService, EventService eventService,
+                                  K8sObjectManager k8sObjectManager){
         this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.endpointService = endpointService;
         this.eventService = eventService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -47,7 +51,9 @@ public class ServiceKindServiceImpl implements ServiceKindService {
         ApiResponse<V1ServiceTableList> apiResponse = coreApi.allNamespaceServiceAsTables("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ServiceTableList services = apiResponse.getData();
-            return services.getDataTable();
+            List<ServiceTable> dataTable = services.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

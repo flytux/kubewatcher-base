@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.SecretDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ServiceAccountDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ServiceAccountTable;
@@ -34,12 +35,15 @@ public class ServiceAccountServiceImpl implements ServiceAccountService {
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
     private final SecretService secretService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public ServiceAccountServiceImpl(ApiClient k8sApiClient, EventService eventService, SecretService secretService) {
+    public ServiceAccountServiceImpl(ApiClient k8sApiClient, EventService eventService, SecretService secretService,
+                                     K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.secretService = secretService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -48,7 +52,9 @@ public class ServiceAccountServiceImpl implements ServiceAccountService {
         ApiResponse<V1ServiceAccountTableList> apiResponse = coreApi.allNamespaceServiceAccountAsTables("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ServiceAccountTableList serviceAccounts = apiResponse.getData();
-            return serviceAccounts.getDataTable();
+            List<ServiceAccountTable> dataTable = serviceAccounts.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

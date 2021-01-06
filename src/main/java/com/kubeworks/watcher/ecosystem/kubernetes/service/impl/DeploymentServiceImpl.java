@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.DeploymentDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.DeploymentTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ObjectUsageResource;
@@ -34,13 +35,16 @@ public class DeploymentServiceImpl implements DeploymentService {
     private final AppsV1ApiExtendHandler appsV1Api;
     private final EventService eventService;
     private final PodService podService;
+    private final K8sObjectManager k8sObjectManager;
 
 
-    public DeploymentServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService) {
+    public DeploymentServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService,
+                                 K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.appsV1Api = new AppsV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.podService = podService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -49,7 +53,9 @@ public class DeploymentServiceImpl implements DeploymentService {
         ApiResponse<AppsV1DeploymentTableList> apiResponse = appsV1Api.allNamespaceDeploymentAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AppsV1DeploymentTableList deployments = apiResponse.getData();
-            return deployments.getDataTable();
+            List<DeploymentTable> dataTable = deployments.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

@@ -1,7 +1,9 @@
 package com.kubeworks.watcher.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kubeworks.watcher.data.converter.QueryTypeConverter;
 import com.kubeworks.watcher.data.converter.VariableTypeConverter;
+import com.kubeworks.watcher.data.vo.QueryType;
 import com.kubeworks.watcher.data.vo.VariableType;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,6 +28,7 @@ public class PageVariable extends BaseEntity {
 //    name                varchar(100)                              not null,
 //    sort_order          bigint unsigned                           not null,
 //    edge_fields         varchar (100)                             null,
+//    query_type          varchar(20)                               not null,
 //    variable_type       varchar(20)                               not null,
 //    refresh_interval    varchar(3)                                not null,
 //    hidden_yn           varchar(1)                                not null,
@@ -51,8 +54,11 @@ public class PageVariable extends BaseEntity {
     @Column(name = "edge_fields", length = 100)
     String edgeFields;
 
+    @Column(name = "query_type", length = 20, nullable = false)
+    @Convert(converter = QueryTypeConverter.class)
+    QueryType queryType;
+
     @Column(name = "variable_type", length = 20, nullable = false)
-    //@ColumnDefault("'api'")
     @Convert(converter = VariableTypeConverter.class)
     VariableType variableType;
 

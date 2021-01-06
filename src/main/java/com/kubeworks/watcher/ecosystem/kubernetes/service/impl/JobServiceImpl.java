@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.JobDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.JobTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodTable;
@@ -33,13 +34,16 @@ public class JobServiceImpl implements JobService {
     private final EventService eventService;
     private final PodService podService;
     private final Yaml yaml;
+    private final K8sObjectManager k8sObjectManager;
 
-    public JobServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService, Yaml yaml) {
+    public JobServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService, Yaml yaml,
+                          K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.batchV1Api = new BatchV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.podService = podService;
         this.yaml = yaml;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
 
@@ -49,7 +53,9 @@ public class JobServiceImpl implements JobService {
         ApiResponse<BatchV1JobTableList> apiResponse = batchV1Api.allNamespaceJobAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             BatchV1JobTableList statefulSets = apiResponse.getData();
-            return statefulSets.getDataTable();
+            List<JobTable> dataTable = statefulSets.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

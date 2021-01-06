@@ -38,6 +38,7 @@
                         <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Application</th>
                             <th>Namespace</th>
                             <th>Container</th>
                             <th>Controlled</th>
@@ -47,13 +48,14 @@
                         </thead>
                         <tbody>
                         <tr th:if="${#arrays.isEmpty(pods)}">
-                            <td colspan="6" class="text-center">No results</td>
+                            <td colspan="7" class="text-center">No results</td>
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(pods)}" th:each="pod : ${pods}">
                             <td>
                                 <a class="table2-link" th:href="'javascript:podDetail(&quot;' + ${pod?.namespace} + '&quot;, &quot;'+ ${pod?.name} + '&quot;)'"
                                    th:utext="${pod?.name}">Name</a>
                             </td>
+                            <td th:text="${@managementService.managementService(pod?.namespace, pod?.name)?.displayName}">Application</td>
                             <td th:text="${pod?.namespace}">Namespace</td>
                             <td th:text="${pod?.ready}">Container</td>
                             <td th:text="${pod?.node}">Controlled</td>

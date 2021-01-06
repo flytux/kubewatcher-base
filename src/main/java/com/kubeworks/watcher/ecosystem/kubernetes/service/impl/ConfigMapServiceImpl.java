@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ConfigMapDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ConfigMapTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1ConfigMapTableList;
@@ -26,11 +27,13 @@ public class ConfigMapServiceImpl implements ConfigMapService {
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
     private final EventService eventService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public ConfigMapServiceImpl(ApiClient k8sApiClient, EventService eventService) {
+    public ConfigMapServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -39,7 +42,9 @@ public class ConfigMapServiceImpl implements ConfigMapService {
         ApiResponse<V1ConfigMapTableList> apiResponse = coreV1Api.allNamespaceConfigMapAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ConfigMapTableList configMaps = apiResponse.getData();
-            return configMaps.getDataTable();
+            List<ConfigMapTable> dataTable = configMaps.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

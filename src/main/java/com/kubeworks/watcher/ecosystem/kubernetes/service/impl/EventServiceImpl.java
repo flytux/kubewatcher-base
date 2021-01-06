@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EventDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EventTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
@@ -26,10 +27,12 @@ public class EventServiceImpl implements EventService {
 
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
+    private final K8sObjectManager k8sObjectManager;
 
-    public EventServiceImpl(ApiClient k8sApiClient) {
+    public EventServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @Override
@@ -37,7 +40,9 @@ public class EventServiceImpl implements EventService {
         ApiResponse<V1EventTableList> apiResponse = eventTables(null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EventTableList eventTableList = apiResponse.getData();
-            return eventTableList.getDataTable();
+            List<EventTable> dataTable = eventTableList.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

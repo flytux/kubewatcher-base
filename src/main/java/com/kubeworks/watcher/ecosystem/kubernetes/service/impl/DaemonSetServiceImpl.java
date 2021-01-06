@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.DaemonSetDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.DaemonSetTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ObjectUsageResource;
@@ -34,12 +35,15 @@ public class DaemonSetServiceImpl implements DaemonSetService {
     private final AppsV1ApiExtendHandler appsV1Api;
     private final EventService eventService;
     private final PodService podService;
+    private final K8sObjectManager k8sObjectManager;
 
-    public DaemonSetServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService) {
+    public DaemonSetServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService,
+                                K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.appsV1Api = new AppsV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.podService = podService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -48,7 +52,9 @@ public class DaemonSetServiceImpl implements DaemonSetService {
         ApiResponse<AppsV1DaemonSetTableList> apiResponse = appsV1Api.allNamespaceDaemonSetAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AppsV1DaemonSetTableList daemonSets = apiResponse.getData();
-            return daemonSets.getDataTable();
+            List<DaemonSetTable> dataTable = daemonSets.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

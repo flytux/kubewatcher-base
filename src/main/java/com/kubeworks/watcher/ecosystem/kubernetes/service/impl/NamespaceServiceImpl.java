@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.LimitRangeDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NamespaceDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NamespaceTable;
@@ -32,13 +33,16 @@ public class NamespaceServiceImpl implements NamespaceService {
     private final CoreV1ApiExtendHandler coreV1Api;
     private final ResourceQuotaService resourceQuotaService;
     private final LimitRangeService limitRangeService;
+    private final K8sObjectManager k8sObjectManager;
 
 
-    public NamespaceServiceImpl(ApiClient k8sApiClient, ResourceQuotaService resourceQuotaService, LimitRangeService limitRangeService) {
+    public NamespaceServiceImpl(ApiClient k8sApiClient, ResourceQuotaService resourceQuotaService,
+                                LimitRangeService limitRangeService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.resourceQuotaService = resourceQuotaService;
         this.limitRangeService = limitRangeService;
+        this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
@@ -47,7 +51,9 @@ public class NamespaceServiceImpl implements NamespaceService {
         ApiResponse<V1NamespaceTableList> apiResponse = coreV1Api.allNamespaceAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1NamespaceTableList namespaces = apiResponse.getData();
-            return namespaces.getDataTable();
+            List<NamespaceTable> dataTable = namespaces.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getName(), o2.getName()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

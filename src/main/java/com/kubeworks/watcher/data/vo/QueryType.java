@@ -1,13 +1,15 @@
 package com.kubeworks.watcher.data.vo;
 
-public enum VariableType implements AbstractEnum<String> {
+public enum QueryType implements AbstractEnum<String> {
 
-    METRIC_LABEL_VALUES("metric_label_values"),
-    API_LABEL_VALUES("api_label_values");
+    METRIC("METRIC"),
+    PROMQL("PROMQL"),
+    KUBERNETES("KUBERNETES"),
+    API("API");
 
     private final String value;
 
-    VariableType(String value) {
+    QueryType(String value) {
         this.value = value;
     }
 

@@ -451,8 +451,8 @@ let commonChartsJs = (function () {
         let classColSize = parseInt(12 / colSize);
         let grade = "box_mini_d";
         if (data.pods > 0) {
-            grade = data.avgResponseTime < 3 ? "box_mini_g"
-                : data.avgResponseTime < 5 ? "box_mini_y" : "box_mini_r";
+            grade = data.avgResponseTime < 1000 ? "box_mini_g"
+                : data.avgResponseTime < 3000 ? "box_mini_y" : "box_mini_r";
         }
         return `<td class="col-xs-${classColSize} col-lg-${classColSize}"><div class="${grade}">${displayName}</div></td>`;
     }
@@ -562,15 +562,15 @@ let commonChartsJs = (function () {
             }
             if (upDown > 0) {
                 if (panel.title === 'Application Status') {
-                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up_s">UP</div>');
+                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up_s">ON</div>');
                 } else {
-                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up">UP</div>');
+                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_up">ON</div>');
                 }
             } else {
                 if (panel.title === 'Application Status') {
-                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down_s">DOWN</div>');
+                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down_s">OFF</div>');
                 } else {
-                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down">DOWN</div>');
+                    $('#container-' + panel.panelId).html('<div class="col-xs-12 box_down">OFF</div>');
                 }
             }
             return panel;
@@ -684,14 +684,14 @@ let commonChartsJs = (function () {
             services.forEach(value => {
                 summary.total++;
                 value.pods > 0 ? summary.up++ : {};
-                value.avgResponseTime < 3 ? summary.normal++
-                    : value.avgResponseTime < 5 ? summary.warn++ : summary.critical++;
+                value.avgResponseTime < 1000 ? summary.normal++
+                    : value.avgResponseTime < 3000 ? summary.warn++ : summary.critical++;
             });
 
             let tableBottomHtml = '<div class="row col-xs-12"><table class="table_mini"><tbody class="table_mini mt_10">';
             tableBottomHtml += '<td>전체 : ' + summary.total + '</td>';
-            tableBottomHtml += '<td>UP : ' + summary.up + '</td>';
-            tableBottomHtml += '<td>DOWN : ' + (summary.total - summary.up) + '</td>';
+            tableBottomHtml += '<td>ON : ' + summary.up + '</td>';
+            tableBottomHtml += '<td>OFF : ' + (summary.total - summary.up) + '</td>';
             tableBottomHtml += '<td><div class="circle c_normal"></div> 정상 : ' + summary.normal + '</td>';
             tableBottomHtml += '<td><div class="circle c_warning"></div> 느림 : ' + summary.warn + '</td>';
             tableBottomHtml += '<td><div class="circle c_danger"></div> 지연 : ' + summary.critical + '</td>';

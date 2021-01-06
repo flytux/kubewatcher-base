@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ResourceQuotaDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ResourceQuotaTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1ResourceQuotaTableList;
@@ -24,10 +25,12 @@ public class ResourceQuotaServiceImpl implements ResourceQuotaService {
 
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
+    private final K8sObjectManager k8sObjectManager;
 
-    public ResourceQuotaServiceImpl(ApiClient k8sApiClient) {
+    public ResourceQuotaServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
+        this.k8sObjectManager = k8sObjectManager;
     }
 
 
@@ -37,7 +40,9 @@ public class ResourceQuotaServiceImpl implements ResourceQuotaService {
         ApiResponse<V1ResourceQuotaTableList> apiResponse = coreV1Api.allNamespaceResourceQuotaAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ResourceQuotaTableList resourceQuotas = apiResponse.getData();
-            return resourceQuotas.getDataTable();
+            List<ResourceQuotaTable> dataTable = resourceQuotas.getDataTable();
+            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+            return dataTable;
         }
         return Collections.emptyList();
     }

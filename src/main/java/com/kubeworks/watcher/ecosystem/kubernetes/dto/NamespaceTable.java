@@ -16,4 +16,7 @@ public class NamespaceTable {
     String status;
     String age;
 
+    public String getNamespace() {
+        return name;
+    }
 }
