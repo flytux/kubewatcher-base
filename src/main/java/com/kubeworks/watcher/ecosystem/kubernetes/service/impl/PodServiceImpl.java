@@ -6,6 +6,7 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1ContainerExtends;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PodMetricTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PodTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
@@ -19,10 +20,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.kubernetes.client.openapi.models.V1ContainerState.*;
@@ -76,13 +74,38 @@ public class PodServiceImpl implements PodService {
             .collect(Collectors.joining(","));
 
         ApiResponse<V1PodTableList> apiResponse = coreApi.namespacePodAsTable(namespace,null, labelSelectors, "true");
+
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodTableList pod = apiResponse.getData();
-            List<PodTable> dataTable = pod.getDataTable();
-            return dataTable;
+            List<PodTable> podTable =  pod.getDataTable();
+            ApiResponse<V1PodMetricTableList> metricApiResponse = podMetrics(namespace,selector);
+            if (ExternalConstants.isSuccessful(metricApiResponse.getStatusCode())) {
+                V1PodMetricTableList podMetric = metricApiResponse.getData();
+                List<PodTable> podMetricTable = podMetric.getDataTable();
+
+                for (PodTable podName : podTable) {
+                    for (PodTable metric : podMetricTable) {
+                        if (podName.getName().equals(metric.getName())) {
+                            podName.setCpu(metric.getCpu());
+                            podName.setMemory(metric.getMemory());
+                        }
+                    }
+                }
+                return podTable;
+            }
         }
 
         return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    private ApiResponse<V1PodMetricTableList> podMetrics(String namespace, Map<String, String> selector) {
+        // TODO matchExpressions 일 경우 확인이 필요함.
+        String labelSelectors = selector.entrySet().stream()
+            .map(entry -> entry.getKey() + "=" + entry.getValue())
+            .collect(Collectors.joining(","));
+
+        return coreApi.namespacePodMetricAsTable(namespace,null, labelSelectors, "true");
     }
 
     @SneakyThrows

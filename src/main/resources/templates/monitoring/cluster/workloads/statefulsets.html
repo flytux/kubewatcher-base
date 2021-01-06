@@ -186,8 +186,8 @@
                         <tr th:if="${statefulSet?.pods}" th:each="pod : ${statefulSet?.pods}">
                             <td th:text="${pod?.name}">Name</td>
                             <td th:text="${pod?.namespace}">Namespace</td>
-                            <td th:text="|- %|">CPU</td>
-                            <td th:text="|- %|">Memory</td>
+                            <td th:text="${pod?.cpu.getNumber()}">CPU</td>
+                            <td th:text="${pod?.memory.getNumber()}">Memory</td>
                             <td th:switch="${pod?.status}">
                                 <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
                                 <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>
