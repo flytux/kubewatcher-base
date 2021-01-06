@@ -87,7 +87,7 @@ public class StatefulSetServiceImpl implements StatefulSetService {
         setStatefulSet(builder, data);
         StatefulSetDescribe statefulSetDescribe = builder.build();
 
-        List<PodTable> pods = podService.podTables(statefulSetDescribe.getNamespace(), statefulSetDescribe.getSelector());
+        List<PodTable> pods = podService.podTables(statefulSetDescribe.getNamespace(), statefulSetDescribe.getTemplateLabels());
         if (CollectionUtils.isNotEmpty(pods)) {
             statefulSetDescribe.setPods(pods);
         }
@@ -121,7 +121,9 @@ public class StatefulSetServiceImpl implements StatefulSetService {
             setStrategy(builder, spec);
             setSelector(builder, spec);
             setContainersImageAndResource(builder, spec);
-
+            if (data.getSpec().getTemplate().getMetadata() != null) {
+                builder.templateLabels(data.getSpec().getTemplate().getMetadata().getLabels());
+            }
         }
 
         if (data.getStatus() != null) {

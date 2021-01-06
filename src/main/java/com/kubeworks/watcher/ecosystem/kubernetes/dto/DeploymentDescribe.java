@@ -21,7 +21,8 @@ public class DeploymentDescribe {
     private DeploymentDescribe(String name, String namespace, String uid, DateTime creationTimestamp,
                                Map<String, String> labels, Map<String, String> annotations, Integer replicas,
                                Map<String, String> selector, String strategy, List<V1DeploymentCondition> conditions,
-                               ObjectUsageResource resources, List<PodTable> pods, List<EventTable> events) {
+                               ObjectUsageResource resources, List<PodTable> pods, List<EventTable> events,
+                               Map<String, String> templateLabels) {
         this.name = name;
         this.namespace = namespace;
         this.uid = uid;
@@ -35,6 +36,7 @@ public class DeploymentDescribe {
         this.resources = resources;
         this.pods = pods;
         this.events = events;
+        this.templateLabels = templateLabels;
     }
 
     String name;
@@ -57,7 +59,7 @@ public class DeploymentDescribe {
     List<PodTable> pods;
     List<EventTable> events;
 
-
+    Map<String, String> templateLabels;
 
 
 }

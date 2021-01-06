@@ -23,7 +23,7 @@ public class JobDescribe {
                         Map<String, String> selector, Integer parallelism, Integer completions,
                         Integer backoffLimit, DateTime startTime, DateTime completionTime,
                         Duration duration, String jobStatus, List<String> podTemplate,
-                        List<PodTable> pods, List<EventTable> events) {
+                        List<PodTable> pods, List<EventTable> events, Map<String, String> templateLabels) {
         this.name = name;
         this.namespace = namespace;
         this.uid = uid;
@@ -41,6 +41,7 @@ public class JobDescribe {
         this.podTemplate = podTemplate;
         this.pods = pods;
         this.events = events;
+        this.templateLabels = templateLabels;
     }
 
     String name;
@@ -67,5 +68,7 @@ public class JobDescribe {
 
     List<PodTable> pods;
     List<EventTable> events;
+
+    Map<String, String> templateLabels;
 
 }

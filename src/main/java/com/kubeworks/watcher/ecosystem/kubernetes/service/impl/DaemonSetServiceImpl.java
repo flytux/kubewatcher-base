@@ -86,7 +86,7 @@ public class DaemonSetServiceImpl implements DaemonSetService {
         setDeployment(builder, data);
         DaemonSetDescribe daemonSetDescribe = builder.build();
 
-        List<PodTable> pods = podService.podTables(daemonSetDescribe.getNamespace(), daemonSetDescribe.getSelector());
+        List<PodTable> pods = podService.podTables(daemonSetDescribe.getNamespace(), daemonSetDescribe.getTemplateLabels());
         if (CollectionUtils.isNotEmpty(pods)) {
             daemonSetDescribe.setPods(pods);
         }
@@ -118,6 +118,10 @@ public class DaemonSetServiceImpl implements DaemonSetService {
             setStrategy(builder, spec);
             setSelector(builder, spec);
             setContainersImageAndResource(builder, spec);
+
+            if (data.getSpec().getTemplate().getMetadata() != null) {
+                builder.templateLabels(data.getSpec().getTemplate().getMetadata().getLabels());
+            }
 
         }
 

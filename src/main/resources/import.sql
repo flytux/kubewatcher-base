@@ -1,9 +1,3 @@
--- 이력
--- 147 METRIC_TABLE
--- 148~150(3개) full-headless-card-panel
-
-
-
 INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	1	,	 'Virtual Machine Overview'	,	 'Home<i class="feather icon-chevron-right" ></i>Dashboard<i class="feather icon-chevron-right" ></i>Cluster Node<i class="feather icon-chevron-right" ></i>Overview'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	140	);
 INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	2	,	 'Virtual Machine Overview 현황'	,	 'Home<i class="feather icon-chevron-right" ></i>Dashboard<i class="feather icon-chevron-right" ></i>Cluster Node<i class="feather icon-chevron-right" ></i>Detail'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	141	);
 INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	3	,	 '보험코어 JVM 현황'	,	 'Home<i class="feather icon-chevron-right" ></i>Dashboard<i class="feather icon-chevron-right" ></i>Pod JVM<i class="feather icon-chevron-right" ></i>Overview'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	120	);

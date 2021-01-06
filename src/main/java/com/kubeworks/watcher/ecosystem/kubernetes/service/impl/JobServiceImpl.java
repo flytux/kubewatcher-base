@@ -89,7 +89,7 @@ public class JobServiceImpl implements JobService {
         setJob(builder, data);
         JobDescribe jobDescribe = builder.build();
 
-        List<PodTable> pods = podService.podTables(jobDescribe.getNamespace(), jobDescribe.getSelector());
+        List<PodTable> pods = podService.podTables(jobDescribe.getNamespace(), jobDescribe.getTemplateLabels());
         if (CollectionUtils.isNotEmpty(pods)) {
             jobDescribe.setPods(pods);
         }
@@ -121,6 +121,9 @@ public class JobServiceImpl implements JobService {
             builder.backoffLimit(spec.getBackoffLimit());
             setSelector(builder, spec);
             setTemplate(builder, spec.getTemplate());
+            if (data.getSpec().getTemplate().getMetadata() != null) {
+                builder.templateLabels(data.getSpec().getTemplate().getMetadata().getLabels());
+            }
         }
 
         if (data.getStatus() != null) {

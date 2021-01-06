@@ -24,7 +24,7 @@ public class DaemonSetDescribe {
                               Map<String, String> labels, Map<String, String> annotations, Map<String, String> selector,
                               String images, String strategy, List<V1Toleration> tolerations, String podStatus,
                               ObjectUsageResource resources, List<V1DaemonSetCondition> conditions,
-                              List<PodTable> pods, List<EventTable> events) {
+                              List<PodTable> pods, List<EventTable> events, Map<String, String> templateLabels) {
         this.name = name;
         this.namespace = namespace;
         this.uid = uid;
@@ -40,6 +40,7 @@ public class DaemonSetDescribe {
         this.conditions = conditions;
         this.pods = pods;
         this.events = events;
+        this.templateLabels = templateLabels;
     }
 
     String name;
@@ -64,6 +65,8 @@ public class DaemonSetDescribe {
 
     List<PodTable> pods;
     List<EventTable> events;
+
+    Map<String, String> templateLabels;
 
     public String getRequestResource(String name) {
         Quantity requestsMetric = resources.getRequestsMetric(name);
