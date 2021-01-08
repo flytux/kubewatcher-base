@@ -28,6 +28,11 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1NodeTableList.class).getType());
     }
 
+    public ApiResponse<V1MetricTableList> metricNodeAsTable(String name, String pretty) throws ApiException {
+        Call call = listNodeMetricAsTableCall(name, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1MetricTableList.class).getType());
+    }
+
     public ApiResponse<V1NodeTableList> readNodeAsTable(String nodeName, String pretty) throws ApiException {
         Call call = readNodeAsTableCall(nodeName, pretty);
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1NodeTableList.class).getType());
@@ -38,7 +43,7 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodTableList.class).getType());
     }
 
-    public ApiResponse<V1PodMetricTableList> metricPodAsTable(String pretty, String fieldSelector, String labelSelector) throws ApiException {
+    public ApiResponse<V1MetricTableList> metricPodAsTable(String pretty, String fieldSelector, String labelSelector) throws ApiException {
         Call call = listPodMetricAsTableCall(pretty, fieldSelector, labelSelector);
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodTableList.class).getType());
     }
@@ -48,9 +53,9 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodTableList.class).getType());
     }
 
-    public ApiResponse<V1PodMetricTableList> namespacePodMetricAsTable(String namespace, String fieldSelector, String labelSelector, String pretty) throws ApiException {
+    public ApiResponse<V1MetricTableList> namespacePodMetricAsTable(String namespace, String fieldSelector, String labelSelector, String pretty) throws ApiException {
         Call call = listPodMetricAsNamespaceCall(namespace, fieldSelector, labelSelector, pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodMetricTableList.class).getType());
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1MetricTableList.class).getType());
     }
 
     public ApiResponse<V1EventTableList> listAllNamespaceEventAsTable(String pretty, String fieldSelector) throws ApiException {
@@ -319,6 +324,20 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         if (pretty != null) {
             localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
         }
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listNodeMetricAsTableCall(String name, String pretty) throws ApiException {
+        String localVarPath = "/apis/metrics.k8s.io/v1beta1/nodes/{name}".replaceAll("\\{name}", super.getApiClient().escapeString(name));
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        localVarQueryParams.addAll(super.getApiClient().parameterToPair("exact", true));
+        localVarQueryParams.addAll(super.getApiClient().parameterToPair("export", false));
+
         String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }

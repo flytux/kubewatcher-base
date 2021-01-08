@@ -2,14 +2,15 @@ package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.MetricTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1ContainerExtends;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PodMetricTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PodTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
+import com.kubeworks.watcher.ecosystem.kubernetes.service.MetricService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.PodService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
@@ -20,7 +21,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static io.kubernetes.client.openapi.models.V1ContainerState.*;
@@ -34,12 +38,14 @@ public class PodServiceImpl implements PodService {
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
+    private final MetricService metricService;
     private final K8sObjectManager k8sObjectManager;
 
-    public PodServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
+    public PodServiceImpl(ApiClient k8sApiClient, EventService eventService, MetricService metricService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
+        this.metricService = metricService;
         this.k8sObjectManager = k8sObjectManager;
     }
 
@@ -78,34 +84,19 @@ public class PodServiceImpl implements PodService {
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodTableList pod = apiResponse.getData();
             List<PodTable> podTable =  pod.getDataTable();
-            ApiResponse<V1PodMetricTableList> metricApiResponse = podMetrics(namespace,selector);
-            if (ExternalConstants.isSuccessful(metricApiResponse.getStatusCode())) {
-                V1PodMetricTableList podMetric = metricApiResponse.getData();
-                List<PodTable> podMetricTable = podMetric.getDataTable();
-
-                for (PodTable podName : podTable) {
-                    for (PodTable metric : podMetricTable) {
-                        if (podName.getName().equals(metric.getName())) {
-                            podName.setCpu(metric.getCpu());
-                            podName.setMemory(metric.getMemory());
+            List<MetricTable> metric = metricService.podMetrics(namespace, selector);
+                 for (PodTable podName : podTable) {
+                    for (MetricTable metricName : metric) {
+                        if (podName.getName().equals(metricName.getName())) {
+                            podName.setCpu(metricName.getCpu());
+                            podName.setMemory(metricName.getMemory());
                         }
                     }
                 }
                 return podTable;
-            }
         }
 
         return Collections.emptyList();
-    }
-
-    @SneakyThrows
-    private ApiResponse<V1PodMetricTableList> podMetrics(String namespace, Map<String, String> selector) {
-        // TODO matchExpressions 일 경우 확인이 필요함.
-        String labelSelectors = selector.entrySet().stream()
-            .map(entry -> entry.getKey() + "=" + entry.getValue())
-            .collect(Collectors.joining(","));
-
-        return coreApi.namespacePodMetricAsTable(namespace,null, labelSelectors, "true");
     }
 
     @SneakyThrows

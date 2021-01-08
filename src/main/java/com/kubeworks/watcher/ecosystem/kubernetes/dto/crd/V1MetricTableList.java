@@ -1,7 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
 import com.google.gson.annotations.SerializedName;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodTable;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.MetricTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class V1PodMetricTableList extends V1ObjectTableList<PodTable, PodMetrics>  {
+public class V1MetricTableList extends V1ObjectTableList<MetricTable, PodMetrics>  {
 
 
     @SerializedName("items")
@@ -23,34 +23,35 @@ public class V1PodMetricTableList extends V1ObjectTableList<PodTable, PodMetrics
 
 
     @Override
-    protected void makeObject(PodTable builder, String fieldName, String value) {
+    protected void makeObject(MetricTable builder, String fieldName, String value) {
         // no implementation
     }
 
     @Override
-    protected PodTable getDataObject() {
-        return new PodTable();
+    protected MetricTable getDataObject() {
+        return new MetricTable();
     }
 
     @Override
-    public List<PodTable> getDataTable() {
+    public List<MetricTable> getDataTable() {
         if (getItems() == null) {
             return Collections.emptyList();
         }
 
-        List<PodTable> list = new ArrayList<>(getItems().size());
+        List<MetricTable> list = new ArrayList<>(getItems().size());
         for (PodMetrics rowObject : getItems()) {
-            PodTable data = getDataObject();
+            MetricTable data = getDataObject();
             if (rowObject.getMetadata() != null) {
                 data.setName(rowObject.getMetadata().getName());
                 data.setNamespace(rowObject.getMetadata().getNamespace());
             }
 
             if (rowObject.getContainers() != null) {
-                List<ContainerMetrics> metric = rowObject.getContainers();
-                for (int i=0; i<metric.size(); i++) {
-                    data.setCpu(metric.get(i).getUsage().get("cpu"));
-                    data.setMemory(metric.get(i).getUsage().get("memory"));
+                List<ContainerMetrics> metrics = rowObject.getContainers();
+
+                for (ContainerMetrics metric : metrics) {
+                    data.setCpu(metric.getUsage().get("cpu"));
+                    data.setMemory(metric.getUsage().get("memory"));
                 }
             }
             list.add(data);
