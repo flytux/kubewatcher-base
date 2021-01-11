@@ -169,15 +169,15 @@
                             <tr>
                                 <th>CPU</th>
                                 <td>
-                                    <span th:text="|Request ${#numbers.formatDecimal(daemonSet?.getRequestResource('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
-                                    <span th:text="|Limit ${#numbers.formatDecimal(daemonSet?.getLimitsMetric('cpu'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
+                                    <span th:text="|Request ${daemonSet?.getRequestResource('cpu')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${daemonSet?.getLimitsMetric('cpu')}|" class="madal_label">Limit 0,000</span>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Memory</th>
                                 <td>
-                                    <span th:text="|Request ${#numbers.formatDecimal(daemonSet?.getRequestResource('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Request 0,000</span>
-                                    <span th:text="|Limit ${#numbers.formatDecimal(daemonSet?.getLimitsMetric('memory'), 1, 'COMMA', 3, 'POINT')}|" class="madal_label">Limit 0,000</span>
+                                    <span th:text="|Request ${daemonSet?.getRequestResource('memory')}|" class="madal_label">Request 0,000</span>
+                                    <span th:text="|Limit ${daemonSet?.getLimitsMetric('memory')}|" class="madal_label">Limit 0,000</span>
                                 </td>
                             </tr>
                         </table>

@@ -234,7 +234,7 @@
                                 </tr>
                                 <tr>
                                     <th>Storage</th>
-                                    <td th:if="${persistentVolumeClaim?.capacity}" th:each="storage : ${persistentVolumeClaim?.capacity}" th:text="${storage.value.getNumber()}">000G</td>
+                                    <td th:if="${persistentVolumeClaim?.capacity}" th:each="storage : ${persistentVolumeClaim?.capacity}" th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(storage.value)}">000G</td>
                                     <td th:unless = "${persistentVolumeClaim?.capacity}"> - </td>
                                 </tr>
                                 <tr>

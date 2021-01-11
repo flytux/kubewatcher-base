@@ -303,7 +303,7 @@
                                                 <th>Capacity</th>
                                                 <td>
                                                     <div th:each="entry : ${node?.capacity}">
-                                                        <span th:text="|${entry.key} : ${entry.value.getNumber()}|"></span>
+                                                        <span th:text="|${entry.key} : ${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(entry.value)}|"></span>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -311,7 +311,7 @@
                                                 <th>Allocatable</th>
                                                 <td>
                                                     <div th:each="entry : ${node?.allocatable}">
-                                                        <span th:text="|${entry.key} : ${entry.value.getNumber()}|"></span>
+                                                        <span th:text="|${entry.key} : ${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(entry.value)}|"></span>
                                                     </div>
                                                 </td>
                                             </tr>
