@@ -169,7 +169,7 @@
                             </tr>
                             <tr>
                                 <th>Duration</th>
-                                <td th:text="${job?.duration}">65s</td>
+                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).getFormatDuration(job?.duration)}">65s</td>
                             </tr>
                             <tr>
                                 <th>Pod Status</th>
