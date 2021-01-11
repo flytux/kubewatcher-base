@@ -1,3 +1,9 @@
+Highcharts.setOptions({
+    lang: {
+        decimalPoint: '.',
+        thousandsSep: ','
+    }
+});
 Highcharts.Legend.prototype.colorizeItem = function(item, visible) {
     item.legendGroup[visible ? 'removeClass' : 'addClass']('highcharts-legend-item-hidden');
     if (!this.chart.styledMode) {
@@ -535,7 +541,7 @@ let commonChartsJs = (function () {
         },
 
         createBadge: function (panel, dataArray) {
-            const badgeData = convertSumBadgeData(dataArray);
+            const badgeData = this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit);
             if (panel.chartType === 'text') {
                 $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
             } else if (panel.chartType === 'date') {
@@ -923,20 +929,9 @@ let commonChartsJs = (function () {
                         text: panel.yaxisLabel
                     },
                     labels: {
-                        // format: '{value} '+ panel.yaxisUnit,
                         formatter: function () {
-                            // if (Math.abs(this.value) > 1000) {
-                            //     return Highcharts.numberFormat(this.value / 1024, 0) + " K" + panel.yaxisUnit;
-                            // }
-                            // return this.value + ' ' + panel.yaxisUnit;
                             let unit = panel.yaxisUnit === 'float' ? "" : panel.yaxisUnit;
-                            return Math.abs(this.value) > 1000000000
-                                ? Highcharts.numberFormat(this.value / 1024 / 1024 / 1024, 0) + " G" + unit
-                                : Math.abs(this.value) > 1000000
-                                    ? Highcharts.numberFormat(this.value / 1024 / 1024, 0) + " M" + unit
-                                    : Math.abs(this.value) > 1000
-                                        ? Highcharts.numberFormat(this.value / 1024, 0) + " K" + unit
-                                        : this.value + ' ' + unit;
+                            return commonChartsJs.convertValue(this.value, unit);
                         }
                     }
                 },
@@ -944,7 +939,17 @@ let commonChartsJs = (function () {
                     type: panel.xaxisMode
                 },
                 title: null,
-                    series: series
+                series: series,
+                tooltip: {
+                    formatter: function () {
+                        return Highcharts.dateFormat('%A, %b %d, %H:%M:%S', this.x) + '<br/>' +
+                            '<span style="color:' + this.series.color + ';">●</span> ' +
+                            this.series.name + ': ' + commonChartsJs.thousandsSeparators(this.y);
+
+                        // return Highcharts.dateFormat('%b-%d, %H:%M', this.x) + '<br/>' +
+                        //     this.point.series.name + ': <b>' + this.y +'</b>';
+                    }
+                }
             };
 
             if (panel.chartType === 'area') {
@@ -1040,7 +1045,7 @@ let commonChartsJs = (function () {
                         let data = this.data;
                         let color = data.length ? data[data.length - 1].color : '#a4a4a4';
                         let yValue = data.length ? data[data.length - 1].y : 0;
-                        return '<span style="text-weight:bold;color:' + color + '">' + this.name + ' : ' + yValue + '</span>';
+                        return '<span style="text-weight:bold;color:' + color + '">' + this.name + ' : ' + commonChartsJs.convertValue(yValue, '') + '</span>';
                         // return this.name + ' : ' + points[points.length - 1]
                     }
                 },
@@ -1260,7 +1265,7 @@ let commonChartsJs = (function () {
                             useHTML: true,
                             padding: 0,
                             formatter: function () {
-                                return "<span style='font-width:bold; font-size:1.2em; color:#0D2A4D; opacity:0.5;'> [" + this.y + " " + panel.yaxisUnit + "] </span>"
+                                return "<span style='font-width:bold; font-size:1.2em; color:#0D2A4D; opacity:0.5;'> [" + commonChartsJs.thousandsSeparators(this.y) + " " + panel.yaxisUnit + "] </span>"
                                     + "&nbsp;" + this.series.name;
                             }
                         }
@@ -1504,7 +1509,51 @@ let commonChartsJs = (function () {
         resetReadyTimestamp: function () {
             readyTimestamp = new Date().getTime();
         },
+        convertValue: function (value, unit) {
+            if (unit !== undefined && unit.toLowerCase() === "float") {
+                unit = "";
+            }
 
+            if (unit !== undefined && unit.toLowerCase() === "count") {
+                return this.thousandsSeparators(value);
+            }
+
+            let kilo = unit !== undefined && unit.toLowerCase().indexOf('byte') > -1  ? 1024 : 1000;
+            let convertUnit = unit !== undefined && unit.toLowerCase().indexOf('byte') > -1  ? "iB" : unit;
+            return Math.abs(value) > 1000000000
+                ? Highcharts.numberFormat(value / kilo / kilo / kilo, 0) + " G" + convertUnit
+                : Math.abs(value) > 1000000
+                    ? Highcharts.numberFormat(value / kilo / kilo, 0) + " M" + convertUnit
+                    : Math.abs(value) > 1000
+                        ? Highcharts.numberFormat(value / kilo, 0) + " K" + convertUnit
+                        : value + ' ' + unit;
+        },
+        thousandsSeparators: function(value) {
+            let values = value.toString().split(".");
+            values[0] = values[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return values.join(".");
+        },
+        seriesSymbol: function (symbolText) {
+            let symbol = "▬";
+            switch ( symbolText ) {
+                case 'circle':
+                    symbol = '●';
+                    break;
+                case 'diamond':
+                    symbol = '♦';
+                    break;
+                case 'square':
+                    symbol = '■';
+                    break;
+                case 'triangle':
+                    symbol = '▲';
+                    break;
+                case 'triangle-down':
+                    symbol = '▼';
+                    break;
+            }
+            return symbol;
+        }
 
     }
 }());
