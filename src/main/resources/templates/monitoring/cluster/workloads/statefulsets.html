@@ -35,7 +35,7 @@
                     Total : <span th:text="${#arrays.isEmpty(statefulSets) ? '0' : statefulSets.size()}" class="point pr_10">20</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table">
+                    <table class="list_table70vh">
                         <thead>
                         <tr>
                             <th>Name</th>
@@ -186,8 +186,8 @@
                         <tr th:if="${statefulSet?.pods}" th:each="pod : ${statefulSet?.pods}">
                             <td th:text="${pod?.name}">Name</td>
                             <td th:text="${pod?.namespace}">Namespace</td>
-                            <td th:text="${pod?.cpu.getNumber()}">CPU</td>
-                            <td th:text="${pod?.memory.getNumber()}">Memory</td>
+                            <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(pod?.cpu)}">CPU</td>
+                            <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(pod?.memory)}">Memory</td>
                             <td th:switch="${pod?.status}">
                                 <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
                                 <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>

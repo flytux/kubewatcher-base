@@ -35,7 +35,7 @@
                     Total : <span th:text="${#arrays.isEmpty(resourceQuotas) ? '0' : resourceQuotas.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table">
+                    <table class="list_table70vh">
                         <thead>
                         <tr>
                             <th>Name</th>
@@ -88,8 +88,8 @@
                         <tbody>
                         <tr th:each="entry : ${resourceQuota?.getUsedHard()}">
                             <td th:text = "${entry.key}"></td>
-                            <td th:text = "${entry.value?.used.getNumber()}"></td>
-                            <td th:text = "${entry.value?.hard.getNumber()}"></td>
+                            <td th:text = "${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(entry.value?.used)}"></td>
+                            <td th:text = "${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(entry.value?.hard)}"></td>
                         </tr>
                         <tbody>
                     </table>

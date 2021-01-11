@@ -22,7 +22,7 @@
                     Total : <span th:text="${#arrays.isEmpty(nodes) ? '0' : nodes.size()}" class="point pr_10">8</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table">
+                    <table class="list_table70vh">
                         <thead>
                         <tr>
                             <th>Name</th>
@@ -86,182 +86,6 @@
                                       th:text="${node?.status}">UP</span>
                             </td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <td>XXX [신계약]</td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>Master/Worker</td>-->
-<!--                            <td>V0.0</td>-->
-<!--                            <td>99d24h</td>-->
-<!--                            <td><span class="madal_label_false">DOWN</span> </td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>XXX [신계약]</td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>Master/Worker</td>-->
-<!--                            <td>V0.0</td>-->
-<!--                            <td>99d24h</td>-->
-<!--                            <td><span class="madal_label_active">UP</span> </td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>XXX [신계약]</td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>Master/Worker</td>-->
-<!--                            <td>V0.0</td>-->
-<!--                            <td>99d24h</td>-->
-<!--                            <td><span class="madal_label_active">UP</span> </td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>XXX [신계약]</td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>Master/Worker</td>-->
-<!--                            <td>V0.0</td>-->
-<!--                            <td>99d24h</td>-->
-<!--                            <td><span class="madal_label_false">DOWN</span> </td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>XXX [신계약]</td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>Master/Worker</td>-->
-<!--                            <td>V0.0</td>-->
-<!--                            <td>99d24h</td>-->
-<!--                            <td><span class="madal_label_active">UP</span> </td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>XXX [신계약]</td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>Master/Worker</td>-->
-<!--                            <td>V0.0</td>-->
-<!--                            <td>99d24h</td>-->
-<!--                            <td><span class="madal_label_active">UP</span> </td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>XXX [신계약]</td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>Master/Worker</td>-->
-<!--                            <td>V0.0</td>-->
-<!--                            <td>99d24h</td>-->
-<!--                            <td><span class="madal_label_false">DOWN</span> </td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>XXX [신계약]</td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0 pb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <div class="col-xs-12 box_chart mb_0">-->
-<!--                                    <div class="t_chart_small text-center">86<span class="t_sstxt3">%</span></div>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>Master/Worker</td>-->
-<!--                            <td>V0.0</td>-->
-<!--                            <td>99d24h</td>-->
-<!--                            <td><span class="madal_label_active">UP</span> </td>-->
-<!--                        </tr>-->
                         </tbody>
                     </table>
                     <!-- [Modal] start -->
@@ -476,7 +300,6 @@
 
         function nodeDetail(nodeName) {
             $node.val(nodeName);
-
             $.ajax({
                 url: "/api/v1/monitoring/cluster/nodes/" + nodeName + "/metrics",
                 success: function (data) {

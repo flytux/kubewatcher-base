@@ -2290,6 +2290,71 @@ textarea.form-control {
     border-radius: 4px;
 }
 .table-select textarea {width:100%; height:34px; background-color: transparent; border:solid 1px #555555; resize: none; border-radius: 4px;vertical-align:middle;}
+
+
+/* 리스트 스크롤 포함 75vh 테이블*/
+.list_table70vh{
+    width:100%;
+    text-align:center;
+    border-bottom:1px solid #121011;
+}
+
+.list_table70vh thead{
+    border-bottom:2px solid #121011;
+    display: table;
+    table-layout:fixed;
+    width:100%;
+    padding:12px;
+}
+
+.list_table70vh thead > tr > th{
+    padding:0px 10px 10px 10px;
+}
+
+
+.list_table70vh > tbody{
+    display: block;
+    max-height:70vh;/*스크롤 생성되는 크기*/
+    overflow-y:auto;
+    text-align:center;
+    width:100%;
+}
+
+.list_table70vh tr{
+    display: table;
+    table-layout:fixed;
+    width:100%;
+}
+
+.list_table70vh tbody tr{
+    border-bottom:1px solid #121011;
+}
+
+.list_table70vh td{
+    padding:10px;
+}
+
+.list_table70vh > tbody > tr:nth-of-type(odd) {
+    background-color: #1d1d1d;
+}
+
+.list_table70vh > tbody > tr:hover {
+    background-color: #181818;
+}
+
+
+.list_table70vh a:link {color:#f37320;}
+.list_table70vh a:visited {color:#f37320;}
+.list_table70vh a:active {color:#f37320;}
+
+.list_table70vh .table-nt           {width: 100%; border-top: 2px solid #000000; border-bottom: 1px solid #000000;  text-align: left; color:#999999; font-size: 13px;  line-height: 28px; }
+.list_table70vh .table-nt  th       { width: 30%; text-align:left; background-color: #222222; color:#999999; font-weight:600; padding:2px 5px 2px 5px; font-weight:600;}
+.list_table70vh .table-nt  td       {background-color: transparent;  padding:2px 5px 2px 5px; text-align:left;}
+.list_table70vh .table-nt  a		   {text-decoration:none; color:#363636;}
+.list_table70vh .table-nt  a:hover  {border-bottom:solid 1px #363636; color:#363636; text-decoration:none;}
+
+
+
 /* 리스트 스크롤 포함 235 테이블*/
 .list_table235{
     width:100%;

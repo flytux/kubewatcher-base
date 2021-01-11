@@ -2,8 +2,15 @@ Highcharts.setOptions({
     lang: {
         decimalPoint: '.',
         thousandsSep: ','
+    },
+    time: {
+        timezone: 'asia/seoul',
+        useUTC: false
+        // timezoneOffset: 9 * 60
     }
 });
+
+
 Highcharts.Legend.prototype.colorizeItem = function(item, visible) {
     item.legendGroup[visible ? 'removeClass' : 'addClass']('highcharts-legend-item-hidden');
     if (!this.chart.styledMode) {
@@ -303,7 +310,11 @@ let commonChartsJs = (function () {
         let positionX = chart.chartWidth / 2;
         let positionY = (chart.chartHeight - (chart.legend.display ? chart.legend.legendHeight : 0) - chart.plotTop) / 2;
         if (series.length === 2 && unit === '%') {
-            displayValue = ((series[1].yData[series[1].yData.length - 1] / series[0].yData[series[0].yData.length - 1]) * 100).toFixed(1) + "%";
+            if (series[1].yData[series[1].yData.length - 1] === 0) {
+                displayValue = (100).toFixed(1) + "%";
+            } else {
+                displayValue = ((series[1].yData[series[1].yData.length - 1] / series[0].yData[series[0].yData.length - 1]) * 100).toFixed(1) + "%";
+            }
         } else {
             let v = series[0].points[series[0].points.length - 1];
             displayValue = addSparkUnitFormat(v.y, unit);
