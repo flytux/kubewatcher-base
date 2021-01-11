@@ -2,6 +2,7 @@ package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.MetricTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1ContainerExtends;
@@ -9,6 +10,7 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PodTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
+import com.kubeworks.watcher.ecosystem.kubernetes.service.MetricService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.PodService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
@@ -36,12 +38,14 @@ public class PodServiceImpl implements PodService {
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
+    private final MetricService metricService;
     private final K8sObjectManager k8sObjectManager;
 
-    public PodServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
+    public PodServiceImpl(ApiClient k8sApiClient, EventService eventService, MetricService metricService, K8sObjectManager k8sObjectManager) {
         this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
+        this.metricService = metricService;
         this.k8sObjectManager = k8sObjectManager;
     }
 
@@ -76,10 +80,21 @@ public class PodServiceImpl implements PodService {
             .collect(Collectors.joining(","));
 
         ApiResponse<V1PodTableList> apiResponse = coreApi.namespacePodAsTable(namespace,null, labelSelectors, "true");
+
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodTableList pod = apiResponse.getData();
-            List<PodTable> dataTable = pod.getDataTable();
-            return dataTable;
+            List<PodTable> podTables =  pod.getDataTable();
+            List<MetricTable> metricTables = metricService.podMetrics(namespace, selector);
+
+            for (PodTable podTable : podTables) {
+                 for (MetricTable metricTable : metricTables) {
+                    if (podTable.getName().equals(metricTable.getName())) {
+                        podTable.setCpu(metricTable.getCpu());
+                        podTable.setMemory(metricTable.getMemory());
+                    }
+                }
+            }
+            return podTables;
         }
 
         return Collections.emptyList();

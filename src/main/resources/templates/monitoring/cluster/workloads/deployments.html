@@ -13,7 +13,7 @@
 
         <!-- [클러스터 Deployments] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Deployment
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
                         <select th:disabled="${namespaces == null ? 'true' : 'false'}"
@@ -215,8 +215,8 @@
                         <tr th:if="${deployment?.pods}" th:each="pod : ${deployment?.pods}">
                             <td th:text="${pod?.name}">Name</td>
                             <td th:text="${pod?.namespace}">Namespace</td>
-                            <td th:text="|- %|">CPU</td>
-                            <td th:text="|- %|">Memory</td>
+                            <td th:text="${pod?.cpu.getNumber()}">CPU</td>
+                            <td th:text="${pod?.memory.getNumber()}">Memory</td>
                             <td th:switch="${pod?.status}">
                                 <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
                                 <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>
