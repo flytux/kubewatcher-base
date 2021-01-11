@@ -129,6 +129,7 @@ public class JobServiceImpl implements JobService {
         if (data.getStatus() != null) {
             V1JobStatus status = data.getStatus();
             builder.startTime(status.getStartTime());
+            builder.completionTime(status.getCompletionTime());
             builder.creationTimestamp(status.getCompletionTime());
             if (status.getStartTime() != null && status.getCompletionTime() != null) {
                 Seconds seconds = Seconds.secondsBetween(status.getStartTime(), status.getCompletionTime());

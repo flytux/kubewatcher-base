@@ -3,9 +3,12 @@ package com.kubeworks.watcher.ecosystem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.ecosystem.grafana.dto.TemplateVariable;
+import com.kubeworks.watcher.ecosystem.kubernetes.serdes.CustomQuantityFormatter;
+import io.kubernetes.client.custom.Quantity;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RegExUtils;
+import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -80,10 +83,10 @@ public class ExternalConstants {
     public final String EVENT_FIELD_SELECTOR_INVOLVED_OBJECT_NAMESPACE_KEY = "involvedObject.namespace=";
 
     public final PeriodFormatter DEFAULT_PERIOD_FORMATTER = new PeriodFormatterBuilder()
-        .appendDays().appendSuffix("d")
-        .appendHours().appendSuffix("h")
-        .appendMinutes().appendSuffix("m")
-        .appendSeconds().appendSuffix("s")
+        .appendDays().appendSuffix("d ")
+        .appendHours().appendSuffix("h ")
+        .appendMinutes().appendSuffix("m ")
+        .appendSeconds().appendSuffix("s ")
         .appendMillis().appendSuffix("ms")
         .printZeroNever()
         .toFormatter();
@@ -112,6 +115,12 @@ public class ExternalConstants {
         return HttpStatus.valueOf(status).is2xxSuccessful();
     }
 
+    public String getFormatDuration(Duration duration) {
+        if (duration == null) {
+            return ExternalConstants.UNKNOWN_DASH;
+        }
+        return DEFAULT_PERIOD_FORMATTER.print(duration.toPeriod());
+    }
 
     public String getCurrentBetweenPeriod(long durationInMillis) {
         return getBetweenPeriod(durationInMillis, System.currentTimeMillis());
@@ -131,6 +140,12 @@ public class ExternalConstants {
             return Collections.emptyMap();
         }
         return list.stream().collect(Collectors.toMap(PageRowPanel::getTitle, panel -> panel));
+    }
+
+    private final CustomQuantityFormatter QUANTITY_FORMATTER = new CustomQuantityFormatter();
+
+    public String toStringQuantity(Quantity quantity) {
+        return QUANTITY_FORMATTER.format(quantity);
     }
 
 }
