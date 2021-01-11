@@ -28,9 +28,14 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1NodeTableList.class).getType());
     }
 
-    public ApiResponse<V1MetricTableList> metricNodeAsTable(String name, String pretty) throws ApiException {
-        Call call = listNodeMetricAsTableCall(name, pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(V1MetricTableList.class).getType());
+    public ApiResponse<V1NodeMetricTableList> listMetricNodeAsTable(String pretty) throws ApiException {
+        Call call = listMetricNodeAsTableCall(pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1NodeMetricTableList.class).getType());
+    }
+
+    public ApiResponse<NodeMetrics> metricNode(String name, String pretty) throws ApiException {
+        Call call = listNodeMetricCall(name, pretty);
+        return super.getApiClient().execute(call, TypeToken.getParameterized(NodeMetrics.class).getType());
     }
 
     public ApiResponse<V1NodeTableList> readNodeAsTable(String nodeName, String pretty) throws ApiException {
@@ -43,9 +48,9 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodTableList.class).getType());
     }
 
-    public ApiResponse<V1MetricTableList> metricPodAsTable(String pretty, String fieldSelector, String labelSelector) throws ApiException {
+    public ApiResponse<V1PodMetricTableList> metricPodAsTable(String pretty, String fieldSelector, String labelSelector) throws ApiException {
         Call call = listPodMetricAsTableCall(pretty, fieldSelector, labelSelector);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodTableList.class).getType());
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodMetricTableList.class).getType());
     }
 
     public ApiResponse<V1PodTableList> namespacePodAsTable(String namespace, String fieldSelector, String labelSelector, String pretty) throws ApiException {
@@ -53,9 +58,9 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodTableList.class).getType());
     }
 
-    public ApiResponse<V1MetricTableList> namespacePodMetricAsTable(String namespace, String fieldSelector, String labelSelector, String pretty) throws ApiException {
+    public ApiResponse<V1PodMetricTableList> namespacePodMetricAsTable(String namespace, String fieldSelector, String labelSelector, String pretty) throws ApiException {
         Call call = listPodMetricAsNamespaceCall(namespace, fieldSelector, labelSelector, pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(V1MetricTableList.class).getType());
+        return super.getApiClient().execute(call, TypeToken.getParameterized(V1PodMetricTableList.class).getType());
     }
 
     public ApiResponse<V1EventTableList> listAllNamespaceEventAsTable(String pretty, String fieldSelector) throws ApiException {
@@ -328,7 +333,17 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
 
-    public Call listNodeMetricAsTableCall(String name, String pretty) throws ApiException {
+    private Call listMetricNodeAsTableCall(String pretty) throws ApiException {
+        String localVarPath = "/apis/metrics.k8s.io/v1beta1/nodes";
+        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
+        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call listNodeMetricCall(String name, String pretty) throws ApiException {
         String localVarPath = "/apis/metrics.k8s.io/v1beta1/nodes/{name}".replaceAll("\\{name}", super.getApiClient().escapeString(name));
         List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
         if (pretty != null) {
@@ -341,6 +356,7 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
+
 
     public Call readNodeAsTableCall(String name, String pretty) throws ApiException {
         String localVarPath = "/api/v1/nodes/{name}".replaceAll("\\{name}", super.getApiClient().escapeString(name));

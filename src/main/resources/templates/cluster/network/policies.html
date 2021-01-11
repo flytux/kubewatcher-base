@@ -14,7 +14,7 @@
 
         <!-- [policies] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Network Policies
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
                         <select th:disabled="${namespaces == null ? 'true' : 'false'}"

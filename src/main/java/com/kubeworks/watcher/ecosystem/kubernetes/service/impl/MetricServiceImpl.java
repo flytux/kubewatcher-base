@@ -2,7 +2,9 @@ package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.MetricTable;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1MetricTableList;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.NodeMetrics;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1NodeMetricTableList;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PodMetricTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.MetricService;
 import io.kubernetes.client.openapi.ApiClient;
@@ -30,12 +32,42 @@ public class MetricServiceImpl implements MetricService {
 
     @SneakyThrows
     @Override
-    public List<MetricTable> nodeMetrics(String name) {
-
-        ApiResponse<V1MetricTableList> apiResponse = coreV1Api.metricNodeAsTable(name, "true");
+    public List<MetricTable> nodeMetrics() {
+        ApiResponse<V1NodeMetricTableList> apiResponse = coreV1Api.listMetricNodeAsTable("true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
-            V1MetricTableList metric = apiResponse.getData();
+            V1NodeMetricTableList metric = apiResponse.getData();
             return metric.getDataTable();
+        }
+        return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public MetricTable nodeMetric(String name) {
+        ApiResponse<NodeMetrics> apiResponse = coreV1Api.metricNode(name, "true");
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+
+            NodeMetrics node = apiResponse.getData();
+            MetricTable metricTable = new MetricTable();
+
+            metricTable.setName(node.getMetadata().getName());
+            metricTable.setCpu(node.getUsage().get("cpu"));
+            metricTable.setMemory(node.getUsage().get("memory"));
+
+            return metricTable;
+
+        }
+        return null;
+    }
+
+    @SneakyThrows
+    @Override
+    public List<MetricTable> podMetrics() {
+        ApiResponse<V1PodMetricTableList> apiResponse = coreV1Api.metricPodAsTable("true",null,null);
+        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            V1PodMetricTableList metric = apiResponse.getData();
+            return metric.getDataTable();
+
         }
         return Collections.emptyList();
     }
@@ -49,9 +81,9 @@ public class MetricServiceImpl implements MetricService {
             .map(entry -> entry.getKey() + "=" + entry.getValue())
             .collect(Collectors.joining(","));
 
-        ApiResponse<V1MetricTableList> apiResponse = coreV1Api.namespacePodMetricAsTable(namespace,null, labelSelectors, "true");
+        ApiResponse<V1PodMetricTableList> apiResponse = coreV1Api.namespacePodMetricAsTable(namespace,null, labelSelectors, "true");
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
-            V1MetricTableList metric = apiResponse.getData();
+            V1PodMetricTableList metric = apiResponse.getData();
             return metric.getDataTable();
         }
         return Collections.emptyList();

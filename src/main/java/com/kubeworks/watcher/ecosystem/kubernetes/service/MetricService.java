@@ -7,7 +7,11 @@ import java.util.Map;
 
 public interface MetricService {
 
-    List<MetricTable> nodeMetrics(String name);
+    List<MetricTable> nodeMetrics();
+
+    MetricTable nodeMetric(String name);
+
+    List<MetricTable> podMetrics();
 
     List<MetricTable> podMetrics(String namespace, Map<String, String> selector);
 }

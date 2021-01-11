@@ -13,7 +13,8 @@
 
         <!-- [Nodes] start -->
         <div class="row">
-            <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${page?.title})"/>
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            </div>
         </div>
         <div class="row">
             <div class="box_panel">

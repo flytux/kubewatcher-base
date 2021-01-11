@@ -15,11 +15,11 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class V1MetricTableList extends V1ObjectTableList<MetricTable, PodMetrics>  {
+public class V1NodeMetricTableList extends V1ObjectTableList<MetricTable, NodeMetrics>  {
 
 
     @SerializedName("items")
-    private List<PodMetrics> items;
+    private List<NodeMetrics> items;
 
 
     @Override
@@ -39,20 +39,15 @@ public class V1MetricTableList extends V1ObjectTableList<MetricTable, PodMetrics
         }
 
         List<MetricTable> list = new ArrayList<>(getItems().size());
-        for (PodMetrics rowObject : getItems()) {
+        for (NodeMetrics rowObject : getItems()) {
             MetricTable data = getDataObject();
             if (rowObject.getMetadata() != null) {
                 data.setName(rowObject.getMetadata().getName());
-                data.setNamespace(rowObject.getMetadata().getNamespace());
             }
 
-            if (rowObject.getContainers() != null) {
-                List<ContainerMetrics> metrics = rowObject.getContainers();
-
-                for (ContainerMetrics metric : metrics) {
-                    data.setCpu(metric.getUsage().get("cpu"));
-                    data.setMemory(metric.getUsage().get("memory"));
-                }
+            if (rowObject.getUsage() != null) {
+                data.setCpu(rowObject.getUsage().get("cpu"));
+                data.setMemory(rowObject.getUsage().get("memory"));
             }
             list.add(data);
         }

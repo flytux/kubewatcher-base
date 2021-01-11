@@ -83,17 +83,18 @@ public class PodServiceImpl implements PodService {
 
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodTableList pod = apiResponse.getData();
-            List<PodTable> podTable =  pod.getDataTable();
-            List<MetricTable> metric = metricService.podMetrics(namespace, selector);
-                 for (PodTable podName : podTable) {
-                    for (MetricTable metricName : metric) {
-                        if (podName.getName().equals(metricName.getName())) {
-                            podName.setCpu(metricName.getCpu());
-                            podName.setMemory(metricName.getMemory());
-                        }
+            List<PodTable> podTables =  pod.getDataTable();
+            List<MetricTable> metricTables = metricService.podMetrics(namespace, selector);
+
+            for (PodTable podTable : podTables) {
+                 for (MetricTable metricTable : metricTables) {
+                    if (podTable.getName().equals(metricTable.getName())) {
+                        podTable.setCpu(metricTable.getCpu());
+                        podTable.setMemory(metricTable.getMemory());
                     }
                 }
-                return podTable;
+            }
+            return podTables;
         }
 
         return Collections.emptyList();
