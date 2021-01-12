@@ -55,7 +55,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/application/catalog/applications").setViewName("application/catalog/application-list");
         registry.addViewController("/application/catalog/releases").setViewName("application/catalog/release-list");
         /*      > usage */
-        registry.addViewController("/application/usage/usage-overview").setViewName("/application/usage/usage-overview");
+        registry.addViewController("/application/usage/usage-overview").setViewName("application/usage/usage-overview");
 
         /* cluster */
         /*      > config */

@@ -1,0 +1,27 @@
+spring:
+  profiles: local
+  jpa:
+    show-sql: true
+
+application:
+  properties:
+    monitoring:
+      default-cluster-name: local
+      clusters:
+        local:
+          cluster-name: local
+          prometheus:
+            url: "http://prometheus.do"
+          k8s:
+            url: "https://rancher.do/k8s/clusters/local"
+            api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
+    dependencies:
+      grafana:
+        url: "http://162.243.175.190:3000"
+        api-token: "eyJrIjoiczY0a1JhbWRsVEpnaDJ3MDRpZms0M1Y3aElSYTdoZHciLCJuIjoib25seSIsImlkIjoxfQ=="
+        login-cookie-name: "grafana_session"
+
+logging:
+  level:
+    com.squareup.okhttp3: debug
+    com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeginClient: info
