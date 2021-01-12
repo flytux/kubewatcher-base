@@ -2,6 +2,9 @@ package com.kubeworks.watcher.user.service.impl;
 
 import com.kubeworks.watcher.config.properties.UserProperties;
 import com.kubeworks.watcher.data.entity.KwUser;
+import com.kubeworks.watcher.data.entity.KwUserRole;
+import com.kubeworks.watcher.data.entity.KwUserRoleId;
+import com.kubeworks.watcher.data.repository.KwUserRepository;
 import com.kubeworks.watcher.user.service.NativeUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -12,33 +15,46 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Profile("!keycloak")
 @Slf4j
 @Service
 public class NativeUserServiceImpl implements UserDetailsService, NativeUserService {
 
-    private final Map<String, KwUser> users;
+    //    private final Map<String, KwUser> users;
     private final PasswordEncoder passwordEncoder;
+    private final KwUserRepository kwUserRepository;
 
-    public NativeUserServiceImpl(UserProperties userProperties, PasswordEncoder passwordEncoder) {
-        this.users = userProperties.getUsers()
-            .stream().collect(Collectors.toMap(KwUser::getUsername, user -> user));
+    public NativeUserServiceImpl(UserProperties userProperties, PasswordEncoder passwordEncoder, KwUserRepository kwUserRepository) {
+//        this.users = userProperties.getUsers().stream().collect(Collectors.toMap(KwUser::getUsername, user -> user));
         this.passwordEncoder = passwordEncoder;
+        this.kwUserRepository = kwUserRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        KwUser user = users.get(username);
+        //유저 로그인 패스를 DB 로 변경, 스프링 시큐리티 콜백함수 유지 (loadUserByUsername)
+        Optional<KwUser> optional = kwUserRepository.findById(username);
+        KwUser user = optional.get();
+
+        //유저 vs Role (1:n)
+        String [] roles = new String[user.getRole().size()];
+
+        int count = 0;
+        for (KwUserRole role : user.getRole()){
+            KwUserRoleId roleId = role.getRolename();
+            roles[count] = roleId.getRolename();
+            count++;
+        }
         if (user == null) {
             throw new UsernameNotFoundException("not found user // username=" + username);
         }
+        //스프링 시큐리티 콜백함수 유지 (to-do : 패스워드 암호화)
         return User.withUsername(user.getUsername())
             .passwordEncoder(passwordEncoder::encode)
             .password(user.getPassword())
-            .roles(user.getRole())
+            .roles(roles)
             .build();
     }
 

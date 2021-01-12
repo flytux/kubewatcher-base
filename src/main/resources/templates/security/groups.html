@@ -9,89 +9,24 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Users<i class=&quot;feather icon-chevron-right&quot; ></i>Groups')"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})"/>
     <div id="main_contents">
 
         <!-- [Groups] start -->
         <div class="row">
             <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Groups
-
                 <div class="dropdown d_ib f_r">
                     <a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
-                    <!-- [Modal] start -->
-                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                        <div class="modal-dialog modal-lg" style="width:765px;">
-                            <div class="modal-content">
-                                <div class="modal-title_box">
-                                    <div class="modal-title">
-                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <span id="myModalLabel">Group : Group 명</span>
-                                    </div>
-                                </div>
-                                <div class="modal-nbody">
-                                    <div class="table-title">
-                                        Overview
-                                    </div>
-                                    <div class="row">
-                                        <table class="table-nt">
-                                            <tr>
-                                                <th>그룹명</th>
-                                                <td>Operator</td>
-                                            </tr>
-                                            <tr>
-                                                <th>그룹 사용자</th>
-                                                <td>3</td>
-                                            </tr>
-                                            <tr>
-                                                <th>최종변경일</th>
-                                                <td>24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="table-title">
-                                        Group role
-                                    </div>
-                                    <div class="row">
-
-                                        <table class="table-select">
-                                            <tr>
-                                                <th>기본 Role</th>
-                                                <td>Cluster monitor</td>
-                                                <td class="select">
-                                                    <!-- [multi select box] start-->
-                                                    <select id="modal-multi-select-box" multiple="multiple">
-                                                        <option value="통합관리환경 admin">통합관리환경 admin</option>
-                                                        <option value="보험코어 monitor">보험코어 monitor</option>
-                                                        <option value="Cluster monitor">Cluster monitor</option>
-                                                        <option value="Cluster log viewer">Cluster log viewer</option>
-                                                        <option value="On-premise monitor">On-premise monitor</option>
-                                                        <option value="Cluster admin">Cluster admin</option>
-                                                        <option value="Dashboard operator">Dashboard operator</option>
-                                                    </select>
-                                                    <!-- [multi select box] end-->
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- [Modal] End -->
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
+                    Total : <span th:text="${#arrays.isEmpty(groupList) ? '0' : groupList.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table70vh">
+                    <table class="list_table">
                         <thead>
                         <tr>
                             <th>그룹명</th>
@@ -100,51 +35,106 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td><a  href="" data-toggle="modal" data-target="#myModal">Operator</a></td>
-                            <td>3</td>
-                            <td>2020-06-29 14:21:05</td>
+                        <tr th:if="${#arrays.isEmpty(groupList)}">
+                            <td colspan="3" class="text-center">No results</td>
                         </tr>
-                        <tr>
-                            <td>Operator</td>
-                            <td>3</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>Operator</td>
-                            <td>3</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>Operator</td>
-                            <td>3</td>
-                            <td>2020-06-29 14:21:05</td>
+                        <tr th:unless="${#arrays.isEmpty(groupList)}" th:each="group : ${groupList}">
+                            <td>
+                                <a class="table2-link" th:href="'javascript:groupDetail(&quot;'+ ${group?.groupname} + '&quot;)'"
+                                   th:utext="${group?.groupname}"></a>
+                            </td>
+                            <td th:text="${group?.users.size()}"></td>
+                            <td th:text="${group?.createTime}"></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <div class="text-center"><!-- 페이지넘버 -->
-            <nav>
-                <ul class="pagination" >
-                    <li>
-                        <a href="#" aria-label="Previous">
-                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>
-                        </a>
-                    </li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li>
-                        <a href="#" aria-label="Next">
-                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <!-- [Modal] start -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+            <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
+                <div class="modal-content">
+                    <div class="modal-title_box">
+                        <div class="modal-title">
+                            <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <span id="myModalLabel" th:text="|Group : ${group?.groupname}|"></span>
+                        </div>
+                    </div>
+                    <div class="modal-nbody">
+                        <div class="table-title">
+                            Overview
+                        </div>
+                        <div class="row">
+                            <table class="table-nt">
+                                <tr>
+                                    <th>그룹명</th>
+                                    <td th:text="${group?.groupname}"></td>
+                                </tr>
+                                <tr>
+                                    <th>그룹 사용자</th>
+                                    <td>
+                                        <div class="row" th:unless="${#arrays.isEmpty(group?.users)}" th:each="user : ${group?.users}">
+                                            <div th:text="|${user.username} [${user.name}]|"/>
+                                        </div>
+                                    </td>
+                                    </td>
+                                <tr>
+                                    <th>최종변경일</th>
+                                    <td th:text="${group?.updateTime}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="table-title">
+                            Group role
+                        </div>
+                        <div class="row">
+                            <table class="table-select">
+                                <tr>
+                                    <th>기본 Role</th>
+                                    <td>Cluster monitor</td>
+                                    <td class="select">
+                                        <!-- [multi select box] start-->
+                                        <select id="modal-multi-select-box" multiple="multiple">
+                                            <option value="통합관리환경 admin">통합관리환경 admin</option>
+                                            <option value="보험코어 monitor">보험코어 monitor</option>
+                                            <option value="Cluster monitor">Cluster monitor</option>
+                                            <option value="Cluster log viewer">Cluster log viewer</option>
+                                            <option value="On-premise monitor">On-premise monitor</option>
+                                            <option value="Cluster admin">Cluster admin</option>
+                                            <option value="Dashboard operator">Dashboard operator</option>
+                                        </select>
+                                        <!-- [multi select box] end-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <!-- [Modal] End -->
         <!-- [Groups] End-->
     </div>
+    <script type="text/javascript" th:inline="javascript">
+        function groupDetail(groupname) {
+            $.ajax({
+                url: "/security/groups/" + groupname,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 </div>
 </body>
 </html>
