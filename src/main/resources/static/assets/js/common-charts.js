@@ -1,12 +1,11 @@
 Highcharts.setOptions({
     lang: {
-        decimalPoint: '.',
-        thousandsSep: ','
+        decimalPoint: ".",
+        thousandsSep: ","
     },
     time: {
-        timezone: 'asia/seoul',
+        timezone: "asia/seoul",
         useUTC: false
-        // timezoneOffset: 9 * 60
     }
 });
 
