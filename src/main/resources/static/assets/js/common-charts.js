@@ -613,7 +613,7 @@ let commonChartsJs = (function () {
                                     element[key] = entry;
                                 }
                             }
-                            element[legend] = parseFloat(value.value[1]).toFixed(1) - 0;
+                            element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit);
                             data.set(key, element);
                         });
                     }
