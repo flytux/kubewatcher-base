@@ -2,6 +2,7 @@ package com.kubeworks.watcher.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kubeworks.watcher.config.properties.GrafanaProperties;
+import feign.Logger;
 import feign.RequestInterceptor;
 import feign.codec.Decoder;
 import lombok.AllArgsConstructor;
@@ -67,6 +68,11 @@ public class RestClientsConfig {
     public static class BaseFeignClientConfig {
 
         private final ObjectMapper objectMapper;
+
+        @Bean
+        public Logger.Level feignLoggerLevel() {
+            return Logger.Level.FULL;
+        }
 
         @Bean
         public Decoder feignDecoder() {

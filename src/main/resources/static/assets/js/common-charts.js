@@ -551,9 +551,11 @@ let commonChartsJs = (function () {
         },
 
         createBadge: function (panel, dataArray) {
-            const badgeData = this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit);
+            // const badgeData = this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit);
+            const badgeData = convertSumBadgeData(dataArray);
             if (panel.chartType === 'text') {
-                $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
+                // $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
+                $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
             } else if (panel.chartType === 'date') {
                 $('#container-' + panel.panelId).text(moment(new Date(badgeData)).format('YYYY-MM-DD hh:mm:ss'));
             } else if (panel.chartType === 'age') {
@@ -566,7 +568,7 @@ let commonChartsJs = (function () {
             } else if(dataArray[0].data.result.length === 0) {
                 $('#container-' + panel.panelId).text('N/A');
             } else {
-                $('#container-' + panel.panelId).text(badgeData);
+                $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
             }
             return panel;
         },
