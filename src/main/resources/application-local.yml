@@ -23,5 +23,6 @@ application:
 
 logging:
   level:
+    root: info
     com.squareup.okhttp3: debug
     com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeginClient: info
