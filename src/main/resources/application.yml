@@ -24,11 +24,10 @@ spring:
     username: kwuser
     password: kubeworks!@
 #    initialization-mode: always # SpringBoot JDBC 이용시 블럭 해제 (schema.sql 적용됨) 하이버네이트 JPA 이용시 블럭, import.sql, ddl-auto: false
-#    sql-script-encoding: UTF-8
-#    schema: classpath:schema.sql
-#    data: classpath:import.sql
+#    data: import.sql
     hikari:
       auto-commit: false
+#      connection-init-sql: "set session time_zone = 'Asia/Seoul'"
       minimum-idle: 10
       maximum-pool-size: 10
       data-source-properties:
@@ -36,7 +35,6 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
-
 
   jpa:
     database: mysql
@@ -49,8 +47,6 @@ spring:
     properties:
       hibernate.format_sql: true
       hibernate.use_sql_comments: true
-      hibernate.hbm2ddl.charset_name: UTF-8
-      hibernate.hbm2ddl.import_files: classpath:sql/common-import.sql,classpath:sql/default-import.sql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
 management:
@@ -86,6 +82,9 @@ application:
         url: "http://162.243.175.190:3000"
         api-token: "eyJrIjoiczY0a1JhbWRsVEpnaDJ3MDRpZms0M1Y3aElSYTdoZHciLCJuIjoib25seSIsImlkIjoxfQ=="
         login-cookie-name: "grafana_session"
+      loki:
+        url: "http://142.93.253.187:30310"
+
     services:
       - code: AGW
         name: api-gateway
@@ -103,3 +102,353 @@ application:
         name: visits
         namespace: default
         displayName: Visits
+
+
+---
+spring:
+  profiles: local
+  jpa:
+    show-sql: true
+
+application:
+  properties:
+    monitoring:
+      default-cluster-name: local
+      clusters:
+        local:
+          cluster-name: local
+          prometheus:
+            url: "http://prometheus.do"
+          k8s:
+            url: "https://rancher.do/k8s/clusters/local"
+            api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
+        test:
+          cluster-name: local
+          prometheus:
+            url: "http://prometheus.do"
+          k8s:
+            url: "https://rancher.do/k8s/clusters/local"
+            api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
+    dependencies:
+      grafana:
+        url: "http://162.243.175.190:3000"
+        api-token: "eyJrIjoiczY0a1JhbWRsVEpnaDJ3MDRpZms0M1Y3aElSYTdoZHciLCJuIjoib25seSIsImlkIjoxfQ=="
+        login-cookie-name: "grafana_session"
+
+logging:
+  level:
+    com.squareup.okhttp3: debug
+
+---
+spring:
+  profiles: embedded
+  jpa:
+    generate-ddl: false
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:kube-watcher;MODE=MySQL
+    username: kwuser
+    password:
+    hikari:
+      connection-init-sql: ""
+      auto-commit: true
+      minimum-idle: 10
+      maximum-pool-size: 10
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+---
+spring:
+  profiles: test-cluster
+application:
+  properties:
+    monitoring:
+      default-cluster-name: local
+      clusters:
+        local:
+          cluster-name: local
+          prometheus:
+            url: "http://prometheus.do"
+          k8s:
+            url: "https://rancher.do/k8s/clusters/local"
+            api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
+    services:
+      - code: BAC
+        name: dev-core-bac
+        namespace: dev-core-ns
+        displayName: 입금
+      - code: BNC
+        name: dev-core-bnc
+        namespace: dev-core-ns
+        displayName: 방카BNC
+      - code: CHE
+        name: dev-core-che
+        namespace: dev-core-ns
+        displayName: 건강검진
+      - code: CLM
+        name: dev-core-clm
+        namespace: dev-core-ns
+        displayName: 클레임처리
+      - code: COM
+        name: dev-core-com
+        namespace: dev-core-ns
+        displayName: 공통업무
+      - code: COP
+        name: dev-core-cop
+        namespace: dev-core-ns
+        displayName: 클레임지급
+      - code: CTC
+        name: dev-core-ctc
+        namespace: dev-core-ns
+        displayName: 계약변경
+      - code: FHB
+        name: dev-core-fhb
+        namespace: dev-core-ns
+        displayName: 재무HUB
+      - code: IBC
+        name: dev-core-ibc
+        namespace: dev-core-ns
+        displayName: 산출공통
+      - code: IFR
+        name: dev-core-ifr
+        namespace: dev-core-ns
+        displayName: 보험사기관리
+      - code: IPM
+        name: dev-core-ipm
+        namespace: dev-core-ns
+        displayName: 통합입출금
+      - code: MGM
+        name: dev-core-mgm
+        namespace: dev-core-ns
+        displayName: 사차관리
+      - code: MRM
+        name: dev-core-mrm
+        namespace: dev-core-ns
+        displayName: 병력관리
+      - code: NCT
+        name: dev-core-nct
+        namespace: dev-core-ns
+        displayName: 신계약청약
+      - code: QOT
+        name: dev-core-qot
+        namespace: dev-core-ns
+        displayName: 가입설계
+      - code: SVP
+        name: dev-core-svp
+        namespace: dev-core-ns
+        displayName: 생존지급
+      - code: UDW
+        name: dev-core-udw
+        namespace: dev-core-ns
+        displayName: 언더라이딩
+      - code: VRI
+        name: dev-core-vri
+        namespace: dev-core-ns
+        displayName: 변액
+      - code: CEB
+        name: dev-cust-ceb
+        namespace: dev-cust-ns
+        displayName: 고객이벤트버스
+      - code: ICM
+        name: dev-cust-icm
+        namespace: dev-cust-ns
+        displayName: 통합고객관리
+      - code: ICS
+        name: dev-cust-ics
+        namespace: dev-cust-ns
+        displayName: 통합고객지원(신원확인)
+      - code: HCG
+        name: dev-pica-hcg
+        namespace: dev-pica-ns
+        displayName: 솔루션설정
+      - code: HDM
+        name: dev-pica-hdm
+        namespace: dev-pica-ns
+        displayName: 모니터링
+      - code: HGW
+        name: dev-pica-hgw
+        namespace: dev-pica-ns
+        displayName: 인증/권한/워크플로우
+      - code: HMS
+        name: dev-pica-hms
+        namespace: dev-pica-ns
+        displayName: 메타관리
+      - code: HPA
+        name: dev-pica-hpa
+        namespace: dev-pica-ns
+        displayName: HPAS관리페이지
+      - code: HPF
+        name: dev-pica-hpf
+        namespace: dev-pica-ns
+        displayName: 상품팩토리
+      - code: HPS
+        name: dev-pica-hps
+        namespace: dev-pica-ns
+        displayName: 계약구조정보
+      - code: HQI
+        name: dev-pica-hqi
+        namespace: dev-pica-ns
+        displayName: HPAS가입설계(데모)
+      - code: HRS
+        name: dev-pica-hrs
+        namespace: dev-pica-ns
+        displayName: Rule Engine
+      - code: HST
+        name: dev-pica-hst
+        namespace: dev-pica-ns
+        displayName: 이관
+      - code: PT
+        name: dev-core-pt
+        namespace: dev-core-ns
+        displayName: Unknown
+
+---
+spring:
+  profiles: dev-cluster
+
+application:
+  properties:
+    monitoring:
+      default-cluster-name: dev-app
+      clusters:
+        local:
+          cluster-name: dev-app
+          prometheus:
+            url: "http://prom.dev"
+          k8s:
+            url: "https://rancher/k8s/clusters/c-wlnwk"
+            api-token: "kubeconfig-user-9dqpx:7x8x66n84wmlmqxcw62q72lndlpff5fmvnwd2tzxcrdvjvxklxjd42"
+    services:
+      - code: BAC
+        name: dev-core-bac
+        namespace: dev-core-ns
+        displayName: 입금
+      - code: BNC
+        name: dev-core-bnc
+        namespace: dev-core-ns
+        displayName: 방카BNC
+      - code: CHE
+        name: dev-core-che
+        namespace: dev-core-ns
+        displayName: 건강검진
+      - code: CLM
+        name: dev-core-clm
+        namespace: dev-core-ns
+        displayName: 클레임처리
+      - code: COM
+        name: dev-core-com
+        namespace: dev-core-ns
+        displayName: 공통업무
+      - code: COP
+        name: dev-core-cop
+        namespace: dev-core-ns
+        displayName: 클레임지급
+      - code: CTC
+        name: dev-core-ctc
+        namespace: dev-core-ns
+        displayName: 계약변경
+      - code: FHB
+        name: dev-core-fhb
+        namespace: dev-core-ns
+        displayName: 재무HUB
+      - code: IBC
+        name: dev-core-ibc
+        namespace: dev-core-ns
+        displayName: 산출공통
+      - code: IFR
+        name: dev-core-ifr
+        namespace: dev-core-ns
+        displayName: 보험사기관리
+      - code: IPM
+        name: dev-core-ipm
+        namespace: dev-core-ns
+        displayName: 통합입출금
+      - code: MGM
+        name: dev-core-mgm
+        namespace: dev-core-ns
+        displayName: 사차관리
+      - code: MRM
+        name: dev-core-mrm
+        namespace: dev-core-ns
+        displayName: 병력관리
+      - code: NCT
+        name: dev-core-nct
+        namespace: dev-core-ns
+        displayName: 신계약청약
+      - code: QOT
+        name: dev-core-qot
+        namespace: dev-core-ns
+        displayName: 가입설계
+      - code: SVP
+        name: dev-core-svp
+        namespace: dev-core-ns
+        displayName: 생존지급
+      - code: UDW
+        name: dev-core-udw
+        namespace: dev-core-ns
+        displayName: 언더라이딩
+      - code: VRI
+        name: dev-core-vri
+        namespace: dev-core-ns
+        displayName: 변액
+      - code: CEB
+        name: dev-cust-ceb
+        namespace: dev-cust-ns
+        displayName: 고객이벤트버스
+      - code: ICM
+        name: dev-cust-icm
+        namespace: dev-cust-ns
+        displayName: 통합고객관리
+      - code: ICS
+        name: dev-cust-ics
+        namespace: dev-cust-ns
+        displayName: 통합고객지원(신원확인)
+      - code: HCG
+        name: dev-pica-hcg
+        namespace: dev-pica-ns
+        displayName: 솔루션설정
+      - code: HDM
+        name: dev-pica-hdm
+        namespace: dev-pica-ns
+        displayName: 모니터링
+      - code: HGW
+        name: dev-pica-hgw
+        namespace: dev-pica-ns
+        displayName: 인증/권한/워크플로우
+      - code: HMS
+        name: dev-pica-hms
+        namespace: dev-pica-ns
+        displayName: 메타관리
+      - code: HPA
+        name: dev-pica-hpa
+        namespace: dev-pica-ns
+        displayName: HPAS관리페이지
+      - code: HPF
+        name: dev-pica-hpf
+        namespace: dev-pica-ns
+        displayName: 상품팩토리
+      - code: HPS
+        name: dev-pica-hps
+        namespace: dev-pica-ns
+        displayName: 계약구조정보
+      - code: HQI
+        name: dev-pica-hqi
+        namespace: dev-pica-ns
+        displayName: HPAS가입설계(데모)
+      - code: HRS
+        name: dev-pica-hrs
+        namespace: dev-pica-ns
+        displayName: Rule Engine
+      - code: HST
+        name: dev-pica-hst
+        namespace: dev-pica-ns
+        displayName: 이관

@@ -13,7 +13,7 @@
     <div id="main_contents">
         <!-- [Pod Security policy 헤더] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span> </div>
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Pod Security Polices </div>
         </div>
         <!-- [Pod Security policy 헤더] end -->
 
@@ -24,7 +24,7 @@
                     Total : <span th:text="${#arrays.isEmpty(podSecurityPolicies) ? '0' : podSecurityPolicies.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table70vh">
+                    <table class="list_table">
                         <thead>
                             <tr>
                                 <th width="20%">Name</th>

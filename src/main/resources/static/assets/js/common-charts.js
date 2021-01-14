@@ -1,15 +1,3 @@
-Highcharts.setOptions({
-    lang: {
-        decimalPoint: ".",
-        thousandsSep: ","
-    },
-    time: {
-        timezone: "asia/seoul",
-        useUTC: false
-    }
-});
-
-
 Highcharts.Legend.prototype.colorizeItem = function(item, visible) {
     item.legendGroup[visible ? 'removeClass' : 'addClass']('highcharts-legend-item-hidden');
     if (!this.chart.styledMode) {
@@ -201,6 +189,7 @@ let commonChartsJs = (function () {
     }
 
     function renderTable(panel, tableData) {
+        console.log("renderTable tabledata :", tableData);
         if (tableData === undefined) {
             $('#container-' + panel.panelId)
                 .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -222,6 +211,7 @@ let commonChartsJs = (function () {
             '</tr></thead>');
         const tableBodyHtml = String.prototype.concat('<tbody>',
             dataArray.map(item => {
+                console.log("item :",item);
                 let trAppend = '';
                 for (let header of headers) {
                     trAppend += '<td>' + item[header] + '</td>';
@@ -309,11 +299,7 @@ let commonChartsJs = (function () {
         let positionX = chart.chartWidth / 2;
         let positionY = (chart.chartHeight - (chart.legend.display ? chart.legend.legendHeight : 0) - chart.plotTop) / 2;
         if (series.length === 2 && unit === '%') {
-            if (series[1].yData[series[1].yData.length - 1] === 0) {
-                displayValue = (100).toFixed(1) + "%";
-            } else {
-                displayValue = ((series[1].yData[series[1].yData.length - 1] / series[0].yData[series[0].yData.length - 1]) * 100).toFixed(1) + "%";
-            }
+            displayValue = ((series[1].yData[series[1].yData.length - 1] / series[0].yData[series[0].yData.length - 1]) * 100).toFixed(1) + "%";
         } else {
             let v = series[0].points[series[0].points.length - 1];
             displayValue = addSparkUnitFormat(v.y, unit);
@@ -484,13 +470,13 @@ let commonChartsJs = (function () {
                 case "CHART":
                     if (panel.chartQueries.length > 0) {
                         this.getDataByPanel(panel, true)
-                            .then(responses => this.convertSeries(panel, responses))
+                            .then(responses => this.convertSeries(panel, responses)) /*pipeline 구성 :convertSeries -> getChartData -> renderChart */
                             .then(series => this.getChartData(panel, series))
                             .then(chartOptions => this.renderChart(panel, chartOptions));
                     }
                     break;
                 case "METRIC_TABLE":
-                case "HTML_TABLE":
+                case "HTML_TABLE": //TODO 이부분을 loki에 맞게 js파일을 하나 생성하여 작성해야할것같다.
                     this.getDataByPanel(panel, true)
                         .then(value => this.createTable(panel, value))
                         .then(panel => scheduleMap.set(panel.panelId,
@@ -551,11 +537,9 @@ let commonChartsJs = (function () {
         },
 
         createBadge: function (panel, dataArray) {
-            // const badgeData = this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit);
             const badgeData = convertSumBadgeData(dataArray);
             if (panel.chartType === 'text') {
-                // $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
-                $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
+                $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
             } else if (panel.chartType === 'date') {
                 $('#container-' + panel.panelId).text(moment(new Date(badgeData)).format('YYYY-MM-DD hh:mm:ss'));
             } else if (panel.chartType === 'age') {
@@ -568,7 +552,7 @@ let commonChartsJs = (function () {
             } else if(dataArray[0].data.result.length === 0) {
                 $('#container-' + panel.panelId).text('N/A');
             } else {
-                $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
+                $('#container-' + panel.panelId).text(badgeData);
             }
             return panel;
         },
@@ -600,6 +584,7 @@ let commonChartsJs = (function () {
                 let data = new Map();
                 for (let i = 0; i < dataArray.length; i++) {
                     let item = dataArray[i];
+                    console.log("item:", item);
                     if (item.data.resultType === 'matrix') {
                         console.warn("unsupported result type=" + item.data.data.resultType);
                     } else {
@@ -613,8 +598,9 @@ let commonChartsJs = (function () {
                                     element[key] = entry;
                                 }
                             }
-                            element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit);
+                            element[legend] = parseFloat(value.value[1]).toFixed(1) - 0;
                             data.set(key, element);
+                            console.log("data:", data);
                         });
                     }
                 }
@@ -818,14 +804,13 @@ let commonChartsJs = (function () {
 
         getDataByPanel: function (panel, isCreate) {
             return Promise.all(panel.chartQueries.map(chartQuery => {
-                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery);
+                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery); //return값으로 api url 받아옴.
 
                 const start = isCreate ? panel.readyTimestamp - (60 * 60) * 1000
                     : panel.readyTimestamp - panel.refreshIntervalMillis;
 
                 const end = isCreate ? start + (60 * 60) * 1000
                     : start + panel.refreshIntervalMillis;
-
                 if (chartQuery.queryType === 'METRIC') {
                     let uri = chartQuery.apiQuery.indexOf("query_range") > 0
                         ? convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, start, end)
@@ -941,9 +926,20 @@ let commonChartsJs = (function () {
                         text: panel.yaxisLabel
                     },
                     labels: {
+                        // format: '{value} '+ panel.yaxisUnit,
                         formatter: function () {
+                            // if (Math.abs(this.value) > 1000) {
+                            //     return Highcharts.numberFormat(this.value / 1024, 0) + " K" + panel.yaxisUnit;
+                            // }
+                            // return this.value + ' ' + panel.yaxisUnit;
                             let unit = panel.yaxisUnit === 'float' ? "" : panel.yaxisUnit;
-                            return commonChartsJs.convertValue(this.value, unit);
+                            return Math.abs(this.value) > 1000000000
+                                ? Highcharts.numberFormat(this.value / 1024 / 1024 / 1024, 0) + " G" + unit
+                                : Math.abs(this.value) > 1000000
+                                    ? Highcharts.numberFormat(this.value / 1024 / 1024, 0) + " M" + unit
+                                    : Math.abs(this.value) > 1000
+                                        ? Highcharts.numberFormat(this.value / 1024, 0) + " K" + unit
+                                        : this.value + ' ' + unit;
                         }
                     }
                 },
@@ -951,17 +947,7 @@ let commonChartsJs = (function () {
                     type: panel.xaxisMode
                 },
                 title: null,
-                series: series,
-                tooltip: {
-                    formatter: function () {
-                        return Highcharts.dateFormat('%A, %b %d, %H:%M:%S', this.x) + '<br/>' +
-                            '<span style="color:' + this.series.color + ';">●</span> ' +
-                            this.series.name + ': ' + commonChartsJs.thousandsSeparators(this.y);
-
-                        // return Highcharts.dateFormat('%b-%d, %H:%M', this.x) + '<br/>' +
-                        //     this.point.series.name + ': <b>' + this.y +'</b>';
-                    }
-                }
+                    series: series
             };
 
             if (panel.chartType === 'area') {
@@ -1057,7 +1043,7 @@ let commonChartsJs = (function () {
                         let data = this.data;
                         let color = data.length ? data[data.length - 1].color : '#a4a4a4';
                         let yValue = data.length ? data[data.length - 1].y : 0;
-                        return '<span style="text-weight:bold;color:' + color + '">' + this.name + ' : ' + commonChartsJs.convertValue(yValue, '') + '</span>';
+                        return '<span style="text-weight:bold;color:' + color + '">' + this.name + ' : ' + yValue + '</span>';
                         // return this.name + ' : ' + points[points.length - 1]
                     }
                 },
@@ -1277,7 +1263,7 @@ let commonChartsJs = (function () {
                             useHTML: true,
                             padding: 0,
                             formatter: function () {
-                                return "<span style='font-width:bold; font-size:1.2em; color:#0D2A4D; opacity:0.5;'> [" + commonChartsJs.thousandsSeparators(this.y) + " " + panel.yaxisUnit + "] </span>"
+                                return "<span style='font-width:bold; font-size:1.2em; color:#0D2A4D; opacity:0.5;'> [" + this.y + " " + panel.yaxisUnit + "] </span>"
                                     + "&nbsp;" + this.series.name;
                             }
                         }
@@ -1445,7 +1431,6 @@ let commonChartsJs = (function () {
         },
         renderChart: function (panel, chartData) {
             if (chartData === undefined) {
-                console.log(panel.panelId, panel.title);
                 return;
             }
             // const type = chartData.chart.type;
@@ -1521,51 +1506,7 @@ let commonChartsJs = (function () {
         resetReadyTimestamp: function () {
             readyTimestamp = new Date().getTime();
         },
-        convertValue: function (value, unit) {
-            if (unit !== undefined && unit.toLowerCase() === "float") {
-                unit = "";
-            }
 
-            if (unit !== undefined && unit.toLowerCase() === "count") {
-                return this.thousandsSeparators(value);
-            }
-
-            let kilo = unit !== undefined && unit.toLowerCase().indexOf('byte') > -1  ? 1024 : 1000;
-            let convertUnit = unit !== undefined && unit.toLowerCase().indexOf('byte') > -1  ? "iB" : unit;
-            return Math.abs(value) > 1000000000
-                ? Highcharts.numberFormat(value / kilo / kilo / kilo, 0) + " G" + convertUnit
-                : Math.abs(value) > 1000000
-                    ? Highcharts.numberFormat(value / kilo / kilo, 0) + " M" + convertUnit
-                    : Math.abs(value) > 1000
-                        ? Highcharts.numberFormat(value / kilo, 0) + " K" + convertUnit
-                        : value + ' ' + unit;
-        },
-        thousandsSeparators: function(value) {
-            let values = value.toString().split(".");
-            values[0] = values[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            return values.join(".");
-        },
-        seriesSymbol: function (symbolText) {
-            let symbol = "▬";
-            switch ( symbolText ) {
-                case 'circle':
-                    symbol = '●';
-                    break;
-                case 'diamond':
-                    symbol = '♦';
-                    break;
-                case 'square':
-                    symbol = '■';
-                    break;
-                case 'triangle':
-                    symbol = '▲';
-                    break;
-                case 'triangle-down':
-                    symbol = '▼';
-                    break;
-            }
-            return symbol;
-        }
 
     }
 }());

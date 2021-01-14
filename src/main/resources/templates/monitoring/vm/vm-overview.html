@@ -29,9 +29,10 @@
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         let pageRows = [[${page?.rows}]],
-            apiHost = [[${host}]];
+            apiHost = [[${host}]],
+            user = [[${user}]];
         /*]]>*/
-
+        <!--console.log([[${page}]]);-->
         console.log(pageRows);
 
         $(document).ready(function () {

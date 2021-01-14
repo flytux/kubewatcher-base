@@ -18,7 +18,7 @@
 
         <!-- [클러스터 Jobs] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> 클러스터 Jobs
                 <div class="f_r">
                     <div class="dropdown d_ib">
                         <select th:disabled="${namespaces == null ? 'true' : 'false'}"
@@ -39,7 +39,7 @@
                     Total : <span th:text="${#arrays.isEmpty(jobs) ? '0' : jobs.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table70vh">
+                    <table class="list_table">
                         <thead>
                         <tr>
                             <th>Name</th>
@@ -169,7 +169,7 @@
                             </tr>
                             <tr>
                                 <th>Duration</th>
-                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).getFormatDuration(job?.duration)}">65s</td>
+                                <td th:text="${job?.duration}">65s</td>
                             </tr>
                             <tr>
                                 <th>Pod Status</th>

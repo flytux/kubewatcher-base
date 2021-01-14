@@ -10,7 +10,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/*").allowedOrigins("*");
+        /*registry.addMapping("/*").allowedOrigins("*");*/
+        registry.addMapping("/**").allowedOrigins("*");
     }
 
     @Override
@@ -55,7 +56,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/application/catalog/applications").setViewName("application/catalog/application-list");
         registry.addViewController("/application/catalog/releases").setViewName("application/catalog/release-list");
         /*      > usage */
-        registry.addViewController("/application/usage/usage-overview").setViewName("application/usage/usage-overview");
+        registry.addViewController("/application/usage/usage-overview").setViewName("/application/usage/usage-overview");
 
         /* cluster */
         /*      > config */
@@ -96,5 +97,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/ncp/roles").setViewName("ncp/roles");
         registry.addViewController("/ncp/users").setViewName("ncp/users");
 
+
+
     }
+
 }

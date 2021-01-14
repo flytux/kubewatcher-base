@@ -58,7 +58,7 @@
             }
 
             $("select[name^='var-']").change(function () {
-                const selectedId = comnJs.replace($(this).attr('id'), 'var-', '');
+                const selectedId = comnJs.replace($(this).attr('id'), 'var-', ''); <!--문자열변환-->
                 let variable = commonVariablesJs.getVariable(selectedId);
                 commonVariablesJs.refreshEdgeVariableData(selectedId);
                 if (commonVariablesJs.isSelectedAllVariable()) {

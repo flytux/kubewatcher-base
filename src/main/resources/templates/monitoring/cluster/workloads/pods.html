@@ -13,7 +13,7 @@
 
         <!-- [클러스터 Pods] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> 클러스터 Pods
                 <div class="f_r">
                     <div class="dropdown d_ib">
                         <select th:disabled="${namespaces == null ? 'true' : 'false'}"
@@ -34,7 +34,7 @@
                     Total : <span th:text="${#arrays.isEmpty(pods) ? '0' : pods.size()}" class="point pr_10">20</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table70vh">
+                    <table class="list_table">
                         <thead>
                         <tr>
                             <th>Name</th>

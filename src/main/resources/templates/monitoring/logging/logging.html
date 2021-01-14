@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <th:block
+        th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Logging')"/>
+    <div id="main_contents">
+        <div th:each="panelRow : ${page?.rows}">
+            <div class="row">
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
+            </div>
+            <div class="row">
+                <th:block th:each="panel : ${panelRow?.pageRowPanels}">
+                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+
+    <!--<script th:src="@{/assets/js/common-charts.js}"></script>-->
+    <script th:src="@{/assets/js/loki.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+
+        /*<![CDATA[*/
+        let pageRows = [[${page?.rows}]],
+            apiHost = [[${host}]];
+
+        /*]]>*/
+
+        console.log("pageRows :",pageRows);
+        console.log("apiHost :",apiHost);
+
+
+
+        function getFormatDate(date){
+                    var year = date.getFullYear();
+                    var month = (1 + date.getMonth());
+                    month = month >= 10 ? month : '0' + month;
+                    var day = date.getDate();
+                    day = day >= 10 ? day : '0' + day;
+                    return year + '-' + month + '-' + day;
+                }
+        var now = new Date();
+        var firstDate, lastDate, toDay;
+
+        firstDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        firstDate = getFormatDate(firstDate);
+        lastDate = new Date(now.getFullYear(), now.getMonth()+1, 0);
+        lastDate = getFormatDate(lastDate);
+        today = new Date(now.getFullYear(), now.getMonth(),0);
+        today = getFormatDate(today);
+        console.log(firstDate , lastDate, today)
+
+        $(document).ready(function () {
+
+            document.getElementById('startDate').value = new Date().toISOString().substring(0, 10);
+            <!--document.getElementById('startTime').value = new Date().toISOString().slice(0, -1);-->
+
+            document.getElementById('endDate').value = new Date().toISOString().substring(0, 10);
+            <!--document.getElementById('endTime').value = new Date().toISOString().slice(0, -1);-->
+
+            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+        });
+    </script>
+</div>
+</body>
+</html>

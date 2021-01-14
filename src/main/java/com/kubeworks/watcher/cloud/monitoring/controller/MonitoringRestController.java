@@ -2,6 +2,7 @@ package com.kubeworks.watcher.cloud.monitoring.controller;
 
 import com.kubeworks.watcher.cloud.monitoring.service.PageMetricService;
 import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
+import com.kubeworks.watcher.config.properties.LokiProperties;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.preference.service.PageViewService;
@@ -32,12 +33,20 @@ public class MonitoringRestController {
     private static final long VM_OVERVIEW_MENU_ID = 140;
     private static final long VM_DETAIL_MENU_ID = 141;
     private static final long MAIN_MENU_ID = 99;
+    private static final long LOGGING_MENU_ID = 1127;
 
     private final PageViewService pageViewService;
     private final MonitoringProperties monitoringProperties;
     private final PageMetricService<Page> applicationPageMetricService;
     private final ApplicationServiceProperties applicationServiceProperties;
+    private final LokiProperties lokiProperties;
 
+    @GetMapping(value = "/monitoring/logging", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> logging() {
+        Page pageView = pageViewService.getPageView(LOGGING_MENU_ID);
+        System.out.println("pageView :::"+pageView);
+        return lokiresponseData(pageView);
+    }
 
     @GetMapping(value = "/monitoring/application/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> application() {
@@ -99,6 +108,14 @@ public class MonitoringRestController {
         Map<String, Object> response = new HashMap<>();
         response.put("user", getUser());
         response.put("host", monitoringProperties.getDefaultPrometheusUrl());
+        response.put("page", page);
+        return response;
+    }
+
+    private Map<String, Object> lokiresponseData(Page page) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", getUser());
+        response.put("host", lokiProperties.getUrl());
         response.put("page", page);
         return response;
     }

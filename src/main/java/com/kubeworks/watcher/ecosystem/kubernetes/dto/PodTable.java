@@ -1,6 +1,5 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 
-import io.kubernetes.client.custom.Quantity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,5 @@ public class PodTable {
     String node;
     String nominatedNode;
     String readinessGates;
-    Quantity cpu;
-    Quantity memory;
 
 }

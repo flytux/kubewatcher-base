@@ -1,10 +1,7 @@
 package com.kubeworks.watcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
-import com.kubeworks.watcher.config.properties.GrafanaProperties;
-import com.kubeworks.watcher.config.properties.MonitoringProperties;
-import com.kubeworks.watcher.config.properties.UserProperties;
+import com.kubeworks.watcher.config.properties.*;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +25,7 @@ import javax.annotation.PostConstruct;
 @EnableTransactionManagement
 @EnableFeignClients
 @EnableConfigurationProperties(value = {UserProperties.class, GrafanaProperties.class,
-    MonitoringProperties.class, ApplicationServiceProperties.class})
+    MonitoringProperties.class, ApplicationServiceProperties.class, ApplicationServiceProperties.class, LokiProperties.class})
 @SpringBootApplication
 public class KubeWatcherApplication {
 

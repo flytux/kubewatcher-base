@@ -18,7 +18,7 @@
 
         <!-- [Configmaps] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> ConfigMaps
                 <div class="f_r">
                     <div class="dropdown d_ib">
                         <select th:disabled="${namespaces == null ? 'true' : 'false'}"
@@ -39,7 +39,7 @@
                     Total : <span th:text="${#arrays.isEmpty(configMaps) ? '0' : configMaps.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table70vh">
+                    <table class="list_table">
                         <thead>
                         <tr>
                             <th>Name</th>

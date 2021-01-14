@@ -3,12 +3,9 @@ package com.kubeworks.watcher.ecosystem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.ecosystem.grafana.dto.TemplateVariable;
-import com.kubeworks.watcher.ecosystem.kubernetes.serdes.CustomQuantityFormatter;
-import io.kubernetes.client.custom.Quantity;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RegExUtils;
-import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -62,6 +59,11 @@ public class ExternalConstants {
     public final String PROMETHEUS_QUERY_API_URI = GRAFANA_API_PREFIX + "/v1/query" + PROMETHEUS_QUERY_STRING_PREFIX;
     public final String PROMETHEUS_RANGE_QUERY_API_URI = GRAFANA_API_PREFIX + "/v1/query_range" + PROMETHEUS_QUERY_STRING_PREFIX;
 
+    public final String LOKI_QUERY_API_URI = "/loki/api/v1/query" + PROMETHEUS_QUERY_STRING_PREFIX; //  /loki/api/v1/query?query=
+    //public final String LOKI_RANGE_QUERY_API_URI = "/loki/api/v1/query_range" + PROMETHEUS_QUERY_STRING_PREFIX; // /loki/api/v1/query_range?query=
+    public final String LOKI_CONTETX_PATH = "/loki/api/v1/query_range" +PROMETHEUS_QUERY_STRING_PREFIX ;
+    public final String LOKI_APP_LABLE_CONTETX_PATH  = "/loki/api/v1/label/app/values";
+
 
     public final Pattern GRAFANA_TEMPLATE_VARIABLE_PATTERN = Pattern.compile("\\$\\w+");
     public final String SUCCESS_STATUS_STR = "success";
@@ -83,10 +85,10 @@ public class ExternalConstants {
     public final String EVENT_FIELD_SELECTOR_INVOLVED_OBJECT_NAMESPACE_KEY = "involvedObject.namespace=";
 
     public final PeriodFormatter DEFAULT_PERIOD_FORMATTER = new PeriodFormatterBuilder()
-        .appendDays().appendSuffix("d ")
-        .appendHours().appendSuffix("h ")
-        .appendMinutes().appendSuffix("m ")
-        .appendSeconds().appendSuffix("s ")
+        .appendDays().appendSuffix("d")
+        .appendHours().appendSuffix("h")
+        .appendMinutes().appendSuffix("m")
+        .appendSeconds().appendSuffix("s")
         .appendMillis().appendSuffix("ms")
         .printZeroNever()
         .toFormatter();
@@ -115,12 +117,6 @@ public class ExternalConstants {
         return HttpStatus.valueOf(status).is2xxSuccessful();
     }
 
-    public String getFormatDuration(Duration duration) {
-        if (duration == null) {
-            return ExternalConstants.UNKNOWN_DASH;
-        }
-        return DEFAULT_PERIOD_FORMATTER.print(duration.toPeriod());
-    }
 
     public String getCurrentBetweenPeriod(long durationInMillis) {
         return getBetweenPeriod(durationInMillis, System.currentTimeMillis());
@@ -140,12 +136,6 @@ public class ExternalConstants {
             return Collections.emptyMap();
         }
         return list.stream().collect(Collectors.toMap(PageRowPanel::getTitle, panel -> panel));
-    }
-
-    private final CustomQuantityFormatter QUANTITY_FORMATTER = new CustomQuantityFormatter();
-
-    public String toStringQuantity(Quantity quantity) {
-        return QUANTITY_FORMATTER.format(quantity);
     }
 
 }

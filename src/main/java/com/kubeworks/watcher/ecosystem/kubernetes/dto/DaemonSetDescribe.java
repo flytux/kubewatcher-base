@@ -1,7 +1,6 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.models.V1DaemonSetCondition;
 import io.kubernetes.client.openapi.models.V1Toleration;
@@ -71,12 +70,12 @@ public class DaemonSetDescribe {
 
     public String getRequestResource(String name) {
         Quantity requestsMetric = resources.getRequestsMetric(name);
-        return ExternalConstants.toStringQuantity(requestsMetric);
+        return requestsMetric.getNumber().toPlainString();
     }
 
     public String getLimitsMetric(String name) {
         Quantity limitsMetric = resources.getLimitsMetric(name);
-        return ExternalConstants.toStringQuantity(limitsMetric);
+        return limitsMetric.getNumber().toPlainString();
     }
 
 }

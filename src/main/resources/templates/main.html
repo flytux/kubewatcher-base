@@ -18,13 +18,13 @@
     <div id="main_contents">
         <div th:each="pageRows : ${page?.rows}">
             <div class="row">
-                <th:block th:if="${pageRows?.pageRowId == 32}">
+                <th:block th:if="${pageRows?.pageRowId == 32}"> <!--/* th:if 가 만족하면 th:block 실행 : pageRows.pageRowId가 32일때 */-->
                     <div class="row">
-                        <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
+                        <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/> <!--보험코어 클러스터-->
                     </div>
                     <div class="col-lg-6" style="padding-right: 0px; min-height: 200px;">
                         <th:block th:each="panel : ${pageRows?.pageRowPanels}">
-                            <th:block  th:if="${panel?.fragmentName} == 'head-charts-panel'">
+                            <th:block  th:if="${panel?.fragmentName} == 'head-charts-panel'"> <!--pageRowPanels.panel.fragmentName == head-charts-panel 일때-->
                                 <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
                             </th:block>
                         </th:block>
@@ -151,7 +151,10 @@
             serviceMap = [[${services?.serviceMap}]];;
         /*]]>*/
         $(document).ready(function () {
-            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+            console.log("pageRows:",pageRows); <!--pageRows-->
+            console.log("apiHost:",apiHost);
+            console.log("serviceMap:",serviceMap);
+            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel))); <!--common-chart.js  commonChartsJs.createPanel 실행하여 Panel생성?-->
         });
     </script>
 </div>

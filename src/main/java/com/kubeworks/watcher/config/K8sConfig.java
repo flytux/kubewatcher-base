@@ -5,10 +5,10 @@ import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.credentials.AccessTokenAuthentication;
 import io.kubernetes.client.util.credentials.Authentication;
+import lombok.AllArgsConstructor;
 import okhttp3.Interceptor;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.logging.LogLevel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,16 +16,10 @@ import java.io.IOException;
 import java.time.Duration;
 
 @Configuration
+@AllArgsConstructor(onConstructor_ = {@Autowired})
 public class K8sConfig {
 
     private final MonitoringProperties monitoringProperties;
-
-    @Value("${logging.level.root}")
-    public LogLevel rootLogLevel;
-
-    public K8sConfig(MonitoringProperties monitoringProperties) {
-        this.monitoringProperties = monitoringProperties;
-    }
 
     @Bean
     public ApiClient k8sApiClient() throws IOException {
@@ -48,11 +42,7 @@ public class K8sConfig {
 
     private Interceptor loggingInterceptor() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        if (rootLogLevel == LogLevel.DEBUG) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-        }
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         return logging;
     }
 

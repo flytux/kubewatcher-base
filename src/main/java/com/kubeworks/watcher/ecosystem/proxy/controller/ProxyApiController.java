@@ -1,10 +1,8 @@
 package com.kubeworks.watcher.ecosystem.proxy.controller;
 
 import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -24,4 +22,14 @@ public class ProxyApiController {
         return proxyApiService.labelValuesQuery(query);
     }
 
+    @GetMapping("/api/proxy")
+    @ResponseBody
+    public String proxy() {
+        String url = "http://localhost:8080";
+
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url, String.class);
+    }
 }
+
+
