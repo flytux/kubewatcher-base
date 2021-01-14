@@ -1,4 +1,7 @@
 
+
+
+
 let commonChartsJs = (function () {
     let chartMap = new Map();
         let scheduleMap = new Map();
@@ -68,7 +71,7 @@ let commonChartsJs = (function () {
 
          }
 
-         //console.log(valueList);
+
          result.headers = Object.keys(valueList);
          result.data = valueList.map(value => value);
 
@@ -128,7 +131,7 @@ let commonChartsJs = (function () {
                 const panelType = panel.panelType;
                 switch (panelType) {
                     case "METRIC_TABLE":
-                    case "HTML_TABLE": //TODO 이부분을 loki에 맞게 js파일을 하나 생성하여 작성해야할것같다.
+                    case "HTML_TABLE":
                         this.getDataByPanel(panel, true)
                             .then(value => this.createTable(panel, value))
                             .then(panel => scheduleMap.set(panel.panelId,

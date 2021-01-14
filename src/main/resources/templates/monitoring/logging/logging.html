@@ -40,34 +40,38 @@
         console.log("pageRows :",pageRows);
         console.log("apiHost :",apiHost);
 
-
-
         function getFormatDate(date){
-                    var year = date.getFullYear();
-                    var month = (1 + date.getMonth());
-                    month = month >= 10 ? month : '0' + month;
-                    var day = date.getDate();
-                    day = day >= 10 ? day : '0' + day;
-                    return year + '-' + month + '-' + day;
-                }
-        var now = new Date();
-        var firstDate, lastDate, toDay;
+            var year = date.getFullYear();
+            var month = (1 + date.getMonth());
+            month = month >= 10 ? month : '0' + month;
+            var day = date.getDate();
+            day = day >= 10 ? day : '0' + day;
+            return year + '-' + month + '-' + day;
+        }
+        var currentDate = getFormatDate(new Date());
 
-        firstDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        firstDate = getFormatDate(firstDate);
-        lastDate = new Date(now.getFullYear(), now.getMonth()+1, 0);
-        lastDate = getFormatDate(lastDate);
-        today = new Date(now.getFullYear(), now.getMonth(),0);
-        today = getFormatDate(today);
-        console.log(firstDate , lastDate, today)
+        function getFormatTime(date){
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            return hours + ':' + minutes;
+        }
+        var currentTime = getFormatTime(new Date());
 
+        function startFormatTime(){
+           var d = new Date();
+           d.setMinutes(d.getMinutes() - 10);
+           var h =d.getHours();
+           var m =d.getMinutes();
+           return  h + ":" + m;
+        }
+        var startTime = startFormatTime();
         $(document).ready(function () {
 
-            document.getElementById('startDate').value = new Date().toISOString().substring(0, 10);
-            <!--document.getElementById('startTime').value = new Date().toISOString().slice(0, -1);-->
+            document.getElementById('startDate').value = currentDate;
+            document.getElementById('startTime').value = startTime;
 
-            document.getElementById('endDate').value = new Date().toISOString().substring(0, 10);
-            <!--document.getElementById('endTime').value = new Date().toISOString().slice(0, -1);-->
+            document.getElementById('endDate').value = currentDate;
+            document.getElementById('endTime').value = currentTime;
 
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
         });

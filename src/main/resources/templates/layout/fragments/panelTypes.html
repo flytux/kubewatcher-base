@@ -279,12 +279,17 @@
         <div class="col-md-12 col-lg-6">
             <div class="box_panel">
                 <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div class="form-group has-feedback d_ib">
-                    <input type="date" class="search_table" id="startDate">
-                    <input type="time" class="search_table" id="startTime">
-                    ~
-                    <input type="date" class="search_table" id="endDate">
-                    <input type="time" class="search_table" id="endTime">
+                <div class="f_r">
+                    <div class=" d_ib search_padding">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="date" class="search_date" id="startDate">
+                            <input type="time" class="search_time" id="startTime">
+                            ~
+                            <input type="date" class="search_date" id="endDate">
+                            <input type="time" class="search_time" id="endTime">
+                            <input type="button" class="btn btn-md btn-outline-white" value="조회" id="searchBtn">
+                        </div>
+                    </div>
                 </div>
                 <div class="box_panel-body" style="min-height: 300px;">
                     <table th:id="|container-${panel?.panelId}|" class="list_table">
