@@ -1,5 +1,8 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.kubeworks.watcher.base.MetricResponseData;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NodeDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NodeTable;
@@ -108,20 +111,42 @@ public class NodeServiceImpl implements NodeService {
 
         NodeDescribe nodeDescribe = nodeDescribeBuilder.build();
 
-        // event
-//        Optional<V1EventTableList> eventTablesOptional = eventService.nodeEventTables(nodeName);
-//        if (eventTablesOptional.isPresent()) {
-//            V1EventTableList eventTableList = eventTablesOptional.get();
-//            List<EventTable> events = eventTableList.getDataTable();
-//            nodeDescribe.setEvents(events);
-//        }
-
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Node",
             "", nodeDescribe.getName(), nodeDescribe.getName());
         eventTableListOptional.ifPresent(v1EventTableList -> nodeDescribe.setEvents(v1EventTableList.getDataTable()));
 
 
         return nodeDescribe;
+    }
+
+    @Override
+    public com.kubeworks.watcher.base.ApiResponse<MetricResponseData> podMetricByNode(String name) {
+        com.kubeworks.watcher.base.ApiResponse<MetricResponseData> response = new com.kubeworks.watcher.base.ApiResponse<>();
+        NodeDescribe nodeDescribe = nodeDescribe(name);
+        if (nodeDescribe == null) {
+            response.setSuccess(false);
+            response.setMessage("empty // invalid node name=" + name);
+            return response;
+        }
+
+        try {
+            MetricResponseData.MetricResult allocatablePods = MetricResponseData.MetricResult.builder()
+                .metric(ImmutableMap.of("name", "Capacity"))
+                .value(ImmutableList.of(System.currentTimeMillis() / 1000,
+                    nodeDescribe.getAllocatableMetric("pods").getNumber())).build();
+
+            MetricResponseData.MetricResult runningPods = MetricResponseData.MetricResult.builder()
+                .metric(ImmutableMap.of("name", "Running"))
+                .value(ImmutableList.of(System.currentTimeMillis() / 1000,
+                    CollectionUtils.isNotEmpty(nodeDescribe.getPods()) ? nodeDescribe.getPods().size() : 0)).build();
+
+            response.setData(new MetricResponseData(ImmutableList.of(allocatablePods, runningPods)));
+        } catch (Exception e) {
+            log.error("failed node(pod metric) metric={}", name, e);
+            response.setSuccess(false);
+        }
+
+        return response;
     }
 
 

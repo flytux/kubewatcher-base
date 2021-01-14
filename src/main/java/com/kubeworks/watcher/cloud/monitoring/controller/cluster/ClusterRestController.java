@@ -82,6 +82,11 @@ public class ClusterRestController {
         return node;
     }
 
+    @GetMapping(value = "/monitoring/cluster/nodes/{nodeName}/pods/metrics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResponse<MetricResponseData> nodePodCapacityMetric(@PathVariable String nodeName) {
+        return nodeService.podMetricByNode(nodeName);
+    }
+
     @GetMapping(value = "/monitoring/cluster/workloads/pods", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PodTable> pods() {
         return podService.allNamespacePodTables();

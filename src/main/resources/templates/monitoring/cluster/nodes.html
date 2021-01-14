@@ -46,37 +46,31 @@
                             </td>
 
                             <td>
-                                <div class="row" th:each="panelRow : ${page?.rows}">
-                                    <div th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
-                                        <div th:if ="${panel.title} == 'CPU'">
-                                             <div class="row">
-                                                 <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
-                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <th:block class="row" th:each="panelRow : ${page?.rows}">
+                                    <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                        <th:block th:if ="${panel.title} == 'CPU'">
+                                            <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                        </th:block>
+                                    </th:block>
+                                </th:block>
                             </td>
                             <td>
-                                <div class="row" th:each="panelRow : ${page?.rows}">
-                                    <div th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
-                                        <div th:if ="${panel.title} == 'Memory'">
-                                            <div class="row">
-                                                <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <th:block class="row" th:each="panelRow : ${page?.rows}">
+                                    <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                        <th:block th:if ="${panel.title} == 'Memory'">
+                                            <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                        </th:block>
+                                    </th:block>
+                                </th:block>
                             </td>
                             <td>
-                                <div class="row" th:each="panelRow : ${page?.rows}">
-                                    <div th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
-                                        <div th:if ="${panel.title} == 'Disk'">
-                                            <div class="row">
-                                                <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <th:block th:each="panelRow : ${page?.rows}">
+                                    <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                        <th:block th:if ="${panel.title} == 'Disk'">
+                                            <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                        </th:block>
+                                    </th:block>
+                                </th:block>
                             </td>
                             <td th:text="${node?.roles}">Role</td>
                             <td th:text="${node?.version}">Version</td>
