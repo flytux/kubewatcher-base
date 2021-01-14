@@ -33,7 +33,7 @@ import static io.kubernetes.client.openapi.models.V1ContainerState.*;
 @Service
 public class PodServiceImpl implements PodService {
 
-    public static final String FIELD_SELECTOR_NODE_NAME_KEY = "spec.nodeName=";
+    public static final String FIELD_SELECTOR_NODE_NAME_KEY = "status.phase!=Failed,status.phase!=Succeeded,spec.nodeName=";
 
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
@@ -123,6 +123,7 @@ public class PodServiceImpl implements PodService {
 
     @Override
     public Optional<V1PodList> nodePods(String nodeName) {
+
         String nodeFieldSelector = FIELD_SELECTOR_NODE_NAME_KEY + nodeName;
         ApiResponse<V1PodList> podsResponse = pods(nodeFieldSelector, null);
         if (ExternalConstants.isSuccessful(podsResponse.getStatusCode())) {
