@@ -85,11 +85,11 @@ zuul:
 application:
   properties:
     root-domain: ''
-    auth:
-      users:
-        - user-name: "test"
-          password: "test"
-          role: "USER"
+#    auth:
+#      users:
+#        - user-name: "test"
+#          password: "test"
+#          role: "USER"
     monitoring:
       default-cluster-name: local
       clusters:
