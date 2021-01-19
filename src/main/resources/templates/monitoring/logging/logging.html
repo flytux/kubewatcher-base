@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <th:block
+        th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Logging')"/>
+    <div id="main_contents">
+        <div th:each="panelRow : ${page?.rows}">
+            <div class="row">
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
+            </div>
+            <div class="row">
+                <th:block th:each="panel : ${panelRow?.pageRowPanels}">
+                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+
+    <!--<script th:src="@{/assets/js/common-charts.js}"></script>-->
+    <script th:src="@{/assets/js/loki.js}"></script>
+    <script th:src="@{/assets/js/common-variables.js}"></script>
+    <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+    <script th:src="@{/assets/js/moment.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+
+        /*<![CDATA[*/
+        let pageRows = [[${page?.rows}]],
+            apiHost = [[${host}]];
+
+        /*]]>*/
+
+        console.log("pageRows :",pageRows);
+        console.log("apiHost :",apiHost);
+
+       document.getElementById('startDate').value = moment().format('YYYY-MM-DD');
+       document.getElementById('startTime').value = moment().add(-20,'m').format('hh:mm');
+       document.getElementById('endDate').value = moment().format('YYYY-MM-DD');
+       document.getElementById('endTime').value = moment().format('hh:mm');
+
+        $(document).ready(function () {
+            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel))); <!--loki.js-->
+        });
+
+    </script>
+</div>
+</body>
+</html>

@@ -98,6 +98,9 @@ application:
           prometheus:
             proxy: true
             url: "http://prometheus.do"
+          loki:
+            proxy: true
+            url: "http://142.93.253.187:30310"
           k8s:
             url: "https://rancher.do/k8s/clusters/local"
             api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
