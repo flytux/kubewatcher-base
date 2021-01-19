@@ -826,13 +826,15 @@ let commonChartsJs = (function () {
                 const end = isCreate ? start + (60 * 60) * 1000
                     : start + panel.refreshIntervalMillis;
 
-                if (chartQuery.queryType === 'METRIC') {
-                    let uri = chartQuery.apiQuery.indexOf("query_range") > 0
+                if (chartQuery.queryType.indexOf("METRIC") > -1) {
+                    let uri = chartQuery.apiQuery.indexOf("query_range") > -1
                         ? convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, start, end)
                         : convertApiQuery;
-                    return this.getFetchRequest(apiHost + uri.replace(/\+/g, "%2B"));
+                    return chartQuery.queryType === "PROXY_METRIC"
+                        ? this.getFetchRequest("/proxy/prometheus" + encodeURI(uri).replace(/\+/g, "%2B"))
+                        : this.getFetchRequest(apiHost + encodeURI(uri).replace(/\+/g, "%2B"));
                 } else {
-                    return this.getFetchRequest(convertApiQuery.replace(/\+/g, "%2B"));
+                    return this.getFetchRequest(encodeURI(convertApiQuery).replace(/\+/g, "%2B"));
                 }
             }));
         },

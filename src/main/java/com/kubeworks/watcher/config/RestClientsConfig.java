@@ -52,7 +52,6 @@ public class RestClientsConfig {
         PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
         connManager.setMaxTotal(100);
         connManager.setDefaultMaxPerRoute(50);
-//        return HttpClientBuilder.create()
         return HttpClients.custom()
             .setConnectionManager(connManager)
             .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
