@@ -11,6 +11,7 @@ application:
         local:
           cluster-name: local
           prometheus:
+            proxy: true
             url: "http://prometheus.do"
           k8s:
             url: "https://rancher.do/k8s/clusters/local"

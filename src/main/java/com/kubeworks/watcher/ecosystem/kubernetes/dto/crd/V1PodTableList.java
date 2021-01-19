@@ -3,7 +3,6 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.PodTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectAsTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
-import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.models.V1Pod;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -78,12 +77,6 @@ public class V1PodTableList extends V1ObjectTableList<PodTable, V1Pod> {
                 break;
             case "readiness gates":
                 builder.setReadinessGates(value);
-                break;
-            case "cpu":
-                builder.setCpu(Quantity.fromString(value));
-                break;
-            case "memory":
-                builder.setMemory(Quantity.fromString(value));
                 break;
             default:
                 break;

@@ -30,7 +30,7 @@ public class ChartQuery extends BaseEntity {
     @Column(name = "c_query_id", columnDefinition = "bigint unsigned", nullable = false)
     long cQueryId;
 
-    @Column(name = "query_type", columnDefinition = "VARCHAR(10) default 'METRIC'", length = 10, nullable = false)
+    @Column(name = "query_type", columnDefinition = "VARCHAR(20) default 'PROXY_METRIC'", length = 20, nullable = false)
     @Convert(converter = QueryTypeConverter.class)
     QueryType queryType;
 
