@@ -75,9 +75,11 @@ let commonVariablesJs = (function () {
         },
         callApiQuery: function (queryType, apiQuery) {
             if (queryType === "METRIC") {
-                return this.ajaxRequest(apiHost + apiQuery.replace(/\+/g, "%2B"));
+                return this.ajaxRequest(apiHost + encodeURI(apiQuery).replace(/\+/g, "%2B"));
+            } else if (queryType === "PROXY_METRIC") {
+                return this.ajaxRequest("/proxy/prometheus" + encodeURI(apiQuery).replace(/\+/g, "%2B"));
             }
-            return this.ajaxRequest(apiQuery.replace(/\+/g, "%2B"));
+            return this.ajaxRequest(encodeURI(apiQuery).replace(/\+/g, "%2B"));
         },
         addVariable: function (variable) {
             variables.set(variable.name, variable);

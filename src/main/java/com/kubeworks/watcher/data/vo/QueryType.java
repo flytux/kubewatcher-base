@@ -3,7 +3,7 @@ package com.kubeworks.watcher.data.vo;
 public enum QueryType implements AbstractEnum<String> {
 
     METRIC("METRIC"),
-    PROMQL("PROMQL"),
+    PROXY_METRIC("PROXY_METRIC"),
     KUBERNETES("KUBERNETES"),
     API("API");
 
