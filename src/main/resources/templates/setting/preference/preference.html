@@ -528,14 +528,11 @@
                     <div class="box_panel-heading">Theme</div>
                     <div class="box_table-body">
                         <ul class="nav nav-pills">
-                            <li class="box_theme theme_img mr_10 active">
-                                <a href="#"> <img th:src="@{/assets/img/light.png}" class="img-responsive" alt=""> Light</a>
+                            <li id="white" class="box_theme theme_img mr_10">
+                                <a href="javascript:themeChange('white')"> <img th:src="@{/assets/img/light.png}" class="img-responsive" alt=""> Light</a>
                             </li>
-                            <li class="box_theme theme_img mr_10">
-                                <a href="#"> <img th:src="@{/assets/img/dark.png}" class="img-responsive" alt="">  Dark</a>
-                            </li>
-                            <li class="box_theme theme_img">
-                                <a href="#"> <img th:src="@{/assets/img/tv.png}" class="img-responsive" alt=""> TV</a>
+                            <li id="dark" class="box_theme theme_img mr_10">
+                                <a href="javascript:themeChange('dark')"> <img th:src="@{/assets/img/dark.png}" class="img-responsive" alt="">  Dark</a>
                             </li>
                         </ul>
                     </div>
@@ -543,8 +540,28 @@
             </div>
         </div>
         <!-- [Preference] End-->
-    </div>
 
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+            themeBackgroundColor(localStorage.getItem("theme"));
+            function themeChange(themeStyle) {
+                if(localStorage.getItem("theme") != themeStyle){
+                    localStorage.setItem("theme", themeStyle);
+                    window.location.reload();
+                }
+            }
+
+            function themeBackgroundColor(theme){
+                if(theme == 'white'){
+                    $("#white").addClass("active"); // background-color 적용
+                    $("#dark").removeClass("active");
+                }
+                if(theme == 'dark'){
+                    $("#dark").addClass("active"); // background-color 적용
+                    $("#white").removeClass("active");
+                }
+            }
+        </script>
 </div>
 </body>
 </html>

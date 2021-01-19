@@ -451,7 +451,6 @@ hr {
 }
 
 
-
 a > code {
     color: inherit;
 }
@@ -678,7 +677,6 @@ textarea.form-control {
 .main_title i{
     color:#ffffff;
 }
-
 
 .main_stitle{
     font-size:16px;
@@ -1479,7 +1477,6 @@ textarea.form-control {
     margin-left: 0px;
 }
 
-
 .box_panel-title {
     padding: 10px 15px;
     font-size:18px;
@@ -1794,8 +1791,8 @@ textarea.form-control {
     font-weight:600;
     padding:1px 6px 1px 6px;
     text-align:center;
-
 }
+
 .box_middle_d1{
     font-size:20px;
     margin-bottom: 0px;
@@ -1805,8 +1802,8 @@ textarea.form-control {
     font-weight:600;
     padding:1px 6px 1px 6px;
     text-align:center;
-
 }
+
 .box_middle_g{
     font-size:13px;
     margin-bottom: 0px;
@@ -2199,7 +2196,6 @@ textarea.form-control {
 .NCP_Users a:active {color:#f37320;}
 
 
-
 /* 리스트 스크롤 포함 549 테이블*/
 .list_table{
     width:100%;
@@ -2251,7 +2247,6 @@ textarea.form-control {
 .list_table > tbody > tr:hover {
     background-color: #181818;
 }
-
 
 .list_table a:link {color:#f37320;}
 .list_table a:visited {color:#f37320;}
@@ -2404,7 +2399,6 @@ textarea.form-control {
 .list_table235 > tbody > tr:hover {
     background-color: #181818;
 }
-
 
 .list_table235 a:link {color:#f37320;}
 .list_table235 a:visited {color:#f37320;}
@@ -2730,6 +2724,9 @@ textarea.form-control {
 }
 
 
+.list_mtable_200 > tbody > tr:hover {
+    background-color: #131313;
+}
 
 .list_mtable_200 a:link {color:#f37320;}
 .list_mtable_200 a:visited {color:#f37320;}
@@ -2742,17 +2739,12 @@ textarea.form-control {
 .list_mtable_200 > tbody > tr:nth-of-type(odd) {
     background-color: #1d1d1d;
 }
-
-.list_mtable_200 > tbody > tr:hover {
-    background-color: #131313;
-}
 /**/
 
 .list_mtable_100{
     width:100%;
     text-align:center;
     border-bottom:1px solid #000000;
-
 }
 
 .list_mtable_100 thead{
@@ -2982,6 +2974,7 @@ textarea.form-control {
 .list_mtable_cs > tbody > tr:hover {
     background-color: #131313;
 }
+
 .list_mtable_cs a:link {color:#f37320;}
 .list_mtable_cs a:visited {color:#f37320;}
 .list_mtable_cs a:active {color:#f37320;}
@@ -4033,7 +4026,6 @@ span.multiselect-native-select select{
 .pt_20 {padding-top:20px;}
 .pt_30 {padding-top:30px;}
 .pt_35 {padding-top:35px;}
-.pt_35 {padding-top:35px;}
 
 
 .pr_0 {padding-right:0px;}
@@ -4968,10 +4960,16 @@ input[type="button"].btn-block {
     color: #999999;
     background-color: #333333;
 }
-.nav-pills>li>a:focus, .nav-pills>li>a:hover {
+.nav-pills>li>a:focus {
+    color: #999999;
+    background-color: #222222;
+}
+
+.nav-pills>li>a:hover{
     color: #999999;
     background-color: #333333;
 }
+
 .nav-fill .nav-item {
     flex: 1 1 auto;
     text-align: center;

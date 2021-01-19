@@ -4,8 +4,9 @@
     <head>
         <meta charset="UTF-8">
         <title>Title</title>
-
     </head>
+
+
     <body>
         <th:block th:fragment="header(navTitle)">
             <form id="sign-out-form" th:action="@{/logout}" method="post">
@@ -14,7 +15,17 @@
                     <!-- Sidebar Toggle (Topbar) -->
 
                     <div class="map d-lg-block">
-                        <span th:utext="${navTitle}"></span>
+                        <span id="headerText" th:utext="${navTitle}" style="float:left;"></span>
+                        <div id="btnTv" style="float:left; margin: 0px 15px; display:none;">
+                            <ul class="nav nav-pills">
+                                <li id="fullScreen" class="box_theme theme_img" style="width: 80px;">
+                                    <a href="javascript:screen()" style="padding: 0px 10px; font-size:12px; font-weight: bold;">
+                                        <img id="tvIcon" th:src="@{/assets/img/tv.png}" class="img-responsive" alt=""
+                                             style="width:40%; padding: 1px 0px;"> TV
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
                     <!-- Topbar Navbar -->
