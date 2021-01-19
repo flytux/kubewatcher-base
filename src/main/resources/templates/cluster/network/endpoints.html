@@ -133,7 +133,8 @@
                             <tr th:each=" address : ${subset.addresses}">
                                 <td th:text = "${#strings.isEmpty(address.ip)? '-' : address.ip}"></td>
                                 <td th:text = "${#strings.isEmpty(address.hostname)? '-' : address.hostname}"></td>
-                                <td th:each = "target : ${address.targetRef}" th:text = "|${target.kind} / ${target.name}|"> Target </td>
+                                <td th:if = "${address.targetRef}" th:each = "target : ${address.targetRef}" th:text = "|${target.kind} / ${target.name}|"> Target </td>
+                                <td th:unless = "${address.targetRef}">-</td>
                             </tr>
                         </div>
                         <tbody>
