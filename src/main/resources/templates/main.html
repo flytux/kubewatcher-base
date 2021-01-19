@@ -152,7 +152,56 @@
         /*]]>*/
         $(document).ready(function () {
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+            $("#headerText").css("margin-top", "3px");
+            if(localStorage.getItem("theme") == "dark"){
+                $("#tvIcon").attr("src", "/assets/img/tv_dark.png");
+            }
+            $("#btnTv").css("display", "block");
         });
+
+        function screen(){
+            if(localStorage.getItem("screen") == "full") {
+                localStorage.setItem("screen", "cancel");
+                $("#fullScreen").removeClass("active");
+            } else {
+                localStorage.setItem("screen", "full");
+                $("#fullScreen").addClass("active");
+            }
+            screenCheck();
+        }
+
+        function screenCheck(){
+            var screen = localStorage.getItem("screen");
+            if(screen == "full"){
+                fullScreen();
+            }
+            if(screen == "cancel"){
+                cancelFullScreen();
+            }
+        }
+
+        function fullScreen() { // 풀스크린 실행
+            if(localStorage.getItem("menu") != "close"){ // 좌측 메뉴 닫기
+                $("#sidebarToggle").trigger("click");
+            }
+
+            var el = document.documentElement;
+            var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+
+            if (requestMethod) { // Native full screen.
+                requestMethod.call(el);
+            }
+            return false;
+        }
+
+        function cancelFullScreen() { // 풀스크린 종료
+            var el = document;
+            var requestMethod = el.cancelFullScreen||el.webkitCancelFullScreen||el.mozCancelFullScreen||el.exitFullscreen||el.webkitExitFullscreen;
+            if (requestMethod) { // cancel full screen.
+                requestMethod.call(el);
+            }
+        }
+
     </script>
 </div>
 </body>
