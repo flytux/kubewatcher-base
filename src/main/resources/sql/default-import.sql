@@ -27,7 +27,7 @@ INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, 
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	285	,	 '/api/v1/query?query=sum(tomcat_requestprocessor_errorcount{job="jmx-metrics",application=~"$application"})'	,	 'PROXY_METRIC'	,	 ''	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	160	);
 
 
-INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYPE, VARIABLE_TYPE, REFRESH_INTERVAL, HIDDEN_YN, JOB_NAME, API_QUERY,  CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	10	,	 'application'	,	1	,	 ''	,	 'METRIC'	,'metric_label_values'	,	 '10s'	,	 'Y'	,	 'jmx-metrics'	,	 'count(jvm_info * on (application) group_left(deployment) label_replace(count(kube_deployment_created{deployment=~"$services"}) by (deployment), "application", "$1", "deployment", "(.*)(-deploy)?")) by (application)'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	15	);
+INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYPE, VARIABLE_TYPE, REFRESH_INTERVAL, HIDDEN_YN, JOB_NAME, API_QUERY,  CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	10	,	 'application'	,	1	,	 ''	,	 'PROXY_METRIC'	,'metric_label_values'	,	 '10s'	,	 'Y'	,	 'jmx-metrics'	,	 'count(jvm_info * on (application) group_left(deployment) label_replace(count(kube_deployment_created{deployment=~"$services"}) by (deployment), "application", "$1", "deployment", "(.*)(-deploy)?")) by (application)'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	15	);
 
 -- Group, User, Rule, Role
 INSERT INTO kw_user_group (GROUPNAME, DESCRIPTION, CREATE_TIME, UPDATE_TIME) values ( 'CLUSTER', '설명1', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
