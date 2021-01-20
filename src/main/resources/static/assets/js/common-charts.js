@@ -1,4 +1,5 @@
 Highcharts.setOptions({
+    colors: "#25db4f #B28e34 #59a0ac #B56935 #ac4139 #21659d #903a84 #688f5b #5a4d7d #456e3b #9c7f0a #Af0e16 #811c8b #847646 #1a318d #0a709 #2b908f #90ee7e #f45b5b #7798BF #aaeeee #ff0066 #eeaaee #55BF3B #DF5353 #7798BF #aaeeee".split(" "),
     lang: {
         decimalPoint: ".",
         thousandsSep: ","
@@ -826,13 +827,15 @@ let commonChartsJs = (function () {
                 const end = isCreate ? start + (60 * 60) * 1000
                     : start + panel.refreshIntervalMillis;
 
-                if (chartQuery.queryType === 'METRIC') {
-                    let uri = chartQuery.apiQuery.indexOf("query_range") > 0
+                if (chartQuery.queryType.indexOf("METRIC") > -1) {
+                    let uri = chartQuery.apiQuery.indexOf("query_range") > -1
                         ? convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, start, end)
                         : convertApiQuery;
-                    return this.getFetchRequest(apiHost + uri.replace(/\+/g, "%2B"));
+                    return chartQuery.queryType === "PROXY_METRIC"
+                        ? this.getFetchRequest("/proxy/prometheus" + encodeURI(uri).replace(/\+/g, "%2B"))
+                        : this.getFetchRequest(apiHost + encodeURI(uri).replace(/\+/g, "%2B"));
                 } else {
-                    return this.getFetchRequest(convertApiQuery.replace(/\+/g, "%2B"));
+                    return this.getFetchRequest(encodeURI(convertApiQuery).replace(/\+/g, "%2B"));
                 }
             }));
         },

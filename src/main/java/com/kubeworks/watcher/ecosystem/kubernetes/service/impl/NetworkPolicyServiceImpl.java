@@ -100,13 +100,13 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
             setSelector(builder, spec);
 
             // ingress
-            for (int i=0; i<spec.getIngress().size(); i++) {
-                V1NetworkPolicyIngressRule ingress = spec.getIngress().get(i);
-                List<V1NetworkPolicyPeer> from = ingress.getFrom();
+            List<V1NetworkPolicyIngressRule> ingresses = spec.getIngress();
+            for (V1NetworkPolicyIngressRule ingress : ingresses) {
+                List<V1NetworkPolicyPeer> fromList = ingress.getFrom();
 
-                for (int j=0; j<from.size(); j++) {
-                    V1LabelSelector ingressPod = from.get(j).getPodSelector();
-                    V1LabelSelector ingressNameSpace = from.get(j).getNamespaceSelector();
+                for (V1NetworkPolicyPeer from : fromList) {
+                    V1LabelSelector ingressPod = from.getPodSelector();
+                    V1LabelSelector ingressNameSpace = from.getNamespaceSelector();
                     if (ingressPod != null) {
                         setFromToSelector(builder, ingressPod, "ingressPod");
                     }
@@ -114,16 +114,16 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
                         setFromToSelector(builder, ingressNameSpace, "ingressNameSpace");
                     }
                 }
-           }
+            }
 
             // egress
-            for (int i=0; i<spec.getEgress().size(); i++) {
-                V1NetworkPolicyEgressRule egress = spec.getEgress().get(i);
-                List<V1NetworkPolicyPeer> to = egress.getTo();
+            List<V1NetworkPolicyEgressRule> egresses = spec.getEgress();
+            for (V1NetworkPolicyEgressRule egress : egresses) {
+                List<V1NetworkPolicyPeer> toList = egress.getTo();
 
-                for (int j=0; j<to.size(); j++) {
-                    V1LabelSelector egressPod = to.get(j).getPodSelector();
-                    V1LabelSelector egressNameSpace = to.get(j).getNamespaceSelector();
+                for (V1NetworkPolicyPeer to : toList) {
+                    V1LabelSelector egressPod = to.getPodSelector();
+                    V1LabelSelector egressNameSpace = to.getNamespaceSelector();
                     if (egressPod != null) {
                         setFromToSelector(builder, egressPod, "egressPod");
                     }
@@ -154,30 +154,23 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
     }
 
     private void setFromToSelector(NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, V1LabelSelector selector, String select) {
-
         if (selector.getMatchLabels() != null) {
-
-            switch(select) {
+            switch (select) {
                 case "ingressPod" :
                     builder.ingressPod(selector.getMatchLabels());
                     break;
-
                 case "ingressNameSpace" :
                     builder.ingressNamespace(selector.getMatchLabels());
                     break;
-
                 case "egressPod" :
                     builder.egressPod(selector.getMatchLabels());
                     break;
-
                 case "egressNameSpace" :
                     builder.egressNamespace(selector.getMatchLabels());
                     break;
-
                 default:
                     break;
             }
-
         } else {
             if (CollectionUtils.isNotEmpty(selector.getMatchExpressions())) {
                 Map<String, String> selectMatchExpr = selector.getMatchExpressions().stream()
@@ -187,36 +180,23 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
                         return values + "(" + requirement.getOperator() + ")";
                     }));
 
-                switch(select) {
+                switch (select) {
                     case "ingressPod" :
                         builder.ingressPod(selectMatchExpr);
                         break;
-
                     case "ingressNameSpace" :
                         builder.ingressNamespace(selectMatchExpr);
                         break;
-
                     case "egressPod" :
                         builder.egressPod(selectMatchExpr);
                         break;
-
                     case "egressNameSpace" :
                         builder.egressNamespace(selectMatchExpr);
                         break;
-
                     default:
                         break;
                 }
-
             }
         }
     }
-
-
-
-
-
-
-
-
 }

@@ -8,6 +8,13 @@ spring:
       hibernate.hbm2ddl.import_files: classpath:sql/common-import.sql,classpath:sql/caas-cluster-import.sql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
+zuul:
+  host:
+    connection-request-timeout-millis: 3000
+    connect-timeout-millis: 2000
+    max-per-route-connections: 20
+    max-total-connections: 1000
+
 logging:
   level:
     root: info
@@ -21,6 +28,7 @@ application:
         local:
           cluster-name: local
           prometheus:
+            proxy: true
             url: "http://prometheus.do"
           k8s:
             url: "https://rancher.do/k8s/clusters/local"

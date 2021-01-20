@@ -45,12 +45,21 @@ public class MonitoringProperties {
     public static class ClusterConfig {
         String clusterName;
         PrometheusConfig prometheus;
+        LokiConfig loki;
         K8s k8s;
     }
 
     @Getter @Setter
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class PrometheusConfig {
+        boolean proxy;
+        String url;
+    }
+
+    @Getter @Setter
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class LokiConfig {
+        boolean proxy;
         String url;
     }
 

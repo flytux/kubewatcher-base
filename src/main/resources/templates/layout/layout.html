@@ -1,47 +1,46 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <!--    <meta name="_csrf" th:content="${_csrf.token}">-->
-        <!--    <meta name="_csrf_header" th:content="${_csrf.headerName}">-->
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <title layout:title-pattern="$LAYOUT_TITLE">한화생명 통합관리시스템</title>
+      xmlns:th="http://www.thymeleaf.org" style="display:none;">
+<head>
+    <meta charset="UTF-8">
+    <!--    <meta name="_csrf" th:content="${_csrf.token}">-->
+    <!--    <meta name="_csrf_header" th:content="${_csrf.headerName}">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title layout:title-pattern="$LAYOUT_TITLE">한화생명 통합관리시스템</title>
 
-        <!-- lee -->
-        <!-- 부트스트랩 -->
-        <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
-        <!-- 기본 -->
-<!--        <link rel="stylesheet" th:href="@{/assets/css/style.css}">-->
-        <link rel="stylesheet" th:href="@{/assets/css/style_dark.css}">
-        <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <!-- lee -->
+    <!-- 부트스트랩 -->
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
+    <!-- 기본 -->
+    <link name="styleWhite" rel="stylesheet" th:href="@{/assets/css/style.css}">
+    <link name="styleDark" rel="stylesheet" th:href="@{/assets/css/style_dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
 
-        <!-- IE8 에서 HTML5 요소와 미디어 쿼리를 위한 HTML5 shim 와 Respond.js -->
-        <!-- WARNING: Respond.js 는 당신이 file:// 을 통해 페이지를 볼 때는 동작하지 않습니다. -->
-        <!-- [if lt IE 9]
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        [endif] -->
+    <!-- IE8 에서 HTML5 요소와 미디어 쿼리를 위한 HTML5 shim 와 Respond.js -->
+    <!-- WARNING: Respond.js 는 당신이 file:// 을 통해 페이지를 볼 때는 동작하지 않습니다. -->
+    <!-- [if lt IE 9]
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    [endif] -->
 
-        <!-- 좌측 메뉴 위해 필요합니다)-->
-        <script th:src="@{/assets/js/jquery-3.2.1.min.js}"></script>
-        <script th:src="@{/assets/js/bootstrap-multiselect.js}"></script>
-        <script th:src="@{/assets/js/common.js}"></script>  <!--공통-->
-        <script th:src="@{/assets/js/panelTemplate.js}"></script>  <!--공통-->
-        <script th:src="@{/vendor/highcharts/highmaps.js}"></script>
-        <script th:src="@{/vendor/highcharts/highcharts-more.js}"></script>
-        <script th:src="@{/vendor/highcharts/solid-gauge.js}"></script>
-        <script th:src="@{/vendor/highcharts/tilemap.js}"></script>
-        <script th:src="@{/vendor/highcharts/exporting.js}"></script>
-        <script th:src="@{/vendor/highcharts/export-data.js}"></script>
-        <script th:src="@{/vendor/highcharts/accessibility.js}"></script>
-        <script th:src="@{/vendor/highcharts/themes/dark-unica.js}"></script>
+    <!-- 좌측 메뉴 위해 필요합니다)-->
+    <script th:src="@{/assets/js/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-multiselect.js}"></script>
+    <script th:src="@{/assets/js/common.js}"></script>  <!--공통-->
+    <script th:src="@{/assets/js/panelTemplate.js}"></script>  <!--공통-->
+    <script th:src="@{/vendor/highcharts/highmaps.js}"></script>
+    <script th:src="@{/vendor/highcharts/highcharts-more.js}"></script>
+    <script th:src="@{/vendor/highcharts/solid-gauge.js}"></script>
+    <script th:src="@{/vendor/highcharts/tilemap.js}"></script>
+    <script th:src="@{/vendor/highcharts/exporting.js}"></script>
+    <script th:src="@{/vendor/highcharts/export-data.js}"></script>
+    <script th:src="@{/vendor/highcharts/accessibility.js}"></script>
+    <!--<script id="chartTheme" th:src="@{/vendor/highcharts/themes/dark-unica.js}"></script>-->
 
-
-        <script>
+    <script>
             let collapseKey = "collapsed=true;Path=/;";
             //if(sessionStorage.getItem('sidebarStatus') === 'fold')   console.log('fold');
             (function ($) {
@@ -182,6 +181,12 @@
                 }
             }
 
+            $( document ).ready(function() {
+                if(localStorage.getItem("menu") == "close"){
+                    $("#sidebarToggle").trigger("click");
+                }
+                $('html').css('display', '');
+            });
 
             function fnFold(target) {
                 $(".lef-nav").toggleClass("toggled");
@@ -197,6 +202,7 @@
                     homeTitle = $('.icon-home').next().text(),
                     $menu;
                 if(isToggled) {
+                    localStorage.setItem("menu", 'close');
                     $('.icon-home').attr('title', homeTitle);
                     $('.icon-home').parent().attr('title', homeTitle);
 
@@ -212,6 +218,7 @@
                         $(this).next().attr('aria-labelledby', 'fold-dropdown-' + idx);
                     });
                 } else {
+                    localStorage.setItem("menu", 'open');
                     $('.icon-home').removeAttr('title');
                     $('.icon-home').parent().removeAttr('title');
 
@@ -228,28 +235,42 @@
                     });
                 }
             }
-        </script>
-        <!-- lee -->
 
-    </head>
-    <body>
-        <div id="wrapper">
-            <th:block th:replace="layout/menu :: menu" />
-            <!-- Content Wrapper -->
-            <div id="content-wrapper" class="d-flex flex-column">
-                <!-- Main Content -->
-                <div id="content">
-                    <th:block layout:fragment="content" />
-                </div>
-            </div>
+            theme();
+            function theme() {
+                if(localStorage.getItem("theme") == "white"){
+                    $("link[name=styleDark]").remove();
+                    $("script[name=chartDark]").remove();
+                }
+                if(localStorage.getItem("theme") == "dark"){
+                    $("link[name=styleWhite]").remove();
+                    var scriptClose = "script>";
+                    $('head').append('<script name="chartDark" src="/vendor/highcharts/themes/dark-unica.js"></'+scriptClose);
+                }
+            }
+
+    </script>
+    <!-- lee -->
+
+</head>
+<body>
+<div id="wrapper">
+    <th:block th:replace="layout/menu :: menu" />
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <th:block layout:fragment="content" />
         </div>
+    </div>
+</div>
 
-        <!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
-        <script th:src="@{/assets/js/bootstrap.min.js}"></script>
-        <!-- jQuery chart scripts (차트 그래프 위해 필요합니다)-->
-        <script th:src="@{/assets/js/jquery.chart.min.js}"></script>
-        <script th:src="@{/assets/js/jquery-chart.init.js}"></script>
-        <script>
+<!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
+<script th:src="@{/assets/js/bootstrap.min.js}"></script>
+<!-- jQuery chart scripts (차트 그래프 위해 필요합니다)-->
+<script th:src="@{/assets/js/jquery.chart.min.js}"></script>
+<script th:src="@{/assets/js/jquery-chart.init.js}"></script>
+<script>
             const /*header = $("meta[name='_csrf_header']").attr("content"),*/
                 signOut = $('#sign-out'),
                 signOutForm = $('#sign-out-form');
@@ -257,7 +278,8 @@
             signOut.on('click', function (event) {
                 signOutForm.submit();
             });
+
         </script>
 
-    </body>
+</body>
 </html>
