@@ -21,128 +21,23 @@
 
         }(jQuery));
     </script>
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Users<i class=&quot;feather icon-chevron-right&quot; ></i>Users')"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})"/>
     <div id="main_contents">
-
         <!-- [Groups] start -->
         <div class="row">
             <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Users
-
                 <div class="dropdown d_ib f_r">
-                    <a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
-                    <!-- [Modal] start -->
-                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                        <div class="modal-dialog modal-lg" style="width:765px;">
-                            <div class="modal-content">
-                                <div class="modal-title_box">
-                                    <div class="modal-title">
-                                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <span id="myModalLabel">Group : Group 명</span>
-                                        <div class="f_r"><button class="btn_save_i feather icon-save"></button></div>
-                                    </div>
-                                </div>
-                                <div class="modal-nbody">
-                                    <div class="table-title">
-                                        Overview
-                                    </div>
-                                    <div class="row">
-                                        <table class="table-select">
-                                            <tr>
-                                                <th>ID</th>
-                                                <td colspan="2">testuser</td>
-                                            </tr>
-                                            <tr>
-                                                <th>성명</th>
-                                                <td colspan="2">홍길동</td>
-                                            </tr>
-                                            <tr>
-                                                <th>사번</th>
-                                                <td colspan="2">1073926</td>
-                                            </tr>
-                                            <tr>
-                                                <th>비밀번호</th>
-                                                <td colspan="2">******************* <i class="feather icon-lock text-warning"></i></td>
-                                            </tr>
-                                            <tr>
-                                                <th>부서</th>
-                                                <td colspan="2">IT운영부</td>
-                                            </tr>
-                                            <tr>
-                                                <th>그룹</th>
-                                                <td>Operator</td>
-                                                <td class="select"><!-- [single select box] start-->
-                                                    <select class="custom-select" >
-                                                        <option value="통합관리환경 admin">통합관리환경 admin</option>
-                                                        <option value="보험코어 monitor">보험코어 monitor</option>
-                                                        <option value="Cluster monitor">Cluster monitor</option>
-                                                        <option value="Cluster log viewer">Cluster log viewer</option>
-                                                        <option value="On-premise monitor">On-premise monitor</option>
-                                                        <option value="Cluster admin">Cluster admin</option>
-                                                        <option value="Dashboard operator">Dashboard operator</option>
-                                                    </select>
-                                                    <!-- [single select box] end-->
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>최종변경일</th>
-                                                <td colspan="2">24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                        </table>
-                                    </div>
-                                    <div class="table-title">
-                                        Role
-                                    </div>
-                                    <div class="row">
-
-                                        <table class="table-select">
-                                            <tr>
-                                                <th>역할</th>
-                                                <td>Cluster monitor <a href="#"><i class="feather icon-trash-2"></i></a> / 보험코어 monitor  <i class="feather icon-trash-2"></i></td>
-                                                <td class="select">
-                                                    <!-- [multi select box] start-->
-                                                    <select id="modal-multi-select-box" multiple="multiple">
-                                                        <option value="통합관리환경 admin">통합관리환경 admin</option>
-                                                        <option value="보험코어 monitor">보험코어 monitor</option>
-                                                        <option value="Cluster monitor">Cluster monitor</option>
-                                                        <option value="Cluster log viewer">Cluster log viewer</option>
-                                                        <option value="On-premise monitor">On-premise monitor</option>
-                                                        <option value="Cluster admin">Cluster admin</option>
-                                                        <option value="Dashboard operator">Dashboard operator</option>
-                                                    </select>
-                                                    <!-- [multi select box] end-->
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <th>Cluster Roleinding</th>
-                                                <td colspan="2">admin/cluster-monitor </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Token</th>
-                                                <td colspan="2">******************* <a href="#"><i class="feather icon-lock text-warning"></i></a></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Token 만기일</th>
-                                                <td colspan="2">2020-05-24</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- [Modal] End -->
+                    <a href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
+                    Total : <span th:text="${#arrays.isEmpty(userList) ? '0' : userList.size()}" class="point pr_10">6</span>
                 </div>
                 <div class="box_table-body">
-                    <table class="list_table70vh">
+                    <table class="list_table">
                         <thead>
                         <tr>
                             <th>사용자</th>
@@ -156,71 +51,139 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>testuser</td>
-                            <td><a  href="" data-toggle="modal" data-target="#myModal">Operator</a></td>
-                            <td>홍길동</td>
-                            <td>1073926</td>
-                            <td>IT운영부</td>
-                            <td>Cluster monitor</td>
-                            <td>2020-06-29 14:21:05</td>
-                            <td>2020-06-29 14:21:05</td>
+                        <tr th:if="${#arrays.isEmpty(userList)}">
+                            <td colspan="8" class="text-center">No results</td>
                         </tr>
-                        <tr>
-                            <td>testuser</td>
-                            <td>Operator</td>
-                            <td>홍길동</td>
-                            <td>1073926</td>
-                            <td>IT운영부</td>
-                            <td>Cluster monitor</td>
-                            <td>2020-06-29 14:21:05</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>testuser</td>
-                            <td>Operator</td>
-                            <td>홍길동</td>
-                            <td>1073926</td>
-                            <td>IT운영부</td>
-                            <td>Cluster monitor</td>
-                            <td>2020-06-29 14:21:05</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>testuser</td>
-                            <td>Operator</td>
-                            <td>홍길동</td>
-                            <td>1073926</td>
-                            <td>IT운영부</td>
-                            <td>Cluster monitor</td>
-                            <td>2020-06-29 14:21:05</td>
-                            <td>2020-06-29 14:21:05</td>
+                        <tr th:unless="${#arrays.isEmpty(userList)}" th:each="user : ${userList}">
+                            <td>
+                                <a class="table2-link" th:href="'javascript:userDetail(&quot;'+ ${user?.username} + '&quot;)'"
+                                   th:utext="${user?.username}"></a>
+                            </td>
+                            <td th:text="${user?.username}"></td>
+                            <td th:text="${user?.name}"></td>
+                            <td th:text="${user?.userno}"></td>
+                            <td th:text="${user?.dept}"></td>
+                            <td th:text="${user?.dept}"></td>
+                            <td th:text="${user?.updateTime}"></td>
+                            <td th:text="${user?.createTime}"></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <div class="text-center"><!-- 페이지넘버 -->
-            <nav>
-                <ul class="pagination" >
-                    <li>
-                        <a href="#" aria-label="Previous">
-                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>
-                        </a>
-                    </li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li>
-                        <a href="#" aria-label="Next">
-                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <!-- [Modal] start -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+            <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
+                <div class="modal-content">
+                    <div class="modal-title_box">
+                        <div class="modal-title">
+                            <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <span id="myModalLabel" th:text="|User : ${user?.username}|"></span>
+                            <div class="f_r"><button class="btn_save_i feather icon-save"></button></div>
+                        </div>
+                    </div>
+                    <div class="modal-nbody">
+                        <div class="table-title">
+                            Overview
+                        </div>
+                        <div class="row">
+                            <table class="table-select">
+                                <tr>
+                                    <th>ID</th>
+                                    <td th:text="${user?.username}" colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <th>성명</th>
+                                    <td th:text="${user?.name}" colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <th>사번</th>
+                                    <td th:text="${user?.userno}" colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <th>비밀번호</th>
+                                    <td th:text="${user?.password}" colspan="2"><i class="feather icon-lock text-warning"></i></td>
+                                </tr>
+                                <tr>
+                                    <th>부서</th>
+                                    <td th:text="${user?.dept}" colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <th>그룹</th>
+                                    <td colspan="2">
+                                        <div class="dropdown d_ib">
+                                            <select th:disabled="${groups == null ? 'true' : 'false'}"
+                                                    class="custom-select" id="groupList">
+                                                <option th:each="value : ${groups}"
+                                                        th:value="${value?.groupname}" th:text="${value?.groupname}"
+                                                        th:selected="${value?.groupname.equals(user?.kwUserGroup?.groupname)}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>최종변경일</th>
+                                    <td th:text="${user?.updateTime}" colspan="2"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="table-title">
+                            Role
+                        </div>
+                        <div class="row">
+                            <table class="table-select">
+                                <tr>
+                                    <th>역할</th>
+                                    <th:block th:each="role : ${roles}">
+                                        <td>
+                                            <input type="checkbox" name="roles" th:checked="${role.key.equals(role.value) ? true : false}"
+                                                   th:value="${role.key}"/>
+                                            <label th:text="${role.key}"/>
+                                        </td>
+                                    </th:block>
+                                </tr>
+                                <!--                                <tr>-->
+                                <!--                                    <th>Cluster Rolebinding</th>-->
+                                <!--                                    <td colspan="2">admin/cluster-monitor </td>-->
+                                <!--                                </tr>-->
+                                <!--                                <tr>-->
+                                <!--                                    <th>Token</th>-->
+                                <!--                                    <td colspan="2">******************* <a href="#"><i class="feather icon-lock text-warning"></i></a></td>-->
+                                <!--                                </tr>-->
+                                <!--                                <tr>-->
+                                <!--                                    <th>Token 만기일</th>-->
+                                <!--                                    <td colspan="2">2020-05-24</td>-->
+                                <!--                                </tr>-->
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
+        <!-- [Modal] End -->
         <!-- [Groups] End-->
     </div>
+    <script type="text/javascript" th:inline="javascript">
+        function userDetail(username) {
+            $.ajax({
+                url: "/security/users/" + username,
+                success: function (data) {
+                    $('#myModal').text("");
+                    $('#myModal').html(data);
+                    $('#myModal').modal();
+                    $(".knob").knob();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href', '/login?logout')
+                    }
+                }
+            });
+        }
+    </script>
 
 </div>
 </body>
