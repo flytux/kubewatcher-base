@@ -76,7 +76,7 @@ public class ZuulProxyConfig {
         if (clusterConfig.getLoki() != null && clusterConfig.getLoki().isProxy()) {
 //            String url = "/" + key + "/proxy/loki" + DiscoveryClientRouteLocator.DEFAULT_ROUTE; // cluster 대응시 변경
             String url = "/proxy/loki" + DiscoveryClientRouteLocator.DEFAULT_ROUTE;
-            ZuulProperties.ZuulRoute route = getZuulRoute(key + "-loki", url, clusterConfig.getPrometheus().getUrl());
+            ZuulProperties.ZuulRoute route = getZuulRoute(key + "-loki", url, clusterConfig.getLoki().getUrl());
             routeBuilder.add(route);
         }
 
