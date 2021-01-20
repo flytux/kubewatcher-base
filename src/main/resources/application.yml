@@ -100,7 +100,7 @@ application:
             url: "http://prometheus.do"
           k8s:
             url: "https://rancher.do/k8s/clusters/local"
-            api-token: "kubeconfig-user-mbjf7:k6rzln6t7qdg8frm7plcpxqsgg55zwnc7vjd9f8f52mljpmwrtqfph"
+            api-token: "kubeconfig-user-c7cpf:prf4v24k8d7tmhwgnl4v2zl7k2jn2lxb9r9jw9tldkkth76l8tsmwq"
     dependencies:
       grafana:
         url: "http://162.243.175.190:3000"
@@ -109,19 +109,19 @@ application:
     services:
       - code: AGW
         name: api-gateway
-        namespace: default
+        namespace: app
         displayName: API Gateway
       - code: CUS
         name: customers
-        namespace: default
+        namespace: app
         displayName: Customers
       - code: VET
         name: vets
-        namespace: default
+        namespace: app
         displayName: Vets
       - code: VIT
         name: visits
-        namespace: default
+        namespace: app
         displayName: Visits
 ribbon:
   okhttp:
