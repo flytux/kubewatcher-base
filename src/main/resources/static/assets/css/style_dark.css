@@ -634,6 +634,36 @@ textarea.form-control {
     font-weight:600;
 }
 
+/*log page*/
+.logbtn{
+    width:10%;
+}
+
+.search_padding{
+    padding-right:20px;
+}
+
+.search_date {
+    border: 1px solid #121011;
+    height: 28px; width:140px;
+    padding-left:10px;
+    background-color: #444444;
+    box-shadow: none;
+    border-radius: 4px;
+    font-size:13px;
+}
+
+.search_time {
+    border: 1px solid #121011;
+    height: 28px; width:110px;
+    padding-left:10px;
+    background-color: #444444;
+    box-shadow: none;
+    border-radius: 4px;
+    font-size:13px;
+}
+/*log page*/
+
 .list_btn {
     display: inline-block;
     height: 28px; width:150px;

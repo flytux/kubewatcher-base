@@ -2,13 +2,18 @@
 
 $("#searchBtn").click(function(){
 
-    const stime = document.getElementById('startTime').value;
-    const etime = document.getElementById('endTime').value;
-    var sDate = document.getElementById('startDate').value;
-    console.log(stime,etime,sDate);
+    var sDate = document.getElementById('startDate').value; //날짜
+    var stime = document.getElementById('startTime').value; //시작시간
+    var etime = document.getElementById('endTime').value; //종료시간
+    console.log(sDate,stime,etime);
+    var sDT = sDate +" "+ stime;
+    console.log(sDT);
+    var startT = new Date(sDT).getTime();
+    console.log(startT);
+
     sDate = sDate.split("-");
-    var msg = new Date(sDate).getTime();;
-    console.log("시작시간 :",msg);
+    var smsg = new Date(sDate).getTime(stime); //오늘날짜의 start시간
+    var emsg = new Date(sDate).getTime(etime); //오늘날짜의 end시간
 
 //    const start = isCreate ? panel.readyTimestamp - (60 * 60) * 1000
 //                        : panel.readyTimestamp - panel.refreshIntervalMillis;
@@ -24,7 +29,7 @@ let commonChartsJs = (function () {
         let defaultIntervalMillis = 60 * 1000;
 
     function logrenderTable(panel, tableData) {
-        console.log("renderTable :",tableData);
+        //console.log("renderTable :",tableData);
         if (tableData === undefined) {
             $('#container-' + panel.panelId)
                 .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -49,7 +54,8 @@ let commonChartsJs = (function () {
             dataArray.map(item => {
                 let trAppend = '';
                 for(let i = 0; i<dataArray.length; i++){
-                    trAppend += '<td>' + item  + '</td>';
+                    //trAppend += '<td>' + item  + '</td>' + '<td class="logbtn">' + '<input type="button" class="btn btn-md btn-outline-white" value="Log" id=' + "" + '>' + '</td>'; //id값 test.
+                    trAppend += '<td>' + item  + '</td>' + '<td class="logbtn">' + '<input type="button" class="btn btn-md btn-outline-white" value="Log" >' + '</td>';
                     return String.prototype.concat('<tr>', trAppend, '</tr>');
                 }
 
@@ -80,7 +86,6 @@ let commonChartsJs = (function () {
                 '</tr></thead>');
             const tableBodyHtml = String.prototype.concat('<tbody>',
                 dataArray.map(item => {
-                    //console.log("item :",item);
                     let trAppend = '';
                     for (let header of headers) {
                         trAppend += '<td>' + item[header] + '</td>';
@@ -118,17 +123,36 @@ let commonChartsJs = (function () {
      }
 
      function convertTableData(data) {
-         console.log("convertTableData :",data);
-         if (data === undefined || data.length === 0) {
-             return undefined;
-         }
+//        if (data === undefined || data.length === 0) {
+//            return undefined;
+//        }
+//
+//        let result = {};
+//        if (!Array.isArray(data)) {
+//            data = [data];
+//        }
+//        result.headers = Object.keys(data[0]);
+//        result.data = data.map(value => value);
+//        return result;
 
          let result = {};
-         if (!Array.isArray(data)) {
-             data = [data];
+         let header = [];
+         let dataList = [];
+         element = {};
+
+         for(let [key,value] of data){
+            console.log(key);
+            console.log(value[1]);
+            header.push(key);
+            element[key]= value[1];
          }
-         result.headers = Object.keys(data[0]);
-         result.data = data.map(value => value);
+
+         dataList.push(element);
+         //result.headers = Object.keys(data[0]); //원본 객체의 (data[0]) key 값들을 배열로 리턴.
+         //result.data = data.map(value => value);
+         result.headers = header;
+         result.data = dataList;
+
          console.log("convertTableData result : ",result);
          return result;
      }
@@ -237,7 +261,6 @@ let commonChartsJs = (function () {
                             const key = Object.values(value.stream).toString();
                             const legend = panel.chartQueries[i].legend;
                             let element = data.get(key);
-                            let logdate;
                             if (element === undefined) {
                                 element = {};
                                 elementValue = {};
@@ -245,7 +268,8 @@ let commonChartsJs = (function () {
                                     element[key] = entry; //배얼 1번째 value만 넘기기
                                 }
                             }
-                            //element[legend] = parseFloat(value.value[1]).toFixed(1) - 0;
+
+                            //element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit);
                             data.set(key, element);
                         });
                     }
@@ -253,6 +277,7 @@ let commonChartsJs = (function () {
                 tableData = logConvertTableData([...data.values()]);
                 logrenderTable(panel, tableData);
             } else if (panel.panelType === 'METRIC_TABLE'){
+                console.log("api 반환 dataArray :",dataArray);
                 let data = new Map();
                     for (let i = 0; i < dataArray.length; i++) {
                         let item = dataArray[i];
@@ -261,6 +286,7 @@ let commonChartsJs = (function () {
                         } else {
                             item.data.result.forEach(value => {
                                 //const key = Object.values(value.metric).toString();
+                                console.log("Object: ",Object.values(value.value));
                                 const legend = panel.chartQueries[i].legend;
                                 const key = legend;
                                 let element = data.get(key);
@@ -270,12 +296,16 @@ let commonChartsJs = (function () {
                                         element[key] = entry;
                                     }
                                 }
-                                element[legend] = legend;
+                                //element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit);
+                                console.log("element: ",element);
                                 data.set(key, element);
+                                console.log("data: ",data);
                             });
                         }
                     }
-                    tableData = convertTableData([...data.values()]);   //value값만 파라미터로 넘어간다.
+                    console.log("data : ",data);
+                    //tableData = convertTableData([...data.values()]);   //value값만 파라미터로 넘어간다.
+                    tableData = convertTableData(data);
                     renderTable(panel, tableData);
 
             } else if (panel.panelType === 'HTML_TABLE'){
