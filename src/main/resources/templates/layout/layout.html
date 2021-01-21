@@ -38,7 +38,7 @@
     <script th:src="@{/vendor/highcharts/exporting.js}"></script>
     <script th:src="@{/vendor/highcharts/export-data.js}"></script>
     <script th:src="@{/vendor/highcharts/accessibility.js}"></script>
-    <!--<script id="chartTheme" th:src="@{/vendor/highcharts/themes/dark-unica.js}"></script>-->
+    <!--<script name="chartDark" th:src="@{/vendor/highcharts/themes/dark-unica.js}"></script>-->
 
     <script>
             let collapseKey = "collapsed=true;Path=/;";
@@ -238,11 +238,10 @@
 
             theme();
             function theme() {
-                if(localStorage.getItem("theme") == "white"){
+                if(localStorage.getItem("theme") === "white"){
                     $("link[name=styleDark]").remove();
                     $("script[name=chartDark]").remove();
-                }
-                if(localStorage.getItem("theme") == "dark"){
+                } else {
                     $("link[name=styleWhite]").remove();
                     var scriptClose = "script>";
                     $('head').append('<script name="chartDark" src="/vendor/highcharts/themes/dark-unica.js"></'+scriptClose);
@@ -250,7 +249,6 @@
             }
 
     </script>
-    <!-- lee -->
 
 </head>
 <body>

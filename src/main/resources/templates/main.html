@@ -153,8 +153,8 @@
         $(document).ready(function () {
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
             $("#headerText").css("margin-top", "3px");
-            if(localStorage.getItem("theme") == "dark"){
-                $("#tvIcon").attr("src", "/assets/img/tv_dark.png");
+            if(localStorage.getItem("theme") === "white"){
+                $("#tvIcon").attr("src", "/assets/img/tv.png");
             }
             $("#btnTv").css("display", "block");
         });
@@ -172,16 +172,15 @@
 
         function screenCheck(){
             var screen = localStorage.getItem("screen");
-            if(screen == "full"){
+            if(screen === "full"){
                 fullScreen();
-            }
-            if(screen == "cancel"){
+            } else {
                 cancelFullScreen();
             }
         }
 
         function fullScreen() { // 풀스크린 실행
-            if(localStorage.getItem("menu") != "close"){ // 좌측 메뉴 닫기
+            if(localStorage.getItem("menu") !== "close"){ // 좌측 메뉴 닫기
                 $("#sidebarToggle").trigger("click");
             }
 

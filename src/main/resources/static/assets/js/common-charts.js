@@ -291,13 +291,17 @@ let commonChartsJs = (function () {
         return result;
     }
 
+    function themeTextColor() {
+        return localStorage.getItem("theme") === "white" ? "#332e2e" : "#ffffff";
+    }
+
     //스파크라인 차트 최초 생성시 마지막 데이터값 그려주는 함수
     function drawOneLabel(chart, series, unit) {
         let render = chart.renderer;
         let v = series[0].points[series[0].points.length - 1];
         let lastVal = addSparkUnitFormat(v.y, unit);
         chart.customText = render.label(lastVal, chart.plotWidth / 2, chart.plotHeight / 1.5).css({
-            color: '#FFFFFF',
+            color: themeTextColor(),
             fontSize: 'calc(' + chart.plotWidth + '* 0.01em)'
         }).attr({
             zIndex: 5,
@@ -330,7 +334,7 @@ let commonChartsJs = (function () {
 
         let render = chart.renderer;
         chart.customText = render.label(displayValue, positionX, positionY, 'rect', 0, 0, false, true, title).css({
-            color: '#FFFFFF',
+            color: themeTextColor(),
             fontSize: 'calc(' + chart.plotHeight + '* 0.013em)'
         }).attr({
             zIndex: 5,
