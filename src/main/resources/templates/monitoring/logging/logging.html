@@ -24,7 +24,7 @@
     </div>
 
 
-    <!--<script th:src="@{/assets/js/common-charts.js}"></script>-->
+<!--    <script th:src="@{/assets/js/common-charts.js}"></script>-->
     <script th:src="@{/assets/js/loki.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
@@ -47,7 +47,7 @@
        document.getElementById('endTime').value = moment().format('hh:mm');
 
         $(document).ready(function () {
-            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel))); <!--loki.js-->
+            pageRows.forEach(row => row.pageRowPanels.forEach(panel => lokiJs.createPanel(panel))); <!--loki.js-->
         });
 
     </script>

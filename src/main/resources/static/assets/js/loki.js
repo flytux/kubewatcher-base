@@ -1,5 +1,4 @@
 
-
 $("#searchBtn").click(function(){
 
     var sDate = document.getElementById('startDate').value; //날짜
@@ -22,7 +21,7 @@ $("#searchBtn").click(function(){
 //                        : start + panel.refreshIntervalMillis;
 });
 
-let commonChartsJs = (function () {
+let lokiJs = (function () {
     let chartMap = new Map();
         let scheduleMap = new Map();
         let readyTimestamp = new Date().getTime();
@@ -123,38 +122,38 @@ let commonChartsJs = (function () {
      }
 
      function convertTableData(data) {
-//        if (data === undefined || data.length === 0) {
-//            return undefined;
-//        }
+        if (data === undefined || data.length === 0) {
+            return undefined;
+        }
+
+        let result = {};
+        if (!Array.isArray(data)) {
+            data = [data];
+        }
+
+        //result.headers = header;
+        result.headers = Object.keys(data[0]); //TODO header 값을 고정으로 받게끔.... 이값이 고정으로 들어온다면 수정할필요없겠지만..........아니라면 헤더값을 고정으로 넣어줘야한다?
+        result.data = data.map(value => value);
+        return result;
+
+//         let result = {};
+//         let header = [];
+//         let dataList = [];
+//         element = {};
 //
-//        let result = {};
-//        if (!Array.isArray(data)) {
-//            data = [data];
-//        }
-//        result.headers = Object.keys(data[0]);
-//        result.data = data.map(value => value);
-//        return result;
-
-         let result = {};
-         let header = [];
-         let dataList = [];
-         element = {};
-
-         for(let [key,value] of data){
-            console.log(key);
-            console.log(value[1]);
-            header.push(key);
-            element[key]= value[1];
-         }
-
-         dataList.push(element);
-         //result.headers = Object.keys(data[0]); //원본 객체의 (data[0]) key 값들을 배열로 리턴.
-         //result.data = data.map(value => value);
-         result.headers = header;
-         result.data = dataList;
-
-         console.log("convertTableData result : ",result);
-         return result;
+//         for(let [key,value] of data){
+//            header.push(key);
+//            element[key]= value[1];
+//         }
+//
+//         dataList.push(element);
+//         //result.headers = Object.keys(data[0]); //원본 객체의 (data[0]) key 값들을 배열로 리턴.
+//         //result.data = data.map(value => value);
+//         result.headers = header;
+//         result.data = dataList;
+//
+//         console.log("convertTableData result : ",result);
+//         return result;
      }
 
     return {
@@ -171,7 +170,7 @@ let commonChartsJs = (function () {
                         this.getDataByPanel(panel, true)
                             .then(value => this.createTable(panel, value))
                             .then(panel => scheduleMap.set(panel.panelId,
-                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
+                                setTimeout(lokiJs.refreshFunction, panel.refreshIntervalMillis, panel))
                             )
                         break;
                 }
@@ -179,13 +178,13 @@ let commonChartsJs = (function () {
         refreshFunction: function (panel) {
             const panelType = panel.panelType;
             panel.readyTimestamp = panel.readyTimestamp + panel.refreshIntervalMillis;
-            let timerId = setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel);
+            let timerId = setTimeout(lokiJs.refreshFunction, panel.refreshIntervalMillis, panel);
             scheduleMap.set(panel.panelId, timerId);
             switch (panelType) {
                 case "METRIC_TABLE":
                 case "LOG_METRIC_TABLE":
-                    commonChartsJs.getDataByPanel(panel)
-                        .then(value => commonChartsJs.createTable(panel, value));
+                    lokiJs.getDataByPanel(panel)
+                        .then(value => lokiJs.createTable(panel, value));
                     break;
                 case "CHART":
                     if (panel.chartQueries.length > 0) {
@@ -237,14 +236,12 @@ let commonChartsJs = (function () {
         },
 
         getFetchRequest: function (url) {
-//            let apirul = encodeURI(url); //request header 오류 발생하여 encodeURI 처리.
-            //console.log("getFetchRequest 호출 apirul :",apirul);
             return fetch(url).then(response => { //TODO 여기서 http api를 호출하기때문에 url을 완성시켜야한다. & 파라미터 정의 해야하는지?
                 const contentType = response.headers.get("Content-Type");
                 if (contentType.indexOf("text/html") >= 0) {
                     return response.text();
                 }
-                return response.json() //http api => response값
+                return response.json()
             });
         },
         createTable: function (panel, dataArray) {
@@ -278,43 +275,95 @@ let commonChartsJs = (function () {
                 logrenderTable(panel, tableData);
             } else if (panel.panelType === 'METRIC_TABLE'){
                 console.log("api 반환 dataArray :",dataArray);
+
+//                let header = [];
+//                for(let j=0; j <panel.chartQueries.length; j++){
+//                    header.push(panel.chartQueries[j].legend)
+//                }
+//                console.log("header : ",header);
                 let data = new Map();
-                    for (let i = 0; i < dataArray.length; i++) {
-                        let item = dataArray[i];
-                        if (item.data.resultType === 'matrix') {
-                            console.warn("unsupported result type=" + item.data.data.resultType);
-                        } else {
-                            item.data.result.forEach(value => {
-                                //const key = Object.values(value.metric).toString();
-                                console.log("Object: ",Object.values(value.value));
-                                const legend = panel.chartQueries[i].legend;
-                                const key = legend;
-                                let element = data.get(key);
-                                if (element === undefined) {
-                                    element = {};
-                                    for (const [key, entry] of Object.entries(value.value)) {
-                                        element[key] = entry;
-                                    }
+                for (let i = 0; i < dataArray.length; i++) {
+                    let item = dataArray[i];
+                    if (item.data.resultType === 'matrix') {
+                        console.warn("unsupported result type=" + item.data.data.resultType);
+                    } else {
+                        item.data.result.forEach(value => {
+                            const key = Object.values(value.metric).toString();
+                            const legend = panel.chartQueries[i].legend;
+                            let element = data.get(key);
+                            if (element === undefined) {
+                                element = {};
+                                for (const [key, entry] of Object.entries(value.metric)) { //TODO 이렇게 반복해서 key, value를 넣게되면 값이 없는 상태에서는 생략된다.
+                                    element[key] = entry;
                                 }
-                                //element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit);
-                                console.log("element: ",element);
-                                data.set(key, element);
-                                console.log("data: ",data);
-                            });
-                        }
+                            }
+                            //element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit);
+                            element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
+                            console.log("element[legend] :",element[legend]) ;
+                            //console.log("element :",element);
+
+                            data.set(key, element);
+                            console.log("data :",data);
+                        });
                     }
-                    console.log("data : ",data);
-                    //tableData = convertTableData([...data.values()]);   //value값만 파라미터로 넘어간다.
-                    tableData = convertTableData(data);
+                }
+
+                tableData = convertTableData([...data.values()]);
+
+//                    for (let i = 0; i < dataArray.length; i++) {
+//                        let item = dataArray[i];
+//                        if (item.data.resultType === 'matrix') {
+//                            console.warn("unsupported result type=" + item.data.data.resultType);
+//                        } else {
+//                            item.data.result.forEach(value => {
+//                                //const key = Object.values(value.metric).toString();
+//                                const type = Object.values(value.metric).toString(); //ex ) 어플리케이션 종류 : 입금, 방카, 고객...
+//                                console.log("Object: ",Object.values(value.value));
+//                                const legend = panel.chartQueries[i].legend;
+//                                const key = legend;
+//                                let element = data.get(key);
+//                                if (element === undefined) {
+//                                    element = {};
+//                                    for (const [key, entry] of Object.entries(value.value)) {
+//                                        element[key] = entry;
+//                                    }
+//                                }
+//                                //element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit);
+//                                element["어플리케이션"] = type;
+//                                data.set(key, element);
+//                            });
+//                        }
+//                    }
+//                    console.log("data : ",data);
+//                    //tableData = convertTableData([...data.values()]);   //value값만 파라미터로 넘어간다.
+//                    tableData = convertTableData(data);
                     renderTable(panel, tableData);
 
             } else if (panel.panelType === 'HTML_TABLE'){
                   tableData = dataArray[0];
               }
-            //renderTable(panel, tableData);
+                  //renderTable(panel, tableData);
             return panel;
         },
+        convertValue: function (value, unit) {
+            if (unit !== undefined && unit.toLowerCase() === "float") {
+                unit = "";
+            }
 
+            if (unit !== undefined && unit.toLowerCase() === "count") {
+                return this.thousandsSeparators(value);
+            }
+
+            let kilo = unit !== undefined && unit.toLowerCase().indexOf('byte') > -1  ? 1024 : 1000;
+            let convertUnit = unit !== undefined && unit.toLowerCase().indexOf('byte') > -1  ? "iB" : unit;
+            return Math.abs(value) > 1000000000
+                ? Highcharts.numberFormat(value / kilo / kilo / kilo, 0) + " G" + convertUnit
+                : Math.abs(value) > 1000000
+                    ? Highcharts.numberFormat(value / kilo / kilo, 0) + " M" + convertUnit
+                    : Math.abs(value) > 1000
+                        ? Highcharts.numberFormat(value / kilo, 0) + " K" + convertUnit
+                        : value + ' ' + unit;
+        },
 
 
 
