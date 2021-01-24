@@ -21,6 +21,20 @@ $("#searchBtn").click(function(){
 //                        : start + panel.refreshIntervalMillis;
 });
 
+//getFetchRequest("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
+//direction=BACKWARD&limit=1000&query={container_name="", pod_name=~"", stream=~"stderr|stdout"} |~ "(?i)error"&start=1611300200.412&end=1611303800.412&step=15
+$(document).on("click", ".errtd", function(){
+    console($(this).parent);
+    var jobid= $(this).children()[0].id; //TODO 만들어진 함수 호출 or 새로 조합하여 호출..?
+    console.log("job : ",jobid);
+    //var uri = "/loki/api/v1/query_range?"
+});
+
+
+//function searchLog(){ //이건가능.
+//    alert("test");
+//}
+
 let lokiJs = (function () {
     let chartMap = new Map();
         let scheduleMap = new Map();
@@ -80,14 +94,22 @@ let lokiJs = (function () {
 
             const headers = tableData.headers;
             const dataArray = tableData.data;
+
             const tableHeaderHtml = String.prototype.concat('<thead><tr>',
-                headers.map(value => '<th>' + value + '</th>').join(''),
+                headers.map(value => '<th>' + value + '</th>').join(''), //모든요소들을 연결해 하나의 문자열로 만듬.
                 '</tr></thead>');
-            const tableBodyHtml = String.prototype.concat('<tbody>',
+            const tableBodyHtml = String.prototype.concat('<tbody>', //TODO id or class 부여해서 클릭하면 에러리스트를 호출해야함.
                 dataArray.map(item => {
                     let trAppend = '';
+                    //console.log("item :", item.job);
+
                     for (let header of headers) {
-                        trAppend += '<td>' + item[header] + '</td>';
+                        if(header == "에러"){
+                            trAppend += '<td class="errtd">' + item[header] + '<button class="errbtn btn btn-md btn-outline-white" id='+ item.job +'><i class="feather icon-search "></i></button> </td>';
+                        }else {
+                            trAppend += '<td>' + item[header] + '</td>';
+                        }
+
                     }
                     return String.prototype.concat('<tr>', trAppend, '</tr>');
                 }), '</tbody>');
@@ -197,6 +219,7 @@ let lokiJs = (function () {
             }
         },
         getDataByPanel: function (panel, isCreate) {
+            console.log("panel.chartQueries :",panel.chartQueries);
             return Promise.all(panel.chartQueries.map(chartQuery => {
                 const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery); //return값으로 api url 받아옴.
 
@@ -211,6 +234,7 @@ let lokiJs = (function () {
                     let uri = chartQuery.apiQuery.indexOf("query_range") > -1
                         ? convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, start, end)
                         : convertApiQuery;
+                    console.log("getDataByPanel uri :",uri);
                     return chartQuery.queryType === "PROXY_METRIC"
                         ? this.getFetchRequest("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
                         : this.getFetchRequest(apiHost + encodeURI(uri).replace(/\+/g, "%2B"));
@@ -275,12 +299,6 @@ let lokiJs = (function () {
                 logrenderTable(panel, tableData);
             } else if (panel.panelType === 'METRIC_TABLE'){
                 console.log("api 반환 dataArray :",dataArray);
-
-//                let header = [];
-//                for(let j=0; j <panel.chartQueries.length; j++){
-//                    header.push(panel.chartQueries[j].legend)
-//                }
-//                console.log("header : ",header);
                 let data = new Map();
                 for (let i = 0; i < dataArray.length; i++) {
                     let item = dataArray[i];
@@ -288,7 +306,7 @@ let lokiJs = (function () {
                         console.warn("unsupported result type=" + item.data.data.resultType);
                     } else {
                         item.data.result.forEach(value => {
-                            const key = Object.values(value.metric).toString();
+                            const key = Object.values(value.metric).toString(); //각 쿼리문의 결과값에서 value.metric 값이 모두 넘어오지 않을경우 어떻게 해야하는지
                             const legend = panel.chartQueries[i].legend;
                             let element = data.get(key);
                             if (element === undefined) {
@@ -297,13 +315,11 @@ let lokiJs = (function () {
                                     element[key] = entry;
                                 }
                             }
-                            //element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit);
                             element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
-                            console.log("element[legend] :",element[legend]) ;
-                            //console.log("element :",element);
+                            //console.log("element[legend] :",element[legend]) ;
 
                             data.set(key, element);
-                            console.log("data :",data);
+                            //console.log("data :",data);
                         });
                     }
                 }
