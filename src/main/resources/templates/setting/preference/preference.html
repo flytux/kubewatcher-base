@@ -552,11 +552,10 @@
             }
 
             function themeBackgroundColor(theme){
-                if(theme == 'white'){
+                if(theme === 'white'){
                     $("#white").addClass("active"); // background-color 적용
                     $("#dark").removeClass("active");
-                }
-                if(theme == 'dark'){
+                } else {
                     $("#dark").addClass("active"); // background-color 적용
                     $("#white").removeClass("active");
                 }
