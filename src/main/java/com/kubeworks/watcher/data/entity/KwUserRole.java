@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -15,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class KwUserRole extends BaseEntity {
+public class KwUserRole extends BaseEntity implements GrantedAuthority {
 
     @EmbeddedId
     KwUserRoleId rolename;
@@ -31,4 +33,9 @@ public class KwUserRole extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "ruleId")
     private KwUserRoleRule rule;
+
+    @Override
+    public String getAuthority() {
+        return rolename.getRolename();
+    }
 }

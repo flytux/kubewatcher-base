@@ -8,6 +8,7 @@ import com.kubeworks.watcher.data.repository.KwUserRepository;
 import com.kubeworks.watcher.user.service.NativeUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,19 +16,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 
-@Profile("!keycloak")
+
 @Slf4j
-@Service
+@Service("userDetailsService")
 public class NativeUserServiceImpl implements UserDetailsService, NativeUserService {
 
-    //    private final Map<String, KwUser> users;
     private final PasswordEncoder passwordEncoder;
     private final KwUserRepository kwUserRepository;
 
-    public NativeUserServiceImpl(UserProperties userProperties, PasswordEncoder passwordEncoder, KwUserRepository kwUserRepository) {
-//        this.users = userProperties.getUsers().stream().collect(Collectors.toMap(KwUser::getUsername, user -> user));
+    public NativeUserServiceImpl(PasswordEncoder passwordEncoder, KwUserRepository kwUserRepository) {
         this.passwordEncoder = passwordEncoder;
         this.kwUserRepository = kwUserRepository;
     }
@@ -50,9 +50,10 @@ public class NativeUserServiceImpl implements UserDetailsService, NativeUserServ
         if (user == null) {
             throw new UsernameNotFoundException("not found user // username=" + username);
         }
+
         //스프링 시큐리티 콜백함수 유지 (to-do : 패스워드 암호화)
         return User.withUsername(user.getUsername())
-            .passwordEncoder(passwordEncoder::encode)
+            //.passwordEncoder(passwordEncoder::encode)
             .password(user.getPassword())
             .roles(roles)
             .build();
