@@ -24,6 +24,30 @@
     </div>
 
 
+    <!-- [Modal] Start -->
+    <div class="modal fade" id="logModal" tabindex="-1" role="dialog" aria-labelledby="logModalLabel" aria-hidden="true" >
+        <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px table-layout:fixed;">
+            <div class="modal-content">
+                <div class="modal-title_box">
+                    <div class="modal-title">
+                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span id="serviceName"></span>
+                    </div>
+                </div>
+                <div class="modal-nbody row_scroll">
+                    <div class="table-title" id="">
+                    </div>
+                    <div class="row">
+                        <table id="logModalTable" class="list_table">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [Modal] End -->
+
+
 <!--    <script th:src="@{/assets/js/common-charts.js}"></script>-->
     <script th:src="@{/assets/js/loki.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
