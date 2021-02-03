@@ -1,6 +1,16 @@
 -- `kube-watcher`.page definition
 
-CREATE TABLE `page` (
+CREATE TABLE IF NOT EXISTS cluster_pod_usage (
+    application VARCHAR(255) NOT NULL,
+    namespace VARCHAR(255) NOT NULL,
+    podCount INT(11) UNSIGNED DEFAULT 0 NOT NULL,
+    cpu VARCHAR(255) DEFAULT '0' NOT NULL,
+    memory VARCHAR(255) DEFAULT '0' NOT NULL,
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)  ENGINE=INNODB;
+
+
+CREATE TABLE IF NOT EXISTS `page` (
     `page_id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -14,7 +24,7 @@ CREATE TABLE `page` (
 
 -- `kube-watcher`.page_row definition
 
-CREATE TABLE `page_row` (
+CREATE TABLE IF NOT EXISTS `page_row` (
     `page_row_id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -30,7 +40,7 @@ CREATE TABLE `page_row` (
 
 -- `kube-watcher`.page_row_panel definition
 
-CREATE TABLE `page_row_panel` (
+CREATE TABLE IF NOT EXISTS `page_row_panel` (
       `panel_id` bigint unsigned NOT NULL AUTO_INCREMENT,
       `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
       `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -57,7 +67,7 @@ CREATE TABLE `page_row_panel` (
 
 -- `kube-watcher`.page_variable definition
 
-CREATE TABLE `page_variable` (
+CREATE TABLE IF NOT EXISTS `page_variable` (
     `variable_id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -79,7 +89,7 @@ CREATE TABLE `page_variable` (
 
 -- `kube-watcher`.chart_query definition
 
-CREATE TABLE `chart_query` (
+CREATE TABLE IF NOT EXISTS `chart_query` (
     `c_query_id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
