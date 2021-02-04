@@ -66,9 +66,11 @@
         console.log("apiHost :",apiHost);
 
        document.getElementById('startDate').value = moment().format('YYYY-MM-DD');
-       document.getElementById('startTime').value = moment().add(-20,'m').format('hh:mm');
+       document.getElementById('startTime').value = moment("12:00 AM",["h:mm A"]).format("HH:mm");
+<!--       document.getElementById('startTime').value = moment().set('hour',12).set('minute',0).format('hh:mm');-->
        document.getElementById('endDate').value = moment().format('YYYY-MM-DD');
-       document.getElementById('endTime').value = moment().format('hh:mm');
+       document.getElementById('endTime').value = moment("11:59 PM",["h:mm A"]).format("HH:mm");
+       <!--document.getElementById('endTime').value = moment().set('hour',23).set('minute',59).format('hh:mm')-->
 
         $(document).ready(function () {
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => lokiJs.createPanel(panel))); <!--loki.js-->
