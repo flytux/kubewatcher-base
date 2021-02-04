@@ -346,8 +346,8 @@
                 <span class="table-title" style="font-weight: bold;">Container</span>
                 <select class="custom-select" id="selectContainer">
                 </select>
-                <a href="javascript:logRefresh();">
-                    <span class="glyphicon glyphicon-refresh" style="color: #ff7200; margin: 2px 10px;"></span>
+                <a href="javascript:logRefresh();" title="1min auto refresh" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                    <span id="refreshSpan" class="glyphicon glyphicon-refresh" style="color: #ff7200; margin: 2px 10px;"></span>
                 </a>
                 <button type="button" class="close px-3" aria-label="Close" onclick="logClose()" style="color: #fff;">
                     <span aria-hidden="true">×</span>
@@ -442,6 +442,8 @@
         var logSinceTime = "";
         var logSelectTriggerCheck = "";
         function logShow(namespace, name){
+            clearTimeout(timerId);
+            $("#refreshSpan").removeClass( "spinner-border-refresh" );
             if($("#logDiv").css("display") === "none" || namespace !== logNamespace || name !== logName){
                 $.ajax({
                     url: "/api/v1/monitoring/cluster/workloads/namespace/" + namespace + "/pods/" + name + "/default/log",
@@ -458,7 +460,9 @@
                         logNamespace = namespace;
                         logName = name;
                         logSinceTime = data.podLog.lastLogTime;
+                        logRefresh();
                         $('#logDiv').css("display", "block");
+                        $("#scrollCode").scrollTop($("#codeLog").height());
                     },
                     error: function (e) {
                         if (e.status === 401) {
@@ -472,17 +476,59 @@
             }
         }
 
+
+        let timerId = "";
         function logRefresh(){
-            logSelectTriggerCheck = "refresh";
-            $("#selectContainer").trigger("change");
+            if($("#refreshSpan").hasClass("spinner-border-refresh") === false) {
+                $("#refreshSpan").addClass('spinner-border-refresh');
+                logSelectTriggerCheck = "refresh";
+                timerId = setTimeout(function request() {
+                    autoTimeout();
+                    timerId = setTimeout(request, 60000);
+                }, 60000);
+            } else {
+                $("#refreshSpan").removeClass( "spinner-border-refresh" );
+                logSelectTriggerCheck = "";
+                clearTimeout(timerId);
+            }
         }
 
         function logClose(){
+            clearTimeout(timerId);
             $('#logDiv').css("display", "none");
+            $("#refreshSpan").removeClass( "spinner-border-refresh" );
+        }
+
+        function autoTimeout(){
+            var container = $("#selectContainer option:checked").text();
+            $.ajax({
+                url: "/api/v1/monitoring/cluster/workloads/namespace/" + logNamespace + "/pods/" + logName + "/"+ container + "/log",
+                data: {
+                    sinceTime: logSinceTime
+                },
+                success: function (data) {
+                    if(logSinceTime === ""){
+                        $("#codeLog").text(data.podLog.log);
+                        $("#scrollCode").scrollTop($("#codeLog").height());
+                    } else {
+                        var codeText = $("#codeLog").text();
+                        if(data.podLog.log !== ""){
+                            $("#codeLog").text(codeText + "\n" + data.podLog.log);
+                        }
+
+                    }
+                    logSinceTime = data.podLog.lastLogTime;
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href',
+                        '/login?logout')
+                    }
+                }
+            });
         }
 
         function resizeSetting(){
-
             $("#logDiv").resizable({ // 초기 설정값
                 minHeight: 100,
                 maxHeight: 620,
@@ -506,32 +552,11 @@
             resizeSetting();
 
             $("#selectContainer").change(function() {
-                var container = $("#selectContainer option:checked").text();
-                if(logSelectTriggerCheck !== "refresh"){
-                    logSinceTime = "";
-                }
-                $.ajax({
-                    url: "/api/v1/monitoring/cluster/workloads/namespace/" + logNamespace + "/pods/" + logName + "/"+ container + "/log",
-                    data: {
-                        sinceTime: logSinceTime
-                    },
-                    success: function (data) {
-                        if(logSelectTriggerCheck === "refresh"){
-                            var codeText = $("#codeLog").text();
-                            $("#codeLog").text(codeText + "\n" + data.podLog.log);
-                        } else {
-                            $("#codeLog").text(data.podLog.log);
-                        }
-                        logSinceTime = data.podLog.lastLogTime;
-                        logSelectTriggerCheck = "";
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href',
-                            '/login?logout')
-                        }
-                    }
-                });
+                clearTimeout(timerId);
+                $("#refreshSpan").removeClass( "spinner-border-refresh" );
+                logSinceTime = "";
+                autoTimeout();
+                logRefresh();
             });
 
             $(document).on("change", "input[id^='modal-answer']", function(){

@@ -529,19 +529,7 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    public Call readNamespacedPodLogCall(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, String sinceTime, Integer tailLines, Boolean timestamps, ApiCallback _callback) throws ApiException {
+    public Call readNamespacedPodLogCall(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, Integer sinceSeconds, String sinceTime, Integer tailLines, Boolean timestamps, ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
         String localVarPath = "/api/v1/namespaces/{namespace}/pods/{name}/log".replaceAll("\\{name\\}", super.getApiClient().escapeString(name.toString())).replaceAll("\\{namespace\\}", super.getApiClient().escapeString(namespace.toString()));
         List<Pair> localVarQueryParams = new ArrayList();
@@ -568,6 +556,10 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
 
         if (previous != null) {
             localVarQueryParams.addAll(super.getApiClient().parameterToPair("previous", previous));
+        }
+
+        if (sinceTime != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("sinceSeconds", sinceSeconds));
         }
 
         if (sinceTime != null) {
@@ -598,24 +590,24 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
         return super.getApiClient().buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
     }
 
-    private Call readNamespacedPodLogValidateBeforeCall(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, String sinceTime, Integer tailLines, Boolean timestamps, ApiCallback _callback) throws ApiException {
+    private Call readNamespacedPodLogValidateBeforeCall(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, Integer sinceSeconds, String sinceTime, Integer tailLines, Boolean timestamps, ApiCallback _callback) throws ApiException {
         if (name == null) {
             throw new ApiException("Missing the required parameter 'name' when calling readNamespacedPodLog(Async)");
         } else if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedPodLog(Async)");
         } else {
-            Call localVarCall = this.readNamespacedPodLogCall(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceTime, tailLines, timestamps, _callback);
+            Call localVarCall = this.readNamespacedPodLogCall(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceSeconds, sinceTime, tailLines, timestamps, _callback);
             return localVarCall;
         }
     }
 
-    public String readNamespacedPodLog(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, String sinceTime, Integer tailLines, Boolean timestamps) throws ApiException {
-        ApiResponse<String> localVarResp = this.readNamespacedPodLogWithHttpInfo(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceTime, tailLines, timestamps);
+    public String readNamespacedPodLog(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, Integer sinceSeconds, String sinceTime, Integer tailLines, Boolean timestamps) throws ApiException {
+        ApiResponse<String> localVarResp = this.readNamespacedPodLogWithHttpInfo(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceSeconds, sinceTime, tailLines, timestamps);
         return (String)localVarResp.getData();
     }
 
-    public ApiResponse<String> readNamespacedPodLogWithHttpInfo(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, String sinceTime, Integer tailLines, Boolean timestamps) throws ApiException {
-        Call localVarCall = this.readNamespacedPodLogValidateBeforeCall(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceTime, tailLines, timestamps, (ApiCallback)null);
+    public ApiResponse<String> readNamespacedPodLogWithHttpInfo(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, Integer sinceSeconds, String sinceTime, Integer tailLines, Boolean timestamps) throws ApiException {
+        Call localVarCall = this.readNamespacedPodLogValidateBeforeCall(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceSeconds, sinceTime, tailLines, timestamps, (ApiCallback)null);
         Type localVarReturnType = (new TypeToken<String>() {
         }).getType();
         return super.getApiClient().execute(localVarCall, localVarReturnType);

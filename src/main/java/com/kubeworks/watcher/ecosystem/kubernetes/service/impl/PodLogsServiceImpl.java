@@ -45,7 +45,7 @@ public class PodLogsServiceImpl implements PodLogsService  {
     @Override
     public Map<String, String> getPodLog(String podName, String namespace, String container, String sinceTime) throws ApiException {
         Optional<String> aTrue = Optional.ofNullable(coreApi.readNamespacedPodLog(podName, namespace, container, false, false,
-            null, "true", false, sinceTime, null, true));
+            null, "true", false, null, sinceTime, null, true));
 
         String lastLogTime = "";
         if (aTrue.isPresent()) {
