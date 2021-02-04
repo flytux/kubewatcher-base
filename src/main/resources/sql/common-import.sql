@@ -1,3 +1,5 @@
+CREATE TABLE IF NOT EXISTS  `cluster_pod_usage` (`application` varchar(255) NOT NULL, `namespace` varchar(255) NOT NULL, `pod_count` int unsigned NOT NULL DEFAULT '0', `max_cpu` decimal(27,9) unsigned NOT NULL DEFAULT '0.000000000', `avg_cpu` decimal(27,9) unsigned NOT NULL DEFAULT '0.000000000', `max_memory` decimal(18,0) unsigned NOT NULL DEFAULT '0', `avg_memory` decimal(18,0) unsigned NOT NULL DEFAULT '0', `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`application`,`namespace`,`create_time`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	1	,	 'Virtual Machine Overview'	,	 'Home<i class="feather icon-chevron-right" ></i>Dashboard<i class="feather icon-chevron-right" ></i>Cluster Node<i class="feather icon-chevron-right" ></i>Overview'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	140	);
 INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	2	,	 'Virtual Machine Overview 현황'	,	 'Home<i class="feather icon-chevron-right" ></i>Dashboard<i class="feather icon-chevron-right" ></i>Cluster Node<i class="feather icon-chevron-right" ></i>Detail'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	141	);
 INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	3	,	 '보험코어 JVM 현황'	,	 'Home<i class="feather icon-chevron-right" ></i>Dashboard<i class="feather icon-chevron-right" ></i>Pod JVM<i class="feather icon-chevron-right" ></i>Overview'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	120	);
@@ -505,3 +507,25 @@ INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYP
 INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYPE, VARIABLE_TYPE, REFRESH_INTERVAL, HIDDEN_YN, JOB_NAME, API_QUERY,  CREATE_TIME, UPDATE_TIME, PAGE_ID) values (    8  ,   'instance'    ,  1  ,   'exported_instance'   ,   'PROXY_METRIC'	,'metric_label_values' ,   '10s' ,   'Y'   ,   'oracle-metrics'  ,   '/api/v1/query?query=count(oracledb_up) by (instance)'    ,  CURRENT_TIMESTAMP()    ,  CURRENT_TIMESTAMP()    ,  5  );
 INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYPE, VARIABLE_TYPE, REFRESH_INTERVAL, HIDDEN_YN, JOB_NAME, API_QUERY,  CREATE_TIME, UPDATE_TIME, PAGE_ID) values (   9  ,   'exported_instance'   ,  2  ,   ''    ,   'PROXY_METRIC'	,'metric_label_values' ,   '10s' ,   'Y'   ,   'oracle-metrics'  ,   '/api/v1/query?query=count(oracledb_instance_name_count{instance=~"$instance"}) by (exported_instance)'   ,  CURRENT_TIMESTAMP()    ,  CURRENT_TIMESTAMP()    ,  5  );
 INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYPE, VARIABLE_TYPE, REFRESH_INTERVAL, HIDDEN_YN, JOB_NAME, API_QUERY,  CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	11	,	 'namespace'	,	1	,	 ''	,	 'KUBERNETES'	,	 'api_label_values'	,	 '10s'	,	 'N'	,	 'expose-kubernetes-metrics'	,	 '/api/v1/cluster/config/namespaces'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	8	);
+
+
+
+INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	50	,	'Application usage'	,	'Home<i class=&quot;feather icon-chevron-right&quot; ></i>Application Usage'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	1127	);
+
+INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	51	,	 '보험코어 어플리케이션'	,	1	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	50	);
+INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	52	,	 '보험코어 어플리케이션'	,	2	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	50	);
+INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	53	,	 '보험코어 어플리케이션'	,	3	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	50	);
+
+
+INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	161	,	 'POD'    	,	1	,	 'CHART'   	,	 'columnbar'    	,	'full-head-card-panel'	,	'Y'	,	60000	,	1	,	''	,	 'float'    	,	 '0'    	,	 ''    	,	 'datetime'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	51	);
+
+INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	162	,	 'CPU'    	,	1	,	 'CHART'   	,	 'columnbar'    	,	'full-head-card-panel'	,	'Y'	,	60000	,	1	,	''	,	 'decimalSiPrefix'    	,	 '0'    	,	 ''    	,	 'datetime'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	52	);
+
+INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	163	,	 'Memory'    	,	1	,	 'CHART'   	,	 'columnbar'    	,	'full-head-card-panel'	,	'Y'	,	60000	,	1	,	''	,	 'byte'    	,	 '0'    	,	 ''    	,	 'datetime'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	53	);
+
+
+INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	301	,	 '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/POD?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	161	);
+
+INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	302	,	 '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/CPU?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	162	);
+
+INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	303	,	 '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/MEMORY?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	163	);

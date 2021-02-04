@@ -1,8 +1,10 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
 import com.google.gson.annotations.SerializedName;
+import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.MetricTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
+import io.kubernetes.client.custom.Quantity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -46,16 +49,20 @@ public class V1PodMetricTableList extends V1ObjectTableList<MetricTable, PodMetr
                 data.setNamespace(rowObject.getMetadata().getNamespace());
             }
 
-            if (rowObject.getContainers() != null) {
-                List<ContainerMetrics> metrics = rowObject.getContainers();
+            Map<String, Quantity> quantityMap = rowObject.getContainers().stream()
+                .map(ContainerMetrics::getUsage)
+                .reduce((map1, map2) -> {
+                    map2.forEach((key, value) -> map1.merge(key, value, ExternalConstants::addQuantity));
+                    return map1;
+                }).orElse(Collections.emptyMap());
 
-                for (ContainerMetrics metric : metrics) {
-                    data.setCpu(metric.getUsage().get("cpu"));
-                    data.setMemory(metric.getUsage().get("memory"));
-                }
-            }
+            data.setCpu(quantityMap.get("cpu"));
+            data.setMemory(quantityMap.get("memory"));
+
             list.add(data);
         }
         return list;
     }
+
+
 }
