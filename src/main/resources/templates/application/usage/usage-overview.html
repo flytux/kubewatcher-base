@@ -4,22 +4,67 @@
       layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
+
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap-datetimepicker.css}">
+    <script th:src="@{/assets/js/moment.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-datetimepicker.js}"></script>
     <title>Title</title>
+    <style>
+    .searchInputDark {
+        background-color: #444444 !important;
+        border: 0;
+        -webkit-box-shadow: inset 0 0px 0px rgb(0 0 0 / 8%) !important;
+        box-shadow: inset 0 0px 0px rgb(0 0 0 / 8%) !important;
+        top: 1px;
+        color: #bebebe;
+        height: 25px;
+        width: 160px !important;
+    }
+
+    .searchSpanDark {
+        border : 0;
+        background-color: #444444;
+        height : 25px;
+        width: 40px;
+        color: #bebebe;
+    }
+
+    .searchInputWhite {
+        background-color: #fff !important;
+        border-right: 0;
+        -webkit-box-shadow: inset 0 0px 0px rgb(0 0 0 / 8%) !important;
+        box-shadow: inset 0 0px 0px rgb(0 0 0 / 8%) !important;
+        top: 1px;
+        color: #444444;
+        height: 25px;
+        width: 160px !important;
+    }
+
+    .searchSpanWhite {
+        border-left : 0;
+        background-color: #fff;
+        height : 25px;
+        width: 40px;
+    }
+
+    </style>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
     <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster Usage')"/>
     <div id="main_contents">
-
         <!-- [Groups] start -->
         <div class="row">
             <div class="main_title_top col-xs-12 pr_0 mb_0" ><i class="feather icon-chevrons-right"></i> Application usage <span class="main_stitle">[2020.07.07 15 00:00~24:00]</span>
                 <div class="f_r">
                     <div class=" d_ib">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="text" placeholder="Search" class="search_table">
-                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+                        <div class="form-group">
+                            <div class='input-group date' id='datetimepicker1'>
+                                <input id="picker1Text" name="picker1Text" placeholder="Search" type='text' class="form-control searchInputDark" readonly />
+                                <span id="picker1Span" class="input-group-addon glyphicon searchSpanDark">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="dropdown d_ib">
@@ -195,6 +240,17 @@
         <!-- [Groups] End-->
     </div>
 
+
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function() {
+            $(function () {
+                $('#datetimepicker1').datetimepicker({
+                    showTimeSelect: false, format: "YYYY-MM", timepickerLeftMargin: "160px", ignoreReadonly: true
+                });
+            });
+        });
+
+    </script>
 </div>
 </body>
 </html>

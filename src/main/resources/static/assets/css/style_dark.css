@@ -2310,7 +2310,7 @@ textarea.form-control {
 .list_table70vh > tbody{
     display: block;
     max-height:70vh;/*스크롤 생성되는 크기*/
-    overflow-y:auto;
+    overflow-y:overlay;
     text-align:center;
     width:100%;
 }

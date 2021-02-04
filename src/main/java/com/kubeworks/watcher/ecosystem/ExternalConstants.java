@@ -15,6 +15,7 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import org.springframework.http.HttpStatus;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.servlet.http.Cookie;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -148,4 +149,16 @@ public class ExternalConstants {
         return QUANTITY_FORMATTER.format(quantity);
     }
 
+    public String thymeleafCookieGetThemeCss(Cookie[] list) {
+        String theme = "/assets/css/style_dark.css";
+        for(int i = 0; i < list.length; i++) {
+            if (list[i].getName().equals("theme")) {
+                if(list[i].getValue().equals("white")) {
+                    theme = "/assets/css/style.css";
+                }
+                break;
+            }
+        }
+        return theme;
+    }
 }

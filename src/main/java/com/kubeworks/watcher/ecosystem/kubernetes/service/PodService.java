@@ -20,6 +20,6 @@ public interface PodService {
 
     Optional<V1PodList> nodePods(String nodeName);
 
-
+    List<String> containers(String namespace, String podName);
 
 }
