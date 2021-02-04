@@ -22,10 +22,11 @@ application:
         dev-app:
           cluster-name: dev-app
           prometheus:
+            proxy: true
             url: "http://prom.dev"
           k8s:
-            url: "https://rancher/k8s/clusters/c-wlnwk"
-            api-token: "kubeconfig-user-9dqpx:7x8x66n84wmlmqxcw62q72lndlpff5fmvnwd2tzxcrdvjvxklxjd42"
+            url: "https://rancher/k8s/clusters/c-hpm9t"
+            api-token: "kubeconfig-user-9mkvd:bxvw2q79tpx82qb4c2zlqrm4vr94d59sx24wbv279c4ng8w757n9m8"
     services:
       - code: BAC
         name: dev-core-bac
@@ -71,14 +72,6 @@ application:
         name: dev-core-ipm
         namespace: dev-core-ns
         displayName: 통합입출금
-      - code: MGM
-        name: dev-core-mgm
-        namespace: dev-core-ns
-        displayName: 사차관리
-      - code: MRM
-        name: dev-core-mrm
-        namespace: dev-core-ns
-        displayName: 병력관리
       - code: NCT
         name: dev-core-nct
         namespace: dev-core-ns
@@ -99,6 +92,10 @@ application:
         name: dev-core-vri
         namespace: dev-core-ns
         displayName: 변액
+      - code: CFP
+        name: dev-core-cfp
+        namespace: dev-core-ns
+        displayName: 제지급산
       - code: CEB
         name: dev-cust-ceb
         namespace: dev-cust-ns
