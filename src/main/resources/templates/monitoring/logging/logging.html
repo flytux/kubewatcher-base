@@ -12,9 +12,9 @@
         th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Logging')"/>
     <div id="main_contents">
         <div th:each="panelRow : ${page?.rows}">
-            <div class="row">
-                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
-            </div>
+<!--            <div class="row">-->
+<!--                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>-->
+<!--            </div>-->
             <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
                     <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
