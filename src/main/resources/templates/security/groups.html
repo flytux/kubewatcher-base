@@ -16,7 +16,9 @@
         <div class="row">
             <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Groups
                 <div class="dropdown d_ib f_r">
-                    <a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
+<!--                    <a href="" data-toggle="modal" data-target="#myModal">-->
+                        <button class="btn btn-md btn-outline-white" id="btnNew" ><i class="feather icon-file-text"></i> NEW</button>
+<!--                    </a>-->
                 </div>
             </div>
         </div>
@@ -44,7 +46,7 @@
                                    th:utext="${group?.groupname}"></a>
                             </td>
                             <td th:text="${group?.users.size()}"></td>
-                            <td th:text="${group?.createTime}"></td>
+                            <td th:text="${group?.createTime}"> </td>
                         </tr>
                         </tbody>
                     </table>
@@ -58,18 +60,23 @@
                     <div class="modal-title_box">
                         <div class="modal-title">
                             <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <div class="f_r"><button class="btn_save_i feather icon-save" id="btnSave"></button></div>
+                            <div class="f_r"><button class="btn_save_i feather icon-trash-2" id="btnDelete"></button></div>
                             <span id="myModalLabel" th:text="|Group : ${group?.groupname}|"></span>
                         </div>
                     </div>
                     <div class="modal-nbody">
                         <div class="table-title">
-                            Overview
+                            Group
                         </div>
                         <div class="row">
                             <table class="table-nt">
                                 <tr>
                                     <th>그룹명</th>
-                                    <td th:text="${group?.groupname}"></td>
+                                    <td>
+                                        <input type="text" id="groupingName" minlength="5" maxlength="40" style="width:100%;"
+                                               th:value="${group?.groupname}" readonly>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>그룹 사용자</th>
@@ -78,38 +85,22 @@
                                             <div th:text="|${user.username} [${user.name}]|"/>
                                         </div>
                                     </td>
-                                    </td>
+                                    </tr>
                                 <tr>
                                     <th>최종변경일</th>
-                                    <td th:text="${group?.updateTime}"></td>
+                                    <td>
+                                        <div id="updateTime" th:text="${group?.updateTime}"> </div>
+                                    </td>
                                 </tr>
-                            </table>
-                        </div>
-                        <div class="table-title">
-                            Group role
-                        </div>
-                        <div class="row">
-                            <table class="table-select">
                                 <tr>
-                                    <th>기본 Role</th>
-                                    <td>Cluster monitor</td>
-                                    <td class="select">
-                                        <!-- [multi select box] start-->
-                                        <select id="modal-multi-select-box" multiple="multiple">
-                                            <option value="통합관리환경 admin">통합관리환경 admin</option>
-                                            <option value="보험코어 monitor">보험코어 monitor</option>
-                                            <option value="Cluster monitor">Cluster monitor</option>
-                                            <option value="Cluster log viewer">Cluster log viewer</option>
-                                            <option value="On-premise monitor">On-premise monitor</option>
-                                            <option value="Cluster admin">Cluster admin</option>
-                                            <option value="Dashboard operator">Dashboard operator</option>
-                                        </select>
-                                        <!-- [multi select box] end-->
+                                    <th>설명</th>
+                                    <td>
+                                        <input type="text" style="width:100%;" maxlength="200" id="description"
+                                               th:value="${group?.description}" readonly>
                                     </td>
                                 </tr>
                             </table>
                         </div>
-                        <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
                     </div>
                 </div>
             </div>
@@ -118,6 +109,7 @@
         <!-- [Groups] End-->
     </div>
     <script type="text/javascript" th:inline="javascript">
+
         function groupDetail(groupname) {
             $.ajax({
                 url: "/security/groups/" + groupname,
@@ -126,6 +118,7 @@
                     $('#myModal').html(data);
                     $('#myModal').modal();
                     $(".knob").knob();
+                    $('#btnSave').hide();
                 },
                 error: function (e) {
                     if (e.status === 401) {
@@ -134,6 +127,110 @@
                 }
             });
         }
+
+        // modal reset
+        $('#myModal').on('hidden.bs.modal', function (e) {
+            $(this).find('table').find('tr').eq(1).html('');
+            $(this).find('table').find('tr').eq(2).html('');
+            $('#groupingName').val('');
+            $('#description').val('');
+        });
+
+        // btnNew event
+        $(document).ready(function () {
+           $('#btnNew').on('click', function () {
+                $('#myModal').modal();
+                $('#myModalLabel').text('Group');
+                $('#btnDelete').hide();
+                $('#btnSave').show();
+                $('#groupName').attr('text', '');
+                $('#groupingName').attr('readonly', false);
+                $('#description').attr('readonly', false);
+
+                if($(this).val() !== '1') {
+                    $('#myModal').find('table').find('tr').eq(1).html('');
+                    $('#myModal').find('table').find('tr').eq(2).html('');
+                }
+
+                $(this).val(1);
+            });
+        });
+
+        // insert event
+        $(document).on("click", "#btnSave", function(event){
+           let groupname = $("#groupingName").val();
+           let description = $("#description").val();
+
+           if (groupname === '') {
+               alert( "그룹명을 입력해주세요." );
+               $("#groupingName").focus();
+               return;
+           }
+
+           if (groupname.length < 5) {
+               alert( "그룹명은 최소 5자 이상 입력해주세요." );
+               $("#groupingName").focus();
+               return;
+           }
+
+           if (description === '') {
+               alert( "설명을 입력해주세요." );
+               $("#description").focus();
+               return;
+           }
+
+           var msg = confirm( "등록하시겠습니까?" );
+
+           if (msg === true) {
+               $.ajax({
+                    url: "/security/groups/save",
+                    data : {
+                        'groupname'   : groupname,
+                        'description' : description
+                    },
+                    success: function (data) {
+                        alert('등록이 완료되었습니다.');
+                        $('#myModal').hide();
+                        $(location).attr('href', '/security/groups/')
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                            $(location).attr('href', '/login?logout')
+                        }
+                    }
+               });
+           } else if (msg === false) {
+               return;
+           }
+        });
+
+        // delete event
+        $(document).on("click", "#btnDelete", function(event){
+           let groupname = $("#groupingName").val();
+           var msg = confirm( "삭제하시겠습니까?" );
+
+           if (msg === true) {
+                $.ajax({
+                    url: "/security/groups/" + groupname + "/delete",
+                    data : {
+                        'groupname' : groupname,
+                    },
+                    success: function () {
+                        $('#myModal').hide();
+                        alert('삭제가 완료되었습니다.');
+                        $(location).attr('href', '/security/groups/')
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                            $(location).attr('href', '/login?logout')
+                        }
+                    }
+                });
+           } else if (msg === false) {
+               return;
+           }
+        });
+
     </script>
 </div>
 </body>

@@ -1,9 +1,7 @@
 package com.kubeworks.watcher.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -33,6 +31,7 @@ public class KwUser extends BaseEntity {
     String dept; //부서명
 
     // Fetch type  'Lazy' 설정하면, 로그인시 유저에 속해있는 롤 가져올때 'LazyInitializationException' 에러 발생함
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "kwUser")
     List<KwUserRole> role;
 

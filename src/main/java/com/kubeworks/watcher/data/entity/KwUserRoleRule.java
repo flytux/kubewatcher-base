@@ -25,6 +25,9 @@ public class KwUserRoleRule extends BaseEntity {
 
     @Column(name = "rule", length = 100, nullable = false)
     String rule;
+
+    @Column(name = "description", length = 200, nullable = false)
+    String description; //description
 //
 //    @OneToOne(mappedBy = "rule")
 //    private KwUserRole userRole;

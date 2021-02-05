@@ -509,8 +509,7 @@ INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYP
 INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYPE, VARIABLE_TYPE, REFRESH_INTERVAL, HIDDEN_YN, JOB_NAME, API_QUERY,  CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	11	,	 'namespace'	,	1	,	 ''	,	 'KUBERNETES'	,	 'api_label_values'	,	 '10s'	,	 'N'	,	 'expose-kubernetes-metrics'	,	 '/api/v1/cluster/config/namespaces'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	8	);
 
 
-
-INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	50	,	'Application usage'	,	'Home<i class=&quot;feather icon-chevron-right&quot; ></i>Application Usage'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	1127	);
+INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	44	,	'Application usage'	,	'Home<i class=&quot;feather icon-chevron-right&quot; ></i>Application Usage'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	1127	);
 
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	51	,	 '보험코어 어플리케이션'	,	1	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	50	);
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	52	,	 '보험코어 어플리케이션'	,	2	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	50	);

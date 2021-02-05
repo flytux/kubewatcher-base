@@ -1,14 +1,11 @@
 package com.kubeworks.watcher.user.service.impl;
 
 import com.kubeworks.watcher.data.entity.KwUser;
-import com.kubeworks.watcher.data.entity.KwUserGroup;
-import com.kubeworks.watcher.data.entity.KwUserRoleRule;
-import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.data.repository.*;
 import com.kubeworks.watcher.user.service.KwUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,40 +45,46 @@ public class KwUserServiceImpl implements KwUserService {
         return kwUserRepository.findAllBy();
     }
 
-    /*
-         KwUserGroup을 그룹명으로 조회한다.
-    */
-    public KwUserGroup getKwUserGroup(String groupname) {
-        Optional<KwUserGroup> kwUserGroup = kwUserGroupRepository.findById(groupname);
-        return kwUserGroup.get();
+    // KwUser modify(update)
+    public KwUser modifyUser(KwUser kwUser) {
+        Optional<KwUser> dbUserOptional = kwUserRepository.findById(kwUser.getUsername());
+        log.info(">>>>> userList : " + kwUser.getUsername());
+        KwUser dbUser = dbUserOptional.orElseThrow(() -> new IllegalArgumentException("user not found // username=" + kwUser.getUsername()));
+        dbUser.setPassword(kwUser.getPassword());
+        dbUser.setDept(kwUser.getDept());
+        dbUser.setKwUserGroup(kwUser.getKwUserGroup());
+
+        // TODO
+        if (CollectionUtils.isEmpty(kwUser.getRole())) {
+            dbUser.getRole().forEach(kwUserRole -> {
+
+                kwUserRoleRepository.deleteById(kwUserRole.getRolename());
+            });
+        }
+        dbUser.setRole(kwUser.getRole());
+        System.out.println("kwUser = " + kwUser.getUsername());
+
+        kwUserRepository.save(dbUser);
+        return dbUser;
     }
 
-    /*
-         KwUser 그룹 목록을 조회한다.
-    */
-    public List<KwUserGroup> getKwUserGroupList() {
-        return kwUserGroupRepository.findAllBy();
+    // KwUser delete
+    public KwUser deleteUser(KwUser KwUser) {
+        Optional<KwUser> userList = kwUserRepository.findById(KwUser.getUsername());
+        log.info(">>>>> user : " + KwUser.getUsername());
+        userList.ifPresent(user -> {
+            kwUserRepository.delete(user);
+        });
+
+        return KwUser;
     }
 
-    /*
-        KwUserRole 목록을 조회한다.
-    */
-    public List<String> getKwUserRoleList() {
-        return kwUserRoleRepository.findDistinctAllBy();
+    // KwUser insert
+    public KwUser saveUser(KwUser kwUser) {
+        KwUser saveUser = kwUserRepository.save(kwUser);
+        log.info(">>>>> group group : " + saveUser);
+        return saveUser;
     }
 
-    /*
-        KwUserRole & Rule (screen) 목록을 조회한다.
-    */
-    public List<Page> getKwUserRoleScreenList() {  
-        return pageRepository.findAllBy(Sort.by(Sort.Direction.ASC, "pageId"));
-    }
-
-    /*
-        KwUserRole & Rule (rule) 목록을 조회한다.
-    */
-    public List<KwUserRoleRule> getKwUserRoleRuleList() {
-        return kwUserRoleRuleRepository.findAllBy();
-    }
 }
 

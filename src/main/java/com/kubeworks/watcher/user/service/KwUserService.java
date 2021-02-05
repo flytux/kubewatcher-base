@@ -6,10 +6,13 @@ import java.util.List;
 
 public interface KwUserService {
     KwUser getKwUser(String username);
+
     List<KwUser> getKwUserList();
-    KwUserGroup getKwUserGroup(String groupname);
-    List<KwUserGroup> getKwUserGroupList();
-    List<String> getKwUserRoleList();
-    List<Page> getKwUserRoleScreenList();
-    List<KwUserRoleRule> getKwUserRoleRuleList();
+
+    KwUser modifyUser(KwUser kwUser);
+
+    KwUser deleteUser(KwUser kwUser);
+
+    KwUser saveUser(KwUser kwUser);
+
 }
