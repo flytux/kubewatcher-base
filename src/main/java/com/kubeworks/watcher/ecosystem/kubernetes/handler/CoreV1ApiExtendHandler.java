@@ -4,16 +4,13 @@ import com.google.gson.reflect.TypeToken;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.*;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.base.BaseExtendHandler;
-import io.kubernetes.client.openapi.ApiClient;
-import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.ApiResponse;
-import io.kubernetes.client.openapi.Pair;
+import io.kubernetes.client.openapi.*;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Call;
 
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.*;
 
 @Slf4j
 public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandler {
@@ -530,5 +527,89 @@ public class CoreV1ApiExtendHandler extends CoreV1Api implements BaseExtendHandl
 
         String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
         return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    }
+
+    public Call readNamespacedPodLogCall(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, Integer sinceSeconds, String sinceTime, Integer tailLines, Boolean timestamps, ApiCallback _callback) throws ApiException {
+        Object localVarPostBody = null;
+        String localVarPath = "/api/v1/namespaces/{namespace}/pods/{name}/log".replaceAll("\\{name\\}", super.getApiClient().escapeString(name.toString())).replaceAll("\\{namespace\\}", super.getApiClient().escapeString(namespace.toString()));
+        List<Pair> localVarQueryParams = new ArrayList();
+        List<Pair> localVarCollectionQueryParams = new ArrayList();
+        if (container != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("container", container));
+        }
+
+        if (follow != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("follow", follow));
+        }
+
+        if (insecureSkipTLSVerifyBackend != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("insecureSkipTLSVerifyBackend", insecureSkipTLSVerifyBackend));
+        }
+
+        if (limitBytes != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("limitBytes", limitBytes));
+        }
+
+        if (pretty != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
+        }
+
+        if (previous != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("previous", previous));
+        }
+
+        if (sinceTime != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("sinceSeconds", sinceSeconds));
+        }
+
+        if (sinceTime != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("sinceTime", sinceTime));
+        }
+
+        if (tailLines != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("tailLines", tailLines));
+        }
+
+        if (timestamps != null) {
+            localVarQueryParams.addAll(super.getApiClient().parameterToPair("timestamps", timestamps));
+        }
+
+        Map<String, String> localVarHeaderParams = new HashMap();
+        Map<String, String> localVarCookieParams = new HashMap();
+        Map<String, Object> localVarFormParams = new HashMap();
+        String[] localVarAccepts = new String[]{"text/plain", "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"};
+        String localVarAccept = super.getApiClient().selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        String[] localVarContentTypes = new String[0];
+        String localVarContentType = super.getApiClient().selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+        String[] localVarAuthNames = new String[]{"BearerToken"};
+        return super.getApiClient().buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    private Call readNamespacedPodLogValidateBeforeCall(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, Integer sinceSeconds, String sinceTime, Integer tailLines, Boolean timestamps, ApiCallback _callback) throws ApiException {
+        if (name == null) {
+            throw new ApiException("Missing the required parameter 'name' when calling readNamespacedPodLog(Async)");
+        } else if (namespace == null) {
+            throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedPodLog(Async)");
+        } else {
+            Call localVarCall = this.readNamespacedPodLogCall(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceSeconds, sinceTime, tailLines, timestamps, _callback);
+            return localVarCall;
+        }
+    }
+
+    public String readNamespacedPodLog(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, Integer sinceSeconds, String sinceTime, Integer tailLines, Boolean timestamps) throws ApiException {
+        ApiResponse<String> localVarResp = this.readNamespacedPodLogWithHttpInfo(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceSeconds, sinceTime, tailLines, timestamps);
+        return (String)localVarResp.getData();
+    }
+
+    public ApiResponse<String> readNamespacedPodLogWithHttpInfo(String name, String namespace, String container, Boolean follow, Boolean insecureSkipTLSVerifyBackend, Integer limitBytes, String pretty, Boolean previous, Integer sinceSeconds, String sinceTime, Integer tailLines, Boolean timestamps) throws ApiException {
+        Call localVarCall = this.readNamespacedPodLogValidateBeforeCall(name, namespace, container, follow, insecureSkipTLSVerifyBackend, limitBytes, pretty, previous, sinceSeconds, sinceTime, tailLines, timestamps, (ApiCallback)null);
+        Type localVarReturnType = (new TypeToken<String>() {
+        }).getType();
+        return super.getApiClient().execute(localVarCall, localVarReturnType);
     }
 }

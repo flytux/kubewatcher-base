@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org" style="display:none;">
+      xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
     <!--    <meta name="_csrf" th:content="${_csrf.token}">-->
@@ -15,8 +15,7 @@
     <!-- 부트스트랩 -->
     <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
     <!-- 기본 -->
-    <link name="styleWhite" rel="stylesheet" th:href="@{/assets/css/style.css}">
-    <link name="styleDark" rel="stylesheet" th:href="@{/assets/css/style_dark.css}">
+    <link rel="stylesheet" th:href="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).thymeleafCookieGetThemeCss(#httpServletRequest.cookies)}">
     <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
 
     <!-- IE8 에서 HTML5 요소와 미디어 쿼리를 위한 HTML5 shim 와 Respond.js -->
@@ -142,7 +141,6 @@
                 } else {
                     $this.parent().removeClass('on').removeClass('open');
                 }
-
                 if(isToggled)   fnDropdown($this);              //fold 상태 체크
             }
 
@@ -181,11 +179,8 @@
                 }
             }
 
-            $( document ).ready(function() {
-                if(localStorage.getItem("menu") == "close"){
-                    $("#sidebarToggle").trigger("click");
-                }
-                $('html').css('display', '');
+            $(document).ready(function() {
+                theme();
             });
 
             function fnFold(target) {
@@ -236,24 +231,23 @@
                 }
             }
 
-            theme();
             function theme() {
-                if(localStorage.getItem("theme") === "white"){
-                    $("link[name=styleDark]").remove();
-                    $("script[name=chartDark]").remove();
-                } else {
-                    $("link[name=styleWhite]").remove();
+                if(localStorage.getItem("theme") === "dark" || localStorage.getItem("theme") === null){
                     var scriptClose = "script>";
                     $('head').append('<script name="chartDark" src="/vendor/highcharts/themes/dark-unica.js"></'+scriptClose);
                 }
             }
-
     </script>
-
 </head>
 <body>
 <div id="wrapper">
     <th:block th:replace="layout/menu :: menu" />
+    <script>
+        if(localStorage.getItem("menu") == "close"){
+            fnFold($("#sidebarToggle"));
+        }
+    </script>
+
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
@@ -269,15 +263,15 @@
 <script th:src="@{/assets/js/jquery.chart.min.js}"></script>
 <script th:src="@{/assets/js/jquery-chart.init.js}"></script>
 <script>
-            const /*header = $("meta[name='_csrf_header']").attr("content"),*/
-                signOut = $('#sign-out'),
-                signOutForm = $('#sign-out-form');
+        const /*header = $("meta[name='_csrf_header']").attr("content"),*/
+            signOut = $('#sign-out'),
+            signOutForm = $('#sign-out-form');
 
-            signOut.on('click', function (event) {
-                signOutForm.submit();
-            });
+        signOut.on('click', function (event) {
+            signOutForm.submit();
+        });
 
-        </script>
+</script>
 
 </body>
 </html>
