@@ -291,13 +291,17 @@ let commonChartsJs = (function () {
         return result;
     }
 
+    function themeTextColor() {
+        return localStorage.getItem("theme") === "white" ? "#332e2e" : "#ffffff";
+    }
+
     //스파크라인 차트 최초 생성시 마지막 데이터값 그려주는 함수
     function drawOneLabel(chart, series, unit) {
         let render = chart.renderer;
         let v = series[0].points[series[0].points.length - 1];
         let lastVal = addSparkUnitFormat(v.y, unit);
         chart.customText = render.label(lastVal, chart.plotWidth / 2, chart.plotHeight / 1.5).css({
-            color: '#FFFFFF',
+            color: themeTextColor(),
             fontSize: 'calc(' + chart.plotWidth + '* 0.01em)'
         }).attr({
             zIndex: 5,
@@ -330,7 +334,7 @@ let commonChartsJs = (function () {
 
         let render = chart.renderer;
         chart.customText = render.label(displayValue, positionX, positionY, 'rect', 0, 0, false, true, title).css({
-            color: '#FFFFFF',
+            color: themeTextColor(),
             fontSize: 'calc(' + chart.plotHeight + '* 0.013em)'
         }).attr({
             zIndex: 5,
@@ -803,6 +807,7 @@ let commonChartsJs = (function () {
                                 break;
                             case "counttilemap":
                             case "bar":
+                            case "columnbar":
                             case "multiplegauge":
                                 chart.update({series: series});
                                 break;
@@ -860,7 +865,7 @@ let commonChartsJs = (function () {
                     return {
                         "name": Mustache.render(chartQuery.legend, value.metric),
                         "data": chartQuery.resultType === 'matrix'
-                            ? value.values.map(arr => [arr[0] * 1000, parseFloat(arr[1]).toFixed(1) - 0])
+                            ? value.values.map(arr => [arr[0] * 1000, panel.yaxisUnit !== 'decimalSiPrefix' ? parseFloat(arr[1]).toFixed(1) - 0 : arr[1]])
                             : [parseFloat(value.value[1]).toFixed(1) - 0]
                     };
                 });
@@ -904,6 +909,9 @@ let commonChartsJs = (function () {
                     break;
                 case "bar":
                     data = this.getBarChartData(panel, series);
+                    break;
+                case "columnbar":
+                    data = this.getColumnBarChartData(panel, series);
                     break;
                 case "scatter":
                     data = this.getScatterChartData(panel, series);
@@ -1301,6 +1309,53 @@ let commonChartsJs = (function () {
                 series: series
             };
         },
+        getColumnBarChartData: function (panel, series) {
+            return {
+                chart: {
+                    type: "column",
+                    events: {
+                        load: function () {
+                            scheduleMap.set(panel.panelId,
+                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
+                        }
+                    }
+                },
+                title: null,
+                xAxis: {
+                    type: 'datetime',
+                    crosshair: true,
+                },
+                yAxis: {
+                    title: null,
+                    min: 0,
+                    labels: {
+                        formatter: function () {
+                            let unit = panel.yaxisUnit === 'float' ? "" : panel.yaxisUnit;
+                            return commonChartsJs.convertValue(this.value, unit);
+                        }
+                    }
+                },
+                tooltip: {
+                    shared: true,
+                },
+                exporting: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                credits: {
+                    enabled: false
+                },
+                plotOptions: {
+                    column: {
+                        // pointPadding: 0.1,
+                        borderWidth: 0
+                    }
+                },
+                series: series
+            };
+        },
         //히스토그램용 차트 추가...
         getScatterChartData: function (panel, series) {
             return {
@@ -1467,6 +1522,7 @@ let commonChartsJs = (function () {
                 case "tilemap":
                 case "bar":
                 case "sparkline":
+                case "columnbar":
                     this.renderCommonHighChart(panel, chartData);
                     break;
                 default:
@@ -1525,16 +1581,20 @@ let commonChartsJs = (function () {
             readyTimestamp = new Date().getTime();
         },
         convertValue: function (value, unit) {
-            if (unit !== undefined && unit.toLowerCase() === "float") {
+            if (unit === undefined || unit.toLowerCase() === "float") {
                 unit = "";
             }
 
-            if (unit !== undefined && unit.toLowerCase() === "count") {
+            if (unit.toLowerCase() === "count") {
                 return this.thousandsSeparators(value);
             }
 
-            let kilo = unit !== undefined && unit.toLowerCase().indexOf('byte') > -1  ? 1024 : 1000;
-            let convertUnit = unit !== undefined && unit.toLowerCase().indexOf('byte') > -1  ? "iB" : unit;
+            if (unit === 'decimalSiPrefix') {
+                return d3.formatPrefix(",.0", value)(value);
+            }
+
+            let kilo = unit.toLowerCase().indexOf('byte') > -1  ? 1024 : 1000;
+            let convertUnit = unit.toLowerCase().indexOf('byte') > -1  ? "iB" : unit;
             return Math.abs(value) > 1000000000
                 ? Highcharts.numberFormat(value / kilo / kilo / kilo, 0) + " G" + convertUnit
                 : Math.abs(value) > 1000000

@@ -21,10 +21,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.kubernetes.client.openapi.models.V1ContainerState.*;
@@ -131,6 +128,16 @@ public class PodServiceImpl implements PodService {
             return Optional.ofNullable(data);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<String> containers(String namespace, String podName) {
+        Optional<PodDescribe> podOptional = pod(namespace, podName);
+        return podOptional
+            .map(podDescribe -> podDescribe.getContainers().stream()
+                    .map(V1Container::getName)
+                    .collect(Collectors.toList())
+            ).orElse(Collections.emptyList());
     }
 
 

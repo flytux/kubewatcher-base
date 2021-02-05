@@ -5,19 +5,18 @@ import com.kubeworks.watcher.base.MetricResponseData;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.ContainerMetrics;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.*;
 import com.kubeworks.watcher.preference.service.PageViewService;
+import io.kubernetes.client.openapi.ApiException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -51,6 +50,8 @@ public class ClusterRestController {
 
     private final SpringTemplateEngine springTemplateEngine;
     private final MonitoringProperties monitoringProperties;
+
+    private final PodLogsService podLogsService;
 
     @GetMapping(value = "/monitoring/cluster/nodes", produces = MediaType.TEXT_HTML_VALUE)
     public List<NodeTable> nodes() {
@@ -120,6 +121,23 @@ public class ClusterRestController {
         pod.put("user", getUser());
         pod.put("host", monitoringProperties.getDefaultPrometheusUrl());
 
+        return pod;
+    }
+
+    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/pods/{podName}/{container}/log", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> podLog(@PathVariable String namespace, @PathVariable String podName,
+                                     @PathVariable String container, @RequestParam String sinceTime) throws ApiException {
+
+        Map<String, Object> pod = new HashMap<>();
+        Map<String, String> log;
+        if(container.equals("default")){
+            List<String> containerList = podService.containers(namespace, podName);
+            log = podLogsService.getPodLog(podName, namespace, containerList.get(0), "");
+            pod.put("containerList", containerList);
+        } else {
+            log = podLogsService.getPodLog(podName, namespace, container, sinceTime);
+        }
+        pod.put("podLog", log);
         return pod;
     }
 

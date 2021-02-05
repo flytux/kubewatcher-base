@@ -5,6 +5,7 @@ import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.ecosystem.grafana.dto.TemplateVariable;
 import com.kubeworks.watcher.ecosystem.kubernetes.serdes.CustomQuantityFormatter;
 import io.kubernetes.client.custom.Quantity;
+import io.kubernetes.client.custom.QuantityFormatter;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RegExUtils;
@@ -15,6 +16,8 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import org.springframework.http.HttpStatus;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.servlet.http.Cookie;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -131,8 +134,8 @@ public class ExternalConstants {
     }
 
     public String getBetweenPeriodDay(long startDurationInMillis) {
-        long days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis()-startDurationInMillis);
-        return days+"d";
+        long days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - startDurationInMillis);
+        return days + "d";
     }
 
     public Map<String, PageRowPanel> thymeleafConvertList2Map(List<PageRowPanel> list) {
@@ -143,9 +146,32 @@ public class ExternalConstants {
     }
 
     private final CustomQuantityFormatter QUANTITY_FORMATTER = new CustomQuantityFormatter();
+    private final QuantityFormatter K8S_QUANTITY_FORMATTER = new QuantityFormatter();
 
     public String toStringQuantity(Quantity quantity) {
         return QUANTITY_FORMATTER.format(quantity);
+    }
+
+    public String toStringQuantityViaK8s(Quantity quantity) {
+        return K8S_QUANTITY_FORMATTER.format(quantity);
+    }
+
+    public Quantity addQuantity(Quantity quantity1, Quantity quantity2) {
+        BigDecimal add = quantity1.getNumber().add(quantity2.getNumber());
+        return new Quantity(add, quantity1.getFormat());
+    }
+
+    public String thymeleafCookieGetThemeCss(Cookie[] list) {
+        String theme = "/assets/css/style_dark.css";
+        for(int i = 0; i < list.length; i++) {
+            if (list[i].getName().equals("theme")) {
+                if(list[i].getValue().equals("white")) {
+                    theme = "/assets/css/style.css";
+                }
+                break;
+            }
+        }
+        return theme;
     }
 
 }

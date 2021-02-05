@@ -549,14 +549,18 @@
                     localStorage.setItem("theme", themeStyle);
                     window.location.reload();
                 }
+
+                let collapseKey = "theme=" + themeStyle + ";";
+                let date = new Date();
+                date.setTime(date.getTime() + 24*60*60*1000);
+                document.cookie = collapseKey + "Path=/;Expires=" + date.toUTCString() + ";";
             }
 
             function themeBackgroundColor(theme){
-                if(theme == 'white'){
+                if(theme === 'white'){
                     $("#white").addClass("active"); // background-color 적용
                     $("#dark").removeClass("active");
-                }
-                if(theme == 'dark'){
+                } else {
                     $("#dark").addClass("active"); // background-color 적용
                     $("#white").removeClass("active");
                 }

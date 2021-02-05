@@ -3,70 +3,32 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Collections;
 import java.util.List;
 
-
+@Getter
+@Setter
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PodMetrics implements KubernetesObject {
 
-    private String apiVersion;
-    private String kind;
-    private V1ObjectMeta metadata;
-    private String timestamp;
-    private String window;
-    private List<ContainerMetrics> containers;
-
-    public PodMetrics() {
-    }
-
-    public String getApiVersion() {
-        return this.apiVersion;
-    }
-
-    public String getKind() {
-        return this.kind;
-    }
-
-    public V1ObjectMeta getMetadata() {
-        return this.metadata;
-    }
-
-    public String getTimestamp() {
-        return this.timestamp;
-    }
-
-    public String getWindow() {
-        return this.window;
-    }
-
-    public List<ContainerMetrics> getContainers() {
-        return this.containers;
-    }
-
-    public void setApiVersion(String apiVersion) {
-        this.apiVersion = apiVersion;
-    }
-
-    public void setKind(String kind) {
-        this.kind = kind;
-    }
-
-    public void setMetadata(V1ObjectMeta metadata) {
-        this.metadata = metadata;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public void setWindow(String window) {
-        this.window = window;
-    }
+    String apiVersion;
+    String kind;
+    V1ObjectMeta metadata;
+    String timestamp;
+    String window;
+    List<ContainerMetrics> containers;
 
     public void setContainers(List<ContainerMetrics> containers) {
-        this.containers = containers;
+        if (containers == null) {
+            this.containers = Collections.emptyList();
+        } else {
+            this.containers = containers;
+        }
     }
-
 }
