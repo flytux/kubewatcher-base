@@ -451,16 +451,21 @@
                         sinceTime: ""
                     },
                     success: function (data) {
-                        $("#podLogLabel").text("Pod : " + name);
-                        $("#codeLog").text(data.podLog.log);
                         $("#selectContainer").children('option').remove();
                         for(var i=0; i < data.containerList.length; i++){
                             $("#selectContainer").append("<option value='" + data.containerList[i] + "'>" + data.containerList[i] + "</option>");
                         }
+
+                        if(data.podLog.log === ""){
+                            $("#codeLog").text("저장된 로그가 없습니다.");
+                        } else {
+                            $("#podLogLabel").text("Pod : " + name);
+                            $("#codeLog").text(data.podLog.log);
+                            logSinceTime = data.podLog.lastLogTime;
+                            logRefresh();
+                        }
                         logNamespace = namespace;
                         logName = name;
-                        logSinceTime = data.podLog.lastLogTime;
-                        logRefresh();
                         $('#logDiv').css("display", "block");
                         $("#scrollCode").scrollTop($("#codeLog").height());
                     },
@@ -509,13 +514,11 @@
                 success: function (data) {
                     if(logSinceTime === ""){
                         $("#codeLog").text(data.podLog.log);
-                        $("#scrollCode").scrollTop($("#codeLog").height());
                     } else {
                         var codeText = $("#codeLog").text();
                         if(data.podLog.log !== ""){
                             $("#codeLog").text(codeText + "\n" + data.podLog.log);
                         }
-
                     }
                     logSinceTime = data.podLog.lastLogTime;
                 },
@@ -595,11 +598,7 @@
                 });
             });
         });
-
-
-
     </script>
-
 </div>
 </body>
 </html>
