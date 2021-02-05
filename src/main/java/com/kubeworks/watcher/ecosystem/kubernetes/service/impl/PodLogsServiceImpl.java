@@ -20,6 +20,8 @@ import java.util.Optional;
 @Service
 public class PodLogsServiceImpl implements PodLogsService  {
 
+    private static final Integer DEFAULT_TAIL_LINE_NUM = 500;
+
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
 
@@ -35,8 +37,11 @@ public class PodLogsServiceImpl implements PodLogsService  {
     @SneakyThrows
     @Override
     public Map<String, String> getPodLog(String podName, String namespace, String container, String sinceTime) throws ApiException {
+
+        Integer tailLines = StringUtils.isEmpty(sinceTime) ? DEFAULT_TAIL_LINE_NUM : null;
+
         Optional<String> podLogOptional = Optional.ofNullable(coreApi.readNamespacedPodLog(podName, namespace, container, false, false,
-            null, "true", false, null, sinceTime, null, true));
+            null, "true", false, null, sinceTime, tailLines, true));
 
         ImmutableMap.Builder<String, String> responseBuilder = ImmutableMap.builder();
         if (!podLogOptional.isPresent()) {
