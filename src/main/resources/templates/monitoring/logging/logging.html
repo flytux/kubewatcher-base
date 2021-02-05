@@ -58,12 +58,13 @@
 
         /*<![CDATA[*/
         let pageRows = [[${page?.rows}]],
-            apiHost = [[${host}]];
-
+            apiHost = [[${host}]],
+            serviceMap = [[${services?.serviceMap}]];
         /*]]>*/
 
         console.log("pageRows :",pageRows);
         console.log("apiHost :",apiHost);
+        console.log("serviceMap :",serviceMap);
 
        document.getElementById('startDate').value = moment().format('YYYY-MM-DD');
        document.getElementById('startTime').value = moment("12:00 AM",["h:mm A"]).format("HH:mm");

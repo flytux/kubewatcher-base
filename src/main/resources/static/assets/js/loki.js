@@ -1,6 +1,5 @@
 
-$("#searchBtn").click(function(){ //TODO 여기서 조회조건이 필요할경우 createPanel
-
+$("#searchBtn").click(function(){
     var sDate = document.getElementById('startDate').value; //날짜
     var eDate = document.getElementById('endDate').value; //날짜
     var stime = document.getElementById('startTime').value; //시작시간
@@ -19,10 +18,10 @@ $("#searchBtn").click(function(){ //TODO 여기서 조회조건이 필요할경�
     endT = endTime.padEnd(19,"0");
 
     //=======================================
-    if(container == undefined){
-        container = "api-gateway|grafana|rancher";
+    if(targetId == undefined){
+        alert("error");
     }
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={container=~"+ '"' + container +'"' + "} |= " +'"' +"error"+ '"';
+    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + targetId +'"' + "} |= " +'"' +"error"+ '"'; //limit 1000 으로 고정상태.
     obj.chartQueries[0].apiQuery = uri;
 
     lokiJs.getDataByPanel(obj, true,startT,endT)
@@ -34,36 +33,21 @@ var logAttr;
 $(document).on("click", ".extendlog", function(){
 
     var timeStamp = $(this)[0].id; //
-    console.log("timeStamp: ",timeStamp," logAttr :",logAttr);
-//query_range?limit=11&query={job="",namespace="",pod_template_hash="",release="",stream="",app="",container="",filename="",pod=""}
 
-//    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={container=~"+ '"' + containerId +'"' + "} |= " +'"' +"error"+ '"';
-//
-//    obj.chartQueries[0].apiQuery = uri;
-//
-//    switch (obj.panelType) {
-//        case "LOG_METRIC_TABLE":
-//            lokiJs.getDataByPanel(obj, true)
-//                .then(value => lokiJs.createTable(obj, value))
-//            break;
-//    }
+
 });
 
 
-var obj = {},container;
-//var obj2 = {};
-
-
-$(document).on("click", ".errtd", function(){
-
-    var containerId= $(this).children()[0].id; //renderTable 함수에서 ID값 부여
-
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={container=~"+ '"' + containerId +'"' + "} |= " +'"' +"error"+ '"';
-
+var obj = {},targetId;
+$(document).on("click", ".errtd", function(){ //에러 버튼 클릭
+    var typeColId= $(this).children()[0].id; //renderTable 함수에서 ID값 부여
+    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"';
+    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + typeColId +'"' + ",stream!="+'""'  +"} |= " +'"' +"error"+ '"';
     obj.chartQueries[0].apiQuery = uri; //panel과 container를 전역변수.
-    container = containerId;
 
-    switch (obj.panelType) {
+    targetId = typeColId; //에러로그 modal 버튼 클릭시 사용.
+
+   switch (obj.panelType) {
         case "LOG_METRIC_TABLE":
             lokiJs.getDataByPanel(obj, true)
                 .then(value => lokiJs.createTable(obj, value))
@@ -78,21 +62,21 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     let element = {};
     var pod = "";
     var container = "";
+    var app = "";
 
 
-    $.each(tdArr,function(index,item){
-        var key = $(item).attr("name");
-        var value = $(item).text();
-
+    $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
         if($(item).attr("name") == "pod"){
             pod = $(item).text();
         }
         if($(item).attr("name") == "container"){
             container = $(item).text();
         }
-
-
+        if($(item).attr("name") == "app"){
+            app = $(item).text();
+        }
     });
+
     /*조회조건 시간값 가져오기.*/
     var sDate = document.getElementById('startDate').value; //날짜
     var eDate = document.getElementById('endDate').value; //날짜
@@ -112,10 +96,9 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     endT = endTime.padEnd(19,"0");
 
 
-    var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&query={";
+    var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit=1000&query={";
     var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"
-    var uri = uriStart + "container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + uriEnd;
-    console.log("modal :",uri);
+    var uri = uriStart +"app=" +'"' + app + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream!="+'""' + uriEnd;
     //var response = lokiJs.getFetchRequest("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"));
     fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
@@ -125,17 +108,24 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
 
 
-function logModalTable(tableData){
-    $('#logModal').modal(); //step1 : modal 호출.
-    //console.log("logModalTable tableData :",tableData);
-    var data = tableData.result[0]; //TODO 로그 확장시 data를 전역변수화 + id(timestamp)값을 사용하여 확장쿼리 전송.
-    //logAttr = data.stream ;//전역변수에 넣어줌.
 
-    $('#serviceName').text(data.stream.pod);
-    var dataArray = [];
-    for(let i = 0; i<data.values.length; i++){
-        dataArray.push(data.values[i]);
-    }
+function logModalTable(tableData){
+
+    console.log(tableData);
+      $('#logModal').modal(); //step1 : modal 호출.
+      var data = tableData.result[0]; //TODO 로그 확장시 data를 전역변수화 + id(timestamp)값을 사용하여 확장쿼리 전송.
+      //logAttr = data.stream ;
+
+      $('#serviceName').text(data.stream.pod);
+      var dataArray = [];
+      for(let i = 0; i<data.values.length; i++){
+          dataArray.push(data.values[i]);
+      }
+//    var dataArray = [];
+//    for(let i = 0; i<data.length; i++){
+//       dataArray.push(data[i].values);
+//       console.log("1 :",dataArray)
+//    }
 
     if(dataArray === undefined){
         $('#logModalTable')
@@ -146,10 +136,8 @@ function logModalTable(tableData){
     const tableBodyHtml = String.prototype.concat('<tbody>',
         dataArray.map(item => {
             let trAppend = '';
-
             for(let i = 0; i<dataArray.length; i++){
-                trAppend += '<td class="extendlog" id='+ '"'+ item[0] +'"' +'>' + item[1]  + '</td>'; //item[0] = timestamp
-                //trAppend += '<td id='+ '"' +  +'"''>' + item  + '</td>';
+                trAppend += '<td class="extendlog" id='+ '"'+ item[0] +'"' +'>' + item[1]  + '</td>';
                 return String.prototype.concat('<tr>', trAppend, '</tr>');
             }
         }), '</tbody>');
@@ -164,7 +152,7 @@ let lokiJs = (function () {
         let defaultIntervalMillis = 60 * 1000;
 
     function logrenderTable(panel, tableData) {
-        //console.log("logrenderTable :",tableData);
+
         if (tableData === undefined) {
             $('#container-' + panel.panelId)
                 .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -178,10 +166,6 @@ let lokiJs = (function () {
                 .html(tableHtml);
             return;
         }
-
-
-
-
         const headers = tableData.headers;
         const dataArray = tableData.data;
 
@@ -199,13 +183,8 @@ let lokiJs = (function () {
                     }
                 }
                 return String.prototype.concat('<tr class="logLabel">', trAppend, '</tr>');
-//                for(let i = 0; i<dataArray.length; i++){
-//                    trAppend += '<td>' + item  + '</td>' + '<td class="logbtn">' + '<input type="button" class="btn btn-md btn-outline-white" value="Log" >' + '</td>'; //log를 하나의 테이블루 뿌릴때사용
-//                    return String.prototype.concat('<tr>', trAppend, '</tr>'); //로그를 하나의 테이블로 보여줄때 사용.
-//                }
 
             }), '</tbody>');
-        //$('#container-' + panel.panelId).html(tableBodyHtml);
         $('#container-' + panel.panelId).html(tableHeaderHtml + tableBodyHtml);
     }
     function renderTable(panel, tableData) {
@@ -253,11 +232,11 @@ let lokiJs = (function () {
             const tableBodyHtml = String.prototype.concat('<tbody>',
                 dataArray.map(item => {
                     let trAppend = '';
+
                     for (let header of headers) {
                         if(item[header] == undefined){ //undefined 처리.
                             item[header] = 0;
                         }
-
                         if(header == "총건수"){
                             trAppend += '<td>' + item[header] + '</td>';
                             totalSum += Number(item[header]);
@@ -270,7 +249,7 @@ let lokiJs = (function () {
                                  '<td><span class="success_percent_red">' + item[header] +" %"+ '</span></td>';
                                  nomalAvg += Number(item[header]);
                         }else if(header == "에러"){
-                            trAppend += '<td class="errtd">' + item[header] + '<button class="errbtn btn btn-md btn-outline-white" id='+ item.container +'><i class="feather icon-search "></i></button> </td>';
+                            trAppend += '<td class="errtd">' + item[header] + '<button class="errbtn btn btn-md btn-outline-white" id='+ item.app +'><i class="feather icon-search "></i></button> </td>';
                             errorSum += Number(item[header]);
                         }else if(header == "에러율"){
                             trAppend += '<td>' + item[header] +" %"+'</td>';
@@ -292,7 +271,6 @@ let lokiJs = (function () {
     
 
      function logConvertTableData(data) { // header 와 data 분리.
-         //console.log("logConvertTableData :",data);
          if (data === undefined || data.length === 0) {
              return undefined;
          }
@@ -302,20 +280,8 @@ let lokiJs = (function () {
              data = [data];
          }
 
-         result.headers = ["pod","container","job","namespace","Log"]; //TODO response로 받아오는 label 값이 달라서 공통으로 들어있는것들만 뽑아서 하드코딩. pod가 serviceId 개념..
-         //result.headers = Object.keys(data[0]);
-         //result.headers.push("Log");
+         result.headers = ["pod","container","job","app","Log"]; //TODO response로 받아오는 label 값이 달라서 공통으로 들어있는것들만 뽑아서 하드코딩. pod가 serviceId 개념.
          result.data = data.map(value => value);
-         /*로그 하나의 배열로 변환 - log 들을 하나의 table로 보여줄때 사용*/
-         /*let valueList = [];
-         for(let i=0; i<data.length; i++){ //Object 의 array.length
-            for(let j=0; j < Object.keys(data[i]).length; j++){
-                valueList = valueList.concat(Object.values(data[i])[j][1]); //log 데이터만 추출.
-            }
-
-         }
-         result.headers = Object.keys(valueList);
-         result.data = valueList.map(value => value);*/
 
          return result;
      }
@@ -330,55 +296,43 @@ let lokiJs = (function () {
             data = [data];
         }
 
-        result.headers = Object.keys(data[0]);
-        if(result.headers.length != 6){ //TODO 현재 집계 가능한 항목이 총건수, 에러 2개뿐이라 나머지는 강제로 넣어주는 상태.
-            result.headers = [ "container", "총건수", "정상", "정상율", "에러", "에러율"];
-        }
+        typeCol = Object.keys(data[0])[0]; //기준 항목
+        /*
+        //TODO 쿼리의 결과값으로 타겟이 존재하지않는 상황이 발생하기때문에 넘어오는 타겟의 수가 틀릴경우가 있다.
+            그렇기때문에 총건수 ~ 에러율을 고정값으로 넣어준상태.
+            ex) {app=~"loki|grafana|prometheus"} |= "error" 호출할 경우 loki에 error난 로그가 없을시 결과값에 항목이없이 넘어온다.
+        */
+        colList = ["총건수","정상", "정상율","에러", "에러율"];
+        colList.unshift(typeCol);
+        result.headers = colList
+
+
 
         result.data = data.map(value => value); //원본
-//        array = [];
-//        for(let i = 0; i<32; i++){ //TODO 31개 리스트 보는 테스트용 데이터
-//            array.push({'container':"api-gateway",'에러':"1",'총건수':"22"+'"'+i+'"'})
-//            result.data = array;
-//        }
+
         return result;
 
-//         let result = {};
-//         let header = [];
-//         let dataList = [];
-//         element = {};
-//
-//         for(let [key,value] of data){
-//            header.push(key);
-//            element[key]= value[1];
-//         }
-//
-//         dataList.push(element);
-//         //result.headers = Object.keys(data[0]); //원본 객체의 (data[0]) key 값들을 배열로 리턴.
-//         //result.data = data.map(value => value);
-//         result.headers = header;
-//         result.data = dataList;
-//
-//         console.log("convertTableData result : ",result);
-//         return result;
+
+     }
+     function appValueCall(){
+        var uri = "/loki/api/v1/label/app/values";
      }
 
     return {
         createPanel: function (panel) {
+                //appValueCall();
                 if (panel.refreshIntervalMillis === undefined || panel.refreshIntervalMillis <= 0) {
                     panel.refreshIntervalMillis = defaultIntervalMillis;
                 }
                 panel.readyTimestamp = readyTimestamp;
                 const panelType = panel.panelType;
 
-                if(panelType == "LOG_METRIC_TABLE"){ //에러로그 추출을 위한 obj 전역변수 생성 후 데이터 대입.
+                if(panelType == "LOG_METRIC_TABLE"){
                     obj = panel;
-                } //TODO 조회조건값이 필요할경우 obj METRIC_TABLE 분기처리하여 조회시간값을 같이 파라미터로 넘긴다.
-
+                }
 
                 switch (panelType) {
                     case "METRIC_TABLE":
-                   // case "LOG_METRIC_TABLE":
                         this.getDataByPanel(panel, true)
                             .then(value => this.createTable(panel, value))
                             .then(panel => scheduleMap.set(panel.panelId,
@@ -409,14 +363,14 @@ let lokiJs = (function () {
         getDataByPanel: function (panel, isCreate,startT,endT) {
 
             return Promise.all(panel.chartQueries.map(chartQuery => {
-                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery); //return값으로 api url 받아옴.
+                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery);
 
                 var start = new Date().setHours(0,0,0,0,0,0,0,0); //자정의 시간
                 var end = new Date().setHours(23,59,59,0,0,0,0,0);
                 var startTime = start.toString();
                 var endTime = end.toString();
                 startTime = startTime.padEnd(19,"0");
-                endTime = endTime.padEnd(19,"0"); //loki query start, end 시간기준을 nanoseconds로 잡아야지 결과값이 출력됨..
+                endTime = endTime.padEnd(19,"0");
 
                 if (chartQuery.queryType.indexOf("METRIC") > -1) {
                     if(startT != undefined && endT != undefined){
@@ -435,7 +389,6 @@ let lokiJs = (function () {
         getQueryRangeTimeNStep: function (chartQuery, start, end) {
             const queryStep = chartQuery.queryStep === undefined || chartQuery.queryStep === ''
                 ? 15 : chartQuery.queryStep;
-            //return String.prototype.concat("&start=", start / 1000, "&end=", end / 1000, "&step=", queryStep);
             return String.prototype.concat("&start=", start , "&end=", end , "&step=", queryStep);
         },
 
@@ -450,11 +403,10 @@ let lokiJs = (function () {
         },
         createTable: function (panel, dataArray) {
             let tableData;
-
             if (panel.panelType === 'LOG_METRIC_TABLE') {
                 let data = new Map();
                 for (let i = 0; i < dataArray.length; i++) {
-                    if(dataArray[i].status == 404){ //초기 ㅋㅋ
+                    if(dataArray[i].status == 404){
                        logrenderTable(panel);
                        break;
                     }
@@ -476,64 +428,42 @@ let lokiJs = (function () {
                     tableData = logConvertTableData([...data.values()]);
                     logrenderTable(panel, tableData);
             } else if (panel.panelType === 'METRIC_TABLE'){
-                //console.log("api 반환 dataArray :",dataArray);
                 let data = new Map();
                 for (let i = 0; i < dataArray.length; i++) {
                     let item = dataArray[i];
-                    if (item.data.resultType === 'matrix') {
-                        //console.warn("unsupported result type=" + item.data.data.resultType);
-                        item.data.result.forEach(value => {
-                        const key = Object.values(value.metric).toString();
-                        const legend = panel.chartQueries[i].legend;
-                        //console.log("key : ", key ,"legend :",legend);
-                        let element = data.get(key);
-
-                        if (element === undefined) {
-                            element = {};
-                            elementValue = {};
-                            for (const [key, entry] of Object.entries(value.metric)) { // key값 setting
-                                element[key] = entry;
-                            }
-                        }
-                        let valueCount = 0;
-                        for(let j=0; j< Object.values(value.values).length; j++){
-                            count = Number(Object.values(value.values)[j][1]);
-                            valueCount += count;
-                            //console.log(typeof(valueCount),j +"번째 count: ",valueCount);
-
-                        }
-
-                        element[legend] = this.convertValue(parseFloat(valueCount).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
-                        data.set(key, element);
-
-                    });
-                    } else { //원본 query 로 작성하여 vector 형태.
-                        item.data.result.forEach(value => {
-                            const key = Object.values(value.metric).toString();
-                            const legend = panel.chartQueries[i].legend;
-                            let element = data.get(key);
-                            if (element === undefined) {
-                                element = {};
-                                for (const [key, entry] of Object.entries(value.metric)) { //TODO 이렇게 반복해서 key, value를 넣게되면 값이 없는 상태에서는 생략된다.
-                                    element[key] = entry;
-                                }
-                            }
-                            element[legend] = this.convertValue(parseFloat(value.value[1]).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
-                            //console.log("element[legend] :",element[legend]) ;
-
-                            data.set(key, element);
-                            //console.log("data :",data);
-                        });
+                    item.data.result.forEach(value => {
+                    const key = Object.values(value.metric).toString();
+                    if(key ==""){ // value.metric 값이 없는 항목일경우  return;
+                        return;
                     }
-                }
+                    const legend = panel.chartQueries[i].legend;
 
+                    let element = data.get(key);
+                    if (element === undefined) {
+                        element = {};
+                        elementValue = {};
+                        for (const [key, entry] of Object.entries(value.metric)) { // key값 setting
+                            element[key] = entry;
+                        }
+                    }
+
+                    let valueCount = 0;
+                    for(let j=0; j< Object.values(value.values).length; j++){ //value sum
+                        count = Number(Object.values(value.values)[j][1]);
+                        valueCount += count;
+                    }
+                    element[legend] = parseFloat(valueCount).toFixed(1) - 0; //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
+                    //element[legend] = this.convertValue(parseFloat(valueCount).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
+                    data.set(key, element);
+                    });
+
+                }
                 tableData = convertTableData([...data.values()]);
                 renderTable(panel, tableData);
 
             } else if (panel.panelType === 'HTML_TABLE'){
                   tableData = dataArray[0];
               }
-                  //renderTable(panel, tableData);
             return panel;
         },
         convertValue: function (value, unit) {
@@ -555,9 +485,6 @@ let lokiJs = (function () {
                         ? Highcharts.numberFormat(value / kilo, 0) + " K" + convertUnit
                         : value + ' ' + unit;
         },
-
-
-
     }
 
 }());
