@@ -52,6 +52,26 @@ spring:
       hibernate.hbm2ddl.charset_name: UTF-8
       hibernate.hbm2ddl.import_files: classpath:sql/common-import.sql,classpath:sql/default-import.sql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  task:
+    scheduling:
+      pool:
+        size: 10
+      shutdown:
+        await-termination: true
+        await-termination-period: 30s
+
+mybatis:
+  executor-type: simple
+  configuration:
+    cache-enabled: false
+    lazy-loading-enabled: false
+    aggressive-lazy-loading: false
+    default-statement-timeout: 5
+    jdbc-type-for-null: NULL
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: true
+#  type-handlers-package: com.kubeworks.watcher.data.typehandler
+
 
 management:
   endpoints:

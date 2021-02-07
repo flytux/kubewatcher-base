@@ -5,6 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script th:src="@{/assets/js/jquery-ui-1.9.2.custom.js}"></script>
+    <link rel="stylesheet" th:href="@{/assets/css/jquery-ui-1.9.2.custom.css}" />
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -13,15 +16,17 @@
 
         <!-- [클러스터 Pods] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> <span
+                th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
                         <select th:disabled="${namespaces == null ? 'true' : 'false'}"
                                 class="custom-select" id="namespace">
-                            <option value="all" selected> All </option>
+                            <option value="all" selected> All</option>
                             <option th:each="value : ${namespaces}"
                                     th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                                    th:value="${value?.name}" th:text="${value?.name}">value
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -44,6 +49,7 @@
                             <th>Controlled</th>
                             <th>Age</th>
                             <th>Status</th>
+                            <th>View Log</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -67,6 +73,11 @@
                                 <span th:case="Succeeded" class="madal_label_active">Succeeded</span>
                                 <span th:case="Failed" class="madal_label_danger">Failed</span>
                                 <span th:case="Unknown" class="madal_label">Unknown</span>
+                            </td>
+                            <td class="text-center">
+                                <a th:href="'javascript:logShow(&quot;' + ${pod?.namespace} + '&quot;, &quot;'+ ${pod?.name} + '&quot;)'">
+                                    <span class="glyphicon glyphicon-list-alt" style="font-size: 150%;"></span>
+                                </a>
                             </td>
                         </tr>
                         </tbody>
@@ -324,7 +335,30 @@
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
+
+    <div id="logDiv" class="modal-title_box"
+         style="display: none; width: 100%; height: 500px; position: fixed; left: 0; bottom: 0; z-index: 1;
+         background-color: rgb(24, 24, 24); text-align: left;  padding: 20px; border-top: 3px solid #444444;">
+
+        <div class="table-title_box" style="padding-left: 10px; ">
+            <div class="modal-title" style="margin-bottom: 10px;">
+                <span id="podLogLabel" style="margin-right: 10px;"> Pod : Pod명+보험코어 어플리케이션 명</span>
+                <span class="table-title" style="font-weight: bold;">Container</span>
+                <select class="custom-select" id="selectContainer">
+                </select>
+                <a href="javascript:logRefresh();" title="1min auto refresh" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                    <span id="refreshSpan" class="glyphicon glyphicon-refresh" style="color: #ff7200; margin: 2px 10px;"></span>
+                </a>
+                <button type="button" class="close px-3" aria-label="Close" onclick="logClose()" style="color: #fff;">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="scrollBoard" id="scrollCode" style="height: 423px;">
+                <pre style="color:gray"><code id="codeLog" style="color: green; font-size: 13px; font-weight: bold;"></code></pre>
+            </div>
+        </div>
+    </div>
+
 
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
@@ -403,7 +437,130 @@
             });
         }
 
+        var logName = "";
+        var logNamespace = "";
+        var logSinceTime = "";
+        var logSelectTriggerCheck = "";
+        function logShow(namespace, name){
+            clearTimeout(timerId);
+            $("#refreshSpan").removeClass( "spinner-border-refresh" );
+            if($("#logDiv").css("display") === "none" || namespace !== logNamespace || name !== logName){
+                $.ajax({
+                    url: "/api/v1/monitoring/cluster/workloads/namespace/" + namespace + "/pods/" + name + "/default/log",
+                    data: {
+                        sinceTime: ""
+                    },
+                    success: function (data) {
+                        $("#selectContainer").children('option').remove();
+                        for(var i=0; i < data.containerList.length; i++){
+                            $("#selectContainer").append("<option value='" + data.containerList[i] + "'>" + data.containerList[i] + "</option>");
+                        }
+
+                        if(data.podLog.log === ""){
+                            $("#codeLog").text("저장된 로그가 없습니다.");
+                        } else {
+                            $("#podLogLabel").text("Pod : " + name);
+                            $("#codeLog").text(data.podLog.log);
+                            logSinceTime = data.podLog.lastLogTime;
+                            logRefresh();
+                        }
+                        logNamespace = namespace;
+                        logName = name;
+                        $('#logDiv').css("display", "block");
+                        $("#scrollCode").scrollTop($("#codeLog").height());
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                            $(location).attr('href',
+                            '/login?logout')
+                        }
+                    }
+                });
+            } else {
+                $('#logDiv').css("display", "none");
+            }
+        }
+
+
+        let timerId = "";
+        function logRefresh(){
+            if($("#refreshSpan").hasClass("spinner-border-refresh") === false) {
+                $("#refreshSpan").addClass('spinner-border-refresh');
+                logSelectTriggerCheck = "refresh";
+                timerId = setTimeout(function request() {
+                    autoTimeout();
+                    timerId = setTimeout(request, 60000);
+                }, 60000);
+            } else {
+                $("#refreshSpan").removeClass( "spinner-border-refresh" );
+                logSelectTriggerCheck = "";
+                clearTimeout(timerId);
+            }
+        }
+
+        function logClose(){
+            clearTimeout(timerId);
+            $('#logDiv').css("display", "none");
+            $("#refreshSpan").removeClass( "spinner-border-refresh" );
+        }
+
+        function autoTimeout(){
+            var container = $("#selectContainer option:checked").text();
+            $.ajax({
+                url: "/api/v1/monitoring/cluster/workloads/namespace/" + logNamespace + "/pods/" + logName + "/"+ container + "/log",
+                data: {
+                    sinceTime: logSinceTime
+                },
+                success: function (data) {
+                    if(logSinceTime === ""){
+                        $("#codeLog").text(data.podLog.log);
+                    } else {
+                        var codeText = $("#codeLog").text();
+                        if(data.podLog.log !== ""){
+                            $("#codeLog").text(codeText + "\n" + data.podLog.log);
+                        }
+                    }
+                    logSinceTime = data.podLog.lastLogTime;
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr('href',
+                        '/login?logout')
+                    }
+                }
+            });
+        }
+
+        function resizeSetting(){
+            $("#logDiv").resizable({ // 초기 설정값
+                minHeight: 100,
+                maxHeight: 620,
+                handles: "n", // 북쪽만 드래그 가능
+
+                resize: function( event, ui ) { // 마우스 드래그(resize) 도중
+                    $(this).css("width", '100%');
+                    $(this).css("top", '');
+                },
+
+                stop: function(event, ui) { // 마우스 드래그(resize)가 끝났을때
+                    var logHeigth = $("#logDiv").css("height");
+                    logHeigth = logHeigth.replace("px", "");
+                    logHeigth -= 77;
+                    $("#scrollCode").css("height", String(logHeigth)+"px");
+                }
+            });
+        }
+
         $(document).ready(function () {
+            resizeSetting();
+
+            $("#selectContainer").change(function() {
+                clearTimeout(timerId);
+                $("#refreshSpan").removeClass( "spinner-border-refresh" );
+                logSinceTime = "";
+                autoTimeout();
+                logRefresh();
+            });
 
             $(document).on("change", "input[id^='modal-answer']", function(){
 
@@ -441,11 +598,7 @@
                 });
             });
         });
-
-
-
     </script>
-
 </div>
 </body>
 </html>

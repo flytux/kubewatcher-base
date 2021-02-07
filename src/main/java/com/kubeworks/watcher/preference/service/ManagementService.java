@@ -8,6 +8,7 @@ public interface ManagementService {
 
     ApplicationServiceProperties.Service managementService(String namespace, String name);
 
+    ApplicationServiceProperties.Service managementServiceWithDefault(String namespace, String name);
 
 
 }

@@ -1,12 +1,21 @@
 package com.kubeworks.watcher.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
+        registrar.setUseIsoFormat(true);
+        registrar.registerFormatters(registry);
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -55,7 +64,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/application/catalog/applications").setViewName("application/catalog/application-list");
         registry.addViewController("/application/catalog/releases").setViewName("application/catalog/release-list");
         /*      > usage */
-        registry.addViewController("/application/usage/usage-overview").setViewName("application/usage/usage-overview");
+//        registry.addViewController("/application/usage/usage-overview").setViewName("application/usage/usage-overview");
 
         /* cluster */
         /*      > config */

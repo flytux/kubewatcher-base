@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface PrometheusFeginClient {
 
     @GetMapping(value = ExternalConstants.PROMETHEUS_QUERY_API_URI + "{query}")
-    PrometheusApiResponse getQuery(@PathVariable String query);
+    PrometheusApiResponse getQuery(@PathVariable("query") String query);
 
     @GetMapping(value = ExternalConstants.PROMETHEUS_RANGE_QUERY_API_URI + "{query}")
-    PrometheusApiResponse getQueryRange(@PathVariable String query,
+    PrometheusApiResponse getQueryRange(@PathVariable("query")  String query,
                                         @RequestParam("start") long start,
                                         @RequestParam("start") long end,
                                         @RequestParam("step") long step);

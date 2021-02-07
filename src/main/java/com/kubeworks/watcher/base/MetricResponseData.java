@@ -23,14 +23,15 @@ public class MetricResponseData {
     public static class MetricResult {
 
         @Builder
-        private MetricResult(Map<String, String> metric,
-                             List<Object> value) {
+        private MetricResult(Map<String, String> metric, List<Object> value, List<Object> values) {
             this.metric = metric;
             this.value = value;
+            this.values = values;
         }
 
         Map<String, String> metric;
         List<Object> value;
+        List<Object> values;
     }
 
 }

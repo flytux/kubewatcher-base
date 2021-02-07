@@ -25,4 +25,7 @@ public class PageConstants {
     public final String API_URL_BY_NAMESPACED_ROLES = "/cluster/acl/namespace/{namespace}/roles";
     public final String API_URL_BY_NAMESPACED_SECRETS = "/cluster/config/namespace/{namespace}/secrets";
     public final String API_URL_BY_NAMESPACED_EVENTS = "/monitoring/cluster/namespace/{namespace}/events/contentList";
+
+    public final String API_URL_BY_NAMESPACED_USAGE = "/application/usage/usage-overview/namespace/{namespace}";
+
 }

@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.preference.service.impl;
 
 import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
+import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.preference.service.ManagementService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,5 +38,18 @@ public class ManagementServiceImpl implements ManagementService {
             .filter(service -> StringUtils.startsWith(name, service.getName()))
             .findFirst()
             .orElse(applicationServiceProperties.getUnknownService());
+    }
+
+    @Override
+    public ApplicationServiceProperties.Service managementServiceWithDefault(String namespace, String name) {
+
+        ApplicationServiceProperties.Service service = managementService(namespace, name);
+        if (StringUtils.equalsIgnoreCase(service.getName(), ExternalConstants.UNKNOWN)) {
+            ApplicationServiceProperties.Service selfDefault = new ApplicationServiceProperties.Service();
+            selfDefault.setName(name);
+            selfDefault.setDisplayName(name);
+            return selfDefault;
+        }
+        return service;
     }
 }
