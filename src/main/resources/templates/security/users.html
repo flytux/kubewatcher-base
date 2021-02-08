@@ -25,7 +25,7 @@
     <div id="main_contents">
         <!-- [Groups] start -->
         <div class="row">
-            <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Users
+            <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> User
                 <div class="dropdown d_ib f_r">
 <!--                    <a href="" data-toggle="modal" data-target="#myModal">-->
                     <button class="btn btn-md btn-outline-white" id="btnNew" ><i class="feather icon-file-text"></i> NEW</button>
@@ -61,11 +61,11 @@
                                 <a class="table2-link" th:href="'javascript:userDetail(&quot;'+ ${user?.username} + '&quot;)'"
                                    th:utext="${user?.username}"></a>
                             </td>
-                            <td th:text="${user?.username}"></td>
+                            <td th:text="${user?.kwUserGroup?.groupname}"></td>
                             <td th:text="${user?.name}"></td>
                             <td th:text="${user?.userno}"></td>
                             <td th:text="${user?.dept}"></td>
-                            <td th:text="${user?.dept}"></td>
+                            <td th:text="${user?.getUserRole()}"></td>
                             <td th:text="${user?.updateTime}"></td>
                             <td th:text="${user?.createTime}"></td>
                         </tr>
@@ -97,7 +97,7 @@
                             <table class="table-select">
                                 <tr>
                                     <th>ID</th>
-                                    <td>
+                                    <td id="saveUsername">
                                         <input type="text" id="username" style="width:100%;" th:field="*{username}" readonly>
                                     </td>
                                 </tr>
@@ -116,8 +116,7 @@
                                 <tr>
                                     <th>비밀번호</th>
                                     <td>
-<!--                                        <input type="text" id="password"  style="width:100%;" th:value="${user?.password}">-->
-                                        <input type="text" id="password"  style="width:100%;" th:field="*{password}">
+                                        <input type= "text" id="password" style="width:100%;" th:field="*{password}">
 <!--                                        <i class="feather icon-lock text-warning"></i>-->
                                     </td>
                                 </tr>
@@ -189,12 +188,14 @@
         <!-- [Groups] End-->
     </div>
     <input type="hidden" id="var-userName" value=""/>
+    <input type="hidden" id="var-password" value=""/>
     <script type="text/javascript" th:inline="javascript">
 
         let roles = [[${roleList}]],
             groups = [[${groupList}]];
 
         var $userName = $("#var-userName");
+        var $password = $("#var-password");
 
         function userDetail(username) {
             $userName.val(username);
@@ -206,6 +207,16 @@
                     $('#myModal').modal();
                     $(".knob").knob();
                     $('#btnInsert').hide();
+
+                    $password.val( $('#password').val() );
+
+                    // password masking
+                    var maskingPW = "";
+                    for (var i = 0; i < $('#password').val().length; i++) {
+                        maskingPW += "*";
+                    }
+                    $('#password').attr("value", maskingPW);
+
                 },
                 error: function (e) {
                     if (e.status === 401) {
@@ -274,7 +285,9 @@
                 $("#roleList2").append(html);
             }
 
+            $('#form').find('#password').val($password.val())
             var data = $('#form').serialize();
+
                 $.ajax({
                     type : "post",
                     data : data,
@@ -291,6 +304,7 @@
         $(document).on("click", "#btnDelete", function(event){
             $('#form').attr("action", "/security/users/delete");
             var data = $('#form').serialize();
+
                 $.ajax({
                     type : "post",
                     data : data,
@@ -307,6 +321,9 @@
         $(document).on("click", "#btnInsert", function(event){
             $('#form').attr("action", "/security/users/save");
             var data = $('#form').serialize();
+
+           // check
+
                 $.ajax({
                     type : "post",
                     data : data,

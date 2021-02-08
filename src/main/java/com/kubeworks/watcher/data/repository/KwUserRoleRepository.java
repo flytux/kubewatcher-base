@@ -13,9 +13,10 @@ public interface KwUserRoleRepository extends JpaRepository<KwUserRole, KwUserRo
     @Query(value="SELECT DISTINCT kw.rolename FROM Kw_User_Role kw",nativeQuery = true)
     List<String> findDistinctAllBy();
 
-//    @Query(value="SELECT DISTINCT kw.rolename FROM Kw_User_Role kw",nativeQuery = true)
-//    int deleteById(KwUserRoleId kwUserRoleId);
+//    @Transactional
+//    void deleteById (KwUserRoleId kwUserRoleId);
+//
 
-    //@Query(value="DELETE FROM Kw_User_Role kw WHERE ",nativeQuery = true)
-    //int deleteId(String username, String roleId  );
+
+
 }

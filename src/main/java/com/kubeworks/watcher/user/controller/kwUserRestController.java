@@ -2,7 +2,6 @@ package com.kubeworks.watcher.user.controller;
 
 import com.kubeworks.watcher.data.entity.*;
 import com.kubeworks.watcher.data.repository.KwUserRepository;
-import com.kubeworks.watcher.data.repository.KwUserRoleRepository;
 import com.kubeworks.watcher.data.repository.KwUserRoleRuleRepository;
 import com.kubeworks.watcher.user.service.KwGroupService;
 import com.kubeworks.watcher.user.service.KwRoleService;

@@ -12,7 +12,7 @@
     <div id="main_contents">
         <!-- [Roles] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> Roles
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> Role
                 <div class="dropdown d_ib f_r">
                         <button class="btn btn-md btn-outline-white" id="btnModify"><i class="feather icon-file-text"></i> 저장 </button>
                         <button class="btn btn-md btn-outline-white" id="btnNew"><i class="feather icon-file-text"></i> NEW </button>
@@ -90,19 +90,21 @@
 
         $(document).ready(function () {
             var html = "";
-            for(var i = 1; i <= Object.keys(pageRuleList[0]).length; i++){
-                html += '<tr>';
-                html += '   <td>'+i+'</td>';
-                html += '   <td>'+pageRuleList[0][i]+'</td>';
+            var pageList = new Array();
+            pageList = Object.keys(pageRuleList[0]);
 
-                for(var j = 1; j <= ruleList.length; j++){
+            for (var i = 0; i < pageList.length; i++) {
+                html += '<tr>';
+                html += '   <td>'+pageList[i]+'</td>';
+                html += '   <td>'+pageRuleList[0][pageList[i]]+'</td>';
+                for (var j = 1; j <= ruleList.length; j++){
                     var ruleListName = 'ruleList-' + ruleList[j-1].rulename;
                     html += ' <td><input name="' + ruleList[j-1].rulename + '" type="checkbox" ';
-                    if(pageRuleList[j][i] === '1') {
+                    if(pageRuleList[j][pageList[i]] === '1') {
                         html += 'checked="checked"';
                     }
-                     html += '>';
-                }
+                    html += '>';
+                 }
                 html += '</tr>';
             }
             $("#ruleTbody").append(html);
@@ -131,27 +133,32 @@
                         }
                     }
                     rule[i] = strRule;
-                }
+                 }
 
-                $.ajax({
-                    url : "/security/roles/user-role-management/modify",
-                    data : {
-                        'rolenames' : ruleName,
-                        'rules' : rule
-                    },
-                    traditional : true,
-                    contentType : "application/json",
-                    success : function (data){
-                        alert('수정이 완료되었습니다.');
-                        $('#myModal').hide();
-                        $(location).attr('href', '/security/roles/user-role-management')
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
+                var msg = confirm( "저장하시겠습니까?" );
+                if (msg === true) {
+                    $.ajax({
+                        url : "/security/roles/user-role-management/modify",
+                        data : {
+                            'rolenames' : ruleName,
+                            'rules' : rule
+                        },
+                        traditional : true,
+                        contentType : "application/json",
+                        success : function (data){
+                            alert('저장이 완료되었습니다.');
+                            $('#myModal').hide();
+                            $(location).attr('href', '/security/roles/user-role-management')
+                        },
+                        error: function (e) {
+                            if (e.status === 401) {
+                                $(location).attr('href', '/login?logout')
+                            }
                         }
-                    }
-                });
+                    });
+               } else if (msg === false) {
+                   return;
+               }
         });
 
         // btnInsert event
@@ -164,24 +171,39 @@
                     strRule += "0";
                 }
 
-                $.ajax({
-                    url : "/security/roles/user-role-management/save",
-                    data : {
-                        'rolename' : rolename,
-                        'description' : description,
-                        'rule' : strRule
-                    },
-                    success : function(data){
-                      alert('등록이 완료되었습니다.');
-                      $('#myModal').hide();
-                      $(location).attr('href', '/security/roles/user-role-management')
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
+                if (rolename === '') {
+                    alert('role이 입력되지 않았습니다.');
+                    return;
+                }
+
+                if (description === '') {
+                    alert('description이 입력되지 않았습니다.');
+                    return;
+                }
+
+                var msg = confirm( "등록하시겠습니까?" );
+                if (msg === true) {
+                    $.ajax({
+                        url : "/security/roles/user-role-management/save",
+                        data : {
+                            'rolename' : rolename,
+                            'description' : description,
+                            'rule' : strRule
+                        },
+                        success : function(data){
+                          alert('등록이 완료되었습니다.');
+                          $('#myModal').hide();
+                          $(location).attr('href', '/security/roles/user-role-management')
+                        },
+                        error: function (e) {
+                            if (e.status === 401) {
+                                $(location).attr('href', '/login?logout')
+                            }
                         }
-                    }
-                });
+                    });
+               } else if (msg === false) {
+                   return;
+               }
         });
 
         // modal reset

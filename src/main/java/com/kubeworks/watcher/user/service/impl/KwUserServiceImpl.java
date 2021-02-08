@@ -55,12 +55,12 @@ public class KwUserServiceImpl implements KwUserService {
         dbUser.setKwUserGroup(kwUser.getKwUserGroup());
 
         // TODO
-        if (CollectionUtils.isEmpty(kwUser.getRole())) {
-            dbUser.getRole().forEach(kwUserRole -> {
-
-                kwUserRoleRepository.deleteById(kwUserRole.getRolename());
-            });
-        }
+//        if (CollectionUtils.isEmpty(kwUser.getRole())) {
+//            dbUser.getRole().forEach(kwUserRole -> {
+////                kwUserRoleRepository.deleteById(kwUserRole.getRolename());
+//                kwUserRoleRepository.deleteById(kwUserRole.getRolename());
+//            });
+//        }
         dbUser.setRole(kwUser.getRole());
         System.out.println("kwUser = " + kwUser.getUsername());
 

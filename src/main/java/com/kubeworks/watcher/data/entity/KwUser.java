@@ -6,7 +6,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @EntityListeners(value = AuditingEntityListener.class)
@@ -32,11 +34,25 @@ public class KwUser extends BaseEntity {
 
     // Fetch type  'Lazy' 설정하면, 로그인시 유저에 속해있는 롤 가져올때 'LazyInitializationException' 에러 발생함
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "kwUser")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "kwUser")
     List<KwUserRole> role;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "groupname", foreignKey = @ForeignKey(name = "KW_USER_FK01"))
     KwUserGroup kwUserGroup;
+
+    public String getUserRole() {
+        List<String> rolenames = new ArrayList<>();
+        KwUserRoleId roleId = new KwUserRoleId();
+
+        for (int i=0; i< role.size(); i++) {
+            roleId = role.get(i).getRolename();
+            String rolename = roleId.getRolename();
+            rolenames.add(rolename);
+        }
+        String rulenames = rolenames.stream().collect(Collectors.joining(", "));
+        return rulenames;
+    }
+
 }
