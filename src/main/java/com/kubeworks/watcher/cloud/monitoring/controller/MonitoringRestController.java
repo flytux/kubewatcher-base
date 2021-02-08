@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController()
 @RequestMapping(path = "/api/v1")
@@ -114,6 +115,9 @@ public class MonitoringRestController {
         response.put("user", getUser());
         response.put("host", monitoringProperties.getDefaultCluster().getLoki().getUrl());
         response.put("page", page);
+        response.put("services", applicationServiceProperties.getServices().stream()
+            .map(ApplicationServiceProperties.Service::getName).collect(Collectors.toList()));
+
         return response;
     }
 

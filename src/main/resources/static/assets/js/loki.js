@@ -31,10 +31,7 @@ $("#searchBtn").click(function(){
 
 var logAttr;
 $(document).on("click", ".extendlog", function(){
-
-    var timeStamp = $(this)[0].id; //
-
-
+    var timeStamp = $(this)[0].id;
 });
 
 
@@ -63,7 +60,6 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var pod = "";
     var container = "";
     var app = "";
-
 
     $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
         if($(item).attr("name") == "pod"){
@@ -116,15 +112,12 @@ function logModalTable(tableData){
       $('#serviceName').text(data[0].stream.pod);
       var dataArray = [];
       var dataArrayAll = [];
-//      for(let i = 0; i<data.values.length; i++){
-        //dataArray.push(data[i].values);
-//      }
+
     for(let i = 0; i<data.length; i++){
        for(let j=0; j<data[i].values.length; j++){
             dataArray.push(data[i].values[j]);
        }
     }
-
 
     if(dataArray === undefined){
         $('#logModalTable')
@@ -143,6 +136,7 @@ function logModalTable(tableData){
 
     $('#logModalTable').html(tableBodyHtml);
 }
+
 
 let lokiJs = (function () {
     let chartMap = new Map();
@@ -286,7 +280,6 @@ let lokiJs = (function () {
      }
 
      function convertTableData(data) {
-        console.log(data)
         if (data === undefined || data.length === 0) {
             return undefined;
         }
@@ -312,13 +305,10 @@ let lokiJs = (function () {
 
 
      }
-     function appValueCall(){
-        var uri = "/loki/api/v1/label/app/values";
-     }
 
     return {
-        createPanel: function (panel) {
-                //appValueCall();
+        createPanel: function (panel, serviceMap) {
+
                 if (panel.refreshIntervalMillis === undefined || panel.refreshIntervalMillis <= 0) {
                     panel.refreshIntervalMillis = defaultIntervalMillis;
                 }
@@ -331,11 +321,18 @@ let lokiJs = (function () {
 
                 switch (panelType) {
                     case "METRIC_TABLE":
-                        this.getDataByPanel(panel, true)
+                         panel = lokiJs.getApiUrl(panel ,serviceMap);
+                         this.getDataByPanel(panel, true)
                             .then(value => this.createTable(panel, value))
                             .then(panel => scheduleMap.set(panel.panelId,
                                 setTimeout(lokiJs.refreshFunction, panel.refreshIntervalMillis, panel))
                             )
+//                        this.getApiUrl(panel ,serviceMap)
+//                            .then(panel => lokiJs.getDataByPanel(panel, true))
+//                            .then(value => lokiJs.createTable(panel, value))
+//                            .then(panel => scheduleMap.set(panel.panelId,
+//                                setTimeout(lokiJs.refreshFunction, panel.refreshIntervalMillis, panel))
+//                            )
                         break;
                     case "LOG_METRIC_TABLE":
                         this.getDataByPanel(panel, true)
@@ -357,6 +354,33 @@ let lokiJs = (function () {
                         .then(value => lokiJs.createTable(panel, value));
                     break;
             }
+        },
+        getApiUrl : function(panel, serviceMap){
+            var uriTotalEnd = "} [1m])) by (app)";
+            var uriErrorEnd = "} |=" +'"'+"error"+'"'+"[1m])) by (app)";
+            for(let i =0; i<panel.chartQueries.length; i++){
+                 var uri = "";
+                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(panel.chartQueries[i].apiQuery);
+                 for(let j=0; j<serviceMap.length; j++){
+                    if(j == 0) {
+                        uri += '"' + serviceMap[j]  + "|";
+                    }else if(j == serviceMap.length- 1){
+                        uri += serviceMap[j] + '"';
+                    }else{
+                        uri +=  serviceMap[j] + "|" ;
+                    }
+                 }
+
+                if(panel.chartQueries[i].legend == "총건수"){
+                    panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriTotalEnd;
+                }else if(panel.chartQueries[i].legend == "에러"){
+                   panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriErrorEnd;
+                }
+            }
+
+            return panel;
+
+
         },
         getDataByPanel: function (panel, isCreate,startT,endT) {
 
@@ -391,7 +415,7 @@ let lokiJs = (function () {
         },
 
         getFetchRequest: function (url) {
-            return fetch(url).then(response => { //TODO 여기서 http api를 호출하기때문에 url을 완성시켜야한다. & 파라미터 정의 해야하는지?
+            return fetch(url).then(response => {
                 const contentType = response.headers.get("Content-Type");
                 if (contentType.indexOf("text/html") >= 0) {
                     return response.text();
@@ -454,7 +478,6 @@ let lokiJs = (function () {
                     //element[legend] = this.convertValue(parseFloat(valueCount).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
                     data.set(key, element);
                     });
-                    console.log("2 :",data);
                 }
                 tableData = convertTableData([...data.values()]);
                 renderTable(panel, tableData);
@@ -483,6 +506,10 @@ let lokiJs = (function () {
                         ? Highcharts.numberFormat(value / kilo, 0) + " K" + convertUnit
                         : value + ' ' + unit;
         },
+        convertApi : function(serviceMap){
+
+            console.log(serviceMap);
+        }
     }
 
 }());
