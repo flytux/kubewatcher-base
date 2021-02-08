@@ -16,6 +16,7 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import org.springframework.http.HttpStatus;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.servlet.http.Cookie;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -158,6 +159,19 @@ public class ExternalConstants {
     public Quantity addQuantity(Quantity quantity1, Quantity quantity2) {
         BigDecimal add = quantity1.getNumber().add(quantity2.getNumber());
         return new Quantity(add, quantity1.getFormat());
+    }
+
+    public String thymeleafCookieGetThemeCss(Cookie[] list) {
+        String theme = "/assets/css/style_dark.css";
+        for(int i = 0; i < list.length; i++) {
+            if (list[i].getName().equals("theme")) {
+                if(list[i].getValue().equals("white")) {
+                    theme = "/assets/css/style.css";
+                }
+                break;
+            }
+        }
+        return theme;
     }
 
 }
