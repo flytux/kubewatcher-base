@@ -21,7 +21,7 @@ $("#searchBtn").click(function(){
     if(targetId == undefined){
         alert("error");
     }
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + targetId +'"' + "} |= " +'"' +"error"+ '"'; //limit 1000 으로 고정상태.
+    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + targetId +'"' + "} |= " +'"' +"error"+ '"';
     obj.chartQueries[0].apiQuery = uri;
 
     lokiJs.getDataByPanel(obj, true,startT,endT)
@@ -110,22 +110,21 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
 
 function logModalTable(tableData){
-
-    console.log(tableData);
       $('#logModal').modal(); //step1 : modal 호출.
-      var data = tableData.result[0]; //TODO 로그 확장시 data를 전역변수화 + id(timestamp)값을 사용하여 확장쿼리 전송.
-      //logAttr = data.stream ;
+      var data = tableData.result;
 
-      $('#serviceName').text(data.stream.pod);
+      $('#serviceName').text(data[0].stream.pod);
       var dataArray = [];
-      for(let i = 0; i<data.values.length; i++){
-          dataArray.push(data.values[i]);
-      }
-//    var dataArray = [];
-//    for(let i = 0; i<data.length; i++){
-//       dataArray.push(data[i].values);
-//       console.log("1 :",dataArray)
-//    }
+      var dataArrayAll = [];
+//      for(let i = 0; i<data.values.length; i++){
+        //dataArray.push(data[i].values);
+//      }
+    for(let i = 0; i<data.length; i++){
+       for(let j=0; j<data[i].values.length; j++){
+            dataArray.push(data[i].values[j]);
+       }
+    }
+
 
     if(dataArray === undefined){
         $('#logModalTable')
@@ -201,7 +200,7 @@ let lokiJs = (function () {
                     .html(tableHtml);
                 return;
             }
-
+            
             const headers = tableData.headers;
             const dataArray = tableData.data;
 
@@ -287,6 +286,7 @@ let lokiJs = (function () {
      }
 
      function convertTableData(data) {
+        console.log(data)
         if (data === undefined || data.length === 0) {
             return undefined;
         }
@@ -305,9 +305,7 @@ let lokiJs = (function () {
         colList = ["총건수","정상", "정상율","에러", "에러율"];
         colList.unshift(typeCol);
         result.headers = colList
-
-
-
+ 
         result.data = data.map(value => value); //원본
 
         return result;
@@ -441,7 +439,6 @@ let lokiJs = (function () {
                     let element = data.get(key);
                     if (element === undefined) {
                         element = {};
-                        elementValue = {};
                         for (const [key, entry] of Object.entries(value.metric)) { // key값 setting
                             element[key] = entry;
                         }
@@ -452,11 +449,12 @@ let lokiJs = (function () {
                         count = Number(Object.values(value.values)[j][1]);
                         valueCount += count;
                     }
+                    //console.log("valueCount:",valueCount);
                     element[legend] = parseFloat(valueCount).toFixed(1) - 0; //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
                     //element[legend] = this.convertValue(parseFloat(valueCount).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
                     data.set(key, element);
                     });
-
+                    console.log("2 :",data);
                 }
                 tableData = convertTableData([...data.values()]);
                 renderTable(panel, tableData);
