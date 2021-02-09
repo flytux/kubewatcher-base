@@ -20,6 +20,7 @@ public class AlertRuleConfigController {
     private final AlertRuleConfigService alertRuleConfigService;
     private final PageViewService pageViewService;
 
+
     @GetMapping(value = "/setting/alarm/list", produces = MediaType.TEXT_HTML_VALUE)
     public String alertConfigList(Model model) {
 

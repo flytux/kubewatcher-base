@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface KwAlertRuleRepository extends JpaRepository<KwAlertRule, Long> {
     List<KwAlertRule> findAllBy();
+
 }

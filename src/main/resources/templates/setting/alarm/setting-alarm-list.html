@@ -76,6 +76,7 @@
                     </div>
                     <div class="modal-nbody row_scroll">
                         <div class="row">
+                            <form id="alertRule" th:object="${alertRule}" method="POST">
                             <table class="table-nt">
                                 <tr>
                                     <th>Rule ID</th>
@@ -142,13 +143,14 @@
                                     </td>
                                 </tr>
                             </table>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <!-- [Modal 메트릭] End
-    <!-- [Alarm 설정 목록] End-->
+    < !-- [Alarm 설정 목록] End-->
     </div>
     <script type="text/javascript" th:inline="javascript">
         var $contentList = $("#contentList"),
@@ -182,60 +184,75 @@
             });
         });
 
-        $(function() {
-            $('#save').click(function () {
+        $('#save').click(function () {
+            $('#alertRule').attr("action", "/setting/alarm");
+            var data = $('#alertRule').serialize();
 
-                let ruleId        = $('#ruleId').val();
-                let detectType    = $('#detectType:checked').val();
-                let category      = $('#category option:selected').val();
-                let resource      = $('#resource').val();
-                let dangerLevel   = $('#dangerLevel').val();
-                let warningLevel  = $('#warningLevel').val();
-                let duration      = $('#duration').val();
-                let severity      = $('#severity:checked').val();
+            alert("new rule : "+data);
 
-                alert("save click : "+severity);
-
-                $.ajax({
-                    url: '/setting/alarm/config/', // 서버 요청
-                    dataType: 'json',
-                    type: 'post',
-                    data: {
-                        'ruleId': ruleId,
-                        'detectType': detectType,
-                        'category': category,
-                        'resource': resource,
-                        'dangerLevel': dangerLevel,
-                        'warningLevel': warningLevel,
-                        'duration': duration,
-                        'severity': severity
-                    },
-                    success: function () {
-                        alert('Success'); // 성공시 코드
-                    }
-                });
-            });
-            $('input[type=radio][name=detectType]').change(function() {
-                switch(this.value) {
-                    case 'metric' :
-                        $('#logConfigArea1').show();
-                        $('#logConfigArea2').show();
-                        $('#logConfigArea3').show();
-                        $('#logConfigArea4').show();
-                        $('#logConfigArea5').hide();
-                        $('#logConfigArea6').hide();
-                        break;
-                    case 'log' :
-                        $('#logConfigArea1').hide();
-                        $('#logConfigArea2').hide();
-                        $('#logConfigArea3').hide();
-                        $('#logConfigArea4').hide();
-                        $('#logConfigArea5').show();
-                        $('#logConfigArea6').show();
-                        break;
+            $.ajax({
+                type : "post",
+                data : data,
+                url : "/setting/alarm",
+                success : function(){
+                    alert('등록이 완료되었습니다.');
+                    $('#myModal').hide();
+                    $(location).attr('href', 'setting/alarm/setting-alarm-list')
                 }
             });
+
+            // let ruleId        = $('#ruleId').val();
+            // let detectType    = $('#detectType:checked').val();
+            // let category      = $('#category option:selected').val();
+            // let resource      = $('#resource').val();
+            // let dangerLevel   = $('#dangerLevel').val();
+            // let warningLevel  = $('#warningLevel').val();
+            // let duration      = $('#duration').val();
+            // let severity      = $('#severity:checked').val();
+            //
+            // alert("save click : "+severity);
+            //
+            // $.ajax({
+            //     url: '/setting/alarm/config/', // 서버 요청
+            //     dataType: 'json',
+            //     type: 'post',
+            //     data: {
+            //         'ruleId': ruleId,
+            //         'detectType': detectType,
+            //         'category': category,
+            //         'resource': resource,
+            //         'dangerLevel': dangerLevel,
+            //         'warningLevel': warningLevel,
+            //         'duration': duration,
+            //         'severity': severity
+            //     },
+            //     success: function () {
+            //         alert('Success'); // 성공시 코드
+            //     }
+            // });
+
+        });
+        $('input[type=radio][name=detectType]').change(function() {
+            switch(this.value) {
+                case 'metric' :
+                    $('#logConfigArea1').show();
+                    $('#logConfigArea2').show();
+                    $('#logConfigArea3').show();
+                    $('#logConfigArea4').show();
+                    $('#logConfigArea5').hide();
+                    $('#logConfigArea6').hide();
+                    break;
+                case 'log' :
+                    $('#logConfigArea1').hide();
+                    $('#logConfigArea2').hide();
+                    $('#logConfigArea3').hide();
+                    $('#logConfigArea4').hide();
+                    $('#logConfigArea5').show();
+                    $('#logConfigArea6').show();
+                    break;
+            }
         });
     </script>
+</div>
 </body>
 </html>

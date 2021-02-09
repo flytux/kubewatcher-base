@@ -19,6 +19,7 @@ public class AlertRuleConfigSerivceImpl implements AlertRuleConfigService {
         this.kwAlertRuleRepository = kwAlertRuleRepository;
     }
 
+
     public List<KwAlertRule> getAlertRuleList() {
         return kwAlertRuleRepository.findAllBy();
     }

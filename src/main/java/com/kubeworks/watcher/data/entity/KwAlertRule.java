@@ -20,6 +20,7 @@ public class KwAlertRule extends BaseEntity {
     @Column(name = "ruleId", columnDefinition = "bigint unsigned", nullable = false)
     long ruleId;
 
+
     @Column(name = "detectType", length = 50, nullable = false)
     String detectType; //Metrics, log
 
