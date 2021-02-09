@@ -63,7 +63,6 @@
         /*]]>*/
 
         console.log("pageRows :",pageRows);
-<!--        console.log("apiHost :",apiHost);-->
         console.log("serviceMap :",serviceMap);
 
        document.getElementById('startDate').value = moment().format('YYYY-MM-DD');
@@ -72,10 +71,7 @@
        document.getElementById('endTime').value = moment("11:59 PM",["h:mm A"]).format("HH:mm");
 
         $(document).ready(function () {
-            <!--pageRows.forEach(row => row.pageRowPanels.forEach(panel => lokiJs.createPanel(panel))));-->
-
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => lokiJs.createPanel(panel,serviceMap)));
-
         });
 
     </script>

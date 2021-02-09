@@ -60,6 +60,7 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var pod = "";
     var container = "";
     var app = "";
+    var stream = "";
 
     $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
         if($(item).attr("name") == "pod"){
@@ -70,6 +71,9 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
         }
         if($(item).attr("name") == "app"){
             app = $(item).text();
+        }
+        if($(item).attr("name") == "stream"){
+            stream = $(item).text();
         }
     });
 
@@ -94,15 +98,13 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
     var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit=1000&query={";
     var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"
-    var uri = uriStart +"app=" +'"' + app + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream!="+'""' + uriEnd;
-    //var response = lokiJs.getFetchRequest("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"));
+    var uri = uriStart +"app=" +'"' + app + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream="+'"'+stream+'"' + uriEnd;
+
     fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
         .then((data) => logModalTable(data.data));
 
 });
-
-
 
 
 function logModalTable(tableData){
@@ -273,7 +275,7 @@ let lokiJs = (function () {
              data = [data];
          }
 
-         result.headers = ["pod","container","job","app","Log"]; //TODO response로 받아오는 label 값이 달라서 공통으로 들어있는것들만 뽑아서 하드코딩. pod가 serviceId 개념.
+         result.headers = ["pod","app","job","container","stream","Log"]; //TODO response로 받아오는 label 값이 달라서 공통으로 들어있는것들만 뽑아서 하드코딩. pod가 serviceId 개념.
          result.data = data.map(value => value);
 
          return result;
@@ -321,13 +323,13 @@ let lokiJs = (function () {
 
                 switch (panelType) {
                     case "METRIC_TABLE":
-                         panel = lokiJs.getApiUrl(panel ,serviceMap);
+                         panel = lokiJs.getApiUrl(panel ,serviceMap); //TODO 카스환경에 반영할때는 getApiUrl() 함수 필요- 어플리케이션 리스트를 받아와 url 조합.
                          this.getDataByPanel(panel, true)
                             .then(value => this.createTable(panel, value))
                             .then(panel => scheduleMap.set(panel.panelId,
                                 setTimeout(lokiJs.refreshFunction, panel.refreshIntervalMillis, panel))
                             )
-//                        this.getApiUrl(panel ,serviceMap)
+//                        this.getApiUrl(panel ,serviceMap) //Promise객체를 반환하지 않기에 에러발생?
 //                            .then(panel => lokiJs.getDataByPanel(panel, true))
 //                            .then(value => lokiJs.createTable(panel, value))
 //                            .then(panel => scheduleMap.set(panel.panelId,
@@ -356,6 +358,29 @@ let lokiJs = (function () {
             }
         },
         getApiUrl : function(panel, serviceMap){
+//            return Promise.all(panel.chartQueries.map(chartQuery => {
+//                    var uriTotalEnd = "} [1m])) by (app)";
+//                    var uriErrorEnd = "} |=" +'"'+"error"+'"'+"[1m])) by (app)";
+//                    for(let i =0; i<panel.chartQueries.length; i++){
+//                         var uri = "";
+//                        const convertApiQuery = commonVariablesJs.convertVariableApiQuery(panel.chartQueries[i].apiQuery);
+//                         for(let j=0; j<serviceMap.length; j++){
+//                            if(j == 0) {
+//                                uri += '"' + serviceMap[j]  + "|";
+//                            }else if(j == serviceMap.length- 1){
+//                                uri += serviceMap[j] + '"';
+//                            }else{
+//                                uri +=  serviceMap[j] + "|" ;
+//                            }
+//                         }
+//                        if(panel.chartQueries[i].legend == "총건수"){
+//                            panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriTotalEnd;
+//                        }else if(panel.chartQueries[i].legend == "에러"){
+//                           panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriErrorEnd;
+//                        }
+//                    }
+//                    return panel;
+//            }))
             var uriTotalEnd = "} [1m])) by (app)";
             var uriErrorEnd = "} |=" +'"'+"error"+'"'+"[1m])) by (app)";
             for(let i =0; i<panel.chartQueries.length; i++){
@@ -370,20 +395,15 @@ let lokiJs = (function () {
                         uri +=  serviceMap[j] + "|" ;
                     }
                  }
-
                 if(panel.chartQueries[i].legend == "총건수"){
                     panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriTotalEnd;
                 }else if(panel.chartQueries[i].legend == "에러"){
                    panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriErrorEnd;
                 }
             }
-
             return panel;
-
-
         },
         getDataByPanel: function (panel, isCreate,startT,endT) {
-
             return Promise.all(panel.chartQueries.map(chartQuery => {
                 const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery);
 
@@ -467,13 +487,12 @@ let lokiJs = (function () {
                             element[key] = entry;
                         }
                     }
-
-                    let valueCount = 0;
+                    let valueCount = 0; //value 로 넘어오는 count 모두 sum
                     for(let j=0; j< Object.values(value.values).length; j++){ //value sum
                         count = Number(Object.values(value.values)[j][1]);
                         valueCount += count;
                     }
-                    //console.log("valueCount:",valueCount);
+
                     element[legend] = parseFloat(valueCount).toFixed(1) - 0; //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
                     //element[legend] = this.convertValue(parseFloat(valueCount).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
                     data.set(key, element);
