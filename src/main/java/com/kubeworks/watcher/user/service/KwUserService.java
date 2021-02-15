@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.user.service;
 
+import com.kubeworks.watcher.base.ApiResponse;
 import com.kubeworks.watcher.data.entity.KwUser;
 
 import java.util.List;
@@ -9,11 +10,9 @@ public interface KwUserService {
 
     List<KwUser> getKwUserList();
 
-    KwUser modifyUser(KwUser kwUser);
+    ApiResponse<String> deleteUser(KwUser kwUser);
 
-    KwUser deleteUser(KwUser kwUser);
+    ApiResponse<String> saveUser(KwUser kwUser, String groupName, List<String> roleList);
 
-    KwUser saveUser(KwUser kwUser);
-
-    KwUser modifyUser(KwUser kwUser, String groupName, List<String> roleList);
+    ApiResponse<String> modifyUser(KwUser kwUser, String groupName, List<String> roleList);
 }

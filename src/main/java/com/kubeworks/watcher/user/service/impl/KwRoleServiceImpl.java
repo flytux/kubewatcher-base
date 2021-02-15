@@ -1,6 +1,6 @@
 package com.kubeworks.watcher.user.service.impl;
 
-import com.kubeworks.watcher.data.entity.KwUserRole;
+import com.kubeworks.watcher.base.ApiResponse;
 import com.kubeworks.watcher.data.entity.KwUserRoleRule;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.data.repository.KwUserRoleRepository;
@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,23 +32,15 @@ public class KwRoleServiceImpl implements KwRoleService {
     /*
         KwUserRole 목록을 조회한다.
     */
+    @Override
     public List<String> getKwUserRoleList() {
         return kwUserRoleRepository.findDistinctAllBy();
-    }
-
-    // TODO
-    public List<KwUserRole> getUserRole() {
-        return kwUserRoleRepository.findAllBy();
-    }
-
-    // add kwUserRole
-    public KwUserRole saveKwUserRole(KwUserRole kwUserRole) {
-        return kwUserRoleRepository.save(kwUserRole);
     }
 
     /*
         KwUserRole & Rule (screen) 목록을 조회한다.
     */
+    @Override
     public List<Page> getKwUserRoleScreenList() {
         return pageRepository.findAllBy(Sort.by(Sort.Direction.ASC, "pageId"));
     }
@@ -56,23 +48,51 @@ public class KwRoleServiceImpl implements KwRoleService {
     /*
         KwUserRole & Rule (rule) 목록을 조회한다.
     */
+    @Override
     public List<KwUserRoleRule> getKwUserRoleRuleList() {
         return kwUserRoleRuleRepository.findAllBy();
     }
 
-    // select
+
+    @Override
     public List<String> getKwUserRoleRule() {
         return kwUserRoleRuleRepository.findByName();
     }
 
-    // modify
-    public KwUserRoleRule modifyKwUserRoleRule(KwUserRoleRule kwUserRoleRule) {
-        kwUserRoleRule.setRule(kwUserRoleRule.getRule());
-        return kwUserRoleRuleRepository.save(kwUserRoleRule);
+    @Transactional
+    @Override
+    public ApiResponse<String> modifyKwUserRoleRule(List<String> rolenameList, List<String> ruleList) {
+        ApiResponse<String> response = new ApiResponse<>();
+        try {
+            for (int i = 0; i < rolenameList.size(); i++) {
+                KwUserRoleRule kwUserRoleRule = kwUserRoleRuleRepository.findByRulename(rolenameList.get(i));
+                for (int j = i; j < ruleList.size(); j++) {
+                    kwUserRoleRule.setRule(ruleList.get(j));
+                    kwUserRoleRule.setRule(kwUserRoleRule.getRule());
+                    kwUserRoleRuleRepository.save(kwUserRoleRule);
+                    break;
+                }
+            }
+            response.setSuccess(true);
+        } catch (Exception e) {
+            log.error("role 수정 실패");
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+        }
+        return response;
     }
 
-    // insert
-    public KwUserRoleRule saveKwUserRoleRule(KwUserRoleRule kwUserRoleRule) {
-        return kwUserRoleRuleRepository.save(kwUserRoleRule);
+    @Override
+    public ApiResponse<String> saveKwUserRoleRule(KwUserRoleRule kwUserRoleRule) {
+        ApiResponse<String> response = new ApiResponse<>();
+        try {
+            kwUserRoleRuleRepository.save(kwUserRoleRule);
+            response.setSuccess(true);
+        } catch (Exception e) {
+            log.error("role 등록 실패 // groupname={}", kwUserRoleRule.getRulename());
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+        }
+        return response;
     }
 }

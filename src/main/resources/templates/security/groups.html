@@ -16,9 +16,7 @@
         <div class="row">
             <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Groups
                 <div class="dropdown d_ib f_r">
-<!--                    <a href="" data-toggle="modal" data-target="#myModal">-->
                         <button class="btn btn-md btn-outline-white" id="btnNew" ><i class="feather icon-file-text"></i> NEW</button>
-<!--                    </a>-->
                 </div>
             </div>
         </div>
@@ -73,9 +71,9 @@
                             <table class="table-nt">
                                 <tr>
                                     <th>그룹명</th>
-                                    <td>
+                                    <td id="readGroupname">
                                         <input type="text" id="groupingName" minlength="5" maxlength="40" style="width:100%;"
-                                               th:value="${group?.groupname}" readonly>
+                                               th:value="${group?.groupname}">
                                     </td>
                                 </tr>
                                 <tr>
@@ -89,14 +87,15 @@
                                 <tr>
                                     <th>최종변경일</th>
                                     <td>
+<!--                                        #dates.format(group?.updateTime,'yyyy-MM-dd HH:mm:ss')-->
                                         <div id="updateTime" th:text="${group?.updateTime}"> </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>설명</th>
-                                    <td>
+                                    <td id="readDescription">
                                         <input type="text" style="width:100%;" maxlength="200" id="description"
-                                               th:value="${group?.description}" readonly>
+                                               th:value="${group?.description}">
                                     </td>
                                 </tr>
                             </table>
@@ -108,7 +107,15 @@
         <!-- [Modal] End -->
         <!-- [Groups] End-->
     </div>
+    <input type="hidden" id="var-groupname" value=""/>
+    <input type="hidden" id="var-description" value=""/>
     <script type="text/javascript" th:inline="javascript">
+
+        var $groupName = $("#var-groupname");
+        var $description = $("#var-description");
+
+        var $formGroupname;
+        var $formDescription;
 
         function groupDetail(groupname) {
             $.ajax({
@@ -119,6 +126,16 @@
                     $('#myModal').modal();
                     $(".knob").knob();
                     $('#btnSave').hide();
+
+                    $groupName.val( $('#groupingName').val() );
+                    $description.val( $('#description').val() );
+
+                    $formGroupname = $('#readGroupname').html();
+                    $formDescription = $('#readDescription').html();
+
+                    $('#readGroupname').html($groupName.val());
+                    $('#readDescription').html($description.val());
+
                 },
                 error: function (e) {
                     if (e.status === 401) {
@@ -132,6 +149,10 @@
         $('#myModal').on('hidden.bs.modal', function (e) {
             $(this).find('table').find('tr').eq(1).html('');
             $(this).find('table').find('tr').eq(2).html('');
+
+            $('#readGroupname').html($formGroupname);
+            $('#readDescription').html($formDescription);
+
             $('#groupingName').val('');
             $('#description').val('');
         });
@@ -206,7 +227,7 @@
 
         // delete event
         $(document).on("click", "#btnDelete", function(event){
-           let groupname = $("#groupingName").val();
+           let groupname = $groupName.val();
            var msg = confirm( "삭제하시겠습니까?" );
 
            if (msg === true) {

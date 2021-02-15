@@ -12,7 +12,7 @@
     <div id="main_contents">
         <!-- [Roles] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> Role
+            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> Roles
                 <div class="dropdown d_ib f_r">
                         <button class="btn btn-md btn-outline-white" id="btnModify"><i class="feather icon-file-text"></i> 저장 </button>
                         <button class="btn btn-md btn-outline-white" id="btnNew"><i class="feather icon-file-text"></i> NEW </button>
@@ -59,7 +59,7 @@
                         </div>
                         <div class="modal-nbody">
                             <div class="table-title">
-                                Overview
+                                Role
                             </div>
                             <div class="row">
                                 <table class="table-nt">
@@ -118,47 +118,47 @@
 
         // btnModify event
         $(document).on("click", "#btnModify", function(event){
-                var rule = [];
-                var ruleName = [];
+            var rule = new Array();
+            var ruleName = new Array();
 
-                for(var i = 0; i < ruleList.length; i++ ){
-                    var strRule = "";
-                    var chkRule = $("input:checkbox[name='" + ruleList[i].rulename + "']");
-                    ruleName[i] = ruleList[i].rulename;
-                    for(var j = 0; j < chkRule.length; j++){
-                        if($(chkRule[j]).is(":checked")){
-                            strRule += "1";
-                        } else {
-                            strRule += "0";
+            for(var i = 0; i < ruleList.length; i++ ){
+                var strRule = "";
+                var chkRule = $("input:checkbox[name='" + ruleList[i].rulename + "']");
+                ruleName[i] = ruleList[i].rulename;
+                for(var j = 0; j < chkRule.length; j++){
+                    if($(chkRule[j]).is(":checked")){
+                        strRule += "1";
+                    } else {
+                        strRule += "0";
+                    }
+                }
+                rule[i] = strRule;
+             }
+
+            var msg = confirm( "저장하시겠습니까?" );
+            if (msg === true) {
+                $.ajax({
+                    url : "/security/roles/user-role-management/modify",
+                    data : {
+                        'rolenameList' : ruleName,
+                        'ruleList' : rule
+                    },
+                    traditional : true,
+                    contentType : "application/json",
+                    success : function (data){
+                        alert('저장이 완료되었습니다.');
+                        $('#myModal').hide();
+                        $(location).attr('href', '/security/roles/user-role-management')
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                            $(location).attr('href', '/login?logout')
                         }
                     }
-                    rule[i] = strRule;
-                 }
-
-                var msg = confirm( "저장하시겠습니까?" );
-                if (msg === true) {
-                    $.ajax({
-                        url : "/security/roles/user-role-management/modify",
-                        data : {
-                            'rolenames' : ruleName,
-                            'rules' : rule
-                        },
-                        traditional : true,
-                        contentType : "application/json",
-                        success : function (data){
-                            alert('저장이 완료되었습니다.');
-                            $('#myModal').hide();
-                            $(location).attr('href', '/security/roles/user-role-management')
-                        },
-                        error: function (e) {
-                            if (e.status === 401) {
-                                $(location).attr('href', '/login?logout')
-                            }
-                        }
-                    });
-               } else if (msg === false) {
-                   return;
-               }
+                });
+           } else if (msg === false) {
+               return;
+           }
         });
 
         // btnInsert event
@@ -186,7 +186,7 @@
                     $.ajax({
                         url : "/security/roles/user-role-management/save",
                         data : {
-                            'rolename' : rolename,
+                            'rulename' : rolename,
                             'description' : description,
                             'rule' : strRule
                         },

@@ -34,8 +34,17 @@ public class KwUser extends BaseEntity {
 
     // Fetch type  'Lazy' 설정하면, 로그인시 유저에 속해있는 롤 가져올때 'LazyInitializationException' 에러 발생함
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "kwUser")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "kwUser", orphanRemoval = true)
     List<KwUserRole> role;
+
+    public void setRole(List<KwUserRole> role, String type) {
+        if (type.equals("modify")){
+            this.role.clear();
+            this.role.addAll(role);
+        } else {
+            this.role = role;
+        }
+    }
 
     @JsonIgnore
     @ManyToOne

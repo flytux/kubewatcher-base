@@ -1,14 +1,9 @@
 package com.kubeworks.watcher.user.service;
+import com.kubeworks.watcher.base.ApiResponse;
 import com.kubeworks.watcher.data.entity.*;
 
 import java.util.List;
 public interface KwRoleService {
-
-    //KwUserRole deleteRole(KwUserRole kwuserRole);
-
-    List<KwUserRole> getUserRole();
-
-    KwUserRole saveKwUserRole(KwUserRole kwUserRole);
 
     List<String> getKwUserRoleList();
 
@@ -18,7 +13,7 @@ public interface KwRoleService {
 
     List<String> getKwUserRoleRule();
 
-    KwUserRoleRule modifyKwUserRoleRule(KwUserRoleRule kwUserRoleRule);
+    ApiResponse<String> modifyKwUserRoleRule(List<String> rolenameList, List<String> ruleList);
 
-    KwUserRoleRule saveKwUserRoleRule(KwUserRoleRule kwUserRoleRule);
+    ApiResponse<String> saveKwUserRoleRule(KwUserRoleRule kwUserRoleRule);
 }
