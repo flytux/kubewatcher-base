@@ -21,3 +21,10 @@
     -webkit-animation: spinner-border .75s linear infinite;
     animation: spinner-border .75s linear infinite;
 }
+
+.spinner-center {
+    top: 50%;
+    position: absolute;
+    transform: translate(0px, -50%);
+    left: 0px;
+}
