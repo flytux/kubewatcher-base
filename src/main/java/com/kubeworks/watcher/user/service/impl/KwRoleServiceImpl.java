@@ -18,6 +18,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class KwRoleServiceImpl implements KwRoleService {
+
     private final KwUserRoleRepository kwUserRoleRepository;
     private final PageRepository pageRepository;
     private final KwUserRoleRuleRepository kwUserRoleRuleRepository;

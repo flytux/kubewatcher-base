@@ -59,12 +59,12 @@
                         </div>
                         <div class="modal-nbody">
                             <div class="table-title">
-                                Role
+
                             </div>
                             <div class="row">
                                 <table class="table-nt">
                                     <tr>
-                                        <th>Role</th>
+                                        <th>Role Name</th>
                                         <td>
                                             <input type="text" id="rolename" name="rolename" style="width:100%;" >
                                         </td>
@@ -145,10 +145,14 @@
                     },
                     traditional : true,
                     contentType : "application/json",
-                    success : function (data){
-                        alert('저장이 완료되었습니다.');
-                        $('#myModal').hide();
-                        $(location).attr('href', '/security/roles/user-role-management')
+                    success : function (e){
+                        if (e.success === 'true') {
+                            alert('저장이 완료되었습니다.');
+                            $('#myModal').hide();
+                            $(location).attr('href', '/security/roles/user-role-management')
+                        } else {
+                            alert(e.message);
+                        }
                     },
                     error: function (e) {
                         if (e.status === 401) {
@@ -190,10 +194,14 @@
                             'description' : description,
                             'rule' : strRule
                         },
-                        success : function(data){
-                          alert('등록이 완료되었습니다.');
-                          $('#myModal').hide();
-                          $(location).attr('href', '/security/roles/user-role-management')
+                        success : function(e){
+                            if (e.success === 'true') {
+                                alert('등록이 완료되었습니다.');
+                                $('#myModal').hide();
+                                $(location).attr('href', '/security/roles/user-role-management')
+                            } else {
+                                alert(e.message);
+                            }
                         },
                         error: function (e) {
                             if (e.status === 401) {

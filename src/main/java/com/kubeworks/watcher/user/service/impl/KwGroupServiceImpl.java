@@ -2,7 +2,7 @@ package com.kubeworks.watcher.user.service.impl;
 
 import com.kubeworks.watcher.base.ApiResponse;
 import com.kubeworks.watcher.data.entity.KwUserGroup;
-import com.kubeworks.watcher.data.repository.*;
+import com.kubeworks.watcher.data.repository.KwUserGroupRepository;
 import com.kubeworks.watcher.user.service.KwGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class KwGroupServiceImpl implements KwGroupService {
+
     private final KwUserGroupRepository kwUserGroupRepository;
 
     @Autowired
@@ -43,6 +44,10 @@ public class KwGroupServiceImpl implements KwGroupService {
     public ApiResponse<String> saveGroup(KwUserGroup kwUserGroup) {
         ApiResponse<String> response = new ApiResponse<>();
         try {
+            Optional<KwUserGroup> dbKwUserGroupOptional = kwUserGroupRepository.findById(kwUserGroup.getGroupname());
+            if (dbKwUserGroupOptional.isPresent()) {
+                throw new IllegalArgumentException("이미 등록되어 있는 그룹명입니다. 그룹명=" + kwUserGroup.getGroupname());
+            }
             kwUserGroupRepository.save(kwUserGroup);
             response.setSuccess(true);
         } catch (Exception e) {

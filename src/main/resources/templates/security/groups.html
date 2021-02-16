@@ -44,7 +44,7 @@
                                    th:utext="${group?.groupname}"></a>
                             </td>
                             <td th:text="${group?.users.size()}"></td>
-                            <td th:text="${group?.createTime}"> </td>
+                            <td th:text="${#temporals.format(group?.createTime, 'yyyy-MM-dd hh:mm:ss')}"> </td>
                         </tr>
                         </tbody>
                     </table>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="modal-nbody">
                         <div class="table-title">
-                            Group
+
                         </div>
                         <div class="row">
                             <table class="table-nt">
@@ -87,8 +87,7 @@
                                 <tr>
                                     <th>최종변경일</th>
                                     <td>
-<!--                                        #dates.format(group?.updateTime,'yyyy-MM-dd HH:mm:ss')-->
-                                        <div id="updateTime" th:text="${group?.updateTime}"> </div>
+                                        <div id="updateTime" th:text="${#temporals.format(group?.updateTime, 'yyyy-MM-dd hh:mm:ss')}"> </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -165,8 +164,6 @@
                 $('#btnDelete').hide();
                 $('#btnSave').show();
                 $('#groupName').attr('text', '');
-                $('#groupingName').attr('readonly', false);
-                $('#description').attr('readonly', false);
 
                 if($(this).val() !== '1') {
                     $('#myModal').find('table').find('tr').eq(1).html('');
@@ -209,10 +206,14 @@
                         'groupname'   : groupname,
                         'description' : description
                     },
-                    success: function (data) {
-                        alert('등록이 완료되었습니다.');
-                        $('#myModal').hide();
-                        $(location).attr('href', '/security/groups/')
+                    success: function (e) {
+                        if (e.success === 'true') {
+                            alert('등록이 완료되었습니다.');
+                            $('#myModal').hide();
+                            $(location).attr('href', '/security/groups/')
+                        } else {
+                            alert(e.message);
+                        }
                     },
                     error: function (e) {
                         if (e.status === 401) {
@@ -236,10 +237,14 @@
                     data : {
                         'groupname' : groupname,
                     },
-                    success: function () {
-                        $('#myModal').hide();
-                        alert('삭제가 완료되었습니다.');
-                        $(location).attr('href', '/security/groups/')
+                    success: function (e) {
+                        if (e.success === 'true') {
+                            $('#myModal').hide();
+                            alert('삭제가 완료되었습니다.');
+                            $(location).attr('href', '/security/groups/')
+                        } else {
+                            alert(e.message);
+                        }
                     },
                     error: function (e) {
                         if (e.status === 401) {

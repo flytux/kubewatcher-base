@@ -64,8 +64,8 @@
                             <td th:text="${user?.userno}"></td>
                             <td th:text="${user?.dept}"></td>
                             <td th:text="${user?.getUserRole()}"></td>
-                            <td th:text="${user?.updateTime}"></td>
-                            <td th:text="${user?.createTime}"></td>
+                            <td th:text="${#temporals.format(user?.updateTime, 'yyyy-MM-dd hh:mm:ss')}"> </td>
+                            <td th:text="${#temporals.format(user?.createTime, 'yyyy-MM-dd hh:mm:ss')}"> </td>
                         </tr>
                         </tbody>
                     </table>
@@ -89,26 +89,26 @@
                     </div>
                     <div class="modal-nbody">
                         <div class="table-title">
-                            Users
+                            User
                         </div>
                         <div class="row">
                             <table class="table-select">
                                 <tr>
                                     <th>ID</th>
                                     <td id="selectUsername">
-                                        <input type="text" id="username" style="width:100%;" th:field="*{username}">
+                                        <input type="text" id="username" maxlength="20" style="width:100%;" th:field="*{username}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>성명</th>
                                     <td id="selectName">
-                                        <input type="text" id="name" style="width:100%;" th:field="*{name}">
+                                        <input type="text" id="name" maxlength="20" style="width:100%;" th:field="*{name}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>사번</th>
                                     <td id="selectUserno">
-                                        <input type="text" id="userno" style="width:100%;" th:field="*{userno}">
+                                        <input type="text" id="userno" maxlength="7" style="width:100%;" th:field="*{userno}">
                                     </td>
                                 </tr>
                                 <tr>
@@ -141,7 +141,7 @@
                                 </tr>
                                 <tr>
                                     <th>최종변경일</th>
-                                    <td th:text="${user?.updateTime}" colspan="2"></td>
+                                    <td th:text="${#temporals.format(user?.updateTime, 'yyyy-MM-dd hh:mm:ss')}" colspan="2"></td>
                                 </tr>
                             </table>
                         </div>
@@ -323,10 +323,14 @@
                 type : "post",
                 data : data,
                 url : "/security/users/modify",
-                success : function(){
-                  alert('수정이 완료되었습니다.');
-                  $('#myModal').hide();
-                  $(location).attr('href', '/security/users');
+                success : function(e) {
+                if (e.success === 'true') {
+                    alert('수정이 완료되었습니다.');
+                    $('#myModal').hide();
+                    $(location).attr('href', '/security/users');
+                } else {
+                    alert(e.message);
+                    }
                 },
                 error: function (e) {
                     if (e.status === 401) {
@@ -344,11 +348,15 @@
                 type : "post",
                 data : data,
                 url : "/security/users/delete",
-                success : function(){
-                  alert('삭제가 완료되었습니다.');
-                  $('#myModal').hide();
-                  $(location).attr('href', '/security/users')
-                    },
+                success : function(e) {
+                     if (e.success === 'true') {
+                         alert('삭제가 완료되었습니다.');
+                         $('#myModal').hide();
+                         $(location).attr('href', '/security/users')
+                     } else {
+                        alert(e.message);
+                     }
+                },
                 error: function (e) {
                     if (e.status === 401) {
                          $(location).attr('href', '/login?logout')
@@ -404,10 +412,19 @@
                 type : "post",
                 data : data,
                 url : "/security/users/save",
-                success : function(){
-                  alert('등록이 완료되었습니다.');
-                  $('#myModal').hide();
-                  $(location).attr('href', '/security/users')
+                success : function(e) {
+                    if (e.success === 'true') {
+                        alert('등록이 완료되었습니다.');
+                        $('#myModal').hide();
+                        $(location).attr('href', '/security/users')
+                    } else {
+                        alert(e.message);
+                    }
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                         $(location).attr('href', '/login?logout')
+                    }
                 }
             });
         });

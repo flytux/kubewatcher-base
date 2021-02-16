@@ -95,6 +95,11 @@ public class KwUserServiceImpl implements KwUserService {
     public ApiResponse<String> saveUser(KwUser kwUser, String groupName, List<String> roleList) {
         ApiResponse<String> response = new ApiResponse<>();
         try {
+            Optional<KwUser> dbUserOptional = kwUserRepository.findById(kwUser.getUsername());
+            if (dbUserOptional.isPresent()) {
+                throw new IllegalArgumentException("이미 등록되어 있는 ID입니다. Id=" + kwUser.getUsername());
+            }
+
             KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
             kwUser.setKwUserGroup(group);
 
