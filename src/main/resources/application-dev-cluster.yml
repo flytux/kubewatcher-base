@@ -25,7 +25,7 @@ application:
             proxy: true
             url: "http://prom.dev"
           k8s:
-            url: "https://rancher/k8s/clusters/c-hpm9t"
+            url: "https://rancher.hanwhalife.com/k8s/clusters/c-hpm9t"
             api-token: "kubeconfig-user-9mkvd:bxvw2q79tpx82qb4c2zlqrm4vr94d59sx24wbv279c4ng8w757n9m8"
     services:
       - code: BAC
@@ -95,7 +95,7 @@ application:
       - code: CFP
         name: dev-core-cfp
         namespace: dev-core-ns
-        displayName: 제지급산
+        displayName: 제지급산출
       - code: CEB
         name: dev-cust-ceb
         namespace: dev-cust-ns

@@ -83,8 +83,6 @@ management:
       prometheus:
         enabled: true
 
-
-
 zuul:
   retryable: true
   force-original-query-string-encoding: true
@@ -94,22 +92,13 @@ zuul:
     max-per-route-connections: 20
     max-total-connections: 500
 
-#  routes:
-#    prometheus:
-#      path: /proxy/prometheus/**
-#      strip-prefix: true
-#      url: ${application.properties.monitoring.clusters.${application.properties.monitoring.default-cluster-name}.prometheus.url}
-#  decode-url: false
-
+ribbon:
+  okhttp:
+    enabled: true
 
 application:
   properties:
     root-domain: ''
-#    auth:
-#      users:
-#        - user-name: "test"
-#          password: "test"
-#          role: "USER"
     monitoring:
       default-cluster-name: local
       clusters:
@@ -147,6 +136,4 @@ application:
         name: visits
         namespace: app
         displayName: Visits
-ribbon:
-  okhttp:
-    enabled: true
+
