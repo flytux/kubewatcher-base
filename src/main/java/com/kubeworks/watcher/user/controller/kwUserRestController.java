@@ -11,8 +11,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -24,46 +29,45 @@ public class kwUserRestController {
     private final KwRoleService kwRoleService;
 
     @ResponseBody
-    @RequestMapping("/security/groups/save")
+    @PostMapping("/security/groups/save")
     public ApiResponse<String> saveGroup(@ModelAttribute KwUserGroup kwUserGroup) {
         return kwGroupService.saveGroup(kwUserGroup);
     }
 
     @ResponseBody
-    @RequestMapping("/security/groups/{groupname}/delete")
+    @PostMapping("/security/groups/{groupname}/delete")
     public ApiResponse<String> deleteGroup(@ModelAttribute KwUserGroup kwUserGroup) {
         return kwGroupService.deleteGroup(kwUserGroup);
     }
 
     @ResponseBody
-    @RequestMapping(value="/security/users/modify", method= RequestMethod.POST)
+    @PostMapping("/security/users/modify")
     public ApiResponse<String> modifyUser(@ModelAttribute("user") KwUser kwUser, @RequestParam("groupList") String groupList,
                              @RequestParam("roleList") List<String> roleList, Model model) {
         return kwUserService.modifyUser(kwUser, groupList, roleList);
     }
 
     @ResponseBody
-    @RequestMapping(value="/security/users/delete", method= RequestMethod.POST)
+    @PostMapping("/security/users/delete")
     public ApiResponse<String> deleteUser(@ModelAttribute("user") KwUser kwUser) {
         return kwUserService.deleteUser(kwUser);
     }
 
     @ResponseBody
-    @RequestMapping(value="/security/users/save", method= RequestMethod.POST)
+    @PostMapping("/security/users/save")
     public ApiResponse<String> saveUser(@ModelAttribute("user") KwUser kwUser, @RequestParam("groupList") String groupList,
                            @RequestParam("roleList") List<String> roleList) {
         return kwUserService.saveUser(kwUser, groupList, roleList);
     }
 
     @ResponseBody
-    @RequestMapping("/security/roles/user-role-management/save")
+    @PostMapping("/security/roles/user-role-management/save")
     public ApiResponse<String> saveRole(@ModelAttribute KwUserRoleRule kwUserRoleRule) {
-        return kwRoleService.saveKwUserRoleRule(kwUserRoleRule);
-    }
+        return kwRoleService.saveKwUserRoleRule(kwUserRoleRule); }
 
     @ResponseBody
-    @RequestMapping("/security/roles/user-role-management/modify")
-    public ApiResponse<String> modifyRule(@RequestParam("rolenameList") List<String> rolenameList,  @RequestParam("ruleList") List<String> ruleList) {
+    @PostMapping("/security/roles/user-role-management/modify")
+    public ApiResponse<String> modifyRule(@RequestParam("rolenameList") List<String> rolenameList, @RequestParam("ruleList") List<String> ruleList) {
         return kwRoleService.modifyKwUserRoleRule(rolenameList, ruleList);
     }
 }

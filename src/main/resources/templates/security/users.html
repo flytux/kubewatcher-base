@@ -73,7 +73,6 @@
             </div>
         </div>
         <!-- [Modal] start -->
-
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
             <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
                 <form id="form" th:action="@{/security/users/modify}" th:object="${user}" method="POST">
@@ -95,32 +94,31 @@
                             <table class="table-select">
                                 <tr>
                                     <th>ID</th>
-                                    <td id="selectUsername">
+                                    <td id="usernameTd">
                                         <input type="text" id="username" maxlength="20" style="width:100%;" th:field="*{username}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>성명</th>
-                                    <td id="selectName">
+                                    <td id="nameTd">
                                         <input type="text" id="name" maxlength="20" style="width:100%;" th:field="*{name}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>사번</th>
-                                    <td id="selectUserno">
+                                    <td id="usernoTd">
                                         <input type="text" id="userno" maxlength="7" style="width:100%;" th:field="*{userno}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>비밀번호</th>
-                                    <td>
-                                        <input type= "password" id="password" name="password" style="width:100%; font-size: 9pt; background-color: #222222;
-                                        border: 1px solid #555555; height: 22px; border-radius: 4px;" th:value="${user?.password}">
+                                    <td id="passwordTd">
+                                        <input type="password" id="password" name="password" style="width:100%;" th:value="${user?.password}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>부서</th>
-                                    <td>
+                                    <td id="deptTd">
                                         <input type="text" id="dept"  style="width:100%;"
                                                th:field="*{dept}">
                                     </td>
@@ -139,7 +137,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="updateTimeTr">
                                     <th>최종변경일</th>
                                     <td th:text="${#temporals.format(user?.updateTime, 'yyyy-MM-dd hh:mm:ss')}" colspan="2"></td>
                                 </tr>
@@ -150,7 +148,7 @@
                         </div>
                         <div class="row">
                             <table class="table-select" id="roleTable">
-                                <tr id="roleList2">
+                                <tr id="roleNameTr">
                                     <th>역할</th>
                                     <th:block th:each= "role : ${roles}">
                                         <td>
@@ -183,12 +181,11 @@
             </div>
         </div>
         <!-- [Modal] End -->
-        <!-- [Groups] End-->
+        <!-- [Users] End-->
     </div>
     <input type="hidden" id="var-userName" value=""/>
     <input type="hidden" id="var-userno" value=""/>
     <input type="hidden" id="var-name" value=""/>
-    <input type="hidden" id="var-maskingPW" value=""/>
 
     <script type="text/javascript" th:inline="javascript">
 
@@ -196,24 +193,26 @@
             groups = [[${groupList}]];
 
         var $userName = $("#var-userName");
-
         var $userno = $("#var-userno");
         var $name = $("#var-name");
-        var $maskingPW = $("#var-maskingPW");
 
-        var $formUsername;
-        var $formName;
-        var $formUserno;
-
-        var $formUsername2;
-        var $formName2;
-        var $formUserno2;
+        var $usernameTd;
+        var $nameTd;
+        var $usernoTd;
+        var $passwordTd;
+        var $deptTd;
 
         function userDetail(username) {
             $userName.val(username);
             $.ajax({
                 url: "/security/users/" + username,
                 success: function (data) {
+                    $usernameTd = $('#usernameTd').html();
+                    $nameTd = $('#nameTd').html();
+                    $usernoTd = $('#usernoTd').html();
+                    $passwordTd = $('#passwordTd').html();
+                    $deptTd = $('#deptTd').html();
+
                     $('#myModal').text("");
                     $('#myModal').html(data);
                     $('#myModal').modal();
@@ -223,20 +222,9 @@
                     $userno.val( $('#userno').val() );
                     $name.val( $('#name').val() );
 
-                    // modal 조회시 username, name, userno type
-                    $formUsername2 = $('#selectUsername').html();
-                    $formName2 = $('#selectName').html();
-                    $formUserno2 = $('#selectUserno').html();
-
-                    // 기존 html
-                    $formUsername = $('#selectUsername').html();
-                    $formName = $('#selectName').html();
-                    $formUserno = $('#selectUserno').html();
-
-                    $('#selectUsername').html($userName.val());
-                    $('#selectName').html($name.val());
-                    $('#selectUserno').html($userno.val());
-
+                    $('#usernameTd').html($userName.val());
+                    $('#nameTd').html($name.val());
+                    $('#usernoTd').html($userno.val());
                 },
                 error: function (e) {
                     if (e.status === 401) {
@@ -248,58 +236,45 @@
 
         // modal reset
         $('#myModal').on('hidden.bs.modal', function (e) {
-            $(this).find('table').find('tr').eq(6).html('');
-
-            $('#selectUsername').html($formUsername2);
-            $('#selectName').html($formName2);
-            $('#selectUserno').html($formUserno2);
-            $('#selectUsername').val('');
-            $('#selectName').val('');
-            $('#selectUserno').val('');
-
-            $('#username').val('');
-            $('#name').val('');
-            $('#userno').val('');
-
-            $('#password').val('');
-            $('#dept').val('');
+            $('#usernameTd').html($usernameTd);
+            $('#nameTd').html($nameTd);
+            $('#usernoTd').html($usernoTd);
+            $('#passwordTd').html($passwordTd);
+            $('#deptTd').html($deptTd);
         });
 
         // btnNew event
         $(document).ready(function () {
            $('#btnNew').on('click', function () {
-                $('#myModal').modal();
-                $('#myModalLabel').text('User');
-                $('#btnModify').attr('id', 'btnInsert');
-                $('#btnDelete').hide();
-                $('#myModal').find('table').find('tr').eq(2).val('');
-                $('#myModal').find('table').find('tr').eq(2).val('');
-                $('#myModal').find('table').find('tr').eq(6).html('');
+               $('#myModal').modal();
+               $('#myModalLabel').text('User');
+               $('#btnModify').attr('id', 'btnInsert');
+               $('#btnDelete').hide();
+               $('#updateTimeTr').html('');
 
-                if (groups !== '') {
-                    $("#groupList").attr('disabled', false);
-                } else {
-                    $("#groupList").attr('disabled', true);
-                }
+               if (groups !== '') {
+                   $("#groupList").attr('disabled', false);
+               } else {
+                   $("#groupList").attr('disabled', true);
+               }
 
-                $("#groupList").empty();
-                for ( var i = 0; i < groups.length; i++) {
-                    var html = $("<option>" + groups[i].groupname + "</option>");
-                    $("#groupList").append(html);
-                }
+               $("#groupList").empty();
+               for ( var i = 0; i < groups.length; i++) {
+                   var html = $("<option>" + groups[i].groupname + "</option>");
+                   $("#groupList").append(html);
+               }
 
-                $("#roleList2").empty();
+               $("#roleNameTr").empty();
 
-                var html = "<th>역할</th>";
-                for( var j = 0; j < roles.length; j++) {
-                     html += "<td>";
-                     html += '  <input type="checkbox" name="roleList" id="roleList" value="' + roles[j] + '" />';
-                     html += '  <label>' + roles[j] + '</label>';
-                     html += "</td>";
-                }
-                $("#roleList2").append(html);
-
-            });
+               var html = "<th>역할</th>";
+               for( var j = 0; j < roles.length; j++) {
+                    html += "<td>";
+                    html += '  <input type="checkbox" name="roleList" id="roleList" value="' + roles[j] + '" />';
+                    html += '  <label>' + roles[j] + '</label>';
+                    html += "</td>";
+               }
+               $("#roleNameTr").append(html);
+           });
         });
 
         // btnModify event
@@ -311,58 +286,82 @@
                 $("#form").append(html);
             }
 
-        var hdnHtml = '   <input type="hidden" name="username" id="username" value="' + $userName.val() + '" />';
-            hdnHtml += '  <input type="hidden" name="name"     id="name"     value="' + $name.val() + '" />';
-            hdnHtml += '  <input type="hidden" name="userno"   id="userno"   value="' + $userno.val() + '" />';
+            var hdnHtml = '   <input type="hidden" name="username" id="username" value="' + $userName.val() + '" />';
+                hdnHtml += '  <input type="hidden" name="name"     id="name"     value="' + $name.val() + '" />';
+                hdnHtml += '  <input type="hidden" name="userno"   id="userno"   value="' + $userno.val() + '" />';
 
             $("#form").append(hdnHtml);
 
             var data = $('#form').serialize();
 
-            $.ajax({
-                type : "post",
-                data : data,
-                url : "/security/users/modify",
-                success : function(e) {
-                if (e.success === 'true') {
-                    alert('수정이 완료되었습니다.');
-                    $('#myModal').hide();
-                    $(location).attr('href', '/security/users');
-                } else {
-                    alert(e.message);
+            var msg = confirm( "수정하시겠습니까?" );
+            if (msg === true) {
+                $.ajax({
+                    type : "post",
+                    beforeSend: function(xhr){
+                            xhr.setRequestHeader(header, token);
+                        },
+                    data : data,
+                    url : "/security/users/modify",
+                    success : function(e) {
+                    if (e.success === true) {
+                        alert('수정이 완료되었습니다.');
+                        $('#myModal').hide();
+                        $(location).attr('href', '/security/users');
+                    } else {
+                        alert(e.message);
+                        }
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                             $(location).attr('href', '/login?logout')
+                        }
                     }
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                         $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
+                });
+           } else if (msg === false) {
+               return;
+           }
         });
 
         // btnDelete event
         $(document).on("click", "#btnDelete", function(event){
             $('#form').attr("action", "/security/users/delete");
+
+            var hdnHtml = '   <input type="hidden" name="username" id="username" value="' + $userName.val() + '" />';
+                hdnHtml += '  <input type="hidden" name="name"     id="name"     value="' + $name.val() + '" />';
+                hdnHtml += '  <input type="hidden" name="userno"   id="userno"   value="' + $userno.val() + '" />';
+
+            $("#form").append(hdnHtml);
+
             var data = $('#form').serialize();
-            $.ajax({
-                type : "post",
-                data : data,
-                url : "/security/users/delete",
-                success : function(e) {
-                     if (e.success === 'true') {
-                         alert('삭제가 완료되었습니다.');
-                         $('#myModal').hide();
-                         $(location).attr('href', '/security/users')
-                     } else {
-                        alert(e.message);
-                     }
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                         $(location).attr('href', '/login?logout')
+
+            var msg = confirm( "삭제하시겠습니까?" );
+            if (msg === true) {
+                $.ajax({
+                    type : "post",
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header, token);
+                    },
+                    data : data,
+                    url : "/security/users/delete",
+                    success : function(e) {
+                         if (e.success === true) {
+                             alert('삭제가 완료되었습니다.');
+                             $('#myModal').hide();
+                             $(location).attr('href', '/security/users')
+                         } else {
+                            alert(e.message);
+                         }
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                             $(location).attr('href', '/login?logout')
+                        }
                     }
-                }
-            });
+                });
+           } else if (msg === false) {
+               return;
+           }
         });
 
         // btnInsert event
@@ -408,25 +407,33 @@
 
             var data = $('#form').serialize();
 
-            $.ajax({
-                type : "post",
-                data : data,
-                url : "/security/users/save",
-                success : function(e) {
-                    if (e.success === 'true') {
-                        alert('등록이 완료되었습니다.');
-                        $('#myModal').hide();
-                        $(location).attr('href', '/security/users')
-                    } else {
-                        alert(e.message);
+            var msg = confirm( "등록하시겠습니까?" );
+            if (msg === true) {
+                $.ajax({
+                    type : "post",
+                    data : data,
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header, token);
+                    },
+                    url : "/security/users/save",
+                    success : function(e) {
+                        if (e.success === true) {
+                            alert('등록이 완료되었습니다.');
+                            $('#myModal').hide();
+                            $(location).attr('href', '/security/users')
+                        } else {
+                            alert(e.message);
+                        }
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                             $(location).attr('href', '/login?logout')
+                        }
                     }
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                         $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
+                });
+           } else if (msg === false) {
+               return;
+           }
         });
     </script>
 </div>

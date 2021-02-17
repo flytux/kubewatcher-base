@@ -58,6 +58,7 @@ public class KwUserController {
 
         return "security/groups :: modalContents";
     }
+
     @GetMapping(value = "/security/users")
     public String userList(Model model) {
         List<KwUser> userList = kwUserService.getKwUserList();

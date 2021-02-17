@@ -11,7 +11,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +35,7 @@ public class KwUserServiceImpl implements KwUserService {
     /*
          KwUser를 ID로 조회한다.
     */
+    @Override
     public KwUser getKwUser(String username) {
         Optional<KwUser> kwUser = kwUserRepository.findById(username);
         return kwUser.get();
@@ -44,11 +44,11 @@ public class KwUserServiceImpl implements KwUserService {
     /*
          KwUser 목록을 조회한다.
     */
+    @Override
     public List<KwUser> getKwUserList() {
         return kwUserRepository.findAllBy();
     }
 
-    @Transactional
     @Override
     public ApiResponse<String> modifyUser(KwUser kwUser, String groupName, List<String> roleList) {
         ApiResponse<String> response = new ApiResponse<>();
@@ -90,7 +90,6 @@ public class KwUserServiceImpl implements KwUserService {
         return response;
     }
 
-    @Transactional
     @Override
     public ApiResponse<String> saveUser(KwUser kwUser, String groupName, List<String> roleList) {
         ApiResponse<String> response = new ApiResponse<>();
@@ -110,7 +109,6 @@ public class KwUserServiceImpl implements KwUserService {
             if (CollectionUtils.isEmpty(roleList)) {
                 kwUser.setRole(Collections.emptyList(),"save");
             } else {
-
                 List<KwUserRole> userRoles = roleList.stream().map(s -> {
                     KwUserRoleRule roleRule = kwUserRoleRuleRepository.findByRulename(s);
                     KwUserRoleId kwUserRoleId = new KwUserRoleId();
@@ -132,11 +130,12 @@ public class KwUserServiceImpl implements KwUserService {
             log.error("사용자 등록 실패 // username={}", kwUser.getUsername());
             response.setSuccess(false);
             response.setMessage(e.getMessage());
+            //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
         }
         return response;
     }
 
-    @Transactional
     @Override
     public ApiResponse<String> deleteUser(KwUser kwUser) {
         ApiResponse<String> response = new ApiResponse<>();

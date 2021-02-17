@@ -39,11 +39,7 @@
                         </tbody>
                     </table>
             </div>
-
         </div>
-<!--        <div class="text-center">-->
-<!--            <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>-->
-<!--        </div>-->
         <!-- [Roles] End-->
 
         <!-- [Modal] start -->
@@ -108,7 +104,6 @@
                 html += '</tr>';
             }
             $("#ruleTbody").append(html);
-
         });
 
         // btnNew event
@@ -138,15 +133,18 @@
             var msg = confirm( "저장하시겠습니까?" );
             if (msg === true) {
                 $.ajax({
+                    type: "post",
+                    beforeSend: function(xhr){
+                            xhr.setRequestHeader(header, token);
+                        },
                     url : "/security/roles/user-role-management/modify",
                     data : {
                         'rolenameList' : ruleName,
                         'ruleList' : rule
                     },
                     traditional : true,
-                    contentType : "application/json",
                     success : function (e){
-                        if (e.success === 'true') {
+                        if (e.success === true) {
                             alert('저장이 완료되었습니다.');
                             $('#myModal').hide();
                             $(location).attr('href', '/security/roles/user-role-management')
@@ -167,51 +165,63 @@
 
         // btnInsert event
         $(document).on("click", "#btnInsert", function(event){
-                let rolename = $("#rolename").val();
-                let description = $("#description").val();
-                var strRule = "";
+            let rolename = $("#rolename").val().replace(/\b[a-z]/, name => name.toUpperCase());
+            let description = $("#description").val();
+            var strRule = "";
 
-                for (var i = 0; i < Object.keys(pageRuleList[0]).length; i++) {
-                    strRule += "0";
-                }
+            for (var i = 0; i < Object.keys(pageRuleList[0]).length; i++) {
+                strRule += "0";
+            }
 
-                if (rolename === '') {
-                    alert('role이 입력되지 않았습니다.');
-                    return;
-                }
+            if (rolename === '') {
+                alert('Role Name이 입력되지 않았습니다.');
+                $('#rolename').focus();
+                return;
+            }
 
-                if (description === '') {
-                    alert('description이 입력되지 않았습니다.');
-                    return;
-                }
+            if (description === '') {
+                alert('description이 입력되지 않았습니다.');
+                $('#description').focus();
+                return;
+            }
 
-                var msg = confirm( "등록하시겠습니까?" );
-                if (msg === true) {
-                    $.ajax({
-                        url : "/security/roles/user-role-management/save",
-                        data : {
-                            'rulename' : rolename,
-                            'description' : description,
-                            'rule' : strRule
-                        },
-                        success : function(e){
-                            if (e.success === 'true') {
-                                alert('등록이 완료되었습니다.');
-                                $('#myModal').hide();
-                                $(location).attr('href', '/security/roles/user-role-management')
-                            } else {
-                                alert(e.message);
-                            }
-                        },
-                        error: function (e) {
-                            if (e.status === 401) {
-                                $(location).attr('href', '/login?logout')
-                            }
+           if (rolename.length < 5) {
+               alert( 'Role Name은 최소 5자리 입니다.' );
+               $("#rolename").focus();
+               return;
+           }
+
+            var msg = confirm( "등록하시겠습니까?" );
+            if (msg === true) {
+                $.ajax({
+                    type : "post",
+                    url : "/security/roles/user-role-management/save",
+                    data : {
+                        'rulename' : rolename,
+                        'description' : description,
+                        'rule' : strRule
+                    },
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header, token);
+                    },
+                    success : function(e){
+                        if (e.success === true) {
+                            alert('등록이 완료되었습니다.');
+                            $('#myModal').hide();
+                            $(location).attr('href', '/security/roles/user-role-management')
+                        } else {
+                            alert(e.message);
                         }
-                    });
-               } else if (msg === false) {
-                   return;
-               }
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                            $(location).attr('href', '/login?logout')
+                        }
+                    }
+                });
+           } else if (msg === false) {
+               return;
+           }
         });
 
         // modal reset

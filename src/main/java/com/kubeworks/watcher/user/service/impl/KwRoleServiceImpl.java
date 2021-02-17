@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
@@ -54,13 +53,11 @@ public class KwRoleServiceImpl implements KwRoleService {
         return kwUserRoleRuleRepository.findAllBy();
     }
 
-
     @Override
     public List<String> getKwUserRoleRule() {
         return kwUserRoleRuleRepository.findByName();
     }
 
-    @Transactional
     @Override
     public ApiResponse<String> modifyKwUserRoleRule(List<String> rolenameList, List<String> ruleList) {
         ApiResponse<String> response = new ApiResponse<>();
@@ -90,7 +87,7 @@ public class KwRoleServiceImpl implements KwRoleService {
             kwUserRoleRuleRepository.save(kwUserRoleRule);
             response.setSuccess(true);
         } catch (Exception e) {
-            log.error("role 등록 실패 // groupname={}", kwUserRoleRule.getRulename());
+            log.error("role 등록 실패 // rolename={}", kwUserRoleRule.getRulename());
             response.setSuccess(false);
             response.setMessage(e.getMessage());
         }

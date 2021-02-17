@@ -71,30 +71,31 @@
                             <table class="table-nt">
                                 <tr>
                                     <th>그룹명</th>
-                                    <td id="readGroupname">
-                                        <input type="text" id="groupingName" minlength="5" maxlength="40" style="width:100%;"
+                                    <td id="groupnameTd">
+                                        <input type="text" id="groupname" minlength="5" maxlength="40" style="width:100%;"
                                                th:value="${group?.groupname}">
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="usernameTr">
                                     <th>그룹 사용자</th>
                                     <td>
-                                        <div class="row" th:unless="${#arrays.isEmpty(group?.users)}" th:each="user : ${group?.users}">
+                                        <div class="row" th:if="${group?.users}" th:each="user : ${group?.users}">
                                             <div th:text="|${user.username} [${user.name}]|"/>
                                         </div>
-                                    </td>
-                                    </tr>
-                                <tr>
-                                    <th>최종변경일</th>
-                                    <td>
-                                        <div id="updateTime" th:text="${#temporals.format(group?.updateTime, 'yyyy-MM-dd hh:mm:ss')}"> </div>
+                                        <div class="row" th:if="${#arrays.isEmpty(group?.users)}">-</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>설명</th>
-                                    <td id="readDescription">
+                                    <td id="descriptionTd">
                                         <input type="text" style="width:100%;" maxlength="200" id="description"
                                                th:value="${group?.description}">
+                                    </td>
+                                </tr>
+                                <tr id="updateTimeTr">
+                                    <th>최종변경일</th>
+                                    <td>
+                                        <div id="updateTime" th:text="${#temporals.format(group?.updateTime, 'yyyy-MM-dd hh:mm:ss')}"> </div>
                                     </td>
                                 </tr>
                             </table>
@@ -113,28 +114,27 @@
         var $groupName = $("#var-groupname");
         var $description = $("#var-description");
 
-        var $formGroupname;
-        var $formDescription;
+        var $groupnameTd;
+        var $descriptionTd;
 
         function groupDetail(groupname) {
             $.ajax({
                 url: "/security/groups/" + groupname,
                 success: function (data) {
+                    $groupnameTd = $('#groupnameTd').html();
+                    $descriptionTd = $('#descriptionTd').html();
+
                     $('#myModal').text("");
                     $('#myModal').html(data);
                     $('#myModal').modal();
                     $(".knob").knob();
                     $('#btnSave').hide();
 
-                    $groupName.val( $('#groupingName').val() );
+                    $groupName.val( $('#groupname').val() );
                     $description.val( $('#description').val() );
 
-                    $formGroupname = $('#readGroupname').html();
-                    $formDescription = $('#readDescription').html();
-
-                    $('#readGroupname').html($groupName.val());
-                    $('#readDescription').html($description.val());
-
+                    $('#groupnameTd').html($groupName.val());
+                    $('#descriptionTd').html($description.val());
                 },
                 error: function (e) {
                     if (e.status === 401) {
@@ -146,48 +146,41 @@
 
         // modal reset
         $('#myModal').on('hidden.bs.modal', function (e) {
-            $(this).find('table').find('tr').eq(1).html('');
-            $(this).find('table').find('tr').eq(2).html('');
-
-            $('#readGroupname').html($formGroupname);
-            $('#readDescription').html($formDescription);
-
-            $('#groupingName').val('');
+            $('#usernameTr').html('');
+            $('#updateTimeTr').html('');
+            $('#groupnameTd').html($groupnameTd);
+            $('#descriptionTd').html($descriptionTd);
+            $('#groupname').val('');
             $('#description').val('');
         });
 
         // btnNew event
         $(document).ready(function () {
            $('#btnNew').on('click', function () {
-                $('#myModal').modal();
-                $('#myModalLabel').text('Group');
-                $('#btnDelete').hide();
-                $('#btnSave').show();
-                $('#groupName').attr('text', '');
-
-                if($(this).val() !== '1') {
-                    $('#myModal').find('table').find('tr').eq(1).html('');
-                    $('#myModal').find('table').find('tr').eq(2).html('');
-                }
-
-                $(this).val(1);
+               $('#myModal').modal();
+               $('#myModalLabel').text('Group');
+               $('#btnDelete').hide();
+               $('#btnSave').show();
+               $('#groupName').attr('text', '');
+               $('#usernameTr').html('');
+               $('#updateTimeTr').html('');
             });
         });
 
         // insert event
         $(document).on("click", "#btnSave", function(event){
-           let groupname = $("#groupingName").val();
+           let groupname = $("#groupname").val();
            let description = $("#description").val();
 
            if (groupname === '') {
                alert( "그룹명을 입력해주세요." );
-               $("#groupingName").focus();
+               $("#groupname").focus();
                return;
            }
 
            if (groupname.length < 5) {
-               alert( "그룹명은 최소 5자 이상 입력해주세요." );
-               $("#groupingName").focus();
+               alert( "그룹명은 최소 5자리 입니다." );
+               $("#groupname").focus();
                return;
            }
 
@@ -202,12 +195,16 @@
            if (msg === true) {
                $.ajax({
                     url: "/security/groups/save",
+                    type: "post",
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header, token);
+                    },
                     data : {
                         'groupname'   : groupname,
                         'description' : description
                     },
                     success: function (e) {
-                        if (e.success === 'true') {
+                        if (e.success === true) {
                             alert('등록이 완료되었습니다.');
                             $('#myModal').hide();
                             $(location).attr('href', '/security/groups/')
@@ -234,11 +231,15 @@
            if (msg === true) {
                 $.ajax({
                     url: "/security/groups/" + groupname + "/delete",
+                    type: "post",
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header, token);
+                    },
                     data : {
                         'groupname' : groupname,
                     },
                     success: function (e) {
-                        if (e.success === 'true') {
+                        if (e.success === true) {
                             $('#myModal').hide();
                             alert('삭제가 완료되었습니다.');
                             $(location).attr('href', '/security/groups/')

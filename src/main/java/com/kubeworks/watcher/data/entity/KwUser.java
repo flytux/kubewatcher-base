@@ -3,6 +3,7 @@ package com.kubeworks.watcher.data.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -52,16 +53,24 @@ public class KwUser extends BaseEntity {
     KwUserGroup kwUserGroup;
 
     public String getUserRole() {
-        List<String> rolenames = new ArrayList<>();
+        List<String> rolenameList = new ArrayList<>();
         KwUserRoleId roleId = new KwUserRoleId();
 
         for (int i=0; i< role.size(); i++) {
             roleId = role.get(i).getRolename();
             String rolename = roleId.getRolename();
-            rolenames.add(rolename);
+            rolenameList.add(rolename);
         }
-        String rulenames = rolenames.stream().collect(Collectors.joining(", "));
-        return rulenames;
+
+        String roles = "";
+
+        if (CollectionUtils.isNotEmpty(rolenameList)) {
+            roles = rolenameList.stream().collect(Collectors.joining(", "));
+        } else {
+            roles = "-";
+        }
+
+        return roles;
     }
 
 }
