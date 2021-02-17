@@ -19,6 +19,12 @@
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
                     <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
                 </th:block>
+<!--                <th:block th:if="${appNode.title} == '보험코어 어플리케이션 에러 카운트'">-->
+<!--                    <div class="col-xs-5 col-lg-5 box_chart_red">-->
+<!--                        <div class="txt text-center">Error Count</div>-->
+<!--                        <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>-->
+<!--                    </div>-->
+<!--                </th:block>-->
             </div>
         </div>
     </div>

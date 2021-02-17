@@ -33,7 +33,7 @@ public class MonitoringRestController {
     private static final long VM_OVERVIEW_MENU_ID = 140;
     private static final long VM_DETAIL_MENU_ID = 141;
     private static final long MAIN_MENU_ID = 99;
-    private static final long LOGGING_MENU_ID = 1127;
+    private static final long LOGGING_MENU_ID = 1128;
 
     private final PageViewService pageViewService;
     private final MonitoringProperties monitoringProperties;
