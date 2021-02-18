@@ -117,6 +117,9 @@ public class MonitoringRestController {
         response.put("page", page);
         response.put("services", applicationServiceProperties.getServices().stream()
             .map(ApplicationServiceProperties.Service::getName).collect(Collectors.toList()));
+        String joinString = applicationServiceProperties.getServices().stream()
+            .map(ApplicationServiceProperties.Service::getName).collect(Collectors.joining("|"));
+        response.put("applicationValue", joinString);
 
         return response;
     }

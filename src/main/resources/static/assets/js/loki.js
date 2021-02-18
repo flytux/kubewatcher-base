@@ -1,4 +1,6 @@
-
+    var MAX_QUERY_LIMIT = 5000; //api query limit
+    //var LOG_ATTR;
+    var TARGET_OBJ = {},TARGET_ID; // 에러로그 대상 app , appId
 $("#searchBtn").click(function(){
     var sDate = document.getElementById('startDate').value; //날짜
     var eDate = document.getElementById('endDate').value; //날짜
@@ -17,37 +19,37 @@ $("#searchBtn").click(function(){
     startT = startTime.padEnd(19,"0");
     endT = endTime.padEnd(19,"0");
 
-    //=======================================
-    if(targetId == undefined){
-        alert("error");
+    if(TARGET_ID == undefined){
+        alert("대상 어플리케이션 선택 필요");
+        return;
+    }else{
+        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local
+        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //Caas
+        console.log("조회 :",uri)
+        TARGET_OBJ.chartQueries[0].apiQuery = uri;
+
+        lokiJs.getDataByPanel(TARGET_OBJ, true,startT,endT)
+            .then(value => lokiJs.createTable(TARGET_OBJ, value))
     }
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + targetId +'"' + "} |= " +'"' +"error"+ '"';
-    obj.chartQueries[0].apiQuery = uri;
-
-    lokiJs.getDataByPanel(obj, true,startT,endT)
-        .then(value => lokiJs.createTable(obj, value))
-
 });
 
-var logAttr;
 $(document).on("click", ".extendlog", function(){
     var timeStamp = $(this)[0].id;
 });
 
 
-var obj = {},targetId;
 $(document).on("click", ".errtd", function(){ //에러 버튼 클릭
     var typeColId= $(this).children()[0].id; //renderTable 함수에서 ID값 부여
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"';
-    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + typeColId +'"' + ",stream!="+'""'  +"} |= " +'"' +"error"+ '"';
-    obj.chartQueries[0].apiQuery = uri; //panel과 container를 전역변수.
+    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local
+    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //Caas
+    console.log("에러버튼 :",uri)
+    TARGET_OBJ.chartQueries[0].apiQuery = uri; //panel과 container를 전역변수에 대입
+    TARGET_ID = typeColId; //에러로그를 조회할 app
 
-    targetId = typeColId; //에러로그 modal 버튼 클릭시 사용.
-
-   switch (obj.panelType) {
+   switch (TARGET_OBJ.panelType) {
         case "LOG_METRIC_TABLE":
-            lokiJs.getDataByPanel(obj, true)
-                .then(value => lokiJs.createTable(obj, value))
+            lokiJs.getDataByPanel(TARGET_OBJ, true)
+                .then(value => lokiJs.createTable(TARGET_OBJ, value))
             break;
     }
 });
@@ -96,10 +98,11 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     endT = endTime.padEnd(19,"0");
 
 
-    var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit=1000&query={";
-    var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"
+    var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={";
+    //var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local
+    var uriEnd = ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" + '"'+ "TX END : [1]"+'"' + "&start="+startT+"&end="+endT+"&step=60"; //=> caas
     var uri = uriStart +"app=" +'"' + app + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream="+'"'+stream+'"' + uriEnd;
-
+    console.log("logbtn 클릭 :",uri)
     fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
         .then((data) => logModalTable(data.data));
@@ -147,7 +150,7 @@ let lokiJs = (function () {
         let defaultIntervalMillis = 60 * 1000;
 
     function logrenderTable(panel, tableData) {
-
+        console.log("logrenderTable tableData :",tableData)
         if (tableData === undefined) {
             $('#container-' + panel.panelId)
                 .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -183,6 +186,7 @@ let lokiJs = (function () {
         $('#container-' + panel.panelId).html(tableHeaderHtml + tableBodyHtml);
     }
     function renderTable(panel, tableData) {
+            console.log("renderTable tableData :",tableData)
             if (tableData === undefined) {
                 $('#container-' + panel.panelId)
                     .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -196,13 +200,14 @@ let lokiJs = (function () {
                     .html(tableHtml);
                 return;
             }
-            
+
             const headers = tableData.headers;
             const dataArray = tableData.data;
 
             let totalCount = 0;
             for(let i =0; i<dataArray.length; i++){
                 totalCount = Number(dataArray[i].총건수);
+                successCount = Number(dataArray[i].정상);
                 errorCount = Number(dataArray[i].에러);
                 //elapsedTime = Number(dataArray[i].응답시간);
                 if(isNaN(totalCount)){
@@ -211,13 +216,15 @@ let lokiJs = (function () {
                 if(isNaN(errorCount)){
                     errorCount = 0;
                 }
-                dataArray[i].정상 = totalCount - errorCount;
+                if(isNaN(successCount)){
+                    successCount = 0;
+                }
+
+                //dataArray[i].정상 = totalCount - errorCount; //TODO 이렇게 구하는것과 successCount가 같은지 확인하고 같다면 successCount사용.
                 nomalPercent = 100 * ((totalCount - errorCount) / totalCount);
                 errorPercent = 100 * (errorCount / totalCount);
-
                 dataArray[i].정상율 = parseFloat(nomalPercent).toFixed(2);
                 dataArray[i].에러율 = parseFloat(errorPercent).toFixed(2);
-
             }
 
             let totalSum =0, nomalSum =0, errorSum =0, nomalAvg=0, errorAvg=0, elapsedAvg=0 ; //집계값
@@ -271,7 +278,7 @@ let lokiJs = (function () {
                     '<th>'+elapsedAvg+" ms"+'</th>' +'</tr></tfoot>');
             $('#container-' + panel.panelId).html(tableHeaderHtml + tableBodyHtml + tableFootHtml);
         }
-    
+
 
      function logConvertTableData(data) { // header 와 data 분리.
          if (data === undefined || data.length === 0) {
@@ -283,7 +290,8 @@ let lokiJs = (function () {
              data = [data];
          }
 
-         result.headers = ["pod","app","job","container","stream","Log"]; //TODO response로 받아오는 label 값이 달라서 공통으로 들어있는것들만 뽑아서 하드코딩. pod가 serviceId 개념.
+         result.headers = ["pod","app","job","container","stream","Log"]; //TODO local test용
+         //result.headers = ["serviceID,"ClientIP","RequestTime","ElapsedTime"] //Caas
          result.data = data.map(value => value);
 
          return result;
@@ -311,7 +319,7 @@ let lokiJs = (function () {
         colList = ["총건수","정상", "정상율","에러", "에러율","응답시간"];
         colList.unshift(typeCol);
         result.headers = colList
- 
+
         result.data = data.map(value => value); //원본
 
         return result;
@@ -375,12 +383,11 @@ let lokiJs = (function () {
                 const panelType = panel.panelType;
 
                 if(panelType == "LOG_METRIC_TABLE"){
-                    obj = panel;
+                    TARGET_OBJ = panel;
                 }
 
                 switch (panelType) {
                     case "METRIC_TABLE":
-                         panel = lokiJs.getApiUrl(panel ,serviceMap); //TODO 카스환경에 반영할때는 getApiUrl() 함수 필요- 어플리케이션 리스트를 받아와 url 조합.
                          this.getDataByPanel(panel, true)
                             .then(value => this.createTable(panel, value))
                             .then(panel => scheduleMap.set(panel.panelId,
@@ -394,7 +401,7 @@ let lokiJs = (function () {
                             )
                         break;
                     case "BADGE":
-                        panel = lokiJs.getErrorCount(panel,serviceMap)
+                       // panel = lokiJs.getErrorCount(panel,serviceMap) //TODO BADGE 데이터를 만드는 과정 검증필요..
                         this.getDataByPanel(panel, true)
                             .then(value => this.createBadge(panel, value,serviceMap))
                             .then(panel => scheduleMap.set(panel.panelId,
@@ -420,54 +427,25 @@ let lokiJs = (function () {
                     break;
             }
         },
-        getApiUrl : function(panel, serviceMap){
-            console.log("getApiUrl panel :",panel)
-            var uriTotalEnd = "} [1m])) by (app)";
-            var uriErrorEnd = "} |=" +'"'+"error"+'"'+"[1m])) by (app)";
-            var uriElapsedEnd =  "} [1m])) by (app)"; //TODO elapsedTime 사용시 작성 필요.
-            for(let i =0; i<panel.chartQueries.length; i++){
-                 var uri = "";
-                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(panel.chartQueries[i].apiQuery);
-                 for(let j=0; j<serviceMap.length; j++){
-                    if(j == 0) {
-                        uri += '"' + serviceMap[j]  + "|";
-                    }else if(j == serviceMap.length- 1){
-                        uri += serviceMap[j] + '"';
-                    }else{
-                        uri +=  serviceMap[j] + "|" ;
-                    }
-                 }
-                if(panel.chartQueries[i].legend == "총건수"){
-                    panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriTotalEnd;
-                }else if(panel.chartQueries[i].legend == "에러"){
-                   panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriErrorEnd;
-                }
-                else if(panel.chartQueries[i].legend == "응답시간"){
-                    panel.chartQueries[i].apiQuery = convertApiQuery + uri + uriElapsedEnd;
-                }
-            }
-            return panel;
-        },
-        getErrorCount : function(panel, serviceMap){ //TODO apiQuery, cqueryId, legend만 다른값..나머진 같은 값
-            console.log("getErrorCount panel :",panel)
-            //var arr = ["grafana","rancher","spring-petclinic","tekton-dashboard"]; //테스트를 위한 하드코딩 값 = > 반영시 serviceMap 으로 변경필요
-            var uriErrorEnd = "} |=" +'"'+"error"+'"'+"[1m])) by (app)";
-            for(let i =0; i<panel.chartQueries.length; i++){
-                 var uri = "";
-                 var copyArr = [];
-                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(panel.chartQueries[i].apiQuery);
-                 //for(let j=0; j<arr.length; j++){
-                 for(let j=0; j<serviceMap.length; j++){
-                    const clone = JSON.parse(JSON.stringify(panel.chartQueries[i])) //객체 복사
-                    uri = convertApiQuery + '"' +serviceMap[j]+ '"'+ uriErrorEnd;
-                    //uri = convertApiQuery + '"' +arr[j]+ '"'+ uriErrorEnd; //복사한 객체에 넣을 apiQuery
-                    clone.apiQuery = uri
-                    copyArr.push(clone);
-                 }
-            }
-            panel.chartQueries = copyArr; //servicemap 만큼의 쿼리문 동적 생성 후 panel에 반환.
-            return panel;
-        },
+
+//        getErrorCount : function(panel, serviceMap){
+//            console.log("getErrorCount panel :",panel)
+//            //var uriErrorEnd = "} |=" +'"'+"error"+'"'+"[1m])) by (app)";
+//            var uriErrorEnd = ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"'+"TX END : [1]"+'"'+"[1m])) by (app)";
+//            for(let i =0; i<panel.chartQueries.length; i++){
+//                 var uri = "";
+//                 var copyArr = [];
+//                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(panel.chartQueries[i].apiQuery);
+//                 for(let j=0; j<serviceMap.length; j++){
+//                    const clone = JSON.parse(JSON.stringify(panel.chartQueries[i]))
+//                    uri = convertApiQuery + '"' +serviceMap[j]+ '"'+ uriErrorEnd;
+//                    clone.apiQuery = uri
+//                    copyArr.push(clone);
+//                 }
+//            }
+//            panel.chartQueries = copyArr; //servicemap 만큼의 쿼리문 동적 생성 후 panel에 반환.
+//            return panel;
+//        },
         getDataByPanel: function (panel, isCreate,startT,endT) {
             return Promise.all(panel.chartQueries.map(chartQuery => {
                 const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery);
@@ -516,7 +494,6 @@ let lokiJs = (function () {
                 let data = new Map();
                 for (let i = 0; i < dataArray.length; i++) {
                     if(dataArray[i].status == 404){
-                       logrenderTable(panel);
                        break;
                     }
                     let item = dataArray[i];
@@ -524,13 +501,12 @@ let lokiJs = (function () {
                         const key = Object.keys(value.stream);
                         let element = data.get(key);
                         if (element === undefined) {
-                            element = {}; //value.stream
+                            element = {};
                               for (const [key, entry] of Object.entries(value.stream)) {
                                 element[key] = entry;
                               }
                         }
                         data.set(key, element);
-
                     });
 
                 }
