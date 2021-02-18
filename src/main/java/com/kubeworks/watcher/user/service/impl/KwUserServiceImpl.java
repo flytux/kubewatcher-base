@@ -58,8 +58,12 @@ public class KwUserServiceImpl implements KwUserService {
             dbUser.setPassword(kwUser.getPassword());
             dbUser.setDept(kwUser.getDept());
 
-            KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
-            dbUser.setKwUserGroup(group);
+            if (groupName != "") {
+                KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
+                dbUser.setKwUserGroup(group);
+            } else {
+                dbUser.setKwUserGroup(null);
+            }
 
             if (CollectionUtils.isEmpty(roleList)) {
                 dbUser.setRole(Collections.emptyList(), "modify");
@@ -99,8 +103,12 @@ public class KwUserServiceImpl implements KwUserService {
                 throw new IllegalArgumentException("이미 등록되어 있는 ID입니다. Id=" + kwUser.getUsername());
             }
 
-            KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
-            kwUser.setKwUserGroup(group);
+            if (groupName != "") {
+                KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
+                kwUser.setKwUserGroup(group);
+            } else {
+                kwUser.setKwUserGroup(null);
+            }
 
             LocalDateTime now = LocalDateTime.now();
             kwUser.setCreateTime(now);

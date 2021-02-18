@@ -62,7 +62,7 @@ public class KwUser extends BaseEntity {
             rolenameList.add(rolename);
         }
 
-        String roles = "";
+        String roles;
 
         if (CollectionUtils.isNotEmpty(rolenameList)) {
             roles = rolenameList.stream().collect(Collectors.joining(", "));

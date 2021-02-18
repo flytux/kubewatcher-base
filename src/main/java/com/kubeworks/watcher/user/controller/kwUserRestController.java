@@ -11,13 +11,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -42,9 +40,9 @@ public class kwUserRestController {
 
     @ResponseBody
     @PostMapping("/security/users/modify")
-    public ApiResponse<String> modifyUser(@ModelAttribute("user") KwUser kwUser, @RequestParam("groupList") String groupList,
+    public ApiResponse<String> modifyUser(@ModelAttribute("user") KwUser kwUser, @RequestParam("groupList") String groupName,
                              @RequestParam("roleList") List<String> roleList, Model model) {
-        return kwUserService.modifyUser(kwUser, groupList, roleList);
+        return kwUserService.modifyUser(kwUser, groupName, roleList);
     }
 
     @ResponseBody
@@ -55,9 +53,9 @@ public class kwUserRestController {
 
     @ResponseBody
     @PostMapping("/security/users/save")
-    public ApiResponse<String> saveUser(@ModelAttribute("user") KwUser kwUser, @RequestParam("groupList") String groupList,
+    public ApiResponse<String> saveUser(@ModelAttribute("user") KwUser kwUser, @RequestParam("groupList") String groupName,
                            @RequestParam("roleList") List<String> roleList) {
-        return kwUserService.saveUser(kwUser, groupList, roleList);
+        return kwUserService.saveUser(kwUser, groupName, roleList);
     }
 
     @ResponseBody

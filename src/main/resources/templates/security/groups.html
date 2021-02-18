@@ -114,19 +114,13 @@
         var $groupName = $("#var-groupname");
         var $description = $("#var-description");
 
-        var $groupnameTd;
-        var $descriptionTd;
-
         function groupDetail(groupname) {
             $.ajax({
                 url: "/security/groups/" + groupname,
                 success: function (data) {
-                    $groupnameTd = $('#groupnameTd').html();
-                    $descriptionTd = $('#descriptionTd').html();
-
                     $('#myModal').text("");
                     $('#myModal').html(data);
-                    $('#myModal').modal();
+                    $('#myModal').modal('show');
                     $(".knob").knob();
                     $('#btnSave').hide();
 
@@ -144,26 +138,18 @@
             });
         }
 
-        // modal reset
-        $('#myModal').on('hidden.bs.modal', function (e) {
-            $('#usernameTr').html('');
-            $('#updateTimeTr').html('');
-            $('#groupnameTd').html($groupnameTd);
-            $('#descriptionTd').html($descriptionTd);
-            $('#groupname').val('');
-            $('#description').val('');
-        });
-
         // btnNew event
         $(document).ready(function () {
            $('#btnNew').on('click', function () {
-               $('#myModal').modal();
+               $('#myModal').modal('show');
+               $('#groupnameTd').html('<input type="text" name="groupname" id="groupname" style="width:100%;" />');
+               $('#descriptionTd').html('<input type="text" name="description" id="description" style="width:100%;" />');
+               $('#usernameTr').html('');
+               $('#updateTimeTr').html('');
                $('#myModalLabel').text('Group');
                $('#btnDelete').hide();
                $('#btnSave').show();
                $('#groupName').attr('text', '');
-               $('#usernameTr').html('');
-               $('#updateTimeTr').html('');
             });
         });
 
@@ -206,7 +192,7 @@
                     success: function (e) {
                         if (e.success === true) {
                             alert('등록이 완료되었습니다.');
-                            $('#myModal').hide();
+                            $('#myModal').modal('hide');
                             $(location).attr('href', '/security/groups/')
                         } else {
                             alert(e.message);
@@ -240,8 +226,8 @@
                     },
                     success: function (e) {
                         if (e.success === true) {
-                            $('#myModal').hide();
                             alert('삭제가 완료되었습니다.');
+                            $('#myModal').hide();
                             $(location).attr('href', '/security/groups/')
                         } else {
                             alert(e.message);

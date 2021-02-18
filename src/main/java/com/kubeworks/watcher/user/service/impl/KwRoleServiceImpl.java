@@ -84,10 +84,14 @@ public class KwRoleServiceImpl implements KwRoleService {
     public ApiResponse<String> saveKwUserRoleRule(KwUserRoleRule kwUserRoleRule) {
         ApiResponse<String> response = new ApiResponse<>();
         try {
+            KwUserRoleRule dbKwRoleRuleOptional = kwUserRoleRuleRepository.findByRulename(kwUserRoleRule.getRulename());
+            if (dbKwRoleRuleOptional != null) {
+                throw new IllegalArgumentException("이미 등록되어 있는 Role Name 입니다. Role Name=" + kwUserRoleRule.getRulename());
+            }
             kwUserRoleRuleRepository.save(kwUserRoleRule);
             response.setSuccess(true);
         } catch (Exception e) {
-            log.error("role 등록 실패 // rolename={}", kwUserRoleRule.getRulename());
+            log.error("role 등록 실패 // Role Name={}", kwUserRoleRule.getRulename());
             response.setSuccess(false);
             response.setMessage(e.getMessage());
         }

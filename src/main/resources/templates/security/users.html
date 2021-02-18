@@ -196,26 +196,14 @@
         var $userno = $("#var-userno");
         var $name = $("#var-name");
 
-        var $usernameTd;
-        var $nameTd;
-        var $usernoTd;
-        var $passwordTd;
-        var $deptTd;
-
         function userDetail(username) {
             $userName.val(username);
             $.ajax({
                 url: "/security/users/" + username,
                 success: function (data) {
-                    $usernameTd = $('#usernameTd').html();
-                    $nameTd = $('#nameTd').html();
-                    $usernoTd = $('#usernoTd').html();
-                    $passwordTd = $('#passwordTd').html();
-                    $deptTd = $('#deptTd').html();
-
                     $('#myModal').text("");
                     $('#myModal').html(data);
-                    $('#myModal').modal();
+                    $('#myModal').modal('show');
                     $(".knob").knob();
                     $('#btnInsert').hide();
 
@@ -234,19 +222,17 @@
             });
         }
 
-        // modal reset
-        $('#myModal').on('hidden.bs.modal', function (e) {
-            $('#usernameTd').html($usernameTd);
-            $('#nameTd').html($nameTd);
-            $('#usernoTd').html($usernoTd);
-            $('#passwordTd').html($passwordTd);
-            $('#deptTd').html($deptTd);
-        });
-
         // btnNew event
         $(document).ready(function () {
            $('#btnNew').on('click', function () {
-               $('#myModal').modal();
+               $('#myModal').modal('show');
+
+               $('#usernameTd').html('<input type="text" name="username" id="username" style="width:100%;" />');
+               $('#nameTd').html('<input type="text" name="name" id="name" style="width:100%;" />');
+               $('#usernoTd').html('<input type="text" name="userno" id="userno" style="width:100%;" />');
+               $('#password').val('');
+               $('#dept').val('');
+
                $('#myModalLabel').text('User');
                $('#btnModify').attr('id', 'btnInsert');
                $('#btnDelete').hide();
@@ -286,6 +272,11 @@
                 $("#form").append(html);
             }
 
+            if (groups.length === 0) {
+                var html = '  <input type="hidden" name="groupList" id="groupList" value="" />';
+                $("#form").append(html);
+            }
+
             var hdnHtml = '   <input type="hidden" name="username" id="username" value="' + $userName.val() + '" />';
                 hdnHtml += '  <input type="hidden" name="name"     id="name"     value="' + $name.val() + '" />';
                 hdnHtml += '  <input type="hidden" name="userno"   id="userno"   value="' + $userno.val() + '" />';
@@ -306,7 +297,7 @@
                     success : function(e) {
                     if (e.success === true) {
                         alert('수정이 완료되었습니다.');
-                        $('#myModal').hide();
+                        $('#myModal').modal('hide');
                         $(location).attr('href', '/security/users');
                     } else {
                         alert(e.message);
@@ -347,7 +338,7 @@
                     success : function(e) {
                          if (e.success === true) {
                              alert('삭제가 완료되었습니다.');
-                             $('#myModal').hide();
+                             $('#myModal').modal('hide');
                              $(location).attr('href', '/security/users')
                          } else {
                             alert(e.message);
@@ -405,6 +396,11 @@
                 $("#form").append(html);
             }
 
+            if (groups.length === 0) {
+                var html = '  <input type="hidden" name="groupList" id="groupList" value="" />';
+                $("#form").append(html);
+            }
+
             var data = $('#form').serialize();
 
             var msg = confirm( "등록하시겠습니까?" );
@@ -419,7 +415,7 @@
                     success : function(e) {
                         if (e.success === true) {
                             alert('등록이 완료되었습니다.');
-                            $('#myModal').hide();
+                            $('#myModal').modal('hide');
                             $(location).attr('href', '/security/users')
                         } else {
                             alert(e.message);

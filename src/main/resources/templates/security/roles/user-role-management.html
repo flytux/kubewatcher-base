@@ -108,7 +108,7 @@
 
         // btnNew event
         $(document).on("click", "#btnNew", function(event){
-            $('#myModal').modal();
+            $('#myModal').modal('show');
         });
 
         // btnModify event
@@ -146,7 +146,7 @@
                     success : function (e){
                         if (e.success === true) {
                             alert('저장이 완료되었습니다.');
-                            $('#myModal').hide();
+                            $('#myModal').modal('hide');
                             $(location).attr('href', '/security/roles/user-role-management')
                         } else {
                             alert(e.message);
@@ -165,7 +165,7 @@
 
         // btnInsert event
         $(document).on("click", "#btnInsert", function(event){
-            let rolename = $("#rolename").val().replace(/\b[a-z]/, name => name.toUpperCase());
+            let rolename = $("#rolename").val().replace(/\b[a-z]/, name => name.toUpperCase()); // Role Name 등록시 uppercase 적용
             let description = $("#description").val();
             var strRule = "";
 
@@ -207,7 +207,7 @@
                     success : function(e){
                         if (e.success === true) {
                             alert('등록이 완료되었습니다.');
-                            $('#myModal').hide();
+                            $('#myModal').modal('hide');
                             $(location).attr('href', '/security/roles/user-role-management')
                         } else {
                             alert(e.message);
