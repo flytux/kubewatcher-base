@@ -56,12 +56,13 @@ public class KwUser extends BaseEntity {
         List<String> rolenameList = new ArrayList<>();
         KwUserRoleId roleId = new KwUserRoleId();
 
-        for (int i=0; i< role.size(); i++) {
-            roleId = role.get(i).getRolename();
-            String rolename = roleId.getRolename();
-            rolenameList.add(rolename);
+        if (!role.isEmpty()) {
+            for (int i = 0; i < role.size(); i++) {
+                roleId = role.get(i).getRolename();
+                String rolename = roleId.getRolename();
+                rolenameList.add(rolename);
+            }
         }
-
         String roles;
 
         if (CollectionUtils.isNotEmpty(rolenameList)) {

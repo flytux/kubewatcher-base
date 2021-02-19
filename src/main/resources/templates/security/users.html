@@ -31,8 +31,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="box_panel">
+        <div id="userList" class="row">
+            <div th:fragment="userList" class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(userList) ? '0' : userList.size()}" class="point pr_10">6</span>
                 </div>
@@ -192,6 +192,8 @@
         let roles = [[${roleList}]],
             groups = [[${groupList}]];
 
+        var $userList = $("#userList");
+
         var $userName = $("#var-userName");
         var $userno = $("#var-userno");
         var $name = $("#var-name");
@@ -294,13 +296,13 @@
                         },
                     data : data,
                     url : "/security/users/modify",
-                    success : function(e) {
-                    if (e.success === true) {
+                    success : function(data) {
+                    if (data.modify.success === true) {
                         alert('수정이 완료되었습니다.');
                         $('#myModal').modal('hide');
-                        $(location).attr('href', '/security/users');
+                        $userList.html(data.html);
                     } else {
-                        alert(e.message);
+                        alert(data.modify.message);
                         }
                     },
                     error: function (e) {
@@ -335,13 +337,13 @@
                     },
                     data : data,
                     url : "/security/users/delete",
-                    success : function(e) {
-                         if (e.success === true) {
+                    success : function(data) {
+                         if (data.delete.success === true) {
                              alert('삭제가 완료되었습니다.');
                              $('#myModal').modal('hide');
-                             $(location).attr('href', '/security/users')
+                             $userList.html(data.html);
                          } else {
-                            alert(e.message);
+                            alert(data.delete.message);
                          }
                     },
                     error: function (e) {
@@ -412,13 +414,13 @@
                         xhr.setRequestHeader(header, token);
                     },
                     url : "/security/users/save",
-                    success : function(e) {
-                        if (e.success === true) {
+                    success : function(data) {
+                        if (data.save.success === true) {
                             alert('등록이 완료되었습니다.');
                             $('#myModal').modal('hide');
-                            $(location).attr('href', '/security/users')
+                            $userList.html(data.html);
                         } else {
-                            alert(e.message);
+                            alert(data.save.message);
                         }
                     },
                     error: function (e) {

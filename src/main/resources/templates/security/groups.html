@@ -20,8 +20,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="box_panel">
+        <div id="groupList" class="row">
+            <div th:fragment="groupList" class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(groupList) ? '0' : groupList.size()}" class="point pr_10">6</span>
                 </div>
@@ -43,7 +43,10 @@
                                 <a class="table2-link" th:href="'javascript:groupDetail(&quot;'+ ${group?.groupname} + '&quot;)'"
                                    th:utext="${group?.groupname}"></a>
                             </td>
-                            <td th:text="${group?.users.size()}"></td>
+                            <td>
+                                <div class="row" th:if="${group?.users}" th:text="${group?.users.size()}"></div>
+                                <div class="row" th:unless="${group?.users}">0</div>
+                            </td>
                             <td th:text="${#temporals.format(group?.createTime, 'yyyy-MM-dd hh:mm:ss')}"> </td>
                         </tr>
                         </tbody>
@@ -113,6 +116,7 @@
 
         var $groupName = $("#var-groupname");
         var $description = $("#var-description");
+        var $groupList = $("#groupList");
 
         function groupDetail(groupname) {
             $.ajax({
@@ -189,13 +193,14 @@
                         'groupname'   : groupname,
                         'description' : description
                     },
-                    success: function (e) {
-                        if (e.success === true) {
+                    success: function (data) {
+                        if (data.save.success === true) {
                             alert('등록이 완료되었습니다.');
                             $('#myModal').modal('hide');
-                            $(location).attr('href', '/security/groups/')
+                            $groupList.text('');
+                            $groupList.html(data.html);
                         } else {
-                            alert(e.message);
+                            alert(data.save.message);
                         }
                     },
                     error: function (e) {
@@ -216,7 +221,7 @@
 
            if (msg === true) {
                 $.ajax({
-                    url: "/security/groups/" + groupname + "/delete",
+                    url: "/security/groups/delete",
                     type: "post",
                     beforeSend: function(xhr){
                         xhr.setRequestHeader(header, token);
@@ -224,13 +229,14 @@
                     data : {
                         'groupname' : groupname,
                     },
-                    success: function (e) {
-                        if (e.success === true) {
+                    success: function (data) {
+                        if (data.delete.success === true) {
                             alert('삭제가 완료되었습니다.');
                             $('#myModal').hide();
-                            $(location).attr('href', '/security/groups/')
+                            $groupList.html(data.html);
+
                         } else {
-                            alert(e.message);
+                            alert(data.delete.message);
                         }
                     },
                     error: function (e) {
