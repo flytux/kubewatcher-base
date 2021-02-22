@@ -23,8 +23,8 @@ $("#searchBtn").click(function(){
         alert("대상 어플리케이션 선택 필요");
         return;
     }else{
-        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local
-        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //Caas
+        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local
+        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //Caas
         console.log("조회 :",uri)
         TARGET_OBJ.chartQueries[0].apiQuery = uri;
 
@@ -33,15 +33,10 @@ $("#searchBtn").click(function(){
     }
 });
 
-$(document).on("click", ".extendlog", function(){
-    var timeStamp = $(this)[0].id;
-});
-
-
 $(document).on("click", ".errtd", function(){ //에러 버튼 클릭
     var typeColId= $(this).children()[0].id; //renderTable 함수에서 ID값 부여
-    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //Caas
+    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local
+    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; // TODO Caas
     console.log("에러버튼 :",uri)
     TARGET_OBJ.chartQueries[0].apiQuery = uri; //panel과 container를 전역변수에 대입
     TARGET_ID = typeColId; //에러로그를 조회할 app
@@ -59,24 +54,25 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var tdArr = $(this).parent().parent().children();
     var total = $(this).parent().parent().children().length;
     let element = {};
-    var pod = "";
-    var container = "";
-    var app = "";
-    var stream = "";
-
+    var serviceId = "";
+    var clientIp = "";
+    var uniqueId ="";  //고유값으로 설정하여 이값을 기준으로 로그 불러오게끔 만들기.
+    //TODO Caas환경에서는 표시될 컬럼은 ServiceID , ClientIP ,RequestTime, ElpsedTime 여기서 파라미터값으로 사용할 컬럼 체크하여 로그리스트를 불러오는 쿼리 만들어야함.
     $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
-        if($(item).attr("name") == "pod"){
-            pod = $(item).text();
+        console.log("로그버튼 :",item)
+        if($(item).attr("name") == "ServiceId"){
+            serviceId = $(item).text();
         }
-        if($(item).attr("name") == "container"){
-            container = $(item).text();
+        if($(item).attr("name") == "ClientIP"){
+            clientIp = $(item).text();
         }
         if($(item).attr("name") == "app"){
             app = $(item).text();
         }
-        if($(item).attr("name") == "stream"){
-            stream = $(item).text();
+        if($(item).attr("name") == "uniqueId"){
+            uniqueId = item.id;
         }
+
     });
 
     /*조회조건 시간값 가져오기.*/
@@ -99,9 +95,10 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
 
     var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={";
-    //var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local
-    var uriEnd = ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" + '"'+ "TX END : [1]"+'"' + "&start="+startT+"&end="+endT+"&step=60"; //=> caas
-    var uri = uriStart +"app=" +'"' + app + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream="+'"'+stream+'"' + uriEnd;
+    //var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local용
+    var uriEnd = ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" + '"'+ "TX END : [1]"+'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO - Caas용
+    //",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
+    //var uri = uriStart +"serviceId=" +'"' + serviceId + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream="+'"'+stream+'"' + uriEnd;
     console.log("logbtn 클릭 :",uri)
     fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
@@ -109,6 +106,9 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
 });
 
+$(document).on("click", ".extendlog", function(){
+    var timeStamp = $(this)[0].id;
+});
 
 function logModalTable(tableData){
       $('#logModal').modal(); //step1 : modal 호출.
@@ -150,7 +150,7 @@ let lokiJs = (function () {
         let defaultIntervalMillis = 60 * 1000;
 
     function logrenderTable(panel, tableData) {
-        console.log("logrenderTable tableData :",tableData)
+
         if (tableData === undefined) {
             $('#container-' + panel.panelId)
                 .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -175,7 +175,7 @@ let lokiJs = (function () {
                 let trAppend = '';
                 for (let header of headers) {
                     if(header == "Log"){
-                        trAppend += '<td>' + '<input type="button" class="logbtn btn btn-md btn-outline-white" value="Log" id="'+ item.pod  +'" >' + '</td>';
+                        trAppend += '<td name="uniqueId" id="'+ item.uniqueId  +'">' + '<input type="button" class="logbtn btn btn-md btn-outline-white" value="Log">' + '</td>';
                     }else{
                         trAppend += '<td name="'+ header +'">' + item[header]  + '</td>';
                     }
@@ -186,7 +186,7 @@ let lokiJs = (function () {
         $('#container-' + panel.panelId).html(tableHeaderHtml + tableBodyHtml);
     }
     function renderTable(panel, tableData) {
-            console.log("renderTable tableData :",tableData)
+            //console.log("renderTable tableData :",tableData)
             if (tableData === undefined) {
                 $('#container-' + panel.panelId)
                     .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -275,7 +275,7 @@ let lokiJs = (function () {
                 //elapsedAvg = parseFloat(elapsedAvg / rowCount).toFixed(1) ;
                 const tableFootHtml = String.prototype.concat('<tfoot><tr>'
                     + '<th>집계</th>' + '<th>'+ totalSum +'</th>' + '<th>'+nomalSum+'</th>' + '<th>'+nomalAvg+" %"+'</th>' + '<th>'+errorSum+'</th>' + '<th>'+errorAvg+" %"+'</th>' +
-                    '<th>'+elapsedAvg+" ms"+'</th>' +'</tr></tfoot>');
+                    '</tr></tfoot>'); //'<th>'+elapsedAvg+" ms"+'</th>' +
             $('#container-' + panel.panelId).html(tableHeaderHtml + tableBodyHtml + tableFootHtml);
         }
 
@@ -284,16 +284,13 @@ let lokiJs = (function () {
          if (data === undefined || data.length === 0) {
              return undefined;
          }
-
          let result = {};
          if (!Array.isArray(data)) {
              data = [data];
          }
-
-         result.headers = ["pod","app","job","container","stream","Log"]; //TODO local test용
-         //result.headers = ["serviceID,"ClientIP","RequestTime","ElapsedTime"] //Caas
+         //result.headers = ["pod","app","job","container","stream","Log"]; //TODO local test용 - api 결과값의 stream 값을 기준으로 설정했었다.
+         result.headers = ["ServiceId","ClientIP","RequestTime","ElapsedTime","Log"]; //TODO Caas 환경에서 표시할 항목값들만 선언..
          result.data = data.map(value => value);
-
          return result;
      }
 
@@ -315,8 +312,7 @@ let lokiJs = (function () {
             ..
             + 응답시간(elapsedTime) api-Query문 작성 및 검증 필요
         */
-        //colList = ["총건수","정상", "정상율","에러", "에러율"];
-        colList = ["총건수","정상", "정상율","에러", "에러율","응답시간"];
+        colList = ["총건수","정상", "정상율","에러", "에러율"];
         colList.unshift(typeCol);
         result.headers = colList
 
@@ -382,7 +378,7 @@ let lokiJs = (function () {
                 panel.readyTimestamp = readyTimestamp;
                 const panelType = panel.panelType;
 
-                if(panelType == "LOG_METRIC_TABLE"){
+                if(panelType == "LOG_METRIC_TABLE" && panelType !== null){
                     TARGET_OBJ = panel;
                 }
 
@@ -479,8 +475,6 @@ let lokiJs = (function () {
 
         getFetchRequest: function (url) {
             return fetch(url).then(response => {
-                if(response.status == 404){ //예외처리 필요?
-                }
                 const contentType = response.headers.get("Content-Type");
                 if (contentType.indexOf("text/html") >= 0) {
                     return response.text();
@@ -490,25 +484,58 @@ let lokiJs = (function () {
         },
         createTable: function (panel, dataArray) {
             let tableData;
-            if (panel.panelType === 'LOG_METRIC_TABLE') {
+
+            if (panel.panelType === 'LOG_METRIC_TABLE') { //TODO Cass 환경
                 let data = new Map();
                 for (let i = 0; i < dataArray.length; i++) {
                     if(dataArray[i].status == 404){
+                      logrenderTable(panel);
+                       break;
+                    }else if(dataArray[i].data.result == ""){ // 값이 없을경우
+                       logrenderTable(panel);
                        break;
                     }
                     let item = dataArray[i];
-                    item.data.result.forEach(value => {
-                        const key = Object.keys(value.stream);
-                        let element = data.get(key);
-                        if (element === undefined) {
-                            element = {};
-                              for (const [key, entry] of Object.entries(value.stream)) {
-                                element[key] = entry;
-                              }
-                        }
-                        data.set(key, element);
-                    });
+                    //const serviceName = item.data.result[0].stream.pod;
+                    let values = item.data.result[i].values;
 
+                    var requestTime;
+                    for(let j=0; j<values.length; j++){
+                        element = {};
+                        myDate = new Date(values[j][0]/1000000);
+                        requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
+                        splitWord = values[j][1].split(" ");
+
+                        uniqueId = splitWord[4]; //local
+                        serviceId = splitWord[3]; //local
+                        clientIP = splitWord[5]; //local
+                        elpasedTime = splitWord.pop(); //local
+
+
+//                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기.
+//                       uniqueId = uniqueid.replace(/\[/," ");
+//                       uniqueId = uniqueid.replace(/\]/," ");
+
+//                       serviceId = splitWord[9]; //TODO Caas환경: serviceId
+//                       serviceId = serviceId.replace(/\[/," ");
+//                       serviceId = serviceId.replace(/\]/," ");
+
+//                       clientIP = splitWord[10]; //TODO Caas환경: clientIP
+//                       clientIP = clientIP.replace(/\[/," ");
+//                       clientIP = clientIP.replace(/\]/," ");
+
+//                       elpasedTime = splitWord.pop(); //TODO Caas환경: ElpsedTime 값
+
+//                       console.log(uniqueId,serviceId,clientIP,requestTime,elpasedTime)
+
+                        element["RequestTime"] = requestTime;
+                        element["ServiceId"] = serviceId;
+                        element["ClientIP"] = clientIP;
+                        element["ElapsedTime"] = elpasedTime;
+                        element["uniqueId"] = uniqueId;
+
+                        data.set(j,element);
+                    }
                 }
                     tableData = logConvertTableData([...data.values()]);
                     logrenderTable(panel, tableData);
@@ -537,9 +564,10 @@ let lokiJs = (function () {
                     }
 
                     element[legend] = parseFloat(valueCount).toFixed(1) - 0;
-                    //element[legend] = this.convertValue(parseFloat(valueCount).toFixed(1) - 0, panel.yaxisUnit); //parseFloat 부동소수점 실수로 반환. -> 소수점 처리?
+
                     data.set(key, element);
                     });
+                    //console.log(data);
                 }
                 tableData = convertTableData([...data.values()]);
                 renderTable(panel, tableData);
