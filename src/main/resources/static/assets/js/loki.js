@@ -23,8 +23,8 @@ $("#searchBtn").click(function(){
         alert("대상 어플리케이션 선택 필요");
         return;
     }else{
-        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local
-        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //Caas
+        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local용
+        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //TODO Caas환경용
         console.log("조회 :",uri)
         TARGET_OBJ.chartQueries[0].apiQuery = uri;
 
@@ -35,8 +35,8 @@ $("#searchBtn").click(function(){
 
 $(document).on("click", ".errtd", function(){ //에러 버튼 클릭
     var typeColId= $(this).children()[0].id; //renderTable 함수에서 ID값 부여
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local
-    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; // TODO Caas
+    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local용
+    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; // TODO Caas환경용
     console.log("에러버튼 :",uri)
     TARGET_OBJ.chartQueries[0].apiQuery = uri; //panel과 container를 전역변수에 대입
     TARGET_ID = typeColId; //에러로그를 조회할 app
@@ -58,8 +58,8 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var label_pod = "";
     var label_app = "";
     var label_filename = "";
-    var uniqueId ="";  //고유값으로 설정하여 이값을 기준으로 로그 불러오게끔 만들기.
-    //TODO Caas환경에서는 표시될 컬럼은 ServiceID , ClientIP ,RequestTime, ElpsedTime 여기서 파라미터값으로 사용할 컬럼 체크하여 로그리스트를 불러오는 쿼리 만들어야함.
+    var uniqueId ="";  //고유값으로 설정하여 이값을 기준으로 로그 불러오게끔 만들기 테스트
+
     $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
         //console.log("로그버튼 :",item)
         if($(item).attr("name") == "serviceId"){
@@ -99,13 +99,14 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     endT = endTime.padEnd(19,"0");
 
     var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={";
-    var uriEnd = ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"} |="+ '"'+ uniqueId +'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO - Caas용 에러메시지 구분 marker 확인 필요.
+
+    var uriEnd = ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"} |="+ '"'+ uniqueId +'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO  Caas환경용 에러메시지 구분 marker 확인 필요.
+    //TODO Task2 한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음. ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
     var uri = uriStart +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' + uriEnd;
 
-    //한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음. ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
-
     //var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local용
-    //var uri = uriStart +"serviceId=" +'"' + serviceId + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream="+'"'+stream+'"' + uriEnd;
+    //var uri = uriStart +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +uriEnd; //local용
+
     console.log("logbtn 클릭 :",uri)
     fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
@@ -121,7 +122,8 @@ function logModalTable(tableData){
       $('#logModal').modal(); //step1 : modal 호출.
       var data = tableData.result;
 
-      $('#serviceName').text(data[0].stream.pod);
+      $('#serviceName').text(data[0].stream.serviceId); //TODO Caas환경용
+      //$('#serviceName').text(data[0].stream.pod);// local용
       var dataArray = [];
       var dataArrayAll = [];
 
@@ -511,7 +513,7 @@ let lokiJs = (function () {
         createTable: function (panel, dataArray) {
             let tableData;
 
-            if (panel.panelType === 'LOG_METRIC_TABLE') { //TODO Cass 환경
+            if (panel.panelType === 'LOG_METRIC_TABLE') {
                 let data = new Map();
                 for (let i = 0; i < dataArray.length; i++) {
                     if(dataArray[i].status == 404){
@@ -524,7 +526,7 @@ let lokiJs = (function () {
                     let item = dataArray[i];
                     let values = item.data.result[i].values;
 
-                    const appName = item.data.result[0].stream.app; //TODO Caas환경 Log label 추출  - 로그 호출용
+                    const appName = item.data.result[0].stream.app;
                     const makerName = item.data.result[0].stream.maker;
                     const podName = item.data.result[0].stream.pod;
                     const serviceIdName = item.data.result[0].stream.serviceId;
@@ -537,24 +539,24 @@ let lokiJs = (function () {
                         requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
                         splitWord = values[j][1].split(" ");
 
-//                        uniqueId = splitWord[4]; //local
-//                        serviceId = splitWord[3]; //local
-//                        clientIP = splitWord[5]; //local
-//                        elpasedTime = splitWord.pop(); //local
+//                        uniqueId = splitWord[4]; //local용
+//                        serviceId = splitWord[3]; //local용
+//                        clientIP = splitWord[5]; //local용
+//                        elpasedTime = splitWord.pop(); //local용
 
-                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기.
+                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용
                        uniqueId = uniqueid.replace(/\[/," ");
                        uniqueId = uniqueid.replace(/\]/," ");
 
-                       serviceId = splitWord[9]; //TODO Caas환경: serviceId
+                       serviceId = splitWord[9]; //TODO Caas환경용: serviceId
                        serviceId = serviceId.replace(/\[/," ");
                        serviceId = serviceId.replace(/\]/," ");
 
-                       clientIP = splitWord[10]; //TODO Caas환경: clientIP
+                       clientIP = splitWord[10]; //TODO Caas환경용: clientIP
                        clientIP = clientIP.replace(/\[/," ");
                        clientIP = clientIP.replace(/\]/," ");
 
-                       elpasedTime = splitWord.pop(); //TODO Caas환경: ElpsedTime 값
+                       elpasedTime = splitWord.pop(); //TODO Caas환경용: ElpsedTime 값
 
 
                         element["ServiceId"] = serviceId;
