@@ -54,26 +54,32 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var tdArr = $(this).parent().parent().children();
     var total = $(this).parent().parent().children().length;
     let element = {};
-    var serviceId = "";
-    var clientIp = "";
+    var label_serviceId = "";
+    var label_pod = "";
+    var label_app = "";
+    var label_filename = "";
     var uniqueId ="";  //고유값으로 설정하여 이값을 기준으로 로그 불러오게끔 만들기.
     //TODO Caas환경에서는 표시될 컬럼은 ServiceID , ClientIP ,RequestTime, ElpsedTime 여기서 파라미터값으로 사용할 컬럼 체크하여 로그리스트를 불러오는 쿼리 만들어야함.
     $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
         //console.log("로그버튼 :",item)
-        if($(item).attr("name") == "ServiceId"){
-            serviceId = $(item).text();
+        if($(item).attr("name") == "serviceId"){
+            label_serviceId = $(item).text();
         }
-        if($(item).attr("name") == "ClientIP"){
-            clientIp = $(item).text();
+        if($(item).attr("name") == "pod"){
+            label_pod = $(item).text();
         }
         if($(item).attr("name") == "app"){
-            app = $(item).text();
+            label_app = $(item).text();
+        }
+        if($(item).attr("name") == "filename"){
+            label_filename = $(item).text();
         }
         if($(item).attr("name") == "uniqueId"){
-            uniqueId = item.id;
+            uniqueId = $(item).text();
         }
     });
-    //console.log(serviceId,clientIp,uniqueId)
+
+    console.log(label_serviceId,label_pod,label_app,label_filename,uniqueId)
     /*조회조건 시간값 가져오기.*/
     var sDate = document.getElementById('startDate').value; //날짜
     var eDate = document.getElementById('endDate').value; //날짜
@@ -92,19 +98,18 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     startT = startTime.padEnd(19,"0");
     endT = endTime.padEnd(19,"0");
 
-
     var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={";
-    var uri = uriStart +"serviceId=" +'"' + serviceId + '"' + ",container=" +'"' + container + '"' + uriEnd;
-    var uriEnd = ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"} |=" + uniqueId +'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO - Caas용 에러메시지 구분 marker 확인 필요.
+    var uriEnd = ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"} |="+ '"'+ uniqueId +'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO - Caas용 에러메시지 구분 marker 확인 필요.
+    var uri = uriStart +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' + uriEnd;
 
     //한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음. ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
 
     //var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local용
     //var uri = uriStart +"serviceId=" +'"' + serviceId + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream="+'"'+stream+'"' + uriEnd;
     console.log("logbtn 클릭 :",uri)
-//    fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
-//        .then((response) => response.json())
-//        .then((data) => logModalTable(data.data));
+    fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
+        .then((response) => response.json())
+        .then((data) => logModalTable(data.data));
 
 });
 
@@ -190,10 +195,10 @@ let lokiJs = (function () {
                 let trAppend = '';
                 for (let header of headers) {
                     if(header == "Log"){
-                        trAppend += '<td>' + '<input type="button" class="logbtn btn btn-md btn-outline-white" value="Log">' + '</td>'; //테이블에 보여질 컬럼
-                    }else if(header == "ServiceId" || header == "ClientIP" || header == "RequestTime" || header == "ElapsedTime"){ //파라미터로 넘길 컬럼
+                        trAppend += '<td>' + '<input type="button" class="logbtn btn btn-md btn-outline-white" value="Log">' + '</td>';
+                    }else if(header == "ServiceId" || header == "ClientIP" || header == "RequestTime" || header == "ElapsedTime"){
                         trAppend += '<td name="'+ header +'">' + item[header]  + '</td>';
-                    }else{//header == "maker" || header == "pod" || header == "serviceId" || header == "filename" || header == "uniqueId" || header == "app"
+                    }else{
                         trAppend += '<td style="display:none;" name="'+ header +'">' + item[header]  + '</td>';
                     }
                 }
@@ -226,7 +231,7 @@ let lokiJs = (function () {
                 totalCount = Number(dataArray[i].총건수);
                 successCount = Number(dataArray[i].정상);
                 errorCount = Number(dataArray[i].에러);
-                //elapsedTime = Number(dataArray[i].응답시간);
+
                 if(isNaN(totalCount)){
                     totalCount = 0;
                 }
@@ -237,14 +242,14 @@ let lokiJs = (function () {
                     successCount = 0;
                 }
 
-                //dataArray[i].정상 = totalCount - errorCount; //TODO 이렇게 구하는것과 successCount가 같은지 확인하고 같다면 successCount사용.
+                //dataArray[i].정상 = totalCount - errorCount; //TODO Task1 이렇게 구하는것과 successCount가 같은지 확인하고 같다면 successCount사용.
                 nomalPercent = 100 * ((totalCount - errorCount) / totalCount);
                 errorPercent = 100 * (errorCount / totalCount);
                 dataArray[i].정상율 = parseFloat(nomalPercent).toFixed(2);
                 dataArray[i].에러율 = parseFloat(errorPercent).toFixed(2);
             }
 
-            let totalSum =0, nomalSum =0, errorSum =0, nomalAvg=0, errorAvg=0, elapsedAvg=0 ; //집계값
+            let totalSum =0, nomalSum =0, errorSum =0, nomalAvg=0, errorAvg=0 ; //집계값
             let rowCount = dataArray.length;
 
             const tableHeaderHtml = String.prototype.concat('<thead><tr>',
@@ -325,7 +330,7 @@ let lokiJs = (function () {
             data = [data];
         }
 
-        typeCol = Object.keys(data[0])[0]; //기준 항목
+        typeCol = Object.keys(data[0])[0]; //application
         /*
         //TODO 쿼리의 결과값으로 타겟이 존재하지않는 상황이 발생하기때문에 넘어오는 타겟의 수가 틀릴경우가 있다.
             그렇기때문에 총건수 ~ 에러율을 고정값으로 넣어준상태.
@@ -532,24 +537,24 @@ let lokiJs = (function () {
                         requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
                         splitWord = values[j][1].split(" ");
 
-                        uniqueId = splitWord[4]; //local
-                        serviceId = splitWord[3]; //local
-                        clientIP = splitWord[5]; //local
-                        elpasedTime = splitWord.pop(); //local
+//                        uniqueId = splitWord[4]; //local
+//                        serviceId = splitWord[3]; //local
+//                        clientIP = splitWord[5]; //local
+//                        elpasedTime = splitWord.pop(); //local
 
-//                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기.
-//                       uniqueId = uniqueid.replace(/\[/," ");
-//                       uniqueId = uniqueid.replace(/\]/," ");
+                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기.
+                       uniqueId = uniqueid.replace(/\[/," ");
+                       uniqueId = uniqueid.replace(/\]/," ");
 
-//                       serviceId = splitWord[9]; //TODO Caas환경: serviceId
-//                       serviceId = serviceId.replace(/\[/," ");
-//                       serviceId = serviceId.replace(/\]/," ");
+                       serviceId = splitWord[9]; //TODO Caas환경: serviceId
+                       serviceId = serviceId.replace(/\[/," ");
+                       serviceId = serviceId.replace(/\]/," ");
 
-//                       clientIP = splitWord[10]; //TODO Caas환경: clientIP
-//                       clientIP = clientIP.replace(/\[/," ");
-//                       clientIP = clientIP.replace(/\]/," ");
+                       clientIP = splitWord[10]; //TODO Caas환경: clientIP
+                       clientIP = clientIP.replace(/\[/," ");
+                       clientIP = clientIP.replace(/\]/," ");
 
-//                       elpasedTime = splitWord.pop(); //TODO Caas환경: ElpsedTime 값
+                       elpasedTime = splitWord.pop(); //TODO Caas환경: ElpsedTime 값
 
 
                         element["ServiceId"] = serviceId;
