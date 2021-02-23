@@ -59,7 +59,7 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var uniqueId ="";  //고유값으로 설정하여 이값을 기준으로 로그 불러오게끔 만들기.
     //TODO Caas환경에서는 표시될 컬럼은 ServiceID , ClientIP ,RequestTime, ElpsedTime 여기서 파라미터값으로 사용할 컬럼 체크하여 로그리스트를 불러오는 쿼리 만들어야함.
     $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
-        console.log("로그버튼 :",item)
+        //console.log("로그버튼 :",item)
         if($(item).attr("name") == "ServiceId"){
             serviceId = $(item).text();
         }
@@ -72,9 +72,8 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
         if($(item).attr("name") == "uniqueId"){
             uniqueId = item.id;
         }
-
     });
-
+    //console.log(serviceId,clientIp,uniqueId)
     /*조회조건 시간값 가져오기.*/
     var sDate = document.getElementById('startDate').value; //날짜
     var eDate = document.getElementById('endDate').value; //날짜
@@ -95,14 +94,17 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
 
     var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={";
+    var uri = uriStart +"serviceId=" +'"' + serviceId + '"' + ",container=" +'"' + container + '"' + uriEnd;
+    var uriEnd = ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"} |=" + uniqueId +'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO - Caas용 에러메시지 구분 marker 확인 필요.
+
+    //한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음. ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
+
     //var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local용
-    var uriEnd = ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" + '"'+ "TX END : [1]"+'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO - Caas용
-    //",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
     //var uri = uriStart +"serviceId=" +'"' + serviceId + '"' + ",container=" +'"' + container + '"' + ",pod=" +'"' + pod + '"' + ",stream="+'"'+stream+'"' + uriEnd;
     console.log("logbtn 클릭 :",uri)
-    fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
-        .then((response) => response.json())
-        .then((data) => logModalTable(data.data));
+//    fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
+//        .then((response) => response.json())
+//        .then((data) => logModalTable(data.data));
 
 });
 
@@ -150,7 +152,7 @@ let lokiJs = (function () {
         let defaultIntervalMillis = 60 * 1000;
 
     function logrenderTable(panel, tableData) {
-
+        //console.log(tableData)
         if (tableData === undefined) {
             $('#container-' + panel.panelId)
                 .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -167,17 +169,32 @@ let lokiJs = (function () {
         const headers = tableData.headers;
         const dataArray = tableData.data;
 
+//        const tableHeaderHtml = String.prototype.concat('<thead><tr>',
+//            headers.map(value => '<th>' + value + '</th>').join(''),
+//            '</tr></thead>');
         const tableHeaderHtml = String.prototype.concat('<thead><tr>',
-            headers.map(value => '<th>' + value + '</th>').join(''),
-            '</tr></thead>');
+              headers.map(value =>{
+              let trAppend = '';
+              if(value == "ServiceId" || value == "ClientIP" || value == "RequestTime" || value == "ElapsedTime" || value == "Log"){
+                trAppend += '<th>' + value + '</th>' ;
+              }else{
+                trAppend += '<th style="display:none;>' + value + '</th>';
+              }
+              return String.prototype.concat(trAppend);
+              }).join(''),'</tr></thead>');
+
+
+
         const tableBodyHtml = String.prototype.concat('<tbody>',
             dataArray.map(item => {
                 let trAppend = '';
                 for (let header of headers) {
                     if(header == "Log"){
-                        trAppend += '<td name="uniqueId" id="'+ item.uniqueId  +'">' + '<input type="button" class="logbtn btn btn-md btn-outline-white" value="Log">' + '</td>';
-                    }else{
+                        trAppend += '<td>' + '<input type="button" class="logbtn btn btn-md btn-outline-white" value="Log">' + '</td>'; //테이블에 보여질 컬럼
+                    }else if(header == "ServiceId" || header == "ClientIP" || header == "RequestTime" || header == "ElapsedTime"){ //파라미터로 넘길 컬럼
                         trAppend += '<td name="'+ header +'">' + item[header]  + '</td>';
+                    }else{//header == "maker" || header == "pod" || header == "serviceId" || header == "filename" || header == "uniqueId" || header == "app"
+                        trAppend += '<td style="display:none;" name="'+ header +'">' + item[header]  + '</td>';
                     }
                 }
                 return String.prototype.concat('<tr class="logLabel">', trAppend, '</tr>');
@@ -281,6 +298,7 @@ let lokiJs = (function () {
 
 
      function logConvertTableData(data) { // header 와 data 분리.
+        //console.log(data)
          if (data === undefined || data.length === 0) {
              return undefined;
          }
@@ -288,8 +306,11 @@ let lokiJs = (function () {
          if (!Array.isArray(data)) {
              data = [data];
          }
-         //result.headers = ["pod","app","job","container","stream","Log"]; //TODO local test용 - api 결과값의 stream 값을 기준으로 설정했었다.
-         result.headers = ["ServiceId","ClientIP","RequestTime","ElapsedTime","Log"]; //TODO Caas 환경에서 표시할 항목값들만 선언..
+         //result.headers = ["pod","app","job","container","stream","Log"]; // local test용 - api 결과값의 stream 값을 기준으로 설정했었다.
+         //result.headers = ["app","ServiceId","ClientIP","RequestTime","ElapsedTime","Log"]; //TODO Caas 환경에서 표시할 항목값들만 선언..
+
+         result.headers = Object.keys(data[0]);
+         result.headers.push("Log");
          result.data = data.map(value => value);
          return result;
      }
@@ -496,8 +517,13 @@ let lokiJs = (function () {
                        break;
                     }
                     let item = dataArray[i];
-                    //const serviceName = item.data.result[0].stream.pod;
                     let values = item.data.result[i].values;
+
+                    const appName = item.data.result[0].stream.app; //TODO Caas환경 Log label 추출  - 로그 호출용
+                    const makerName = item.data.result[0].stream.maker;
+                    const podName = item.data.result[0].stream.pod;
+                    const serviceIdName = item.data.result[0].stream.serviceId;
+                    const filenameName = item.data.result[0].stream.filename;
 
                     var requestTime;
                     for(let j=0; j<values.length; j++){
@@ -510,7 +536,6 @@ let lokiJs = (function () {
                         serviceId = splitWord[3]; //local
                         clientIP = splitWord[5]; //local
                         elpasedTime = splitWord.pop(); //local
-
 
 //                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기.
 //                       uniqueId = uniqueid.replace(/\[/," ");
@@ -526,16 +551,22 @@ let lokiJs = (function () {
 
 //                       elpasedTime = splitWord.pop(); //TODO Caas환경: ElpsedTime 값
 
-//                       console.log(uniqueId,serviceId,clientIP,requestTime,elpasedTime)
 
-                        element["RequestTime"] = requestTime;
                         element["ServiceId"] = serviceId;
                         element["ClientIP"] = clientIP;
+                        element["RequestTime"] = requestTime;
                         element["ElapsedTime"] = elpasedTime;
                         element["uniqueId"] = uniqueId;
 
+                        element["app"] = appName;
+                        element["maker"] = makerName;
+                        element["pod"] = podName;
+                        element["serviceId"] = serviceIdName;
+                        element["filename"] = filenameName;
+
                         data.set(j,element);
                     }
+                    //console.log(data);
                 }
                     tableData = logConvertTableData([...data.values()]);
                     logrenderTable(panel, tableData);

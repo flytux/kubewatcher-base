@@ -527,9 +527,7 @@ INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, 
 
 -- loki Start
 INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	44	,	'Loki Log '	,	'Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Logging'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	1128	);
-
 INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYPE, VARIABLE_TYPE, REFRESH_INTERVAL, HIDDEN_YN, JOB_NAME, API_QUERY,  CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	12	,	 'application'	,	1	,	 'instance'	,	 'PROXY_METRIC'	,'metric_label_values'	,	 '10s'	,	 'N'	,	 'app'	,	 '/loki/api/v1/label/app/values'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	44	);
-
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	39	,	'' 	,	2	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	44	);
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	40	,	'' 	,	2	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	44	);
 
@@ -549,14 +547,6 @@ INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, 
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	308	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="info" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '정상'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="error" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
 
---INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	307	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~".*"} [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '총건수'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	); --local
---INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~".*"} |="error" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	); --local
-
-
 -- 공통
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	310	,	 ''	,	 'PROXY_METRIC'	,	 'LOG'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	169	);
---INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	310	,	 '/loki/api/v1/query_range?query={app=~"$application"} |="error"'	,	 'PROXY_METRIC'	,	 'LOG'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	169	);
-
---INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	311	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~'	,	 'PROXY_METRIC'	,	 '에러카운트'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	170	);
-
 -- loki End
