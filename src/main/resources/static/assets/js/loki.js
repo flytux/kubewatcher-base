@@ -54,14 +54,8 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var tdArr = $(this).parent().parent().children();
     var total = $(this).parent().parent().children().length;
 
-    var label_serviceId = "";
-    var label_pod = "";
-    var label_app = "";
-    var label_filename = "";
-    var uniqueId ="";  //고유값으로 설정하여 이값을 기준으로 로그 불러오게끔 만들기 테스트
-    var logContents ="";
+    var label_serviceId,label_pod,label_app,label_filename,uniqueId,logContents,timeStamp,requestTime ;
     $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
-        //console.log("로그버튼 :",item)
         if($(item).attr("name") == "serviceId"){
             label_serviceId = $(item).text();
         }
@@ -80,48 +74,57 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
         if($(item).attr("name") == "contents"){
             logContents = $(item).text();
         }
-
-    });
-        $('#logModal').modal(); //step1 : modal 호출.
-        $('#serviceName').text(label_serviceId);// local용
-        if(logContents === undefined){
-              $('#logModalTable')
-                  .html('<thead><tr><th>No Result</th></tr></thead>')
-              return ;
+        if($(item).attr("name") == "timestamp"){
+            timeStamp = $(item).text();
         }
-        const tableBodyHtml = String.prototype.concat('<tbody>', '<td>' + logContents  + '</td>','</tbody>');
-        $('#logModalTable').html(tableBodyHtml);
+        if($(item).attr("name") == "RequestTime"){
+            requestTime = $(item).text();
+        }
+    });
+
+    $('#logModal').modal(); //step1 : modal 호출.
+    $('#serviceName').text(label_serviceId);
+    if(logContents === undefined){
+          $('#logModalTable')
+              .html('<thead><tr><th>No Result</th></tr></thead>')
+          return ;
+    }
+    const tableBodyHtml = String.prototype.concat('<tbody style="text-align:start;">', '<td style="font-weight:1000;">' + logContents  + '</td>','</tbody>');
+    $('#logModalTable').html(tableBodyHtml);
+
+    var later_Time = new Date(requestTime);
+    later_Time = later_Time.setHours(later_Time.getHours()+2).toString();
+    later_Time = later_Time.padEnd(19,"0");
+    var before_Time = new Date(requestTime);
+    before_Time = before_Time.setHours(before_Time.getHours()-2).toString();
+    before_Time = before_Time.padEnd(19,"0");
 
 
+    //공통
+    var hours_later = "/loki/api/v1/query_range?limit=10&query={"; //후
+    var hours_before = "/loki/api/v1/query_range?limit=11&query={"; //전
 
-    /*조회조건 시간값 가져오기. 0224 api 호출 수 줄이려고 생략.*/
-//    var sDate = document.getElementById('startDate').value; //날짜
-//    var eDate = document.getElementById('endDate').value; //날짜
-//    var stime = document.getElementById('startTime').value; //시작시간
-//    var etime = document.getElementById('endTime').value; //종료시간
-//
-//    var sDT = sDate +" "+ stime;
-//    var eDT = eDate +" "+ etime;
-//    var startT = new Date(sDT).getTime();
-//    var endT = new Date(eDT).getTime();
-//    var startTime = startT.toString();
-//    var endTime = endT.toString();
-//    startT = startTime.padEnd(19,"0");
-//    endT = endTime.padEnd(19,"0");
-//
-//    var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={";
-//
-//    //var uriEnd = ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"} |="+ '"'+ uniqueId +'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO  Caas환경용 "TX END : [1]"
-//    //TODO Task2 에러메시지 구분 marker 확인 필요. 한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음 ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
-//    //var uri = uriStart +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' + uriEnd; //TODO Caas환경용
-//
-//    var uriEnd = "} |="+'"'+uniqueId+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local용
-//    var uri = uriStart +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +uriEnd; //local용
-//
-//    console.log("logbtn 클릭 :",uri)
-//    fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
-//        .then((response) => response.json())
-//        .then((data) => logModalTable(data.data));
+    //local
+//    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time ;
+//    var before_end = "}&direction=FORWARD&start="+before_Time+"&end="+timeStamp ;
+//    var laterUri = hours_later +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +later_end;
+//    var beforeUri = hours_before +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +before_end;
+
+    //TODO Caas환경용
+    var later_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time;
+    var before_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=FORWARD&start="+before_Time+"&end="+timeStamp;
+    var laterUri = hours_later +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' +later_end ;
+    var beforeUri  hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
+
+    //TODO Task2 에러메시지 구분 marker 확인 필요. 한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음 ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}  // "TX END : [1]"
+
+    fetch("/proxy/loki" + encodeURI(laterUri).replace(/\+/g, "%2B"))
+        .then((response) => response.json())
+        .then((data) => logModalTable("BACKWARD",data.data));
+
+    fetch("/proxy/loki" + encodeURI(beforeUri).replace(/\+/g, "%2B"))
+        .then((response) => response.json())
+        .then((data) => logModalTable("FORWARD",data.data)); //TODO task3 BACKWARD,FORWARD의 분기처리하여 에러로그 확장시키기.
 
 });
 
@@ -134,12 +137,9 @@ $(document).on("click", ".extendlog", function(){
 
 });
 
-function logModalTable(tableData){
-      $('#logModal').modal(); //step1 : modal 호출.
-      var data = tableData.result;
+function logModalTable(key,tableData){
 
-      $('#serviceName').text(data[0].stream.serviceId); //TODO Caas환경용
-      //$('#serviceName').text(data[0].stream.pod);// local용
+      var data = tableData.result;
       var dataArray = [];
 
       for(let i = 0; i<data.length; i++){
@@ -147,24 +147,29 @@ function logModalTable(tableData){
             dataArray.push(data[i].values[j]);
          }
       }
-      //console.log("dataArray :",dataArray);
-      if(dataArray === undefined){
-          $('#logModalTable')
-              .html('<thead><tr><th>No Result</th></tr></thead>')
-          return ;
-      }
-      //let streamData =data[0].stream;
+//      console.log("dataArray :",dataArray);
+//      if(dataArray === undefined){
+//          $('#logModalTable')
+//              .html('<thead><tr><th>No Result</th></tr></thead>')
+//          return ;
+//      }
 
-      const tableBodyHtml = String.prototype.concat('<tbody>',
+      const tableBodyHtml = String.prototype.concat(
           dataArray.map(item => {
               let trAppend = '';
               for(let i = 0; i<dataArray.length; i++){
-                  trAppend += '<td class="extendlog" id='+ '"'+ item[0] +'"' +'>' + item[1]  + '</td>';
+                  trAppend += '<td>' + item[1]  + '</td>';
+                  //trAppend += '<td'> + item[1]  + '</td>';
                   return String.prototype.concat('<tr>', trAppend, '</tr>');
               }
-          }), '</tbody>');
+          }));
 
-      $('#logModalTable').html(tableBodyHtml);
+      if(key =="BACKWARD"){
+        $('#logModalTable').prepend(tableBodyHtml);
+      }else{
+        $('#logModalTable').append(tableBodyHtml);
+      }
+
 }
 
 
@@ -540,13 +545,14 @@ let lokiJs = (function () {
                     const serviceIdName = item.data.result[0].stream.serviceId;
                     const filenameName = item.data.result[0].stream.filename;
 
-                    var requestTime , contents;
+                    var requestTime , contents, ts;
 
                     for(let j=0; j<values.length; j++){
                         element = {};
                         myDate = new Date(values[j][0]/1000000);
                         requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
 
+                        ts = values[j][0];
                         contents = values[j][1]; //Log 전체내용
                         splitWord = values[j][1].split(" ");
 
@@ -581,7 +587,8 @@ let lokiJs = (function () {
                         element["pod"] = podName;
                         element["serviceId"] = serviceIdName;
                         element["filename"] = filenameName;
-                        element["contents"] = contents; //log 값
+                        element["contents"] = contents; //log 전체 내용
+                        element["timestamp"] = ts;
 
                         data.set(j,element);
                     }
