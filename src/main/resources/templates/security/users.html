@@ -56,7 +56,7 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(userList)}" th:each="user : ${userList}">
                             <td>
-                                <a class="table2-link" th:href="'javascript:userDetail(&quot;'+ ${user?.username} + '&quot;)'"
+                                <a class="table2-link" th:href="'javascript:userDetail(&quot;'+ ${user?.username} + '&quot;, &quot;'+ ${user?.userno} + '&quot;, &quot;' + ${user?.name} + '&quot;)'"
                                    th:utext="${user?.username}"></a>
                             </td>
                             <td th:text="${user?.kwUserGroup?.groupname}"></td>
@@ -76,107 +76,110 @@
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
             <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
                 <form id="form" th:action="@{/security/users/modify}" th:object="${user}" method="POST">
-                <div class="modal-content">
-                    <div class="modal-title_box">
-                        <div class="modal-title">
-                            <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <div class="modal-content">
+                        <div class="modal-title_box">
+                            <div class="modal-title">
+                                <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 
-                            <div class="f_r"><button type="button" class="btn_save_i feather icon-save" id="btnModify"></button></div>
-                            <div class="f_r"><button type="button" class="btn_save_i feather icon-trash-2" id="btnDelete"></button></div>
-                            <span id="myModalLabel" th:text="|User : ${user?.username}|"></span>
+                                <div class="f_r"><button type="button" class="btn_save_i feather icon-save" id="btnModify"></button></div>
+                                <div class="f_r"><button type="button" class="btn_save_i feather icon-trash-2" id="btnDelete"></button></div>
+                                <span id="myModalLabel" th:text="|User : ${user?.username}|"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-nbody">
-                        <div class="table-title">
-                            User
-                        </div>
-                        <div class="row">
-                            <table class="table-select">
-                                <tr>
-                                    <th>ID</th>
-                                    <td id="usernameTd">
-                                        <input type="text" id="username" maxlength="20" style="width:100%;" th:field="*{username}">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>성명</th>
-                                    <td id="nameTd">
-                                        <input type="text" id="name" maxlength="20" style="width:100%;" th:field="*{name}">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>사번</th>
-                                    <td id="usernoTd">
-                                        <input type="text" id="userno" maxlength="7" style="width:100%;" th:field="*{userno}">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>비밀번호</th>
-                                    <td id="passwordTd">
-                                        <input type="password" id="password" name="password" style="width:100%;" th:value="${user?.password}">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>부서</th>
-                                    <td id="deptTd">
-                                        <input type="text" id="dept"  style="width:100%;"
-                                               th:field="*{dept}">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>그룹</th>
-                                    <td colspan="2" >
-                                        <div class="dropdown d_ib" >
-                                            <select th:disabled="${groups == null ? 'true' : 'false'}"
-                                                    class="custom-select" id="groupList" name="groupList">
-                                                <option th:each="value : ${groups}"
-                                                        th:value="${value?.groupname}" th:text="${value?.groupname}"
-                                                        th:selected="${value?.groupname.equals(user?.kwUserGroup?.groupname)}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="updateTimeTr">
-                                    <th>최종변경일</th>
-                                    <td th:text="${#temporals.format(user?.updateTime, 'yyyy-MM-dd hh:mm:ss')}" colspan="2"></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="table-title">
-                            Role
-                        </div>
-                        <div class="row">
-                            <table class="table-select" id="roleTable">
-                                <tr id="roleNameTr">
-                                    <th>역할</th>
-                                    <th:block th:each= "role : ${roles}">
-                                        <td>
-                                            <input type="checkbox" name="roleList" id="roleList"
-                                                   th:checked="${#lists.contains(userRoles, role)}"
-                                                   th:value="${role}"/>
-                                            <label th:text="${role}"/>
+                        <div class="modal-nbody">
+                            <div class="table-title">
+                                User
+                            </div>
+                            <div class="row">
+                                <table class="table-select">
+                                    <tr>
+                                        <th>ID</th>
+                                        <td id="usernameTd">
+                                            <span></span>
+                                            <input type="text" id="username" name="username" maxlength="20" style="width:100%;" th:field="*{username}">
                                         </td>
-                                    </th:block>
+                                    </tr>
+                                    <tr>
+                                        <th>성명</th>
+                                        <td id="nameTd">
+                                            <span></span>
+                                            <input type="text" id="name" name="name" maxlength="20" style="width:100%;" th:field="*{name}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>사번</th>
+                                        <td id="usernoTd">
+                                            <span></span>
+                                            <input type="text" id="userno" name="userno" maxlength="7" style="width:100%;" th:field="*{userno}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>비밀번호</th>
+                                        <td id="passwordTd">
+                                            <input type="password" id="password" name="password" style="width:100%;" th:value="${user?.password}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>부서</th>
+                                        <td id="deptTd">
+                                            <input type="text" id="dept"  style="width:100%;"
+                                                   th:field="*{dept}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>그룹</th>
+                                        <td colspan="2" >
+                                            <div class="dropdown d_ib" >
+                                                <select th:disabled="${groups == null ? 'true' : 'false'}"
+                                                        class="custom-select" id="groupList" name="groupList">
+                                                    <option th:each="value : ${groups}"
+                                                            th:value="${value?.groupname}" th:text="${value?.groupname}"
+                                                            th:selected="${value?.groupname.equals(user?.kwUserGroup?.groupname)}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="updateTimeTr">
+                                        <th>최종변경일</th>
+                                        <td th:text="${#temporals.format(user?.updateTime, 'yyyy-MM-dd hh:mm:ss')}" colspan="2"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="table-title">
+                                Role
+                            </div>
+                            <div class="row">
+                                <table class="table-select" id="roleTable">
+                                    <tr id="roleNameTr">
+                                        <th>역할</th>
+                                        <th:block th:each= "role : ${roles}">
+                                            <td>
+                                                <input type="checkbox" name="roleList" th:id="${role}"
+                                                       th:checked="${#lists.contains(userRoles, role)}"
+                                                       th:value="${role}"/>
+                                                <label th:text="${role}"/>
+                                            </td>
+                                        </th:block>
 
-                                </tr>
-                                <!--                                <tr>-->
-                                <!--                                    <th>Cluster Rolebinding</th>-->
-                                <!--                                    <td colspan="2">admin/cluster-monitor </td>-->
-                                <!--                                </tr>-->
-                                <!--                                <tr>-->
-                                <!--                                    <th>Token</th>-->
-                                <!--                                    <td colspan="2">******************* <a href="#"><i class="feather icon-lock text-warning"></i></a></td>-->
-                                <!--                                </tr>-->
-                                <!--                                <tr>-->
-                                <!--                                    <th>Token 만기일</th>-->
-                                <!--                                    <td colspan="2">2020-05-24</td>-->
-                                <!--                                </tr>-->
-                            </table>
+                                    </tr>
+                                    <!--                                <tr>-->
+                                    <!--                                    <th>Cluster Rolebinding</th>-->
+                                    <!--                                    <td colspan="2">admin/cluster-monitor </td>-->
+                                    <!--                                </tr>-->
+                                    <!--                                <tr>-->
+                                    <!--                                    <th>Token</th>-->
+                                    <!--                                    <td colspan="2">******************* <a href="#"><i class="feather icon-lock text-warning"></i></a></td>-->
+                                    <!--                                </tr>-->
+                                    <!--                                <tr>-->
+                                    <!--                                    <th>Token 만기일</th>-->
+                                    <!--                                    <td colspan="2">2020-05-24</td>-->
+                                    <!--                                </tr>-->
+                                </table>
+                            </div>
+
                         </div>
-
                     </div>
-                </div>
                 </form>
             </div>
         </div>
@@ -194,12 +197,7 @@
 
         var $userList = $("#userList");
 
-        var $userName = $("#var-userName");
-        var $userno = $("#var-userno");
-        var $name = $("#var-name");
-
-        function userDetail(username) {
-            $userName.val(username);
+        function userDetail(username, userno, name) {
             $.ajax({
                 url: "/security/users/" + username,
                 success: function (data) {
@@ -209,12 +207,16 @@
                     $(".knob").knob();
                     $('#btnInsert').hide();
 
-                    $userno.val( $('#userno').val() );
-                    $name.val( $('#name').val() );
+                    $('#usernameTd span').text(username);
+                    $('#nameTd     span').text(name);
+                    $('#usernoTd   span').text(userno);
+                    $('#usernameTd span').css("display", "block");
+                    $('#nameTd     span').css("display", "block");
+                    $('#usernoTd   span').css("display", "block");
 
-                    $('#usernameTd').html($userName.val());
-                    $('#nameTd').html($name.val());
-                    $('#usernoTd').html($userno.val());
+                    $('#username').css("display", "none");
+                    $('#name').css("display", "none");
+                    $('#userno').css("display", "none");
                 },
                 error: function (e) {
                     if (e.status === 401) {
@@ -226,51 +228,65 @@
 
         // btnNew event
         $(document).ready(function () {
+
+           var test = [[${userList}]];
+           console.log(test);
+           console.log(test[0].userRole);
+
+
            $('#btnNew').on('click', function () {
-               $('#myModal').modal('show');
+                $('#myModal').modal('show');
 
-               $('#usernameTd').html('<input type="text" name="username" id="username" style="width:100%;" />');
-               $('#nameTd').html('<input type="text" name="name" id="name" style="width:100%;" />');
-               $('#usernoTd').html('<input type="text" name="userno" id="userno" style="width:100%;" />');
-               $('#password').val('');
-               $('#dept').val('');
+                $('#usernameTd span').css("display", "none");
+                $('#nameTd     span').css("display", "none");
+                $('#usernoTd   span').css("display", "none");
 
-               $('#myModalLabel').text('User');
-               $('#btnModify').attr('id', 'btnInsert');
-               $('#btnDelete').hide();
-               $('#updateTimeTr').html('');
+                $('#username').css("display", "block");
+                $('#name').css("display", "block");
+                $('#userno').css("display", "block");
+                $('#username').val("");
+                $('#name').val("");
+                $('#userno').val("");
 
-               if (groups !== '') {
-                   $("#groupList").attr('disabled', false);
-               } else {
-                   $("#groupList").attr('disabled', true);
-               }
+                $('#password').val('');
+                $('#dept').val('');
 
-               $("#groupList").empty();
-               for ( var i = 0; i < groups.length; i++) {
-                   var html = $("<option>" + groups[i].groupname + "</option>");
-                   $("#groupList").append(html);
-               }
+                $('#myModalLabel').text('User');
+                $('#btnModify').attr('id', 'btnInsert');
+                $('#btnDelete').hide();
+                $('#updateTimeTr').html('');
 
-               $("#roleNameTr").empty();
+                if (groups !== '') {
+                    $("#groupList").attr('disabled', false);
+                } else {
+                    $("#groupList").attr('disabled', true);
+                }
 
-               var html = "<th>역할</th>";
-               for( var j = 0; j < roles.length; j++) {
-                    html += "<td>";
-                    html += '  <input type="checkbox" name="roleList" id="roleList" value="' + roles[j] + '" />';
-                    html += '  <label>' + roles[j] + '</label>';
-                    html += "</td>";
-               }
-               $("#roleNameTr").append(html);
+                $("#groupList").empty();
+                for ( var i = 0; i < groups.length; i++) {
+                    var html = $("<option>" + groups[i].groupname + "</option>");
+                    $("#groupList").append(html);
+                }
+
+                $("#roleNameTr").empty();
+
+                var html = "<th>역할</th>";
+                for( var j = 0; j < roles.length; j++) {
+                     html += "<td>";
+                     html += '  <input type="checkbox" name="roleList" id="' + roles[j] + '" value="' + roles[j] + '" />';
+                     html += '  <label>' + roles[j] + '</label>';
+                     html += "</td>";
+                }
+                $("#roleNameTr").append(html);
            });
         });
 
         // btnModify event
         $(document).on("click", "#btnModify", function(event){
-            var chkRole = $("input:checkbox[id='roleList']:checked").length;
-
+            var chkRole = $("input:checkbox[name='roleList']:checked").length;
+            $("#roleList").remove();
             if (chkRole === 0) {
-                var html = '  <input type="hidden" name="roleList" id="roleList" value="" />';
+                var html = '  <input type="hidden" name="roleList" value="" />';
                 $("#form").append(html);
             }
 
@@ -279,11 +295,9 @@
                 $("#form").append(html);
             }
 
-            var hdnHtml = '   <input type="hidden" name="username" id="username" value="' + $userName.val() + '" />';
-                hdnHtml += '  <input type="hidden" name="name"     id="name"     value="' + $name.val() + '" />';
-                hdnHtml += '  <input type="hidden" name="userno"   id="userno"   value="' + $userno.val() + '" />';
-
-            $("#form").append(hdnHtml);
+            $("#username").val($("#usernameTd span").text());
+            $("#name").val($("#nameTd span").text());
+            $("#userno").val($("#usernoTd span").text());
 
             var data = $('#form').serialize();
 
@@ -320,11 +334,9 @@
         $(document).on("click", "#btnDelete", function(event){
             $('#form').attr("action", "/security/users/delete");
 
-            var hdnHtml = '   <input type="hidden" name="username" id="username" value="' + $userName.val() + '" />';
-                hdnHtml += '  <input type="hidden" name="name"     id="name"     value="' + $name.val() + '" />';
-                hdnHtml += '  <input type="hidden" name="userno"   id="userno"   value="' + $userno.val() + '" />';
-
-            $("#form").append(hdnHtml);
+            $("#username").val($("#usernameTd span").text());
+            $("#name").val($("#nameTd span").text());
+            $("#userno").val($("#usernoTd span").text());
 
             var data = $('#form').serialize();
 
@@ -391,8 +403,8 @@
                 return;
             }
 
-            var chkRole = $("input:checkbox[id='roleList']:checked").length;
-
+            var chkRole = $("input:checkbox[name='roleList']:checked").length;
+            $("#roleList").remove();
             if (chkRole === 0) {
                 var html = '  <input type="hidden" name="roleList" id="roleList" value="" />';
                 $("#form").append(html);
