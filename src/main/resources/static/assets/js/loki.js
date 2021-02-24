@@ -53,13 +53,13 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
     var tdArr = $(this).parent().parent().children();
     var total = $(this).parent().parent().children().length;
-    let element = {};
+
     var label_serviceId = "";
     var label_pod = "";
     var label_app = "";
     var label_filename = "";
     var uniqueId ="";  //고유값으로 설정하여 이값을 기준으로 로그 불러오게끔 만들기 테스트
-
+    var logContents ="";
     $.each(tdArr,function(index,item){ //쿼리문 파라미터로 넘기기위한 추출
         //console.log("로그버튼 :",item)
         if($(item).attr("name") == "serviceId"){
@@ -77,45 +77,61 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
         if($(item).attr("name") == "uniqueId"){
             uniqueId = $(item).text();
         }
+        if($(item).attr("name") == "contents"){
+            logContents = $(item).text();
+        }
+
     });
+        $('#logModal').modal(); //step1 : modal 호출.
+        $('#serviceName').text(label_serviceId);// local용
+        if(logContents === undefined){
+              $('#logModalTable')
+                  .html('<thead><tr><th>No Result</th></tr></thead>')
+              return ;
+        }
+        const tableBodyHtml = String.prototype.concat('<tbody>', '<td>' + logContents  + '</td>','</tbody>');
+        $('#logModalTable').html(tableBodyHtml);
 
-    console.log(label_serviceId,label_pod,label_app,label_filename,uniqueId)
-    /*조회조건 시간값 가져오기.*/
-    var sDate = document.getElementById('startDate').value; //날짜
-    var eDate = document.getElementById('endDate').value; //날짜
-    var stime = document.getElementById('startTime').value; //시작시간
-    var etime = document.getElementById('endTime').value; //종료시간
 
-    var sDT = sDate +" "+ stime;
-    var eDT = eDate +" "+ etime;
 
-    var startT = new Date(sDT).getTime();
-    var endT = new Date(eDT).getTime();
-
-    var startTime = startT.toString();
-    var endTime = endT.toString();
-
-    startT = startTime.padEnd(19,"0");
-    endT = endTime.padEnd(19,"0");
-
-    var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={";
-
-    var uriEnd = ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"} |="+ '"'+ uniqueId +'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO  Caas환경용 에러메시지 구분 marker 확인 필요.
-    //TODO Task2 한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음. ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
-    var uri = uriStart +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' + uriEnd;
-
-    //var uriEnd = "} |="+'"'+"error"+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local용
-    //var uri = uriStart +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +uriEnd; //local용
-
-    console.log("logbtn 클릭 :",uri)
-    fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
-        .then((response) => response.json())
-        .then((data) => logModalTable(data.data));
+    /*조회조건 시간값 가져오기. 0224 api 호출 수 줄이려고 생략.*/
+//    var sDate = document.getElementById('startDate').value; //날짜
+//    var eDate = document.getElementById('endDate').value; //날짜
+//    var stime = document.getElementById('startTime').value; //시작시간
+//    var etime = document.getElementById('endTime').value; //종료시간
+//
+//    var sDT = sDate +" "+ stime;
+//    var eDT = eDate +" "+ etime;
+//    var startT = new Date(sDT).getTime();
+//    var endT = new Date(eDT).getTime();
+//    var startTime = startT.toString();
+//    var endTime = endT.toString();
+//    startT = startTime.padEnd(19,"0");
+//    endT = endTime.padEnd(19,"0");
+//
+//    var uriStart = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={";
+//
+//    //var uriEnd = ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"} |="+ '"'+ uniqueId +'"' + "&start="+startT+"&end="+endT+"&step=60"; //TODO  Caas환경용 "TX END : [1]"
+//    //TODO Task2 에러메시지 구분 marker 확인 필요. 한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음 ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}
+//    //var uri = uriStart +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' + uriEnd; //TODO Caas환경용
+//
+//    var uriEnd = "} |="+'"'+uniqueId+'"'+"&start="+startT+"&end="+endT+"&step=60"; //&start="+start+"&end="+end+"&step=60"  => local용
+//    var uri = uriStart +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +uriEnd; //local용
+//
+//    console.log("logbtn 클릭 :",uri)
+//    fetch("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
+//        .then((response) => response.json())
+//        .then((data) => logModalTable(data.data));
 
 });
 
 $(document).on("click", ".extendlog", function(){
+    //console.log($(this))
     var timeStamp = $(this)[0].id;
+    var logContents = $(this)[0].innerText;
+
+    var logArray =logContents.split(" ");
+
 });
 
 function logModalTable(tableData){
@@ -125,30 +141,30 @@ function logModalTable(tableData){
       $('#serviceName').text(data[0].stream.serviceId); //TODO Caas환경용
       //$('#serviceName').text(data[0].stream.pod);// local용
       var dataArray = [];
-      var dataArrayAll = [];
 
-    for(let i = 0; i<data.length; i++){
-       for(let j=0; j<data[i].values.length; j++){
+      for(let i = 0; i<data.length; i++){
+         for(let j=0; j<data[i].values.length; j++){
             dataArray.push(data[i].values[j]);
-       }
-    }
+         }
+      }
+      //console.log("dataArray :",dataArray);
+      if(dataArray === undefined){
+          $('#logModalTable')
+              .html('<thead><tr><th>No Result</th></tr></thead>')
+          return ;
+      }
+      //let streamData =data[0].stream;
 
-    if(dataArray === undefined){
-        $('#logModalTable')
-            .html('<thead><tr><th>No Result</th></tr></thead>')
-        return ;
-    }
+      const tableBodyHtml = String.prototype.concat('<tbody>',
+          dataArray.map(item => {
+              let trAppend = '';
+              for(let i = 0; i<dataArray.length; i++){
+                  trAppend += '<td class="extendlog" id='+ '"'+ item[0] +'"' +'>' + item[1]  + '</td>';
+                  return String.prototype.concat('<tr>', trAppend, '</tr>');
+              }
+          }), '</tbody>');
 
-    const tableBodyHtml = String.prototype.concat('<tbody>',
-        dataArray.map(item => {
-            let trAppend = '';
-            for(let i = 0; i<dataArray.length; i++){
-                trAppend += '<td class="extendlog" id='+ '"'+ item[0] +'"' +'>' + item[1]  + '</td>';
-                return String.prototype.concat('<tr>', trAppend, '</tr>');
-            }
-        }), '</tbody>');
-
-    $('#logModalTable').html(tableBodyHtml);
+      $('#logModalTable').html(tableBodyHtml);
 }
 
 
@@ -179,18 +195,16 @@ let lokiJs = (function () {
 //        const tableHeaderHtml = String.prototype.concat('<thead><tr>',
 //            headers.map(value => '<th>' + value + '</th>').join(''),
 //            '</tr></thead>');
-        const tableHeaderHtml = String.prototype.concat('<thead><tr>',
+        const tableHeaderHtml = String.prototype.concat('<thead>',
               headers.map(value =>{
               let trAppend = '';
               if(value == "ServiceId" || value == "ClientIP" || value == "RequestTime" || value == "ElapsedTime" || value == "Log"){
-                trAppend += '<th>' + value + '</th>' ;
+                trAppend += '<th>' + value + '</th>';
               }else{
-                trAppend += '<th style="display:none;>' + value + '</th>';
+                trAppend += '<th style="display:none;">' + value + '</th>';
               }
               return String.prototype.concat(trAppend);
-              }).join(''),'</tr></thead>');
-
-
+              }).join(''),'</thead>');
 
         const tableBodyHtml = String.prototype.concat('<tbody>',
             dataArray.map(item => {
@@ -350,48 +364,29 @@ let lokiJs = (function () {
      }
 
      function convertSumBadgeData(dataArray) {
-        //console.log("1. dataArray :",dataArray)
-            return dataArray.map(value =>{
-                let obj = {};
-                const key = Object.values(value.metric).toString();
-                if(key !== "" || undefined){
-                    let valueCount = 0; //value 로 넘어오는 count 모두 sum
-                    for(let j=0; j< Object.values(value.values).length; j++){ //value sum
-                        count = Number(Object.values(value.values)[j][1]);
-                        valueCount += count;
-                    }
-                    obj = {
-                        [key + ''] : valueCount
-                    };
-                    return obj;
-                }else{
-                    obj = {
-                        0 : 0
-                    };
-                    return obj;
-                }
-            })
-            /*return dataArray.map(item => {
-                return item.data.result.map(value => {
-                    let obj = {};
-                    const key = Object.values(value.metric).toString();
-                    if(key !== "" || undefined){
-                        let valueCount = 0; //value 로 넘어오는 count 모두 sum
-                        for(let j=0; j< Object.values(value.values).length; j++){ //value sum
-                            count = Number(Object.values(value.values)[j][1]);
-                            valueCount += count;
-                        }
-                        obj = {
-                            [key + ''] : valueCount
-                        };
-                        return obj;
-
-                        //return valueCount;
-                    }
-                });
-            })*/
+         return dataArray.map(value =>{
+            //console.log(value)
+             let obj = {};
+             const key = Object.values(value.metric).toString();
+             if(key !== "" || undefined){
+                 let valueCount = 0; //value 로 넘어오는 count 모두 sum
+                 for(let j=0; j< Object.values(value.values).length; j++){ //value sum
+                     count = Number(Object.values(value.values)[j][1]);
+                     valueCount += count;
+                 }
+                 obj = {
+                     [key + ''] : valueCount
+                 };
+                 //console.log(obj);
+                 return obj;
+             }else{
+                 obj = {
+                     0 : 0
+                 };
+                 return obj;
+             }
+         })
 //         return dataArray.map(item => {
-//             console.log(item);
 //             return item.data.result.flatMap(resultItem =>
 //                 parseInt(resultItem.value[1]));
 //         }).reduce((value1, value2) => value1 + value2)[0];
@@ -427,7 +422,7 @@ let lokiJs = (function () {
                     case "BADGE":
                        // panel = lokiJs.getErrorCount(panel,serviceMap) //TODO BADGE 데이터를 만드는 과정 검증필요..
                         this.getDataByPanel(panel, true)
-                            .then(value => this.createBadge(panel, value,serviceMap))
+                            .then(value => this.createBadge(panel, value))
                             .then(panel => scheduleMap.set(panel.panelId,
                                 setTimeout(lokiJs.refreshFunction, panel.refreshIntervalMillis, panel))
                         );
@@ -471,9 +466,9 @@ let lokiJs = (function () {
 //            return panel;
 //        },
         getDataByPanel: function (panel, isCreate,startT,endT) {
+            //console.log(panel);
             return Promise.all(panel.chartQueries.map(chartQuery => {
                 const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery);
-
                 var start = new Date().setHours(0,0,0,0,0,0,0,0); //자정의 시간
                 var end = new Date().setHours(23,59,59,0,0,0,0,0);
                 var startTime = start.toString();
@@ -482,11 +477,24 @@ let lokiJs = (function () {
                 endTime = endTime.padEnd(19,"0");
 
                 if (chartQuery.queryType.indexOf("METRIC") > -1) {
+                    //console.log("1:",panel)
                     if(startT != undefined && endT != undefined){
                         startTime = startT;
                         endTime = endT;
                     }
-                    let uri = convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, startTime, endTime)
+//                   let url;
+//                   if(panel.panelType === "BADGE"){ //milliseconds 기준으로 현재시간 기준으로 start = 1시간전, end= 현재시간
+//                        var sTime = new Date();
+//                        sTime = sTime.setHours(sTime.getHours()-1);
+//                        //sTime = sTime.setTime(sTime.getTime());
+//                        var eTime = new Date().getTime();
+//
+//                        console.log(sTime,eTime)
+//                        url = convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, sTime, eTime);
+//                    }else{
+//                        uri = convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, startTime, endTime);
+//                    }
+                    let uri = convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, startTime, endTime);
                     return chartQuery.queryType === "PROXY_METRIC"
                         ? this.getFetchRequest("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
                         : this.getFetchRequest(apiHost + encodeURI(uri).replace(/\+/g, "%2B"));
@@ -532,11 +540,14 @@ let lokiJs = (function () {
                     const serviceIdName = item.data.result[0].stream.serviceId;
                     const filenameName = item.data.result[0].stream.filename;
 
-                    var requestTime;
+                    var requestTime , contents;
+
                     for(let j=0; j<values.length; j++){
                         element = {};
                         myDate = new Date(values[j][0]/1000000);
                         requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
+
+                        contents = values[j][1]; //Log 전체내용
                         splitWord = values[j][1].split(" ");
 
 //                        uniqueId = splitWord[4]; //local용
@@ -544,7 +555,7 @@ let lokiJs = (function () {
 //                        clientIP = splitWord[5]; //local용
 //                        elpasedTime = splitWord.pop(); //local용
 
-                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용
+                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
                        uniqueId = uniqueid.replace(/\[/," ");
                        uniqueId = uniqueid.replace(/\]/," ");
 
@@ -570,10 +581,11 @@ let lokiJs = (function () {
                         element["pod"] = podName;
                         element["serviceId"] = serviceIdName;
                         element["filename"] = filenameName;
+                        element["contents"] = contents; //log 값
 
                         data.set(j,element);
                     }
-                    //console.log(data);
+                    console.log(data);
                 }
                     tableData = logConvertTableData([...data.values()]);
                     logrenderTable(panel, tableData);
@@ -639,60 +651,39 @@ let lokiJs = (function () {
             values[0] = values[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             return values.join(".");
         },
-        createBadge: function (panel, dataArray, serviceMap) { //todo serviceMap은 caas환경
-
+        createBadge: function (panel, dataArray) {
+            //const badgeData = convertSumBadgeData(dataArray);
+            //console.log("1. dataArray:",dataArray)
+            //console.log("2. panel:",panel)
+            //console.log("3. badgeData :",typeof(badgeData),badgeData)
             if (panel.chartType === 'text') {
-               // $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
-               $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
-            } else if (panel.chartType === 'date') {
-               $('#container-' + panel.panelId).text(moment(new Date(badgeData)).format('YYYY-MM-DD hh:mm:ss'));
-            } else if (panel.chartType === 'age') {
-               let duration = moment.duration(moment(new Date()).diff(new Date(badgeData)));
-               let age = duration.asDays() > 1 ? parseInt(duration.asDays()) + ' Day'
-                   : duration.asHours() > 1 ? parseInt(duration.asHours()) + ' Hour'
-                       : duration.asMinutes() > 1 ? parseInt(duration.asMinutes()) + ' Min.'
-                           : duration.asSeconds() > 1 ? parseInt(duration.asSeconds()) + ' Sec.' : 'N/A';
-               $('#container-' + panel.panelId).text(age);
-            } else if(dataArray[0].data.result.length === 0) {
-               $('#container-' + panel.panelId).text('N/A');
-            } else {
-               //$('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit)); //하나의 컨테이너에 모든 에러카운트가 들어가게됨..
+                // $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
+                $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
+            }  else {
+               // $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
                 let tableBottomHtml ;
                 var appKey , errCount;
                 for(let i=0; i<dataArray.length; i++){
                     valueCount = convertSumBadgeData(dataArray[i].data.result);
-
+                    const legend = panel.chartQueries[i].legend;
+                    //console.log(legend,"valueCount :",valueCount)
                     if(valueCount !== "" || null || undefined){
-                        appKey = Object.keys(valueCount[0]).toString();
-                        errCount =Object.values(valueCount[0]);
-                        errCount = this.convertValue(errCount ,panel.yaxisUnit);
-                        //console.log(appKey, errCount)
+                        for(let j=0; j<valueCount.length; j++){
+                            appKey = Object.keys(valueCount[j]).toString();
+                            errCount =Object.values(valueCount[j]);
+                            errCount = this.convertValue(errCount ,panel.yaxisUnit);
 
-                        tableBottomHtml += '<div class="box_chart_red row col-xs-4">';
-                        tableBottomHtml += '<div class="txt text-center">'+ appKey + '</div>';
-                        tableBottomHtml += '<div class="t_chart_md text-center">' + errCount +'</div>' ;
-                        tableBottomHtml += '</div>';
+                            tableBottomHtml += '<div class="box_chart_red row col-xs-4">';
+                            tableBottomHtml += '<div class="txt text-center">'+ appKey + '</div>';
+                            tableBottomHtml += '<div class="t_chart_md text-center">' + errCount +'</div>' ;
+                            tableBottomHtml += '</div>';
+                        }
+
                     }else{
                         return;
                     }
                     $('#container-' + panel.panelId).html(tableBottomHtml);
                 }
-
-//               var appKey , errCount;
-//               let tableBottomHtml ;
-//                for(let i=0; i<badgeData.length; i++){
-//                    if(badgeData[i][0] == undefined){
-//                        badgeData[i][0] = {0 :0}; //TODO 값이 없을때 빈값으로 넘어옴..변경필요..
-//                    }
-//                    appKey = Object.keys(badgeData[i][0]);
-//                    errCount =Object.values(badgeData[i][0]);
-//                    errCount = this.convertValue(errCount ,panel.yaxisUnit);
-//                   tableBottomHtml += '<div class="box_chart_red row col-xs-4">';
-//                   tableBottomHtml += '<div class="txt text-center">'+ appKey + '</div>';
-//                   tableBottomHtml += '<div class="t_chart_md text-center">' + errCount +'</div>' ;
-//                   tableBottomHtml += '</div>';
-//                }
-//                $('#container-' + panel.panelId).html(tableBottomHtml);
             }
             return panel;
         },
