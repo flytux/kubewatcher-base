@@ -111,10 +111,12 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 //    var beforeUri = hours_before +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +before_end;
 
     //TODO Caas환경용
-    var later_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time;
-    var before_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=FORWARD&start="+before_Time+"&end="+timeStamp;
+    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time; //TODO marker 가 필요없을수도있다.
+    var later_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp; //TODO marker 가 필요없을수도있다.
+//    var later_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time; // 마커가 의미없다고 판단하여 삭제
+//    var before_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=FORWARD&start="+before_Time+"&end="+timeStamp; // 마커가 의미없다고 판단하여 삭제
     var laterUri = hours_later +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' +later_end ;
-    var beforeUri  hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
+    var beforeUri = hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
 
     //TODO Task2 에러메시지 구분 marker 확인 필요. 한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음 ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}  // "TX END : [1]"
 
@@ -332,8 +334,7 @@ let lokiJs = (function () {
          if (!Array.isArray(data)) {
              data = [data];
          }
-         //result.headers = ["pod","app","job","container","stream","Log"]; // local test용 - api 결과값의 stream 값을 기준으로 설정했었다.
-         //result.headers = ["app","ServiceId","ClientIP","RequestTime","ElapsedTime","Log"]; //TODO Caas 환경에서 표시할 항목값들만 선언..
+
 
          result.headers = Object.keys(data[0]);
          result.headers.push("Log");
@@ -547,7 +548,7 @@ let lokiJs = (function () {
 
                     var requestTime , contents, ts;
 
-                    for(let j=0; j<values.length; j++){
+                    for(let j=0; j<values.length; j++){ //TODO 여기서 j로 하게되면 Caas 환경에서 카운트가 안맞는다 - for문 한번더 사용 해야함 .
                         element = {};
                         myDate = new Date(values[j][0]/1000000);
                         requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
@@ -561,20 +562,22 @@ let lokiJs = (function () {
 //                        clientIP = splitWord[5]; //local용
 //                        elpasedTime = splitWord.pop(); //local용
 
-                       uniqueId = splitWord[8] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
-                       uniqueId = uniqueid.replace(/\[/," ");
-                       uniqueId = uniqueid.replace(/\]/," ");
+                       uniqueId = splitWord[7] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
+                       uniqueId = uniqueId.replace(/\[/,"");
+                       uniqueId = uniqueId.replace(/\]/,"");
 
-                       serviceId = splitWord[9]; //TODO Caas환경용: serviceId
-                       serviceId = serviceId.replace(/\[/," ");
-                       serviceId = serviceId.replace(/\]/," ");
+                       serviceId = splitWord[7]; //TODO Caas환경용: serviceId
+                       serviceId = serviceId.replace(/\[/,"");
+                       serviceId = serviceId.replace(/\]/,"");
 
-                       clientIP = splitWord[10]; //TODO Caas환경용: clientIP
-                       clientIP = clientIP.replace(/\[/," ");
-                       clientIP = clientIP.replace(/\]/," ");
+                       clientIP = splitWord[8]; //TODO Caas환경용: clientIP
+                       clientIP = clientIP.replace(/\[/,"");
+                       clientIP = clientIP.replace(/\]/,"");
 
-                       elpasedTime = splitWord.pop(); //TODO Caas환경용: ElpsedTime 값
-
+                       elpasedTime = splitWord[26]; //TODO Caas환경용: ElpsedTime 값
+                       elpasedTime = elpasedTime.split("=");
+                       elpasedTime2 = elpasedTime[1].replace(/\]/,"");
+                       elpasedTime2 = elpasedTime2 + "ms";
 
                         element["ServiceId"] = serviceId;
                         element["ClientIP"] = clientIP;
