@@ -523,3 +523,8 @@ INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE,
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (304, '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/POD?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	165	);
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (305, '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/CPU?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	166	);
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (306, '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/MEMORY?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	167	);
+
+INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 1 ,  'AGW'  , 'api-gateway' ,  'app'  , 'API Gateway' );
+INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 2 ,  'CUS'  , 'customers' ,    'app'  , 'Customers' );
+INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 3 ,  'VET'  , 'vets' ,         'app'  , 'Vets' );
+INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 4 ,  'VIT'  , 'visits' ,       'app'  , 'Visits' );

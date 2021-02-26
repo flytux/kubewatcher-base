@@ -3,7 +3,6 @@ package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.kubeworks.watcher.base.MetricResponseData;
-import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
 import com.kubeworks.watcher.data.mapper.ClusterPodUsageMapper;
 import com.kubeworks.watcher.data.vo.ClusterPodUsage;
 import com.kubeworks.watcher.data.vo.UsageMetricType;
@@ -14,6 +13,7 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1NodeMetricTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PodMetricTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.MetricService;
+import com.kubeworks.watcher.ecosystem.prometheus.service.ApplicationService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import lombok.SneakyThrows;
@@ -45,17 +45,17 @@ public class MetricServiceImpl implements MetricService {
     private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
     private final ClusterPodUsageMapper clusterPodUsageMapper;
-    private final ApplicationServiceProperties applicationServiceProperties;
+
+    private final ApplicationService applicationService;
 
     @Value("${spring.jpa.database}")
     public String databaseEngine;
 
-    public MetricServiceImpl(ApiClient k8sApiClient, ClusterPodUsageMapper clusterPodUsageMapper,
-                             ApplicationServiceProperties applicationServiceProperties) {
+    public MetricServiceImpl(ApiClient k8sApiClient, ClusterPodUsageMapper clusterPodUsageMapper, ApplicationService applicationService) {
         this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.clusterPodUsageMapper = clusterPodUsageMapper;
-        this.applicationServiceProperties = applicationServiceProperties;
+        this.applicationService = applicationService;
     }
 
     @SneakyThrows
@@ -173,7 +173,7 @@ public class MetricServiceImpl implements MetricService {
         final LocalDateTime now = LocalDateTime.now();
         List<MetricTable> metricTables = podMetrics();
         List<ClusterPodUsage> aggregateUsage = metricTables.stream()
-            .filter(metricTable -> CollectionUtils.isNotEmpty(applicationServiceProperties.getServiceByNamespace().get(metricTable.getNamespace())))
+            .filter(metricTable -> CollectionUtils.isNotEmpty(applicationService.getBoardByNamespace().get(metricTable.getNamespace())))
             .map(metricTable -> createClusterPodUsage(now, metricTable))
             .collect(Collectors.groupingBy(ClusterPodUsage::getApplication))
             .values().stream()
