@@ -9,10 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @AllArgsConstructor(onConstructor_ = {@Autowired})
@@ -25,13 +22,13 @@ public class DatabaseController {
     public String database(Model model) {
         Map<String, Object> response = monitoringRestController.database();
 
-        List<String> hostList = proxyApiService.multiValuesQuery("count(namedprocess_namegroup_states{zone=\"external\", state=\"Running\", groupname=~\"oracle_.*\"}) by (instance)", "instance");
+        List<String> hostList = proxyApiService.multiValuesQuery("count(namedprocess_namegroup_states{zone=\"external\", state=\"Running\", groupname=~\"oracle.*\"}) by (instance)", "instance");
 
         Page page = (Page) response.get("page");
         List<PageRow> pageRows =  page.getRows();
 
         List<PageRowPanel> dbHostPanels = pageRows.get(0).getPageRowPanels();
-        List dbPanels = new ArrayList();
+        LinkedHashMap<String, List> dbPanels = new LinkedHashMap<>();
 
         List<PageRowPanel> dbPanel = new ArrayList<PageRowPanel>();
         int cnt = 0;
@@ -44,11 +41,17 @@ public class DatabaseController {
                     if (hostList.size() <= dbCnt ) break;
                     chartQuery.setApiQuery(changeVariable(chartQuery.getApiQuery(), hostList.get(dbCnt)));
                 }
+
+
                 dbPanel.add(pageRowPanel);
                 cnt++;
                 //DB 로우 하위 판넬 (Status, CPU, Mem) 갯수 변경시 같이 변경해야됨...
                 if (cnt % 3 == 0) {
-                    dbPanels.add(dbPanel);
+                    if (hostList.size() <= dbCnt) {
+                        dbPanels.put("none", dbPanel);
+                    } else {
+                        dbPanels.put(hostList.get(dbCnt), dbPanel);
+                    }
                     dbCnt++;
                     dbPanel = new ArrayList<PageRowPanel>();
                 }
