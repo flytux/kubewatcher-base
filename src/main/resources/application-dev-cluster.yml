@@ -108,10 +108,6 @@ application:
         name: dev-cust-ics
         namespace: dev-cust-ns
         displayName: 통합고객지원(신원확인)
-      - code: HCG
-        name: dev-pica-hcg
-        namespace: dev-pica-ns
-        displayName: 솔루션설정
       - code: HDM
         name: dev-pica-hdm
         namespace: dev-pica-ns
@@ -144,7 +140,3 @@ application:
         name: dev-pica-hrs
         namespace: dev-pica-ns
         displayName: Rule Engine
-      - code: HST
-        name: dev-pica-hst
-        namespace: dev-pica-ns
-        displayName: 이관

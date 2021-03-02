@@ -27,8 +27,8 @@
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
                     <th:block th:if="${panel?.mainYn} == 'Y'">
                         <th:block th:if="${panel?.fragmentName} == 'head-card-db-dummy'">
-                            <th:block th:each="dbPanel, index: ${dbPanels}">
-                                <th:block th:replace="layout/fragments/panelTypes :: head-card-db-dummy (${dbPanel}, ${index.count})"/>
+                            <th:block th:each="entry: ${dbPanels}">
+                                <th:block th:replace="layout/fragments/panelTypes :: head-card-db-dummy (${panel?.title}, ${entry.key}, ${entry.value})"/>
                             </th:block>
                         </th:block>
                         <th:block th:unless="${panel?.fragmentName} == 'head-card-db-dummy'">
