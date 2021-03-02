@@ -493,6 +493,7 @@ let lokiJs = (function () {
         },
 
         getFetchRequest: function (url) {
+            console.log(url);
             return fetch(url).then(response => {
                 const contentType = response.headers.get("Content-Type");
                 if (contentType.indexOf("text/html") >= 0) {
