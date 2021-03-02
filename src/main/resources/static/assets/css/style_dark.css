@@ -3020,7 +3020,7 @@ textarea.form-control {
     background-color: #181818;
 }
 
-.modal-nbody input[type="text"] {
+.modal-nbody input[type="text"], input[type="password"] {
     font-size:9pt;  background-color: #222222; border: 1px solid #555555; height:22px;
     border-radius: 4px;
 }
@@ -5624,12 +5624,4 @@ a.text-dark:hover, a.text-dark:focus {
     height : 25px;
     width: 40px;
     color: #bebebe;
-}
-
-input[type="password"] {
-    font-size: 9pt;
-    background-color: #222222;
-    border: 1px solid #555555;
-    height: 22px;
-    border-radius: 4px;
 }
