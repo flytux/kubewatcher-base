@@ -23,8 +23,8 @@ $("#searchBtn").click(function(){
         alert("대상 어플리케이션 선택 필요");
         return;
     }else{
-        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local용
-        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //TODO Caas환경용
+        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local용
+        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //TODO Caas환경용
         console.log("조회 :",uri)
         TARGET_OBJ.chartQueries[0].apiQuery = uri;
 
@@ -35,8 +35,8 @@ $("#searchBtn").click(function(){
 
 $(document).on("click", ".errtd", function(){ //에러 버튼 클릭
     var typeColId= $(this).children()[0].id; //renderTable 함수에서 ID값 부여
-    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local용
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; // TODO Caas환경용
+    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local용
+    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; // TODO Caas환경용
     console.log("에러버튼 :",uri)
     TARGET_OBJ.chartQueries[0].apiQuery = uri; //panel과 container를 전역변수에 대입
     TARGET_ID = typeColId; //에러로그를 조회할 app
@@ -105,19 +105,19 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var hours_before = "/loki/api/v1/query_range?limit=11&query={"; //전
 
     //local
-//    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time ;
-//    var before_end = "}&direction=FORWARD&start="+before_Time+"&end="+timeStamp ;
-//    var laterUri = hours_later +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +later_end;
-//    var beforeUri = hours_before +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +before_end;
+    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time ;
+    var before_end = "}&direction=FORWARD&start="+before_Time+"&end="+timeStamp ;
+    var laterUri = hours_later +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +later_end;
+    var beforeUri = hours_before +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +before_end;
 
     //TODO Caas환경용
-    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time; //TODO marker 가 필요없을수도있다.
-    var later_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp; //TODO marker 가 필요없을수도있다.
+//    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time; //TODO marker 가 필요없을수도있다.
+//    var later_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp; //TODO marker 가 필요없을수도있다.
+//    var laterUri = hours_later +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' +later_end ;
+//    var beforeUri = hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
+
 //    var later_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time; // 마커가 의미없다고 판단하여 삭제
 //    var before_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=FORWARD&start="+before_Time+"&end="+timeStamp; // 마커가 의미없다고 판단하여 삭제
-    var laterUri = hours_later +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' +later_end ;
-    var beforeUri = hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
-
     //TODO Task2 에러메시지 구분 marker 확인 필요. 한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음 ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}  // "TX END : [1]"
 
     fetch("/proxy/loki" + encodeURI(laterUri).replace(/\+/g, "%2B"))
@@ -537,65 +537,81 @@ let lokiJs = (function () {
                        logrenderTable(panel);
                        break;
                     }
-                    let item = dataArray[i];
-                    let values = item.data.result[i].values;
+                    let item = dataArray[i]; //item은 1개의 배열.
 
-                    const appName = item.data.result[0].stream.app;
-                    const makerName = item.data.result[0].stream.maker;
-                    const podName = item.data.result[0].stream.pod;
-                    const serviceIdName = item.data.result[0].stream.serviceId;
-                    const filenameName = item.data.result[0].stream.filename;
+                    let resultLength = item.data.result;
+                    let values;
+                    for(let z=0; z<resultLength.length; z++){
+                        values = resultLength[z];
+                        console.log(values)
+                        const appName = values.stream.app;
+                        const makerName = values.stream.maker;
+                        const podName =values.stream.pod;
+                        const serviceIdName = values.stream.serviceId;
+                        const filenameName = values.stream.filename;
 
-                    var requestTime , contents, ts;
+                        var requestTime , contents, ts;
+                        for(let j=0; j<values.values.length; j++){ //TODO task 0225 여기서 j로 하게되면 Caas 환경에서 카운트가 안맞는다 - for문 한번더 사용 해야함 .=> 사용했으며 Caas환경에서 테스트 필요.
+                            element = {};
+                            //console.log(values.values)
+                            myDate = new Date(values.values[j][0]/1000000);
+                            requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
 
-                    for(let j=0; j<values.length; j++){ //TODO 여기서 j로 하게되면 Caas 환경에서 카운트가 안맞는다 - for문 한번더 사용 해야함 .
-                        element = {};
-                        myDate = new Date(values[j][0]/1000000);
-                        requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
+                            ts = values.values[j][0];
+                            contents = values.values[j][1]; //Log 전체내용
+                            splitWord = values.values[j][1].split(" ");
 
-                        ts = values[j][0];
-                        contents = values[j][1]; //Log 전체내용
-                        splitWord = values[j][1].split(" ");
+                            uniqueId = splitWord[4]; //local용
+                            serviceId = splitWord[3]; //local용
+                            clientIP = splitWord[5]; //local용
+                            elpasedTime = splitWord.pop(); //local용
 
-//                        uniqueId = splitWord[4]; //local용
-//                        serviceId = splitWord[3]; //local용
-//                        clientIP = splitWord[5]; //local용
-//                        elpasedTime = splitWord.pop(); //local용
+    //                       uniqueId = splitWord[7] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
+    //                       uniqueId = uniqueId.replace(/\[/,"");
+    //                       uniqueId = uniqueId.replace(/\]/,"");
+    //
+    //                       serviceId = splitWord[7]; //TODO Caas환경용: serviceId
+    //                       serviceId = serviceId.replace(/\[/,"");
+    //                       serviceId = serviceId.replace(/\]/,"");
+    //
+    //                       clientIP = splitWord[8]; //TODO Caas환경용: clientIP
+    //                       clientIP = clientIP.replace(/\[/,"");
+    //                       clientIP = clientIP.replace(/\]/,"");
+    //
+    //                       elpasedTime = splitWord[26]; //TODO Caas환경용: ElpsedTime 값
+    //                       elpasedTime = elpasedTime.split("=");
+    //                       elpasedTime2 = elpasedTime[1].replace(/\]/,"");
+    //                       elpasedTime2 = elpasedTime2 + "ms";
 
-                       uniqueId = splitWord[7] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
-                       uniqueId = uniqueId.replace(/\[/,"");
-                       uniqueId = uniqueId.replace(/\]/,"");
+                            element["ServiceId"] = serviceId;
+                            element["ClientIP"] = clientIP;
+                            element["RequestTime"] = requestTime;
+                            element["ElapsedTime"] = elpasedTime;
+                            element["uniqueId"] = uniqueId;
 
-                       serviceId = splitWord[7]; //TODO Caas환경용: serviceId
-                       serviceId = serviceId.replace(/\[/,"");
-                       serviceId = serviceId.replace(/\]/,"");
+                            element["app"] = appName;
+                            element["maker"] = makerName;
+                            element["pod"] = podName;
+                            element["serviceId"] = serviceIdName;
+                            element["filename"] = filenameName;
+                            element["contents"] = contents; //log 전체 내용
+                            element["timestamp"] = ts;
 
-                       clientIP = splitWord[8]; //TODO Caas환경용: clientIP
-                       clientIP = clientIP.replace(/\[/,"");
-                       clientIP = clientIP.replace(/\]/,"");
+                            data.set(j,element);
 
-                       elpasedTime = splitWord[26]; //TODO Caas환경용: ElpsedTime 값
-                       elpasedTime = elpasedTime.split("=");
-                       elpasedTime2 = elpasedTime[1].replace(/\]/,"");
-                       elpasedTime2 = elpasedTime2 + "ms";
-
-                        element["ServiceId"] = serviceId;
-                        element["ClientIP"] = clientIP;
-                        element["RequestTime"] = requestTime;
-                        element["ElapsedTime"] = elpasedTime;
-                        element["uniqueId"] = uniqueId;
-
-                        element["app"] = appName;
-                        element["maker"] = makerName;
-                        element["pod"] = podName;
-                        element["serviceId"] = serviceIdName;
-                        element["filename"] = filenameName;
-                        element["contents"] = contents; //log 전체 내용
-                        element["timestamp"] = ts;
-
-                        data.set(j,element);
+                        }
+                        console.log(data);
                     }
-                    console.log(data);
+                    
+//                    let values = item.data.result[i].values;
+//                    const appName = item.data.result[i].stream.app;
+//                    const makerName = item.data.result[i].stream.maker;
+//                    const podName = item.data.result[i].stream.pod;
+//                    const serviceIdName = item.data.result[i].stream.serviceId;
+//                    const filenameName = item.data.result[i].stream.filename;
+
+
+                    //console.log(data);
                 }
                     tableData = logConvertTableData([...data.values()]);
                     logrenderTable(panel, tableData);
