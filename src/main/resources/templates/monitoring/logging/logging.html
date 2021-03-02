@@ -74,6 +74,8 @@
         console.log("pageRows :",pageRows);
         console.log("serviceMap :",serviceMap);
 
+        lokiApiCall(serviceMap);
+
        document.getElementById('startDate').value = moment().format('YYYY-MM-DD');
        document.getElementById('startTime').value = moment("12:00:00 AM",["h:mm:ss A"]).format("HH:mm:ss");
        document.getElementById('endDate').value = moment().format('YYYY-MM-DD');
@@ -83,6 +85,19 @@
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => lokiJs.createPanel(panel,serviceMap)));
         });
 
+        function lokiApiCall(serviceMap) { <!--loki 각 application error count / total count -->
+            var data = JSON.stringify(serviceMap);
+
+            $.ajax({
+                url: "/apiCall",
+                success: function (data) {
+                    console.log("success :",data);
+                },
+                error:function(data, status, opt){
+                    console.log("code:"+data.status+"\n"+"message:"+data.responseText+"\n"+"error:"+opt);
+                }
+            });
+        }
     </script>
 </div>
 </body>

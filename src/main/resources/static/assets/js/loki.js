@@ -111,14 +111,10 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var beforeUri = hours_before +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +before_end;
 
     //TODO Caas환경용
-//    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time; //TODO marker 가 필요없을수도있다.
-//    var later_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp; //TODO marker 가 필요없을수도있다.
+//    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time;
+//    var later_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp;
 //    var laterUri = hours_later +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' +later_end ;
 //    var beforeUri = hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
-
-//    var later_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time; // 마커가 의미없다고 판단하여 삭제
-//    var before_end = ",marker=" + '"'+ "TX END : [1]" +'"'+"}&direction=FORWARD&start="+before_Time+"&end="+timeStamp; // 마커가 의미없다고 판단하여 삭제
-    //TODO Task2 에러메시지 구분 marker 확인 필요. 한화에서 전달받은 소스에는 해당 마커로 에러 메시지 구분 한다고 쓰여있음 ",marker=" + '"'+ "FRT.EXEC_SVC" +'"'+"}  // "TX END : [1]"
 
     fetch("/proxy/loki" + encodeURI(laterUri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
@@ -126,7 +122,7 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
     fetch("/proxy/loki" + encodeURI(beforeUri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
-        .then((data) => logModalTable("FORWARD",data.data)); //TODO task3 BACKWARD,FORWARD의 분기처리하여 에러로그 확장시키기.
+        .then((data) => logModalTable("FORWARD",data.data));
 
 });
 
@@ -265,7 +261,7 @@ let lokiJs = (function () {
                     successCount = 0;
                 }
 
-                //dataArray[i].정상 = totalCount - errorCount; //TODO Task1 이렇게 구하는것과 successCount가 같은지 확인하고 같다면 successCount사용.
+                dataArray[i].정상 = totalCount - errorCount; //TODO Task1 이렇게 구하는것과 successCount가 같은지 확인하고 같다면 successCount사용.
                 nomalPercent = 100 * ((totalCount - errorCount) / totalCount);
                 errorPercent = 100 * (errorCount / totalCount);
                 dataArray[i].정상율 = parseFloat(nomalPercent).toFixed(2);
@@ -426,7 +422,6 @@ let lokiJs = (function () {
                             )
                         break;
                     case "BADGE":
-                       // panel = lokiJs.getErrorCount(panel,serviceMap) //TODO BADGE 데이터를 만드는 과정 검증필요..
                         this.getDataByPanel(panel, true)
                             .then(value => this.createBadge(panel, value))
                             .then(panel => scheduleMap.set(panel.panelId,
@@ -453,24 +448,6 @@ let lokiJs = (function () {
             }
         },
 
-//        getErrorCount : function(panel, serviceMap){
-//            console.log("getErrorCount panel :",panel)
-//            //var uriErrorEnd = "} |=" +'"'+"error"+'"'+"[1m])) by (app)";
-//            var uriErrorEnd = ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"'+"TX END : [1]"+'"'+"[1m])) by (app)";
-//            for(let i =0; i<panel.chartQueries.length; i++){
-//                 var uri = "";
-//                 var copyArr = [];
-//                const convertApiQuery = commonVariablesJs.convertVariableApiQuery(panel.chartQueries[i].apiQuery);
-//                 for(let j=0; j<serviceMap.length; j++){
-//                    const clone = JSON.parse(JSON.stringify(panel.chartQueries[i]))
-//                    uri = convertApiQuery + '"' +serviceMap[j]+ '"'+ uriErrorEnd;
-//                    clone.apiQuery = uri
-//                    copyArr.push(clone);
-//                 }
-//            }
-//            panel.chartQueries = copyArr; //servicemap 만큼의 쿼리문 동적 생성 후 panel에 반환.
-//            return panel;
-//        },
         getDataByPanel: function (panel, isCreate,startT,endT) {
             //console.log(panel);
             return Promise.all(panel.chartQueries.map(chartQuery => {
@@ -489,7 +466,7 @@ let lokiJs = (function () {
                         endTime = endT;
                     }
 //                   let url;
-//                   if(panel.panelType === "BADGE"){ //milliseconds 기준으로 현재시간 기준으로 start = 1시간전, end= 현재시간
+//                   if(panel.panelType === "BADGE"){ //BADGE의 시간 milliseconds 기준으로 현재시간 기준으로 start = 1시간전, end= 현재시간
 //                        var sTime = new Date();
 //                        sTime = sTime.setHours(sTime.getHours()-1);
 //                        //sTime = sTime.setTime(sTime.getTime());
@@ -602,16 +579,7 @@ let lokiJs = (function () {
                         }
                         console.log(data);
                     }
-                    
-//                    let values = item.data.result[i].values;
-//                    const appName = item.data.result[i].stream.app;
-//                    const makerName = item.data.result[i].stream.maker;
-//                    const podName = item.data.result[i].stream.pod;
-//                    const serviceIdName = item.data.result[i].stream.serviceId;
-//                    const filenameName = item.data.result[i].stream.filename;
 
-
-                    //console.log(data);
                 }
                     tableData = logConvertTableData([...data.values()]);
                     logrenderTable(panel, tableData);
