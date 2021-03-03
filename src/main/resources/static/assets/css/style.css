@@ -5602,3 +5602,11 @@ a.text-dark:hover, a.text-dark:focus {
     height : 25px;
     width: 40px;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    background-color: #dddddd;
+    -webkit-box-shadow: 0 0 0 30px #ffffff inset ;
+}
