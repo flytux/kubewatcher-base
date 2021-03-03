@@ -227,7 +227,7 @@ let lokiJs = (function () {
         $('#container-' + panel.panelId).html(tableHeaderHtml + tableBodyHtml);
     }
     function renderTable(panel, tableData) {
-            //console.log("renderTable tableData :",tableData)
+
             if (tableData === undefined) {
                 $('#container-' + panel.panelId)
                     .html('<thead><tr><th>No Result</th></tr></thead>');
@@ -322,7 +322,7 @@ let lokiJs = (function () {
 
 
      function logConvertTableData(data) { // header 와 data 분리.
-        //console.log(data)
+
          if (data === undefined || data.length === 0) {
              return undefined;
          }
@@ -367,7 +367,7 @@ let lokiJs = (function () {
 
      function convertSumBadgeData(dataArray) {
          return dataArray.map(value =>{
-            //console.log(value)
+
              let obj = {};
              const key = Object.values(value.metric).toString();
              if(key !== "" || undefined){
@@ -379,7 +379,6 @@ let lokiJs = (function () {
                  obj = {
                      [key + ''] : valueCount
                  };
-                 //console.log(obj);
                  return obj;
              }else{
                  obj = {
@@ -449,7 +448,6 @@ let lokiJs = (function () {
         },
 
         getDataByPanel: function (panel, isCreate,startT,endT) {
-            //console.log(panel);
             return Promise.all(panel.chartQueries.map(chartQuery => {
                 const convertApiQuery = commonVariablesJs.convertVariableApiQuery(chartQuery.apiQuery);
                 var start = new Date().setHours(0,0,0,0,0,0,0,0); //자정의 시간
@@ -460,7 +458,6 @@ let lokiJs = (function () {
                 endTime = endTime.padEnd(19,"0");
 
                 if (chartQuery.queryType.indexOf("METRIC") > -1) {
-                    //console.log("1:",panel)
                     if(startT != undefined && endT != undefined){
                         startTime = startT;
                         endTime = endT;
@@ -521,7 +518,6 @@ let lokiJs = (function () {
                     let values;
                     for(let z=0; z<resultLength.length; z++){
                         values = resultLength[z];
-                        console.log(values)
                         const appName = values.stream.app;
                         const makerName = values.stream.maker;
                         const podName =values.stream.pod;
@@ -531,7 +527,6 @@ let lokiJs = (function () {
                         var requestTime , contents, ts;
                         for(let j=0; j<values.values.length; j++){ //TODO task 0225 여기서 j로 하게되면 Caas 환경에서 카운트가 안맞는다 - for문 한번더 사용 해야함 .=> 사용했으며 Caas환경에서 테스트 필요.
                             element = {};
-                            //console.log(values.values)
                             myDate = new Date(values.values[j][0]/1000000);
                             requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
 
@@ -612,7 +607,6 @@ let lokiJs = (function () {
 
                     data.set(key, element);
                     });
-                    //console.log(data);
                 }
                 tableData = convertTableData([...data.values()]);
                 renderTable(panel, tableData);
@@ -648,9 +642,6 @@ let lokiJs = (function () {
         },
         createBadge: function (panel, dataArray) {
             //const badgeData = convertSumBadgeData(dataArray);
-            //console.log("1. dataArray:",dataArray)
-            //console.log("2. panel:",panel)
-            //console.log("3. badgeData :",typeof(badgeData),badgeData)
             if (panel.chartType === 'text') {
                 // $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
                 $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
@@ -661,7 +652,6 @@ let lokiJs = (function () {
                 for(let i=0; i<dataArray.length; i++){
                     valueCount = convertSumBadgeData(dataArray[i].data.result);
                     const legend = panel.chartQueries[i].legend;
-                    //console.log(legend,"valueCount :",valueCount)
                     if(valueCount !== "" || null || undefined){
                         for(let j=0; j<valueCount.length; j++){
                             appKey = Object.keys(valueCount[j]).toString();
