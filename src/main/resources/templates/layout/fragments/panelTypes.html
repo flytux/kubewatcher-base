@@ -233,6 +233,61 @@
         </div>
     </th:block>
 
+    <th:block th:fragment="col-6-head-card-panel-in-logtable(panel)">
+        <div class="col-md-12 col-lg-6">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                <div class="box_panel-body" style="min-height: 300px;">
+                    <table th:id="|container-${panel?.panelId}|" class="list_table700">
+                        <thead>
+                        <tr><th>
+                            <div class="col-lg-12 text-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </th></tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="col-6-head-card-panel-in-errorlogtable(panel)">
+        <div class="col-md-12 col-lg-6">
+            <div class="box_panel">
+                <div class="box_panel-heading" th:text="${panel?.title}"><i class="feather icon-chevrons-right"></i>Panel Title</div>
+                <div class="f_r">
+                    <div class=" d_ib search_padding">
+                        <div class="form-group has-feedback d_ib">
+                            <input type="date" class="search_date" id="startDate" disabled>
+                            <input type="time" class="search_time" id="startTime">
+                            ~
+                            <input type="date" class="search_date" id="endDate" disabled>
+                            <input type="time" class="search_time" id="endTime">
+                            <input type="button" class="btn btn-md btn-outline-white" value="조회" id="searchBtn">
+                        </div>
+                    </div>
+                </div>
+                <div class="box_panel-body" style="min-height: 300px;">
+                    <table th:id="|container-${panel?.panelId}|" class="list_table">
+                        <thead>
+                        <tr><th>
+                            <div class="col-lg-12 text-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </th></tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+
     <th:block th:fragment="head-card-panel-in-table(panel)">
         <div class="col-md-12 col-lg-3">
             <div class="box_panel">
@@ -253,6 +308,7 @@
             </div>
         </div>
     </th:block>
+
 
     <th:block th:fragment="col-6-head-card-panel-in-table(panel)">
         <div class="col-md-12 col-lg-6">
