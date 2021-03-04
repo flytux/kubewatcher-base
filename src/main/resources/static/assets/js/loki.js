@@ -6,13 +6,10 @@ $("#searchBtn").click(function(){
     var eDate = document.getElementById('endDate').value; //날짜
     var stime = document.getElementById('startTime').value; //시작시간
     var etime = document.getElementById('endTime').value; //종료시간
-
     var sDT = sDate +" "+ stime;
     var eDT = eDate +" "+ etime;
-
     var startT = new Date(sDT).getTime();
     var endT = new Date(eDT).getTime();
-
     var startTime = startT.toString();
     var endTime = endT.toString();
 
@@ -23,8 +20,8 @@ $("#searchBtn").click(function(){
         alert("대상 어플리케이션 선택 필요");
         return;
     }else{
-        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local용
-        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //TODO Caas환경용
+        //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + "} |= " +'"' +"error"+ '"'; //local용
+        var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + TARGET_ID +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; //TODO Caas환경용
         console.log("조회 :",uri)
         TARGET_OBJ.chartQueries[0].apiQuery = uri;
 
@@ -35,8 +32,8 @@ $("#searchBtn").click(function(){
 
 $(document).on("click", ".errtd", function(){ //에러 버튼 클릭
     var typeColId= $(this).children()[0].id; //renderTable 함수에서 ID값 부여
-    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local용
-    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; // TODO Caas환경용
+    //var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + "} |= " +'"' +"error"+ '"'; //local용
+    var uri = "/loki/api/v1/query_range?direction=BACKWARD&limit="+MAX_QUERY_LIMIT+"&query={app=~"+ '"' + typeColId +'"' + ",marker=" + '"'+ "FRT.TX_END" +'"'+"} |=" +'"' +"TX END : [1]"+ '"'; // TODO Caas환경용
     console.log("에러버튼 :",uri)
     TARGET_OBJ.chartQueries[0].apiQuery = uri; //panel과 container를 전역변수에 대입
     TARGET_ID = typeColId; //에러로그를 조회할 app
@@ -104,22 +101,22 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
     var hours_later = "/loki/api/v1/query_range?limit=10&query={"; //후
     var hours_before = "/loki/api/v1/query_range?limit=11&query={"; //전
 
-    //local
-    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time ;
-    var before_end = "}&direction=FORWARD&start="+before_Time+"&end="+timeStamp ;
-    var laterUri = hours_later +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +later_end;
-    var beforeUri = hours_before +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +before_end;
+    //local용
+//    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time ;
+//    var before_end = "}&direction=FORWARD&start="+before_Time+"&end="+timeStamp ;
+//    var laterUri = hours_later +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +later_end;
+//    var beforeUri = hours_before +"app="+'"'+ label_app +'"'+ ",filename=" +'"' + label_filename + '"' +before_end;
 
     //TODO Caas환경용
-//    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time;
-//    var later_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp;
-//    var laterUri = hours_later +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' +later_end ;
-//    var beforeUri = hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
-
+    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time;
+    var later_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp;
+    var laterUri = hours_later +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' +later_end ;
+    var beforeUri = hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
+    console.log("이후 로그",laterUri)
     fetch("/proxy/loki" + encodeURI(laterUri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
         .then((data) => logModalTable("BACKWARD",data.data));
-
+    console.log("이전 로그",beforeUri)
     fetch("/proxy/loki" + encodeURI(beforeUri).replace(/\+/g, "%2B"))
         .then((response) => response.json())
         .then((data) => logModalTable("FORWARD",data.data));
@@ -145,13 +142,6 @@ function logModalTable(key,tableData){
             dataArray.push(data[i].values[j]);
          }
       }
-//      console.log("dataArray :",dataArray);
-//      if(dataArray === undefined){
-//          $('#logModalTable')
-//              .html('<thead><tr><th>No Result</th></tr></thead>')
-//          return ;
-//      }
-
       const tableBodyHtml = String.prototype.concat(
           dataArray.map(item => {
               let trAppend = '';
@@ -195,9 +185,6 @@ let lokiJs = (function () {
         const headers = tableData.headers;
         const dataArray = tableData.data;
 
-//        const tableHeaderHtml = String.prototype.concat('<thead><tr>',
-//            headers.map(value => '<th>' + value + '</th>').join(''),
-//            '</tr></thead>');
         const tableHeaderHtml = String.prototype.concat('<thead>',
               headers.map(value =>{
               let trAppend = '';
@@ -331,7 +318,6 @@ let lokiJs = (function () {
              data = [data];
          }
 
-
          result.headers = Object.keys(data[0]);
          result.headers.push("Log");
          result.data = data.map(value => value);
@@ -387,10 +373,6 @@ let lokiJs = (function () {
                  return obj;
              }
          })
-//         return dataArray.map(item => {
-//             return item.data.result.flatMap(resultItem =>
-//                 parseInt(resultItem.value[1]));
-//         }).reduce((value1, value2) => value1 + value2)[0];
      }
 
     return {
@@ -462,18 +444,6 @@ let lokiJs = (function () {
                         startTime = startT;
                         endTime = endT;
                     }
-//                   let url;
-//                   if(panel.panelType === "BADGE"){ //BADGE의 시간 milliseconds 기준으로 현재시간 기준으로 start = 1시간전, end= 현재시간
-//                        var sTime = new Date();
-//                        sTime = sTime.setHours(sTime.getHours()-1);
-//                        //sTime = sTime.setTime(sTime.getTime());
-//                        var eTime = new Date().getTime();
-//
-//                        console.log(sTime,eTime)
-//                        url = convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, sTime, eTime);
-//                    }else{
-//                        uri = convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, startTime, endTime);
-//                    }
                     let uri = convertApiQuery + this.getQueryRangeTimeNStep(chartQuery, startTime, endTime);
                     return chartQuery.queryType === "PROXY_METRIC"
                         ? this.getFetchRequest("/proxy/loki" + encodeURI(uri).replace(/\+/g, "%2B"))
@@ -530,31 +500,31 @@ let lokiJs = (function () {
                             myDate = new Date(values.values[j][0]/1000000);
                             requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
 
-                            ts = values.values[j][0];
-                            contents = values.values[j][1]; //Log 전체내용
-                            splitWord = values.values[j][1].split(" ");
+//                            ts = values.values[j][0];
+//                            contents = values.values[j][1]; //Log 전체내용
+//                            splitWord = values.values[j][1].split(" ");
+//
+//                            uniqueId = splitWord[4]; //local용
+//                            serviceId = splitWord[3]; //local용
+//                            clientIP = splitWord[5]; //local용
+//                            elpasedTime = splitWord.pop(); //local용
 
-                            uniqueId = splitWord[4]; //local용
-                            serviceId = splitWord[3]; //local용
-                            clientIP = splitWord[5]; //local용
-                            elpasedTime = splitWord.pop(); //local용
+                           uniqueId = splitWord[7] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
+                           uniqueId = uniqueId.replace(/\[/,"");
+                           uniqueId = uniqueId.replace(/\]/,"");
 
-    //                       uniqueId = splitWord[7] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
-    //                       uniqueId = uniqueId.replace(/\[/,"");
-    //                       uniqueId = uniqueId.replace(/\]/,"");
-    //
-    //                       serviceId = splitWord[7]; //TODO Caas환경용: serviceId
-    //                       serviceId = serviceId.replace(/\[/,"");
-    //                       serviceId = serviceId.replace(/\]/,"");
-    //
-    //                       clientIP = splitWord[8]; //TODO Caas환경용: clientIP
-    //                       clientIP = clientIP.replace(/\[/,"");
-    //                       clientIP = clientIP.replace(/\]/,"");
-    //
-    //                       elpasedTime = splitWord[26]; //TODO Caas환경용: ElpsedTime 값
-    //                       elpasedTime = elpasedTime.split("=");
-    //                       elpasedTime2 = elpasedTime[1].replace(/\]/,"");
-    //                       elpasedTime2 = elpasedTime2 + "ms";
+                           serviceId = splitWord[7]; //TODO Caas환경용: serviceId
+                           serviceId = serviceId.replace(/\[/,"");
+                           serviceId = serviceId.replace(/\]/,"");
+
+                           clientIP = splitWord[8]; //TODO Caas환경용: clientIP
+                           clientIP = clientIP.replace(/\[/,"");
+                           clientIP = clientIP.replace(/\]/,"");
+
+                           elpasedTime = splitWord[26]; //TODO Caas환경용: ElpsedTime 값
+                           elpasedTime = elpasedTime.split("=");
+                           elpasedTime2 = elpasedTime[1].replace(/\]/,"");
+                           elpasedTime2 = elpasedTime2 + "ms";
 
                             element["ServiceId"] = serviceId;
                             element["ClientIP"] = clientIP;
@@ -641,7 +611,6 @@ let lokiJs = (function () {
             return values.join(".");
         },
         createBadge: function (panel, dataArray) {
-            //const badgeData = convertSumBadgeData(dataArray);
             if (panel.chartType === 'text') {
                 // $('#container-' + panel.panelId).text((badgeData) + panel.yaxisUnit);
                 $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
@@ -671,6 +640,38 @@ let lokiJs = (function () {
                 }
             }
             return panel;
+        },
+        convertErrorCount : function(resultData){ //DashBoard - Application - 보험코어어플리케이션 Error Count 항목에 적용되야함.
+            const objData = JSON.parse(resultData);
+            console.log(typeof(objData),objData);
+            dataArray = objData.data.result;
+            let data = new Map();
+            for (let i = 0; i < dataArray.length; i++) {
+                let item = dataArray[i];
+                console.log(item);
+                item.values.forEach(value => {
+                const key = Object.values(item.metric).toString();
+                if(key ==""){ // value.metric 값이 없는 항목일경우  return;
+                    return;
+                }
+                let element = data.get(key);
+                if (element === undefined) {
+                    element = {};
+                    for (const [key, entry] of Object.entries(item.metric)) { // key값 setting
+                        element[key] = entry;
+                    }
+                }
+                let valueCount = 0; //value 로 넘어오는 count 모두 sum
+                for(let j=0; j< Object.values(item.values).length; j++){ //value sum
+                    count = Number(Object.values(item.values)[j][1]);
+                    valueCount += count;
+                }
+
+                data.set(key, valueCount);
+                });
+            }
+            console.log(data);
+
         },
     }
 

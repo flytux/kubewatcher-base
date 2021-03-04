@@ -73,10 +73,7 @@
 
         console.log("pageRows :",pageRows);
         console.log(typeof(serviceMap),"serviceMap :",serviceMap);
-
         lokiApiCall(serviceMap);
-
-
 
        document.getElementById('startDate').value = moment().format('YYYY-MM-DD');
        document.getElementById('startTime').value = moment("12:00:00 AM",["h:mm:ss A"]).format("HH:mm:ss");
@@ -87,16 +84,18 @@
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => lokiJs.createPanel(panel,serviceMap)));
         });
 
-        function lokiApiCall(serviceMap) { <!--loki 각 application error count / total count -->
+        function lokiApiCall(serviceMap) { // Application ErrorCount - REST API 호출.
             var data = serviceMap.toString();
             $.ajax({
                 url: "/monitoring/apiCall",
                 type : "GET",
+                async: false,
                 data : {
                     param : JSON.stringify(data)
                 },
                 success: function (data) {
-                    console.log("success :",data);
+<!--                    console.log("success :",data);-->
+                    lokiJs.convertErrorCount(data);
                 },
                 error:function(data, status, opt){
                     console.log("code:"+data.status+"\n"+"message:"+data.responseText+"\n"+"error:"+opt);
