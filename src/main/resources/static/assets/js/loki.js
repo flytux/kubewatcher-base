@@ -500,10 +500,10 @@ let lokiJs = (function () {
                             myDate = new Date(values.values[j][0]/1000000);
                             requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
 
-//                            ts = values.values[j][0];
-//                            contents = values.values[j][1]; //Log 전체내용
-//                            splitWord = values.values[j][1].split(" ");
-//
+                            ts = values.values[j][0];
+                            contents = values.values[j][1]; //Log 전체내용
+                            splitWord = values.values[j][1].split(" ");
+
 //                            uniqueId = splitWord[4]; //local용
 //                            serviceId = splitWord[3]; //local용
 //                            clientIP = splitWord[5]; //local용
