@@ -11,9 +11,13 @@ public interface ApplicationService {
 
     String getServiceNamesOfPromQL();
 
-     List<String> getNamespaces();
+    String getServiceNamesLoki();
 
-    Map<String, List<ApplicationManagement>> getBoardByNamespace();
+    List<String> getNamespaces();
+
+    Map<String, List<ApplicationManagement>> getManagementByNamespace();
+
+    List<String> getManagementByName();
 
     ApplicationManagement getUnknownBoard();
 

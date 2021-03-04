@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,13 +20,13 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
 
     ApplicationManagement unknownBoard;
-    List<ApplicationManagement> boardList;
+    List<ApplicationManagement> managementList;
 
     @Autowired
     public ApplicationServiceImpl(ApplicationRepository applicationRepository){
         this.applicationRepository = applicationRepository;
 
-        this.boardList = applicationRepository.findAll();
+        this.managementList = applicationRepository.findAll();
 
         this.unknownBoard = new ApplicationManagement();
         this.unknownBoard.setName(ExternalConstants.UNKNOWN);
@@ -40,16 +39,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     public Map<String, ApplicationManagement> getServiceMap() {
-        return boardList.stream().collect(Collectors.toConcurrentMap(ApplicationManagement::getName, service -> service));
+        return managementList.stream().collect(Collectors.toConcurrentMap(ApplicationManagement::getName, service -> service));
     }
 
     @Override
     public String getServiceNamesOfPromQL() {
-        return boardList.stream().map(ApplicationManagement::getName).collect(Collectors.joining(".*|","", ".*"));
+        return managementList.stream().map(ApplicationManagement::getName).collect(Collectors.joining(".*|","", ".*"));
+    }
+
+    @Override
+    public String getServiceNamesLoki() {
+        return managementList.stream().map(ApplicationManagement::getName).collect(Collectors.joining("|"));
     }
 
     public String getDisplayName(String name) {
-        return boardList.stream()
+        return managementList.stream()
             .filter(service -> StringUtils.equalsIgnoreCase(name, service.getName()))
             .map(ApplicationManagement::getDisplayName)
             .findFirst().orElse("Unknown");
@@ -57,12 +61,17 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<String> getNamespaces(){
-        return boardList.stream().map(ApplicationManagement::getNamespace).distinct().collect(Collectors.toList());
+        return managementList.stream().map(ApplicationManagement::getNamespace).distinct().collect(Collectors.toList());
     }
 
     @Override
-    public Map<String, List<ApplicationManagement>> getBoardByNamespace(){
-        return boardList.stream().collect(Collectors.groupingBy(ApplicationManagement::getNamespace));
+    public Map<String, List<ApplicationManagement>> getManagementByNamespace(){
+        return managementList.stream().collect(Collectors.groupingBy(ApplicationManagement::getNamespace));
+    }
+
+    @Override
+    public List<String> getManagementByName() {
+        return managementList.stream().map(ApplicationManagement::getName).collect(Collectors.toList());
     }
 
     @Override

@@ -173,7 +173,7 @@ public class MetricServiceImpl implements MetricService {
         final LocalDateTime now = LocalDateTime.now();
         List<MetricTable> metricTables = podMetrics();
         List<ClusterPodUsage> aggregateUsage = metricTables.stream()
-            .filter(metricTable -> CollectionUtils.isNotEmpty(applicationService.getBoardByNamespace().get(metricTable.getNamespace())))
+            .filter(metricTable -> CollectionUtils.isNotEmpty(applicationService.getManagementByNamespace().get(metricTable.getNamespace())))
             .map(metricTable -> createClusterPodUsage(now, metricTable))
             .collect(Collectors.groupingBy(ClusterPodUsage::getApplication))
             .values().stream()

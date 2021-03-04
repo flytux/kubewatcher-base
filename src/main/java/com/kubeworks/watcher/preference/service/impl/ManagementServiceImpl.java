@@ -30,7 +30,7 @@ public class ManagementServiceImpl implements ManagementService {
 
     @Override
     public ApplicationManagement managementService(String namespace, String name) {
-        List<ApplicationManagement> services = applicationService.getBoardByNamespace().get(namespace);
+        List<ApplicationManagement> services = applicationService.getManagementByNamespace().get(namespace);
         if (CollectionUtils.isEmpty(services)) {
             return applicationService.getUnknownBoard();
         }
