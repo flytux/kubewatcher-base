@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.chart_query</OriginalElement>
+  <nodes>
+    <node x="555.0" y="21.0">cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page_variable</node>
+    <node x="164.0" y="0.0">cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page</node>
+    <node x="176.8354978354978" y="352.3419913419914">cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.chart_query</node>
+    <node x="-192.0" y="359.0">cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page_row_panel</node>
+    <node x="-185.0" y="17.5">cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page_row</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.chart_query" target="cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page_row_panel">
+      <point x="0.0" y="-135.5" />
+      <point x="0.0" y="234.5" />
+    </edge>
+    <edge source="cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page_row" target="cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page">
+      <point x="0.0" y="-135.5" />
+      <point x="140.5" y="263.0" />
+      <point x="225.5" y="263.0" />
+      <point x="-61.5" y="119.0" />
+    </edge>
+    <edge source="cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page_row_panel" target="cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page_row">
+      <point x="0.0" y="-234.5" />
+      <point x="0.0" y="135.5" />
+    </edge>
+    <edge source="cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page_variable" target="cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.page">
+      <point x="0.0" y="-218.0" />
+      <point x="433.5" y="263.0" />
+      <point x="348.5" y="263.0" />
+      <point x="61.5" y="119.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.9681603773584906" x="314.0" y="414.0" />
+  <SelectedNodes>
+    <node>cbe57e41-433d-457a-9496-cb34df528baa.TABLE:kube-watcher.chart_query</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

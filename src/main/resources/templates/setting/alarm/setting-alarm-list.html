@@ -29,7 +29,6 @@
                     <table class="list_table70vh">
                         <thead>
                             <tr>
-                                <th>Rule ID</th>
                                 <th>Detect type</th>
                                 <th>Category</th>
                                 <th>Resource</th>
@@ -42,21 +41,20 @@
                         </thead>
                         <tbody>
                             <tr th:if="${#arrays.isEmpty(alertConfigList)}">
-                                <td colspan="5" class="text-center">No results</td>
+                                <td colspan="8" class="text-center">No results</td>
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(alertConfigList)}" th:each="alertConfig : ${alertConfigList}">
                                 <td>
-                                    <a class="table2-link" th:href="'javascript:alertConfigDetail(&quot;' + ${alertConfig?.ruleId} + '&quot;)'"
-                                       th:text="${alertConfig?.ruleId}"></a>
+                                    <a class="table2-link" th:href="'javascript:alertConfigRule(&quot;' + ${alertConfig?.ruleId} + '&quot;)'"
+                                       th:text="${alertConfig?.alertRuleId?.type}"></a>
                                 </td>
-                                <td th:text="${alertConfig?.detectType}"></td>
-                                <td th:text="${alertConfig?.category}"></td>
-                                <td th:text="${alertConfig?.resource}"></td>
-                                <td th:text="${alertConfig?.dangerLevel}"></td>
-                                <td th:text="${alertConfig?.warningLevel}"></td>
-                                <td th:text="${alertConfig?.duration}"></td>
-                                <td th:text="${alertConfig?.detectString}"></td>
-                                <td th:text="${alertConfig?.severity}"></td>
+                                <td th:text="${alertConfig?.alertRuleId?.category}"></td>
+                                <td th:text="${alertConfig?.alertRuleId?.resource}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.dangerLevel : '-'}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.warningLevel : '-'}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.duration : '-'}"></td>
+                                <td th:text="${#strings.isEmpty(alertConfig?.detectString) ? '-' : alertConfig?.detectString}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.data.vo.AlertSeverity).NONE == alertConfig?.severity ? '-' : alertConfig?.severity}"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -76,73 +74,126 @@
                     </div>
                     <div class="modal-nbody row_scroll">
                         <div class="row">
-                            <form id="alertRule" th:object="${alertRule}" method="POST">
-                            <table class="table-nt">
-                                <tr>
-                                    <th>Rule ID</th>
-                                    <td><input type="text" id="ruleId" style="width:60px;"></td>
-                                </tr>
-                                <tr>
-                                    <th>Detect Type</th>
-                                    <td>
-                                        <div class="radio">
-                                            <label><input type="radio" id="detectType" name="detectType" value="metric" checked>Metric</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label><input type="radio" id="detectType" name="detectType" value="log">Log</label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Category</th>
-                                    <td>
-                                        <div class="dropdown d_ib">
-                                            <select class="custom-select" id="category">
-                                                <option value="cluster node">Cluster Node</option>
-                                                <option value="pod">POD</option>
-                                                <option value="cluster Event">Cluster Event</option>
-                                                <option value="log">Log</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="logConfigArea1">
-                                    <th>Resource</th>
-                                    <td>
-                                        <div class="dropdown d_ib">
-                                            <select class="custom-select" id="resource">
-                                                <option value="CPU">CPU</option>
-                                                <option value="Memory">Memory</option>
-                                                <option value="Disk">Disk</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="logConfigArea2">
-                                    <th>Danger Level</th>
-                                    <td><input type="text" id="maxLevel" style="width:60px;"> %</td>
-                                </tr>
-                                <tr id="logConfigArea3">
-                                    <th>Warning Level</th>
-                                    <td><input type="text" id="minLevel" style="width:60px;"> %</td>
-                                </tr>
-                                <tr id="logConfigArea4">
-                                    <th>Duration</th>
-                                    <td><input type="text" id="duration" style="width:60px;"> min</td>
-                                </tr>
-                                <tr id="logConfigArea5">
-                                    <th>Detect string</th>
-                                    <td><input type="text" id="detectString" style="width:200px;"></td>
-                                </tr>
-                                <tr id="logConfigArea6">
-                                    <th>Severity</th>
-                                    <td>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" id="severity" value="Danger">Danger</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label><input type="checkbox" id="severity" value="Warning">Warning</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label><input type="checkbox" id="severity" value="Info">Info</label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
+                            <form id="alertRule" th:object="${alertRule}" >
+                                <input type="hidden" name="_method" th:value="${#bools.isTrue(editMode) ? 'PUT' : 'POST'}">
+                                <input type="hidden" th:field="*{ruleId}">
+                                <table class="table-nt">
+                                    <tr>
+                                        <th>Detect Type</th>
+                                        <td>
+                                            <div class="radio" >
+                                                <th:block  th:each="typeEnum : ${T(com.kubeworks.watcher.data.vo.AlertType).values()}">
+                                                    <label>
+                                                        <input type="radio" th:if="${#bools.isTrue(editMode)}" th:field="*{alertRuleId.type}" th:value="${typeEnum.name()}"
+                                                               th:text="${typeEnum.name()}" onclick="return(false);"/>
+                                                        <input type="radio" th:unless="${#bools.isTrue(editMode)}" th:field="*{alertRuleId.type}" th:value="${typeEnum.name()}"
+                                                               th:text="${typeEnum.name()}"/>
+                                                    </label>
+                                                </th:block>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table id="metricRuleTable" class="table-nt" style="border-top: 0px;"
+                                       th:styleappend="*{alertRuleId.type == T(com.kubeworks.watcher.data.vo.AlertType).METRIC ? '' : 'display: none'}">
+                                    <tr>
+                                        <th>Category</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="category" th:field="*{alertRuleId.category}"
+                                                        th:onFocus="${#bools.isTrue(editMode)} ? 'this.initialSelect = this.selectedIndex;'"
+                                                        th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="category : ${T(com.kubeworks.watcher.data.vo.AlertCategory).getAlertCategories(T(com.kubeworks.watcher.data.vo.AlertType).METRIC)}"
+                                                        th:value="${category.name()}" th:text="${category.name()}"></option>
+                                                </select>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Resource</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="resource" th:field="*{alertRuleId.resource}"
+                                                        th:onFocus="${#bools.isTrue(editMode)} ? 'this.initialSelect = this.selectedIndex;'"
+                                                        th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="resource : ${T(com.kubeworks.watcher.data.vo.AlertResource).getAlertResourcesByMetric()}"
+                                                            th:value="${resource.name()}" th:text="${resource.name()}"></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Danger Level</th>
+                                        <td><input type="number" id="dangerLevel" style="width:60px;" th:field="*{dangerLevel}"
+                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> %</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Warning Level</th>
+                                        <td><input type="number" id="minLevel" style="width:60px;" th:field="*{warningLevel}"
+                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> %</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Duration</th>
+                                        <td><input type="number" id="duration" style="width:60px;" th:field="*{duration}"
+                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> min</td>
+                                    </tr>
+                                </table>
+                                <table id="logRuleTable" class="table-nt" style="border-top: 0px;"
+                                       th:styleappend="*{alertRuleId.type == T(com.kubeworks.watcher.data.vo.AlertType).LOG ? '' : 'display: none'}">
+                                    <tr>
+                                        <th>Category</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="category" th:field="*{alertRuleId.category}"
+                                                        th:onFocus="${#bools.isTrue(editMode)} ? 'this.initialSelect = this.selectedIndex;'"
+                                                        th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="category : ${T(com.kubeworks.watcher.data.vo.AlertCategory).getAlertCategories(T(com.kubeworks.watcher.data.vo.AlertType).LOG)}"
+                                                            th:value="${category.name()}" th:text="${category.name()}"></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Resource</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="resource" th:field="*{alertRuleId.resource}"
+                                                        th:onFocus="${#bools.isTrue(editMode)} ? 'this.initialSelect = this.selectedIndex;'"
+                                                        th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="resource : ${T(com.kubeworks.watcher.data.vo.AlertResource).getAlertResourcesByLog()}"
+                                                            th:value="${resource.name()}" th:text="${resource.name()}"></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Detect string</th>
+                                        <td><input type="text" id="detectString" style="width:200px;" th:field="*{detectString}"
+                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="severity" th:field="*{severity}"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="severityEnum : ${T(com.kubeworks.watcher.data.vo.AlertSeverity).getAlertSeverity()}"
+                                                            th:value="${severityEnum.name()}" th:text="${severityEnum.value}"></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
                             </form>
                         </div>
                     </div>
@@ -156,102 +207,112 @@
         var $contentList = $("#contentList"),
             linkUrl= [[${link}]];
 
-        function alertConfigDetail(ruleId) {
+        function alertConfigRule(ruleId) {
+            let url = ruleId === "" || ruleId === undefined ? "/setting/alarm/rule" : "/setting/alarm/rule/" + ruleId
+
             $.ajax({
-                url: "/setting/alarm/list/config/" + ruleId,
+                url: url,
                 success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
+                    $("#myModal").text("");
+                    $("#myModal").html(data);
+                    $("#myModal").modal();
                 },
                 error: function (e) {
                     if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
+                        $(location).attr("href", "/login?logout")
                     }
                 }
             });
         }
+
+        function showTable($selector) {
+            $selector.show();
+            $("#" + $selector.attr('id') + " :input").prop("disabled", false);
+        }
+        function hideTable($selector) {
+            $selector.hide();
+            $("#" + $selector.attr('id') + " :input").prop("disabled", true);
+        }
         $(document).ready(function () {
-            $('#btnNew').on('click', function () {
-                $('#myModal').modal();
-                $('#logConfigArea1').show();
-                $('#logConfigArea2').show();
-                $('#logConfigArea3').show();
-                $('#logConfigArea4').show();
-                $('#logConfigArea5').hide();
-                $('#logConfigArea6').hide();
+
+            $("#btnNew").on("click", function () {
+                alertConfigRule("");
             });
-        });
 
-        $('#save').click(function () {
-            $('#alertRule').attr("action", "/setting/alarm");
-            var data = $('#alertRule').serialize();
-
-            alert("new rule : "+data);
-
-            $.ajax({
-                type : "post",
-                data : data,
-                url : "/setting/alarm",
-                success : function(){
-                    alert('등록이 완료되었습니다.');
-                    $('#myModal').hide();
-                    $(location).attr('href', 'setting/alarm/setting-alarm-list')
+            $(document).on("change", "input[type=radio][name='alertRuleId.type']", function(){
+                $this = $(this);
+                if ($this.val() === "METRIC") {
+                    hideTable($("#logRuleTable"));
+                    showTable($("#metricRuleTable"));
+                } else {
+                    hideTable($("#metricRuleTable"));
+                    showTable($("#logRuleTable"));
                 }
             });
 
-            // let ruleId        = $('#ruleId').val();
-            // let detectType    = $('#detectType:checked').val();
-            // let category      = $('#category option:selected').val();
-            // let resource      = $('#resource').val();
-            // let dangerLevel   = $('#dangerLevel').val();
-            // let warningLevel  = $('#warningLevel').val();
-            // let duration      = $('#duration').val();
-            // let severity      = $('#severity:checked').val();
-            //
-            // alert("save click : "+severity);
-            //
-            // $.ajax({
-            //     url: '/setting/alarm/config/', // 서버 요청
-            //     dataType: 'json',
-            //     type: 'post',
-            //     data: {
-            //         'ruleId': ruleId,
-            //         'detectType': detectType,
-            //         'category': category,
-            //         'resource': resource,
-            //         'dangerLevel': dangerLevel,
-            //         'warningLevel': warningLevel,
-            //         'duration': duration,
-            //         'severity': severity
-            //     },
-            //     success: function () {
-            //         alert('Success'); // 성공시 코드
-            //     }
-            // });
+            $(document).on("change", "select[name='alertRuleId.category']", function(){
+                $this = $(this);
+                $("select[name='alertRuleId.resource']").val("");
+                if ($this.val() === "POD") {
+                    $("select[name='alertRuleId.resource'] option").each(function () {
+                        $(this).prop("disabled", $(this).val() === "DISK");
+                    });
+                } else {
+                    $("select[name='alertRuleId.resource'] option").each(function () {
+                        $(this).prop("disabled", false);
+                    });
+                }
+            });
 
+            $(document).on("click", "#save", function(){
+
+                let formSerializeArray = $("#alertRule").serializeArray();
+                let object = { "alertRuleId":{}};
+                for (let i = 0; i < formSerializeArray.length; i++){
+                    let name = formSerializeArray[i]["name"];
+                    let value = formSerializeArray[i]["value"];
+                    if (name.startsWith("alertRuleId.")) {
+                        const splitName = name.split(".");
+                        object.alertRuleId[splitName[1]] = value;
+                        continue;
+                    }
+                    object[name] = value;
+                }
+
+                let data = JSON.stringify(object);
+                let method = $("input[name='_method']").val();
+
+                if (confirm(`add rule? ${data}`) === false) {
+                    return false;
+                }
+
+                $.ajax({
+                    type : method,
+                    contentType: "application/json",
+                    data : data,
+                    url : "/api/v1/alarm/rule",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
+                    success: function (data) {
+                        if (data.success === false) {
+                            alert(data.message);
+                            return false;
+                        }
+                        alert("등록이 완료되었습니다.");
+                        $("#myModal").hide();
+                        location.reload();
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                            $(location).attr("href", "/login?logout")
+                        }
+                    }
+                });
+            });
         });
-        $('input[type=radio][name=detectType]').change(function() {
-            switch(this.value) {
-                case 'metric' :
-                    $('#logConfigArea1').show();
-                    $('#logConfigArea2').show();
-                    $('#logConfigArea3').show();
-                    $('#logConfigArea4').show();
-                    $('#logConfigArea5').hide();
-                    $('#logConfigArea6').hide();
-                    break;
-                case 'log' :
-                    $('#logConfigArea1').hide();
-                    $('#logConfigArea2').hide();
-                    $('#logConfigArea3').hide();
-                    $('#logConfigArea4').hide();
-                    $('#logConfigArea5').show();
-                    $('#logConfigArea6').show();
-                    break;
-            }
-        });
+
+
     </script>
 </div>
 </body>
