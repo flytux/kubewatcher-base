@@ -3,8 +3,8 @@
       xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
-    <!--    <meta name="_csrf" th:content="${_csrf.token}">-->
-    <!--    <meta name="_csrf_header" th:content="${_csrf.headerName}">-->
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -263,7 +263,8 @@
 <script th:src="@{/assets/js/jquery.chart.min.js}"></script>
 <script th:src="@{/assets/js/jquery-chart.init.js}"></script>
 <script>
-        const /*header = $("meta[name='_csrf_header']").attr("content"),*/
+        const header = $("meta[name='_csrf_header']").attr("content"),
+            token = $("meta[name='_csrf']").attr("content"),
             signOut = $('#sign-out'),
             signOutForm = $('#sign-out-form');
 

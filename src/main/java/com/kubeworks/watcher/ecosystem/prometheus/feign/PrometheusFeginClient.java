@@ -18,7 +18,7 @@ public interface PrometheusFeginClient {
     @GetMapping(value = ExternalConstants.PROMETHEUS_RANGE_QUERY_API_URI + "{query}")
     PrometheusApiResponse getQueryRange(@PathVariable("query")  String query,
                                         @RequestParam("start") long start,
-                                        @RequestParam("start") long end,
+                                        @RequestParam("end") long end,
                                         @RequestParam("step") long step);
 
 }
