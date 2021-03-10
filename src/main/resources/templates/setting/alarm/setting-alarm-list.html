@@ -279,6 +279,16 @@
                     object[name] = value;
                 }
 
+                if(Number(object.dangerLevel) > 100 || Number(object.warningLevel) > 100){
+                    alert("DangerLevel, WarningLevel 값은 100%를 넘을수 없습니다.");
+                    return false;
+                }
+
+                if(Number(object.dangerLevel) < Number(object.warningLevel)){
+                    alert("DangerLevel 값보다 WarningLevel 값이 클수 없습니다.");
+                    return false;
+                }
+
                 let data = JSON.stringify(object);
                 let method = $("input[name='_method']").val();
 
