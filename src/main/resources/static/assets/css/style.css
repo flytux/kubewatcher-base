@@ -632,6 +632,68 @@ textarea.form-control {
     margin-top:11px; font-size:11px;color:#9b9b9b;
     font-weight:600;
 }
+/*log page*/
+.search_padding{
+    padding-right:10px;
+}
+
+.search_date {
+    border: 1px solid #121011;
+    height: 28px; width:130px;
+    padding-left:5px;
+    background-color: #ffffff;
+    box-shadow: none;
+    border-radius: 4px;
+    font-size:13px;
+}
+
+.search_time {
+    border: 1px solid #121011;
+    height: 28px; width:110px;
+    padding-left:10px;
+    background-color: #ffffff;
+    box-shadow: none;
+    border-radius: 4px;
+    font-size:13px;
+}
+
+.success_percent_green {
+    display: inline;
+    padding: .25em 6px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    background-color: #73ba8a;
+}
+.success_percent_yellow {
+    display: inline;
+    padding: .25em 6px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    background-color: #d4d30d;
+}
+.success_percent_red {
+    display: inline;
+    padding: .25em 6px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    background-color: #d40d0d;
+}
+/*log page*/
 
 .list_btn {
     display: inline-block;
@@ -2191,6 +2253,63 @@ textarea.form-control {
 .NCP_Users a:visited {color:#f37320;}
 .NCP_Users a:active {color:#f37320;}
 
+/* 리스트 스크롤 포함 700 테이블 */
+.list_table{
+    width:100%;
+    text-align:center;
+    border-bottom:1px solid #d9d9d9;
+}
+
+.list_table thead{
+    border-bottom:2px solid #d9d9d9;
+    display: table;
+    table-layout:fixed;
+    width:100%;
+    padding:12px;
+}
+
+.list_table thead > tr > th{
+    padding:0px 10px 10px 10px;
+}
+
+.list_table tfoot > tr > th{
+    padding:10px 10px 10px 10px;
+}
+
+.list_table tbody{
+    display: block;
+    max-height:700px;/*스크롤 생성되는 크기*/
+    overflow-y:auto;
+    text-align:center;
+    width:100%;
+}
+
+.list_table tr{
+    display: table;
+    table-layout:fixed;
+    width:100%;
+}
+
+.list_table > tbody > tr{
+    border-bottom:1px solid #d9d9d9;
+    cursor:pointer;
+}
+
+.list_table td{
+    word-break: break-all;
+}
+
+.list_table > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.list_table > tbody > tr:hover {
+    background-color: #f0ece8;
+}
+
+.list_table a:link {color:#f37320;}
+.list_table a:visited {color:#f37320;}
+.list_table a:active {color:#f37320;}
 
 /* 리스트 스크롤 포함 549 테이블*/
 .list_table{

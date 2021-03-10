@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController()
 @RequestMapping(path = "/api/v1")
@@ -32,12 +33,18 @@ public class MonitoringRestController {
     private static final long VM_OVERVIEW_MENU_ID = 140;
     private static final long VM_DETAIL_MENU_ID = 141;
     private static final long MAIN_MENU_ID = 99;
+    private static final long LOGGING_MENU_ID = 1128;
 
     private final PageViewService pageViewService;
     private final MonitoringProperties monitoringProperties;
     private final PageMetricService<Page> applicationPageMetricService;
     private final ApplicationServiceProperties applicationServiceProperties;
 
+    @GetMapping(value = "/monitoring/logging", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> logging() {
+        Page pageView = pageViewService.getPageView(LOGGING_MENU_ID);
+        return lokiresponseData(pageView);
+    }
 
     @GetMapping(value = "/monitoring/application/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> application() {
@@ -100,6 +107,20 @@ public class MonitoringRestController {
         response.put("user", getUser());
         response.put("host", monitoringProperties.getDefaultPrometheusUrl());
         response.put("page", page);
+        return response;
+    }
+
+    private Map<String, Object> lokiresponseData(Page page) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", getUser());
+        response.put("host", monitoringProperties.getDefaultCluster().getLoki().getUrl());
+        response.put("page", page);
+        response.put("services", applicationServiceProperties.getServices().stream()
+            .map(ApplicationServiceProperties.Service::getName).collect(Collectors.toList()));
+        String joinString = applicationServiceProperties.getServices().stream()
+            .map(ApplicationServiceProperties.Service::getName).collect(Collectors.joining("|"));
+        response.put("applicationValue", joinString);
+
         return response;
     }
 

@@ -511,15 +511,38 @@ INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYP
 
 
 INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	50	,	'Application usage'	,	'Home<i class=&quot;feather icon-chevron-right&quot; ></i>Application Usage'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	1127	);
-
+--
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	51	,	 '보험코어 어플리케이션'	,	1	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	50	);
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	52	,	 '보험코어 어플리케이션'	,	2	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	50	);
 INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	53	,	 '보험코어 어플리케이션'	,	3	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	50	);
-
+--
 INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	165	,	 'POD'    	,	1	,	 'CHART'   	,	 'columnbar'    	,	'full-head-card-panel'	,	'Y'	,	60000	,	1	,	''	,	 'float'    	,	 '0'    	,	 ''    	,	 'datetime'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	51	);
 INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	166	,	 'CPU'    	,	1	,	 'CHART'   	,	 'columnbar'    	,	'full-head-card-panel'	,	'Y'	,	60000	,	1	,	''	,	 'decimalSiPrefix'    	,	 '0'    	,	 ''    	,	 'datetime'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	52	);
 INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	167	,	 'Memory'    	,	1	,	 'CHART'   	,	 'columnbar'    	,	'full-head-card-panel'	,	'Y'	,	60000	,	1	,	''	,	 'byte'    	,	 '0'    	,	 ''    	,	 'datetime'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	53	);
-
+--
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (304, '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/POD?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	165	);
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (305, '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/CPU?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	166	);
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (306, '/api/v1/application/usage/metric/namespace/$namespace/application/$application/metric/MEMORY?unit=$unit&searchDate=$searchDate'	,	 'API'	,	 '{{name}}'	,	 '0'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	167	);
+
+
+-- loki Start
+INSERT INTO page (PAGE_ID, TITLE, NAV,CREATE_TIME, UPDATE_TIME, MENU_ID) values (	44	,	'Loki Log '	,	'Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Logging'    	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	1128	);
+
+INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	39	,	'' 	,	2	,	 'P'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	44	);
+
+INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	168	,	 '보험코어 어플리케이션 거래 현황'	,	16	,	 'METRIC_TABLE'	,	 ''	,	 'col-6-head-card-panel-in-logtable'	,	 'Y'	,	60000	,	1	,	 ''	,	 ''	,	 ''	,	 ''	,	 ''	,	 CURRENT_TIMESTAMP() 	,	 CURRENT_TIMESTAMP() 	,	39	);
+INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	169	,	 '보험코어 어플리케이션 에러 로그 '	,	16	,	 'LOG_METRIC_TABLE'	,	 ''	,	 'col-6-head-card-panel-in-errorlogtable'	,	 'Y'	,	0	,	1	,	 ''	,	 ''	,	 ''	,	 ''	,	 ''	,	 CURRENT_TIMESTAMP() 	,	 CURRENT_TIMESTAMP() 	,	39	);
+
+--Caas 환경
+INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	307	,	 '/loki/api/v1/query_range?direction=BACKWARD&limit=5000&query=sum(count_over_time({app=~"$application",marker="FRT.TX_END"} [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '총건수'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	308	,	 '/loki/api/v1/query_range?direction=BACKWARD&limit=5000&query=sum(count_over_time({app=~"$application",marker="FRT.TX_END"} |="TX END : [0]" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '정상'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?direction=BACKWARD&limit=5000&query=sum(count_over_time({app=~"$application",marker="FRT.TX_END"} |="TX END : [1]" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+
+--local 환경
+--INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	307	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '총건수'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+--INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	308	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="info" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '정상'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+--INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="error" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+
+-- 공통 - 에러로그 호출 쿼리
+INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	310	,	 ''	,	 'PROXY_METRIC'	,	 'LOG'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	169	);
+-- loki End
