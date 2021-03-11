@@ -1,14 +1,12 @@
 package com.kubeworks.watcher.preference.service;
 
-import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
+import com.kubeworks.watcher.data.entity.ApplicationManagement;
 
 public interface ManagementService {
 
-    ApplicationServiceProperties.Service managementService(String name);
+    ApplicationManagement managementService(String name);
 
-    ApplicationServiceProperties.Service managementService(String namespace, String name);
+    ApplicationManagement managementService(String namespace, String name);
 
-    ApplicationServiceProperties.Service managementServiceWithDefault(String namespace, String name);
-
-
+    ApplicationManagement managementServiceWithDefault(String namespace, String name);
 }

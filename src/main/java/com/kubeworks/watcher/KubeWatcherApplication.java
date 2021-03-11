@@ -1,7 +1,6 @@
 package com.kubeworks.watcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
 import com.kubeworks.watcher.config.properties.GrafanaProperties;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.config.properties.UserProperties;
@@ -33,7 +32,7 @@ import javax.annotation.PostConstruct;
 @EnableTransactionManagement
 @EnableFeignClients
 @EnableConfigurationProperties(value = {UserProperties.class, GrafanaProperties.class,
-    MonitoringProperties.class, ApplicationServiceProperties.class})
+    MonitoringProperties.class})
 @SpringBootApplication
 public class KubeWatcherApplication {
 

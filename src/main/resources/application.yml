@@ -143,4 +143,3 @@ application:
         name: loki
         namespace: loki
         displayName: loki
-

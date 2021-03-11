@@ -1,9 +1,9 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
 import com.kubeworks.watcher.cloud.monitoring.service.PageMetricService;
-import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.data.entity.Page;
+import com.kubeworks.watcher.ecosystem.prometheus.service.ApplicationService;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class MonitoringRestController {
     private final PageViewService pageViewService;
     private final MonitoringProperties monitoringProperties;
     private final PageMetricService<Page> applicationPageMetricService;
-    private final ApplicationServiceProperties applicationServiceProperties;
+    private final ApplicationService applicationService;
 
     @GetMapping(value = "/monitoring/logging", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> logging() {
@@ -49,7 +49,7 @@ public class MonitoringRestController {
     @GetMapping(value = "/monitoring/application/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> application() {
         Map<String, Object> response = responseData(applicationPageMetricService.pageMetrics(APPLICATION_OVERVIEW_MENU_ID));
-        response.put("services", applicationServiceProperties);
+        response.put("services", applicationService);
         return response;
     }
 
@@ -98,7 +98,7 @@ public class MonitoringRestController {
     @GetMapping(value = "/main", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> dashboard() {
         Map<String, Object> response = responseData(pageViewService.getPageView(MAIN_MENU_ID));
-        response.put("services", applicationServiceProperties);
+        response.put("services", applicationService);
         return response;
     }
 
@@ -115,10 +115,8 @@ public class MonitoringRestController {
         response.put("user", getUser());
         response.put("host", monitoringProperties.getDefaultCluster().getLoki().getUrl());
         response.put("page", page);
-        response.put("services", applicationServiceProperties.getServices().stream()
-            .map(ApplicationServiceProperties.Service::getName).collect(Collectors.toList()));
-        String joinString = applicationServiceProperties.getServices().stream()
-            .map(ApplicationServiceProperties.Service::getName).collect(Collectors.joining("|"));
+        response.put("services", applicationService.getManagementByName());
+        String joinString = applicationService.getServiceNamesLoki();
         response.put("applicationValue", joinString);
 
         return response;

@@ -55,8 +55,9 @@ public class LogController {
 
         param = param.replace(",","|");
         String apiHost = "http://loki.do/loki/api/v1/query_range?query={uri}"; //TODO local환경상태 application.yml의 loki url부분 => Caas환경에서는 어떻게 가져오는지 확인필요
+        // String apiHost = http://loki.dev/loki/api/v1/query_range?query={uri} // TODO Caas환경에서는 어떻게 가져오는지 확인필요
         String uri = "sum(count_over_time({app=~"+param+"} |="+"\"error\""+"[1m])) by (app)"; //local 환경
-        //String uri = "sum(count_over_time({app=~"+param+",marker="+"\"FRT.TX_END\""+"} |="+"\"TX END : [1]\""+"[1m])) by (app)"; //TODO Caas환경용
+        // String uri = "sum(count_over_time({app=~"+param+",marker="+"\"FRT.TX_END\""+"} |="+"\"TX END : [1]\""+"[1m])) by (app)"; //TODO Caas환경용
 
         String uriEnd = "&start="+startTime+"&end="+endTime+"&step=60"; //시간기준 nanosecond로 설정해야함.
 
