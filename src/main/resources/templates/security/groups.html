@@ -16,12 +16,12 @@
         <div class="row">
             <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Groups
                 <div class="dropdown d_ib f_r">
-                        <button class="btn btn-md btn-outline-white" id="btnNew" ><i class="feather icon-file-text"></i> NEW</button>
+                    <a  href="" data-toggle="modal" data-target="#myModal"><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button></a>
                 </div>
             </div>
         </div>
-        <div id="groupList" class="row">
-            <div th:fragment="groupList" class="box_panel">
+        <div class="row">
+            <div class="box_panel">
                 <div class="box_panel-total">
                     Total : <span th:text="${#arrays.isEmpty(groupList) ? '0' : groupList.size()}" class="point pr_10">6</span>
                 </div>
@@ -43,11 +43,8 @@
                                 <a class="table2-link" th:href="'javascript:groupDetail(&quot;'+ ${group?.groupname} + '&quot;)'"
                                    th:utext="${group?.groupname}"></a>
                             </td>
-                            <td>
-                                <div class="row" th:if="${group?.users}" th:text="${group?.users.size()}"></div>
-                                <div class="row" th:unless="${group?.users}">0</div>
-                            </td>
-                            <td th:text="${#temporals.format(group?.createTime, 'yyyy-MM-dd hh:mm:ss')}"> </td>
+                            <td th:text="${group?.users.size()}"></td>
+                            <td th:text="${group?.createTime}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -61,48 +58,58 @@
                     <div class="modal-title_box">
                         <div class="modal-title">
                             <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <div class="f_r"><button class="btn_save_i feather icon-save" id="btnSave"></button></div>
-                            <div class="f_r"><button class="btn_save_i feather icon-trash-2" id="btnDelete"></button></div>
                             <span id="myModalLabel" th:text="|Group : ${group?.groupname}|"></span>
                         </div>
                     </div>
                     <div class="modal-nbody">
                         <div class="table-title">
-
+                            Overview
                         </div>
                         <div class="row">
                             <table class="table-nt">
                                 <tr>
                                     <th>그룹명</th>
-                                    <td id="groupnameTd">
-                                        <input type="text" id="groupname" minlength="5" maxlength="40" style="width:100%;"
-                                               th:value="${group?.groupname}">
-                                    </td>
-                                </tr>
-                                <tr id="usernameTr">
-                                    <th>그룹 사용자</th>
-                                    <td>
-                                        <div class="row" th:if="${group?.users}" th:each="user : ${group?.users}">
-                                            <div th:text="|${user.username} [${user.name}]|"/>
-                                        </div>
-                                        <div class="row" th:if="${#arrays.isEmpty(group?.users)}">-</div>
-                                    </td>
+                                    <td th:text="${group?.groupname}"></td>
                                 </tr>
                                 <tr>
-                                    <th>설명</th>
-                                    <td id="descriptionTd">
-                                        <input type="text" style="width:100%;" maxlength="200" id="description"
-                                               th:value="${group?.description}">
-                                    </td>
-                                </tr>
-                                <tr id="updateTimeTr">
-                                    <th>최종변경일</th>
+                                    <th>그룹 사용자</th>
                                     <td>
-                                        <div id="updateTime" th:text="${#temporals.format(group?.updateTime, 'yyyy-MM-dd hh:mm:ss')}"> </div>
+                                        <div class="row" th:unless="${#arrays.isEmpty(group?.users)}" th:each="user : ${group?.users}">
+                                            <div th:text="|${user.username} [${user.name}]|"/>
+                                        </div>
+                                    </td>
+                                    </td>
+                                <tr>
+                                    <th>최종변경일</th>
+                                    <td th:text="${group?.updateTime}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="table-title">
+                            Group role
+                        </div>
+                        <div class="row">
+                            <table class="table-select">
+                                <tr>
+                                    <th>기본 Role</th>
+                                    <td>Cluster monitor</td>
+                                    <td class="select">
+                                        <!-- [multi select box] start-->
+                                        <select id="modal-multi-select-box" multiple="multiple">
+                                            <option value="통합관리환경 admin">통합관리환경 admin</option>
+                                            <option value="보험코어 monitor">보험코어 monitor</option>
+                                            <option value="Cluster monitor">Cluster monitor</option>
+                                            <option value="Cluster log viewer">Cluster log viewer</option>
+                                            <option value="On-premise monitor">On-premise monitor</option>
+                                            <option value="Cluster admin">Cluster admin</option>
+                                            <option value="Dashboard operator">Dashboard operator</option>
+                                        </select>
+                                        <!-- [multi select box] end-->
                                     </td>
                                 </tr>
                             </table>
                         </div>
+                        <div class="row text-center pt_15"><button class="btn btn-save">저 장</button></div>
                     </div>
                 </div>
             </div>
@@ -110,29 +117,15 @@
         <!-- [Modal] End -->
         <!-- [Groups] End-->
     </div>
-    <input type="hidden" id="var-groupname" value=""/>
-    <input type="hidden" id="var-description" value=""/>
     <script type="text/javascript" th:inline="javascript">
-
-        var $groupName = $("#var-groupname");
-        var $description = $("#var-description");
-        var $groupList = $("#groupList");
-
         function groupDetail(groupname) {
             $.ajax({
                 url: "/security/groups/" + groupname,
                 success: function (data) {
                     $('#myModal').text("");
                     $('#myModal').html(data);
-                    $('#myModal').modal('show');
+                    $('#myModal').modal();
                     $(".knob").knob();
-                    $('#btnSave').hide();
-
-                    $groupName.val( $('#groupname').val() );
-                    $description.val( $('#description').val() );
-
-                    $('#groupnameTd').html($groupName.val());
-                    $('#descriptionTd').html($description.val());
                 },
                 error: function (e) {
                     if (e.status === 401) {
@@ -141,115 +134,6 @@
                 }
             });
         }
-
-        // btnNew event
-        $(document).ready(function () {
-           $('#btnNew').on('click', function () {
-               $('#myModal').modal('show');
-               $('#groupnameTd').html('<input type="text" name="groupname" id="groupname" style="width:100%;" />');
-               $('#descriptionTd').html('<input type="text" name="description" id="description" style="width:100%;" />');
-               $('#usernameTr').html('');
-               $('#updateTimeTr').html('');
-               $('#myModalLabel').text('Group');
-               $('#btnDelete').hide();
-               $('#btnSave').show();
-               $('#groupName').attr('text', '');
-            });
-        });
-
-        // insert event
-        $(document).on("click", "#btnSave", function(event){
-           let groupname = $("#groupname").val();
-           let description = $("#description").val();
-
-           if (groupname === '') {
-               alert( "그룹명을 입력해주세요." );
-               $("#groupname").focus();
-               return;
-           }
-
-           if (groupname.length < 5) {
-               alert( "그룹명은 최소 5자리 입니다." );
-               $("#groupname").focus();
-               return;
-           }
-
-           if (description === '') {
-               alert( "설명을 입력해주세요." );
-               $("#description").focus();
-               return;
-           }
-
-           var msg = confirm( "등록하시겠습니까?" );
-
-           if (msg === true) {
-               $.ajax({
-                    url: "/security/groups/save",
-                    type: "post",
-                    beforeSend: function(xhr){
-                        xhr.setRequestHeader(header, token);
-                    },
-                    data : {
-                        'groupname'   : groupname,
-                        'description' : description
-                    },
-                    success: function (data) {
-                        if (data.save.success === true) {
-                            alert('등록이 완료되었습니다.');
-                            $('#myModal').modal('hide');
-                            $groupList.text('');
-                            $groupList.html(data.html);
-                        } else {
-                            alert(data.save.message);
-                        }
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-               });
-           } else if (msg === false) {
-               return;
-           }
-        });
-
-        // delete event
-        $(document).on("click", "#btnDelete", function(event){
-           let groupname = $groupName.val();
-           var msg = confirm( "삭제하시겠습니까?" );
-
-           if (msg === true) {
-                $.ajax({
-                    url: "/security/groups/delete",
-                    type: "post",
-                    beforeSend: function(xhr){
-                        xhr.setRequestHeader(header, token);
-                    },
-                    data : {
-                        'groupname' : groupname,
-                    },
-                    success: function (data) {
-                        if (data.delete.success === true) {
-                            alert('삭제가 완료되었습니다.');
-                            $('#myModal').hide();
-                            $groupList.html(data.html);
-
-                        } else {
-                            alert(data.delete.message);
-                        }
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
-           } else if (msg === false) {
-               return;
-           }
-        });
-
     </script>
 </div>
 </body>

@@ -46,6 +46,7 @@ public class MonitoringRestController {
         return lokiresponseData(pageView);
     }
 
+
     @GetMapping(value = "/monitoring/application/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> application() {
         Map<String, Object> response = responseData(applicationPageMetricService.pageMetrics(APPLICATION_OVERVIEW_MENU_ID));
