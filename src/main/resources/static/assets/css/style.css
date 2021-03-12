@@ -2253,63 +2253,6 @@ textarea.form-control {
 .NCP_Users a:visited {color:#f37320;}
 .NCP_Users a:active {color:#f37320;}
 
-/* 리스트 스크롤 포함 700 테이블 */
-.list_table{
-    width:100%;
-    text-align:center;
-    border-bottom:1px solid #d9d9d9;
-}
-
-.list_table thead{
-    border-bottom:2px solid #d9d9d9;
-    display: table;
-    table-layout:fixed;
-    width:100%;
-    padding:12px;
-}
-
-.list_table thead > tr > th{
-    padding:0px 10px 10px 10px;
-}
-
-.list_table tfoot > tr > th{
-    padding:10px 10px 10px 10px;
-}
-
-.list_table tbody{
-    display: block;
-    max-height:700px;/*스크롤 생성되는 크기*/
-    overflow-y:auto;
-    text-align:center;
-    width:100%;
-}
-
-.list_table tr{
-    display: table;
-    table-layout:fixed;
-    width:100%;
-}
-
-.list_table > tbody > tr{
-    border-bottom:1px solid #d9d9d9;
-    cursor:pointer;
-}
-
-.list_table td{
-    word-break: break-all;
-}
-
-.list_table > tbody > tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
-}
-
-.list_table > tbody > tr:hover {
-    background-color: #f0ece8;
-}
-
-.list_table a:link {color:#f37320;}
-.list_table a:visited {color:#f37320;}
-.list_table a:active {color:#f37320;}
 
 /* 리스트 스크롤 포함 549 테이블*/
 .list_table{
@@ -3118,7 +3061,7 @@ textarea.form-control {
     padding:10px 20px 20px 20px;
 }
 
-.modal-nbody input[type="text"],input[type="number"],input[type="password"] {
+.modal-nbody input[type="text"] {
     font-size:9pt;  background-color: #FFFFFF; border: 1px solid #dddddd; height:22px; 
     border-radius: 4px;
 }
