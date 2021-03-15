@@ -48,11 +48,26 @@ INSERT INTO kw_user_role_rule (RULE_ID, DESCRIPTION, RULE_NAME, RULE, CREATE_TIM
 INSERT INTO kw_user_role_rule (RULE_ID, DESCRIPTION, RULE_NAME, RULE, CREATE_TIME, UPDATE_TIME) values ( 2,  '설명123abd' ,'Monitor', '11011101111101111101110111101110110000111111',  CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 INSERT INTO kw_user_role_rule (RULE_ID, DESCRIPTION, RULE_NAME, RULE, CREATE_TIME, UPDATE_TIME) values ( 3,  '설명123abd' ,'Manager', '00000111111100001111001111100001100110110011',  CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 
-INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator',  'testuser1', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator',  'testuser2', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator',  'testuser3', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor' ,  'testuser4', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor' ,  'testuser5', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor' ,  'testuser6', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager' ,  'testuser6', 3, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager' ,  'test', 3, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator', '설명123abd', 'testuser1', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator', '설명123abd', 'testuser2', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator', '설명123abd', 'testuser3', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor', '설명123abd', 'testuser4', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor', '설명123abd', 'testuser5', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor', '설명123abd', 'testuser6', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager', '설명123abd', 'testuser6', 3, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager', '설명123abd', 'test', 3, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+
+
+-- Alert Rule
+INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'NODE', 'CPU', 'node', '(1 - (avg by (node)(irate(node_cpu_seconds_total{mode="idle",zone!="external"}[5m])))) * 100 >= %d', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'NODE', 'MEMORY', 'node', '(1 - sum by (node)(node_memory_MemAvailable_bytes{node!="",zone!="external"}) / sum by (node)(node_memory_MemTotal_bytes{node!="",zone!="external"})) * 100 >= %d', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'NODE', 'DISK', 'node', '(sum by (node)(node_filesystem_size_bytes{device!~"rootfs|HarddiskVolume.+",node!="", zone!="external"}) - sum  by (node)(node_filesystem_free_bytes{device!~"rootfs|HarddiskVolume.+",node!="", zone!="external"})) / sum by (node)(node_filesystem_size_bytes{device!~"rootfs|HarddiskVolume.+",node!="", zone!="external"}) * 100 >= %d', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'POD', 'CPU', 'pod_name', '(sum by (pod_name)(rate(container_cpu_usage_seconds_total{container_name!="",container_name!="POD"}[5m])) * 100) >= %d', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'POD', 'MEMORY', 'pod', '100 * (sum by(pod) (container_memory_working_set_bytes{container_name!="",container_name!="POD",pod_name=~".*"}) / on (pod) sum by (pod)(kube_pod_container_resource_requests_memory_bytes{pod=~".*"}) or sum by(pod) (container_memory_working_set_bytes{container_name!="",container_name!="POD",pod_name=~".*"}) / %s) >= %d', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, MESSAGE_TEMPLATE, CREATE_TIME, UPDATE_TIME) values ('LOG', 'EVENT', 'STRING', '', 'NOOP', '%s', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, MESSAGE_TEMPLATE, CREATE_TIME, UPDATE_TIME) values ('LOG', 'LOG', 'STRING', '', '/loki/api/v1/query_range?direction=BACKWARD&query={app=~".*"}|~"%s"', '%s', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+
+INSERT INTO alert_rule (TYPE, CATEGORY, RESOURCE,  DETECT_STRING, DANGER_LEVEL, WARNING_LEVEL, DURATION, SEVERITY, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'NODE', 'CPU', '', 30, 12, 5, '', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO alert_rule (TYPE, CATEGORY, RESOURCE,  DETECT_STRING, DANGER_LEVEL, WARNING_LEVEL, DURATION, SEVERITY, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'NODE', 'MEMORY', '', 53, 51, 5, '', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+-- INSERT INTO alert_rule (TYPE, CATEGORY, RESOURCE,  DETECT_STRING, DANGER_LEVEL, WARNING_LEVEL, DURATION, SEVERITY, CREATE_TIME, UPDATE_TIME) values ('LOG', 'EVENT', 'STRING', 'Liveness probe failed', 0, 0, 0, 'Warning', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+

@@ -13,6 +13,8 @@ public interface EventService {
 
     List<EventTable> events(String namespace);
 
+    List<EventDescribe> events();
+
     Optional<EventDescribe> event(String namespace, String name);
 
     Optional<V1EventTableList> eventTable(String kind, String namespace, String name, String uId);

@@ -8,448 +8,322 @@
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Alarm<i class=&quot;feather icon-chevron-right&quot; ></i>Config')"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})"/>
     <div id="main_contents">
-
         <!-- [Alarm 설정 목록] start -->
         <div class="row">
             <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Alarm 설정 목록
                 <div class="f_r">
                     <div class="d_ib">
-                        <button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> NEW</button>
-                    </div>
-                    <div class="dropdown d_ib">
-                        <select id="multi-select-box">
-                            <option value="통합관리환경 admin">통합관리환경 admin</option>
-                            <option value="보험코어 monitor">보험코어 monitor</option>
-                            <option value="Cluster monitor">Cluster monitor</option>
-                            <option value="Cluster log viewer">Cluster log viewer</option>
-                            <option value="On-premise monitor">On-premise monitor</option>
-                            <option value="Cluster admin">Cluster admin</option>
-                            <option value="Dashboard operator">Dashboard operator</option>
-                        </select>
+                        <button class="btn btn-md btn-outline-white" id="btnNew"><i class="feather icon-file-text"></i> NEW</button>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
+                    Total : <span th:text="${#arrays.isEmpty(alertConfigList) ? '0' : alertConfigList.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
                         <tr>
-                            <th>VM</th>
                             <th>Detect type</th>
-                            <th>Config</th>
-                            <th>Update</th>
+                            <th>Category</th>
+                            <th>Resource</th>
+                            <th>Danger (%)</th>
+                            <th>Warning (%)</th>
+                            <th>Duration (min)</th>
+                            <th>Detect string</th>
+                            <th>Severity</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>HLI000</td>
-                            <td><a  href="" data-toggle="modal" data-target="#myModal">Metrics</a><!-- [Modal] start -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                                    <div class="modal-dialog modal-lg"style="width:765px;">
-                                        <div class="modal-content">
-                                            <div class="modal-title_box">
-                                                <div class="modal-title">
-                                                    <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <span id="myModalLabel">노드명 : Metrics</span>
-                                                    <div class="f_r"><button class="btn btn-md btn-save">저 장</button></div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-nbody">
-                                                <div class="table-title pt_5">
-                                                    VM
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">CPU</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">MEM</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">Disk</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">Network</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="table-title pt_5">
-                                                    Node
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">CPU</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">MEM</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">Disk</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">Pod</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="table-title pt_5">
-                                                    POD
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">CPU</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">MEM</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">Disk</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">File system</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="table-title pt_5">
-                                                    JVM
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-md-12 col-lg-3 pb_0">
-                                                        <div class="box_panel mb_0">
-                                                            <div class="box_modal-heading2">CPU</div>
-                                                            <div class="box_modal-body text-right pb_0">
-                                                                <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                                <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                                <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-12 col-lg-3 pb_0">
-                                                    <div class="box_panel mb_0">
-                                                        <div class="box_modal-heading2">Heap MEM</div>
-                                                        <div class="box_modal-body text-right pb_0">
-                                                            <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                            <p class="mb_2"> 위험 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                            <p class="mb_10">경고 <input type="text" style="width:50px;"> % <i class="feather icon-chevron-right" ></i></p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-12 col-md-12 col-lg-3 pb_0">
-                                                    <div class="box_panel mb_0">
-                                                        <div class="box_modal-heading2">Thread count</div>
-                                                        <div class="box_modal-body text-right pb_0">
-                                                            <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                            <p class="mb_2"> 위험 <input type="text" style="width:50px;"> 개 <i class="feather icon-chevron-right" ></i></p>
-                                                            <p class="mb_10">경고 <input type="text" style="width:50px;"> 개 <i class="feather icon-chevron-right" ></i></p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-12 col-md-12 col-lg-3 pb_0">
-                                                    <div class="box_panel mb_0">
-                                                        <div class="box_modal-heading2">GC Time</div>
-                                                        <div class="box_modal-body text-right pb_0">
-                                                            <p class="pr_18 mb_2">지속시간 <input type="text" style="width:50px;"> 분</p>
-                                                            <p class="mb_2"> 위험 <input type="text" style="width:50px;"> 분 <i class="feather icon-chevron-right" ></i></p>
-                                                            <p class="mb_10">경고 <input type="text" style="width:50px;"> 분 <i class="feather icon-chevron-right" ></i></p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="table-title pt_5">
-                                                Process
-                                            </div>
-                                            <div class="row text-center">
-                                                <div class="col-xs-12 col-md-12 col-lg-12  pb_0">
-                                                    <div class="box_panel">
-                                                        <div class="box_modal-body text-left pl_20">
-																		<span class="mb_2">프로세스 <input type="text" style="width:200px;">
-																			<span class="ml_30">위험 <input type="text" style="width:50px;"> %<i class="feather icon-chevron-right" ></i></span>
-																			<span class="ml_15">경고 <input type="text" style="width:50px;"> %<i class="feather icon-chevron-right" ></i></span>
-																			<span class="ml_30"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
-																		</span><br>
-
-                                                            <span class="mb_2">프로세스 <input type="text" style="width:200px;">
-																			<span class="ml_30">위험 <input type="text" style="width:50px;"> %<i class="feather icon-chevron-right" ></i></span>
-																			<span class="ml_15">경고 <input type="text" style="width:50px;"> %<i class="feather icon-chevron-right" ></i></span>
-																		</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
+                        <tr th:if="${#arrays.isEmpty(alertConfigList)}">
+                            <td colspan="8" class="text-center">No results</td>
+                        </tr>
+                        <tr th:unless="${#arrays.isEmpty(alertConfigList)}" th:each="alertConfig : ${alertConfigList}">
+                            <td>
+                                <a class="table2-link" th:href="'javascript:alertConfigRule(&quot;' + ${alertConfig?.ruleId} + '&quot;)'"
+                                   th:text="${alertConfig?.alertRuleId?.type}"></a>
+                            </td>
+                            <td th:text="${alertConfig?.alertRuleId?.category}"></td>
+                            <td th:text="${alertConfig?.alertRuleId?.resource}"></td>
+                            <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.dangerLevel : '-'}"></td>
+                            <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.warningLevel : '-'}"></td>
+                            <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.duration : '-'}"></td>
+                            <td th:text="${#strings.isEmpty(alertConfig?.detectString) ? '-' : alertConfig?.detectString}"></td>
+                            <td th:text="${T(com.kubeworks.watcher.data.vo.AlertSeverity).NONE == alertConfig?.severity ? '-' : alertConfig?.severity}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <!-- [Modal] End --></td>
-                <td>VIM, cluster, node, Pod, JVM</td>
-                <td>2020-06-29 14:21:05</td>
-                </tr>
-                <tr>
-                    <td>HLI000</td>
-                    <td><a  href="" data-toggle="modal" data-target="#myModal2">Log</a><!-- [Modal] start -->
-                        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                            <div class="modal-dialog modal-lg"style="width:765px;">
-                                <div class="modal-content">
-                                    <div class="modal-title_box">
-                                        <div class="modal-title">
-                                            <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            <span id="myModalLabel">노드명 : Log</span>
-                                            <div class="f_r"><button class="btn btn-md btn-save">저 장</button></div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-nbody">
-                                        <div class="table-title pt_5">
-                                            VM
-                                        </div>
-                                        <div class="row text-center">
-                                            <div class="col-xs-12 col-md-12 col-lg-12 pb_0">
-                                                <div class="box_panel mb_0">
-                                                    <div class="box_modal-body text-left pl_20">
-																	<span class="mb_10">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_60"><button class="btn btn-md btn-secondary">추가</button></span>
-																	</span><br>
-                                                        <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																	</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="table-title pt_5">
-                                            Cluster
-                                        </div>
-                                        <div class="row text-center">
-                                            <div class="col-xs-12 col-md-12 col-lg-12 pb_0">
-                                                <div class="box_panel mb_0">
-                                                    <div class="box_modal-body text-left pl_20">
-																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_50"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
-																	</span><br>
-                                                        <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																	</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="table-title pt_5">
-                                            Application
-                                        </div>
-                                        <div class="row text-center">
-                                            <div class="col-xs-12 col-md-12 col-lg-12 pb_0">
-                                                <div class="box_panel mb_0">
-                                                    <div class="box_modal-body text-left pl_20">
-																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_50"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
-																	</span><br>
-                                                        <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																	</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="table-title pt_5">
-                                            Database
-                                        </div>
-                                        <div class="row text-center">
-                                            <div class="col-xs-12 col-md-12 col-lg-12  pb_0">
-                                                <div class="box_panel">
-                                                    <div class="box_modal-body text-left pl_20">
-																	<span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_50"><button class="btn btn-md btn-secondary  ml_10">추가</button></span>
-																	</span><br>
-                                                        <span class="mb_2">검출문자열 <input type="text" style="width:200px;">
-																		<span class="ml_15">반복 <input type="text" style="width:50px;"> 회</span>
-																		<span class="ml_30">위험 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">경고 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																		<span class="ml_15">정보 <input type="checkbox" style="vertical-align:middle;margin:0;"></span>
-																	</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- [Modal] End --></td>
-                    <td>VIM, cluster, node, Pod, JVM</td>
-                    <td>2020-06-29 14:21:05</td>
-                </tr>
-                <tr>
-                    <td>HLI000</td>
-                    <td>Metric</td>
-                    <td>VIM, cluster, node, Pod, JVM</td>
-                    <td>2020-06-29 14:21:05</td>
-                </tr>
-                <tr>
-                    <td>HLI000</td>
-                    <td>Metric</td>
-                    <td>VIM, cluster, node, Pod, JVM</td>
-                    <td>2020-06-29 14:21:05</td>
-                </tr>
-                <tr>
-                    <td>HLI000</td>
-                    <td>Metric</td>
-                    <td>VIM, cluster, node, Pod, JVM</td>
-                    <td>2020-06-29 14:21:05</td>
-                </tr>
-                <tr>
-                    <td>HLI000</td>
-                    <td>Metric</td>
-                    <td>VIM, cluster, node, Pod, JVM</td>
-                    <td>2020-06-29 14:21:05</td>
-                </tr>
-                </tbody>
-                </table>
             </div>
         </div>
-    </div>
-    <div class="text-center"><!-- 페이지넘버 -->
-        <nav>
-            <ul class="pagination" >
-                <li>
-                    <a href="#" aria-label="Previous">
-                        <span aria-hidden="true"  class="feather icon-chevron-left"></span>
-                    </a>
-                </li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li>
-                    <a href="#" aria-label="Next">
-                        <span aria-hidden="true"  class="feather icon-chevron-right"></span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <!-- [Alarm 설정 목록] End-->
+        <!-- [Modal 메트릭] start -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+            <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
+                <div class="modal-content">
+                    <div class="modal-title_box">
+                        <div class="modal-title">
+                            <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <span id="myModalLabel">Rule config</span>
+                            <div class="f_r"><button class="btn_save_i feather icon-save" id="save"></button></div>
+                        </div>
+                    </div>
+                    <div class="modal-nbody row_scroll">
+                        <div class="row">
+                            <form id="alertRule" th:object="${alertRule}" >
+                                <input type="hidden" name="_method" th:value="${#bools.isTrue(editMode) ? 'PUT' : 'POST'}">
+                                <input type="hidden" th:field="*{ruleId}">
+                                <table class="table-nt">
+                                    <tr>
+                                        <th>Detect Type</th>
+                                        <td>
+                                            <div class="radio" >
+                                                <th:block  th:each="typeEnum : ${T(com.kubeworks.watcher.data.vo.AlertType).values()}">
+                                                    <label>
+                                                        <input type="radio" th:if="${#bools.isTrue(editMode)}" th:field="*{alertRuleId.type}" th:value="${typeEnum.name()}"
+                                                               th:text="${typeEnum.name()}" onclick="return(false);"/>
+                                                        <input type="radio" th:unless="${#bools.isTrue(editMode)}" th:field="*{alertRuleId.type}" th:value="${typeEnum.name()}"
+                                                               th:text="${typeEnum.name()}"/>
+                                                    </label>
+                                                </th:block>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table id="metricRuleTable" class="table-nt" style="border-top: 0px;"
+                                       th:styleappend="*{alertRuleId.type == T(com.kubeworks.watcher.data.vo.AlertType).METRIC ? '' : 'display: none'}">
+                                    <tr>
+                                        <th>Category</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="category" th:field="*{alertRuleId.category}"
+                                                        th:onFocus="${#bools.isTrue(editMode)} ? 'this.initialSelect = this.selectedIndex;'"
+                                                        th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="category : ${T(com.kubeworks.watcher.data.vo.AlertCategory).getAlertCategories(T(com.kubeworks.watcher.data.vo.AlertType).METRIC)}"
+                                                            th:value="${category.name()}" th:text="${category.name()}"></option>
+                                                </select>
 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Resource</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="resource" th:field="*{alertRuleId.resource}"
+                                                        th:onFocus="${#bools.isTrue(editMode)} ? 'this.initialSelect = this.selectedIndex;'"
+                                                        th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="resource : ${T(com.kubeworks.watcher.data.vo.AlertResource).getAlertResourcesByMetric()}"
+                                                            th:value="${resource.name()}" th:text="${resource.name()}"></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Danger Level</th>
+                                        <td><input type="number" id="dangerLevel" style="width:60px;" th:field="*{dangerLevel}"
+                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> %</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Warning Level</th>
+                                        <td><input type="number" id="minLevel" style="width:60px;" th:field="*{warningLevel}"
+                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> %</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Duration</th>
+                                        <td><input type="number" id="duration" style="width:60px;" th:field="*{duration}"
+                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> min</td>
+                                    </tr>
+                                </table>
+                                <table id="logRuleTable" class="table-nt" style="border-top: 0px;"
+                                       th:styleappend="*{alertRuleId.type == T(com.kubeworks.watcher.data.vo.AlertType).LOG ? '' : 'display: none'}">
+                                    <tr>
+                                        <th>Category</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="category" th:field="*{alertRuleId.category}"
+                                                        th:onFocus="${#bools.isTrue(editMode)} ? 'this.initialSelect = this.selectedIndex;'"
+                                                        th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="category : ${T(com.kubeworks.watcher.data.vo.AlertCategory).getAlertCategories(T(com.kubeworks.watcher.data.vo.AlertType).LOG)}"
+                                                            th:value="${category.name()}" th:text="${category.name()}"></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Resource</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="resource" th:field="*{alertRuleId.resource}"
+                                                        th:onFocus="${#bools.isTrue(editMode)} ? 'this.initialSelect = this.selectedIndex;'"
+                                                        th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="resource : ${T(com.kubeworks.watcher.data.vo.AlertResource).getAlertResourcesByLog()}"
+                                                            th:value="${resource.name()}" th:text="${resource.name()}"></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Detect string</th>
+                                        <td><input type="text" id="detectString" style="width:200px;" th:field="*{detectString}"
+                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <td>
+                                            <div class="dropdown d_ib">
+                                                <select class="custom-select" id="severity" th:field="*{severity}"
+                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
+                                                    <option value="" selected disabled hidden> --- select ---</option>
+                                                    <option th:each="severityEnum : ${T(com.kubeworks.watcher.data.vo.AlertSeverity).getAlertSeverity()}"
+                                                            th:value="${severityEnum.name()}" th:text="${severityEnum.value}"></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [Modal 메트릭] End
+    < !-- [Alarm 설정 목록] End-->
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+        var $contentList = $("#contentList"),
+            linkUrl= [[${link}]];
+
+        function alertConfigRule(ruleId) {
+            let url = ruleId === "" || ruleId === undefined ? "/setting/alarm/rule" : "/setting/alarm/rule/" + ruleId
+
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    $("#myModal").text("");
+                    $("#myModal").html(data);
+                    $("#myModal").modal();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr("href", "/login?logout")
+                    }
+                }
+            });
+        }
+
+        function showTable($selector) {
+            $selector.show();
+            $("#" + $selector.attr('id') + " :input").prop("disabled", false);
+        }
+        function hideTable($selector) {
+            $selector.hide();
+            $("#" + $selector.attr('id') + " :input").prop("disabled", true);
+        }
+        $(document).ready(function () {
+
+            $("#btnNew").on("click", function () {
+                alertConfigRule("");
+            });
+
+            $(document).on("change", "input[type=radio][name='alertRuleId.type']", function(){
+                $this = $(this);
+                if ($this.val() === "METRIC") {
+                    hideTable($("#logRuleTable"));
+                    showTable($("#metricRuleTable"));
+                } else {
+                    hideTable($("#metricRuleTable"));
+                    showTable($("#logRuleTable"));
+                }
+            });
+
+            $(document).on("change", "select[name='alertRuleId.category']", function(){
+                $this = $(this);
+                $("select[name='alertRuleId.resource']").val("");
+                if ($this.val() === "POD") {
+                    $("select[name='alertRuleId.resource'] option").each(function () {
+                        $(this).prop("disabled", $(this).val() === "DISK");
+                    });
+                } else {
+                    $("select[name='alertRuleId.resource'] option").each(function () {
+                        $(this).prop("disabled", false);
+                    });
+                }
+            });
+
+            $(document).on("click", "#save", function(){
+
+                let formSerializeArray = $("#alertRule").serializeArray();
+                let object = { "alertRuleId":{}};
+                for (let i = 0; i < formSerializeArray.length; i++){
+                    let name = formSerializeArray[i]["name"];
+                    let value = formSerializeArray[i]["value"];
+                    if (name.startsWith("alertRuleId.")) {
+                        const splitName = name.split(".");
+                        object.alertRuleId[splitName[1]] = value;
+                        continue;
+                    }
+                    object[name] = value;
+                }
+
+                if(Number(object.dangerLevel) > 100 || Number(object.warningLevel) > 100){
+                    alert("DangerLevel, WarningLevel 값은 100%를 넘을수 없습니다.");
+                    return false;
+                }
+
+                if(Number(object.dangerLevel) < Number(object.warningLevel)){
+                    alert("DangerLevel 값보다 WarningLevel 값이 클수 없습니다.");
+                    return false;
+                }
+
+                let data = JSON.stringify(object);
+                let method = $("input[name='_method']").val();
+
+                if (confirm(`add rule?`) === false) {
+                    return false;
+                }
+
+                $.ajax({
+                    type : method,
+                    contentType: "application/json",
+                    data : data,
+                    url : "/api/v1/alarm/rule",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
+                    success: function (data) {
+                        if (data.success === false) {
+                            alert(data.message);
+                            return false;
+                        }
+                        alert("등록이 완료되었습니다.");
+                        $("#myModal").hide();
+                        location.reload();
+                    },
+                    error: function (e) {
+                        if (e.status === 401) {
+                            $(location).attr("href", "/login?logout")
+                        }
+                    }
+                });
+            });
+        });
+
+
+    </script>
 </div>
 </body>
 </html>

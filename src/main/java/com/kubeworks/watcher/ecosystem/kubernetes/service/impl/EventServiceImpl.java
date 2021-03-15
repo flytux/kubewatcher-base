@@ -10,6 +10,7 @@ import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.V1Event;
+import io.kubernetes.client.openapi.models.V1EventList;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -59,6 +61,25 @@ public class EventServiceImpl implements EventService {
             return eventTableList.getDataTable();
         }
         return Collections.emptyList();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<EventDescribe> events() {
+        ApiResponse<V1EventList> apiResponse = coreApi.listEventForAllNamespacesWithHttpInfo(null, null, null, null,
+            ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, "false", null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
+        if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+            return Collections.emptyList();
+        }
+        V1EventList data = apiResponse.getData();
+
+        return data.getItems().stream()
+            .map(v1Event -> {
+                EventDescribe.EventDescribeBuilder builder = EventDescribe.builder();
+                setEvent(builder, v1Event);
+                return builder.build();
+            })
+            .collect(Collectors.toList());
     }
 
     @SneakyThrows
