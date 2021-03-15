@@ -61,6 +61,7 @@ INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME)
 INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager' ,  'testuser6', 3, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager' ,  'test', 3, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 
+
 -- Alert Rule
 INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'NODE', 'CPU', 'node', '(1 - (avg by (node)(irate(node_cpu_seconds_total{mode="idle",zone!="external"}[5m])))) * 100 >= %d', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 INSERT INTO alert_rule_metric (TYPE, CATEGORY, RESOURCE,  METRIC_NAME, EXPRESSION, CREATE_TIME, UPDATE_TIME) values ('METRIC', 'NODE', 'MEMORY', 'node', '(1 - sum by (node)(node_memory_MemAvailable_bytes{node!="",zone!="external"}) / sum by (node)(node_memory_MemTotal_bytes{node!="",zone!="external"})) * 100 >= %d', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
