@@ -118,28 +118,3 @@ application:
         url: "http://162.243.175.190:3000"
         api-token: "eyJrIjoiczY0a1JhbWRsVEpnaDJ3MDRpZms0M1Y3aElSYTdoZHciLCJuIjoib25seSIsImlkIjoxfQ=="
         login-cookie-name: "grafana_session"
-    services:
-      - code: AGW
-        name: api-gateway
-        namespace: app
-        displayName: API Gateway
-      - code: CUS
-        name: customers
-        namespace: app
-        displayName: Customers
-      - code: VET
-        name: vets
-        namespace: app
-        displayName: Vets
-      - code: VIT
-        name: visits
-        namespace: app
-        displayName: Visits
-      - code: PRO
-        name: prometheus
-        namespace: prometheus
-        displayName: prometheus
-      - code: LOKI
-        name: loki
-        namespace: loki
-        displayName: loki
