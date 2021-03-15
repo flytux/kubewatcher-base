@@ -3,11 +3,11 @@ package com.kubeworks.watcher.cloud.usage;
 import com.google.common.collect.ImmutableMap;
 import com.kubeworks.watcher.base.ApiResponse;
 import com.kubeworks.watcher.base.MetricResponseData;
-import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.data.vo.ClusterPodUsage;
 import com.kubeworks.watcher.data.vo.UsageMetricType;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.MetricService;
+import com.kubeworks.watcher.ecosystem.prometheus.service.ApplicationService;
 import com.kubeworks.watcher.preference.service.PageConstants;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
@@ -29,12 +29,12 @@ public class UsageRestController {
 
     private static final long USAGE_MENU_ID = 1127;
 
-    private final ApplicationServiceProperties applicationServiceProperties;
     private final SpringTemplateEngine springTemplateEngine;
 
     private final MetricService metricService;
     private final PageViewService pageViewService;
 
+    private final ApplicationService applicationService;
 
     @GetMapping(value = "/application/usage/usage-overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> usageOverview() {
@@ -44,7 +44,7 @@ public class UsageRestController {
 
         ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
         return builder.put("searchDate", start)
-            .put("namespaces", applicationServiceProperties.getNamespaces())
+            .put("namespaces", applicationService.getNamespaces())
             .put("usages", usages)
             .put("link", PageConstants.API_URL_BY_NAMESPACED_USAGE)
             .build();

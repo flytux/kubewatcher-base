@@ -102,3 +102,14 @@ CREATE TABLE IF NOT EXISTS `chart_query` (
     KEY `CHART_QUERY_FK01` (`panel_id`),
     CONSTRAINT `CHART_QUERY_FK01` FOREIGN KEY (`panel_id`) REFERENCES `page_row_panel` (`panel_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- `kube-watcher`.application_management definition
+
+CREATE TABLE IF NOT EXISTS `application_management` (
+    `application_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `code` varchar(50) NOT NULL,
+    `name` varchar(50) NOT NULL,
+    `namespace` varchar(50) NOT NULL,
+    `display_name` varchar(50) NOT NULL,
+    PRIMARY KEY (`board_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

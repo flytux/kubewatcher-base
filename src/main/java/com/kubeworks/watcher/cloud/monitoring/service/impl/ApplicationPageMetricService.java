@@ -3,11 +3,11 @@ package com.kubeworks.watcher.cloud.monitoring.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kubeworks.watcher.cloud.monitoring.service.PageMetricService;
-import com.kubeworks.watcher.config.properties.ApplicationServiceProperties;
 import com.kubeworks.watcher.data.entity.ChartQuery;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.data.entity.PageVariable;
+import com.kubeworks.watcher.ecosystem.prometheus.service.ApplicationService;
 import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class ApplicationPageMetricService implements PageMetricService<Page> {
 
-    private final ApplicationServiceProperties applicationServiceProperties;
     private final PageViewService pageViewService;
     private final ProxyApiService proxyApiService;
     private final ObjectMapper objectMapper;
+    private final ApplicationService applicationService;
 
     @SneakyThrows
     @Override
@@ -107,7 +107,7 @@ public class ApplicationPageMetricService implements PageMetricService<Page> {
 
 
     private PageVariable getValuesByVariable(PageVariable variable) {
-        String serviceNames = applicationServiceProperties.getServiceNamesOfPromQL();
+        String serviceNames = applicationService.getServiceNamesOfPromQL();
         variable.setApiQuery(RegExUtils.replaceAll(variable.getApiQuery(), Pattern.compile("\\$services"), serviceNames));
         List<String> values = proxyApiService.query(variable);
         variable.setValues(values);
