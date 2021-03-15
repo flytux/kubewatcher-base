@@ -64,58 +64,59 @@ let commonChartsJs = (function () {
     let scheduleMap = new Map();
     let readyTimestamp = new Date().getTime();
     let defaultIntervalMillis = 60 * 1000;
-    let gaugeOptions = {
-        chart: {
-            type: 'solidgauge'
-        },
-        pane: {
-            center: ['50%', '85%'],
-            size: '150%',
-            startAngle: -90,
-            endAngle: 90,
-            background: {
-                backgroundColor:
-                    Highcharts.defaultOptions.legend.backgroundColor || '#EEE',
-                innerRadius: '60%',
-                outerRadius: '100%',
-                shape: 'arc'
-            }
-        },
-
-        exporting: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        tooltip: {
-            enabled: false
-        },
-        // the value axis
-        yAxis: {
-            stops: [
-                [0.1, '#55BF3B'], // green
-                [0.5, '#DDDF0D'], // yellow
-                [0.9, '#DF5353'] // red
-            ],
-            lineWidth: 0,
-            tickWidth: 0,
-            minorTickInterval: null,
-            tickAmount: 2,
-            title: {
-                y: -70
+    let gaugeOptions = function () {
+        return {
+            chart: {
+                type: 'solidgauge'
             },
-            labels: {
-                y: 16
-            }
-        },
+            pane: {
+                center: ['50%', '85%'],
+                size: '150%',
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || '#EEE',
+                    innerRadius: '60%',
+                    outerRadius: '100%',
+                    shape: 'arc'
+                }
+            },
+            exporting: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                enabled: false
+            },
+            // the value axis
+            yAxis: {
+                stops: [
+                    [0.1, '#55BF3B'], // green
+                    [0.5, '#DDDF0D'], // yellow
+                    [0.9, '#DF5353'] // red
+                ],
+                lineWidth: 0,
+                tickWidth: 0,
+                minorTickInterval: null,
+                tickAmount: 2,
+                title: {
+                    y: -70
+                },
+                labels: {
+                    y: 16
+                }
+            },
 
-        plotOptions: {
-            solidgauge: {
-                dataLabels: {
-                    y: 5,
-                    borderWidth: 0,
-                    useHTML: true
+            plotOptions: {
+                solidgauge: {
+                    dataLabels: {
+                        y: 5,
+                        borderWidth: 0,
+                        useHTML: true
+                    }
                 }
             }
         }
@@ -1537,7 +1538,7 @@ let commonChartsJs = (function () {
         renderGaugeHighChart: function (panel, chartData) {
             const panelId = panel.panelId;
             const chart = new Highcharts.chart('container-' + panelId,
-                panel.chartType === 'solidgauge' ? Highcharts.merge(gaugeOptions, chartData)
+                panel.chartType === 'solidgauge' ? Highcharts.merge(gaugeOptions(), chartData)
                     : chartData);
             chartMap.set(panelId, chart);
         },
