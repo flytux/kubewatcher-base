@@ -532,19 +532,20 @@ INSERT INTO page_row (PAGE_ROW_ID, TITLE, SORT_ORDER, ROW_TYPE, CREATE_TIME, UPD
 INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	168	,	 '보험코어 어플리케이션 거래 현황'	,	16	,	 'METRIC_TABLE'	,	 ''	,	 'col-6-head-card-panel-in-logtable'	,	 'Y'	,	60000	,	1	,	 ''	,	 ''	,	 ''	,	 ''	,	 ''	,	 CURRENT_TIMESTAMP() 	,	 CURRENT_TIMESTAMP() 	,	39	);
 INSERT INTO page_row_panel (PANEL_ID, TITLE, SORT_ORDER, PANEL_TYPE, CHART_TYPE, FRAGMENT_NAME, MAIN_YN, REFRESH_INTERVAL, LEGEND_VISIBLE, YAXIS_LABEL, YAXIS_UNIT, YAXIS_MIN, YAXIS_MAX, XAXIS_MODE, CREATE_TIME, UPDATE_TIME, PAGE_ROW_ID) values (	169	,	 '보험코어 어플리케이션 에러 로그 '	,	16	,	 'LOG_METRIC_TABLE'	,	 ''	,	 'col-6-head-card-panel-in-errorlogtable'	,	 'Y'	,	0	,	1	,	 ''	,	 ''	,	 ''	,	 ''	,	 ''	,	 CURRENT_TIMESTAMP() 	,	 CURRENT_TIMESTAMP() 	,	39	);
 
---Caas 환경
+-- Caas 환경
 --INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	307	,	 '/loki/api/v1/query_range?direction=BACKWARD&limit=5000&query=sum(count_over_time({app=~"$application",marker="FRT.TX_END"} [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '총건수'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
 --INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	308	,	 '/loki/api/v1/query_range?direction=BACKWARD&limit=5000&query=sum(count_over_time({app=~"$application",marker="FRT.TX_END"} |="TX END : [0]" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '정상'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
 --INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?direction=BACKWARD&limit=5000&query=sum(count_over_time({app=~"$application",marker="FRT.TX_END"} |="TX END : [1]" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
 
---local 환경
-INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	307	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '총건수'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
-INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	308	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="info" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '정상'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
-INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="error" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+-- local 환경
+ INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	307	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '총건수'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+ INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	308	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="info" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '정상'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+ INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="error" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
 
 -- 공통 - 에러로그 호출 쿼리
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	310	,	 ''	,	 'PROXY_METRIC'	,	 'LOG'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	169	);
 -- loki End
+
 
 INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 1 ,  'AGW'  , 'api-gateway' ,  'app'  , 'API Gateway' );
 INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 2 ,  'CUS'  , 'customers' ,    'app'  , 'Customers' );

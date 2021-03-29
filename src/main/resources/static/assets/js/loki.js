@@ -109,7 +109,7 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
 
     //TODO Caas환경용
 //    var later_end = "}&direction=BACKWARD&start="+timeStamp+"&end="+later_Time;
-//    var later_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp;
+//    var before_end = "}&direction=BACKWARD&start="+before_Time+"&end="+timeStamp;
 //    var laterUri = hours_later +"pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"' +later_end ;
 //    var beforeUri = hours_before + "pod=" +'"' + label_pod + '"' +",serviceId=" +'"' + serviceId + '"' + ",app=" +'"' + label_app + '"'+ ",filename=" +'"' + label_filename + '"'+ before_end;
 
@@ -508,7 +508,7 @@ let lokiJs = (function () {
                             uniqueId = splitWord[4]; //local용
                             serviceId = splitWord[3]; //local용
                             clientIP = splitWord[5]; //local용
-                            elpasedTime = splitWord.pop(); //local용
+                            elpasedTime2 = splitWord.pop(); //local용
 
 //                           uniqueId = splitWord[7] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
 //                           uniqueId = uniqueId.replace(/\[/,"");
@@ -530,7 +530,7 @@ let lokiJs = (function () {
                             element["ServiceId"] = serviceId;
                             element["ClientIP"] = clientIP;
                             element["RequestTime"] = requestTime;
-                            element["ElapsedTime"] = elpasedTime;
+                            element["ElapsedTime"] = elpasedTime2;
                             element["uniqueId"] = uniqueId;
 
                             element["app"] = appName;

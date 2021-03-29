@@ -6,6 +6,8 @@ import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.ecosystem.prometheus.service.ApplicationService;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
+
+import org.jose4j.json.internal.json_simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -13,8 +15,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -129,6 +137,5 @@ public class MonitoringRestController {
         }
         return null;
     }
-
 
 }

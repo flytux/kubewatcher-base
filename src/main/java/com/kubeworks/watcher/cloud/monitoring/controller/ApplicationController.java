@@ -20,6 +20,9 @@ public class ApplicationController {
     @GetMapping(value = "/monitoring/application/overview", produces = MediaType.TEXT_HTML_VALUE)
     public String application(Model model) {
         Map<String, Object> response = monitoringRestController.application();
+        Map<String, Object> responselog = monitoringRestController.logging();
+
+        response.put("lokiLog", responselog);
         model.addAllAttributes(response);
         return "monitoring/application/overview";
     }

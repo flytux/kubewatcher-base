@@ -45,17 +45,39 @@
         /*<![CDATA[*/
         let pageRows = [[${page?.rows}]],
             apiHost = [[${host}]],
-            serviceMap = [[${services?.serviceMap}]];
+            serviceMap = [[${services?.serviceMap}]],
+            logRows = [[${lokiLog?.page?.rows}]],
+            logServiceMap = [[${lokiLog?.services}]];
         /*]]>*/
 
         $(document).ready(function () {
-            pageRows.forEach(row => row.pageRowPanels.forEach(panel => {
-                commonChartsJs.createPanel(panel);
-                if (panel.subPanel !== null) {
-                    panel.subPanel.forEach(sPanel => commonChartsJs.createPanel(sPanel));
-                }
-            }));
+        	lokiApiCall(logServiceMap);
         });
+
+        function lokiApiCall(serviceMap) { // Application ErrorCount - REST API 호출.
+            var data = serviceMap.toString();
+            $.ajax({
+                url: "/monitoring/apiCall",
+                type : "GET",
+                async: false,
+                data : {
+                    param : JSON.stringify(data)
+                },
+                success: function (data) {
+					var errorCount = commonChartsJs.convertErrorCount(data);
+					pageRows.forEach(row => row.pageRowPanels.forEach(panel => {
+					    commonChartsJs.createPanel(panel);
+					    if (panel.subPanel !== null) {
+					        panel.subPanel.forEach(sPanel => commonChartsJs.createPanel(sPanel, errorCount));
+					    }
+					}));
+
+                },
+                error:function(data, status, opt){
+                    console.log("code:"+data.status+"\n"+"message:"+data.responseText+"\n"+"error:"+opt);
+                }
+            });
+        };
 
     </script>
 

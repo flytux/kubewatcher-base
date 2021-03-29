@@ -480,7 +480,7 @@ let commonChartsJs = (function () {
     }
 
     return {
-        createPanel: function (panel) {
+        createPanel: function (panel, errorCount) {
             if (panel.refreshIntervalMillis === undefined || panel.refreshIntervalMillis <= 0) {
                 panel.refreshIntervalMillis = defaultIntervalMillis;
             }
@@ -513,7 +513,7 @@ let commonChartsJs = (function () {
                     break;
                 case "BADGE":
                     this.getDataByPanel(panel, true)
-                        .then(value => this.createBadge(panel, value))
+                        .then(value => this.createBadge(panel, value, errorCount))
                         .then(panel => scheduleMap.set(panel.panelId,
                             setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
                         );
@@ -556,7 +556,7 @@ let commonChartsJs = (function () {
             return panel;
         },
 
-        createBadge: function (panel, dataArray) {
+        createBadge: function (panel, dataArray, errorCount) {
             // const badgeData = this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit);
             const badgeData = convertSumBadgeData(dataArray);
             if (panel.chartType === 'text') {
@@ -573,6 +573,16 @@ let commonChartsJs = (function () {
                 $('#container-' + panel.panelId).text(age);
             } else if(dataArray[0].data.result.length === 0) {
                 $('#container-' + panel.panelId).text('N/A');
+            } else if(String(panel.panelId).substr(String(panel.panelId).length-3, 3) == "160"){ // Loki Error Count
+            	if(errorCount !== undefined){
+            		var application = panel.chartQueries[0].apiQuery;
+            		application = application.split('"');
+            		if(undefined ===  errorCount.get(application[3])){
+            			$('#container-' + panel.panelId).text(0);
+            		} else {
+            			$('#container-' + panel.panelId).text(errorCount.get(application[3]));
+            		}
+            	}
             } else {
                 $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
             }
@@ -1629,6 +1639,38 @@ let commonChartsJs = (function () {
                     break;
             }
             return symbol;
+        },
+
+        convertErrorCount : function(resultData){ //DashBoard - Application - 보험코어어플리케이션 Error Count 항목에 적용되야함.
+            const objData = JSON.parse(resultData);
+            console.log(typeof(objData),objData);
+            dataArray = objData.data.result;
+            let data = new Map();
+            for (let i = 0; i < dataArray.length; i++) {
+                let item = dataArray[i];
+                // console.log(item);
+                item.values.forEach(value => {
+                const key = Object.values(item.metric).toString();
+                if(key ==""){ // value.metric 값이 없는 항목일경우  return;
+                    return;
+                }
+                let element = data.get(key);
+                if (element === undefined) {
+                    element = {};
+                    for (const [key, entry] of Object.entries(item.metric)) { // key값 setting
+                        element[key] = entry;
+                    }
+                }
+                let valueCount = 0; //value 로 넘어오는 count 모두 sum
+                for(let j=0; j< Object.values(item.values).length; j++){ //value sum
+                    count = Number(Object.values(item.values)[j][1]);
+                    valueCount += count;
+                }
+
+                data.set(key, valueCount);
+                });
+            }
+            return data;
         }
 
     }
