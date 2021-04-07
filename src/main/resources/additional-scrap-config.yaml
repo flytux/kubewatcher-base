@@ -1,0 +1,211 @@
+- job_name: 'istio/envoy-stats'
+  scrape_interval: 15s
+  metrics_path: /stats/prometheus
+  kubernetes_sd_configs:
+    - role: pod
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_pod_container_port_name]
+      action: keep
+      regex: '.*-envoy-prom'
+    - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+      action: replace
+      regex: ([^:]+)(?::\d+)?;(\d+)
+      replacement: $1:15090
+      target_label: __address__
+    - action: labelmap
+      regex: __meta_kubernetes_pod_label_(.+)
+    - source_labels: [__meta_kubernetes_namespace]
+      action: replace
+      target_label: namespace
+    - source_labels: [__meta_kubernetes_pod_name]
+      action: replace
+      target_label: pod_name
+
+- job_name: 'istio/istio-mesh'
+  scrape_interval: 15s
+  kubernetes_sd_configs:
+    - role: endpoints
+      namespaces:
+        names:
+          - istio-system
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: istio-telemetry;prometheus
+  metric_relabel_configs:
+    - source_labels: [source_workload_namespace]
+      action: replace
+      target_label: namespace
+
+- job_name: 'istio/istio-policy'
+  scrape_interval: 15s
+  kubernetes_sd_configs:
+    - role: endpoints
+      namespaces:
+        names:
+          - istio-system
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: istio-policy;http-monitoring
+- job_name: 'istio/istio-telemetry'
+  scrape_interval: 15s
+  kubernetes_sd_configs:
+    - role: endpoints
+      namespaces:
+        names:
+          - istio-system
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: istio-telemetry;http-monitoring
+- job_name: 'istio/pilot'
+  scrape_interval: 15s
+  kubernetes_sd_configs:
+    - role: endpoints
+      namespaces:
+        names:
+          - istio-system
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: istio-pilot;http-monitoring
+- job_name: 'istio/galley'
+  scrape_interval: 15s
+  kubernetes_sd_configs:
+    - role: endpoints
+      namespaces:
+        names:
+          - istio-system
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: istio-galley;http-monitoring
+
+- job_name: 'istio/citadel'
+  scrape_interval: 15s
+  kubernetes_sd_configs:
+    - role: endpoints
+      namespaces:
+        names:
+          - istio-system
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: istio-citadel;http-monitoring
+
+- job_name: 'prometheus-io-scrape'
+  kubernetes_sd_configs:
+  - role: pod
+    namespaces:
+      names:
+      - ingress-nginx
+      - ingress-controller
+      - kube-system
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+    action: keep
+    regex: true
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scheme]
+    action: replace
+    target_label: __scheme__
+    regex: (https?)
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+    action: replace
+    target_label: __metrics_path__
+    regex: (.+)
+  - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+    action: replace
+    target_label: __address__
+    regex: ([^:]+)(?::\d+)?;(\d+)
+    replacement: $1:$2
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    action: replace
+    target_label: node
+    regex: (.+)
+    replacement: $1
+  - source_labels: [__meta_kubernetes_namespace]
+    action: replace
+    target_label: namespace
+    regex: (.+)
+    replacement: $1
+  - source_labels: [__meta_kubernetes_pod_name]
+    action: replace
+    target_label: pod
+    regex: (.+)
+    replacement: $1
+  - source_labels: [__meta_kubernetes_pod_ip]
+    action: replace
+    target_label: pod_ip
+    regex: (.+)
+    replacement: $1
+  - source_labels: [__meta_kubernetes_pod_host_ip]
+    action: replace
+    target_label: host_ip
+    regex: (.+)
+    replacement: $1
+  - source_labels: [__meta_kubernetes_pod_controller_kind]
+    action: replace
+    target_label: created_by_kind
+    regex: (.+)
+    replacement: $1
+  - source_labels: [__meta_kubernetes_pod_controller_name]
+    action: replace
+    target_label: created_by_kind
+    regex: (.+)
+    replacement: $1
+
+# Kubewatcher Added Configs for Rancher Monitoring Operator
+- job_name: external-node-metrics
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets: [134.122.126.188:9100]
+    labels:
+      zone: 'external'
+      
+- job_name: process-metrics
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets: [134.122.126.188:9256]
+    labels:
+      zone: 'external'
+  - targets: [64.227.23.169:9256, 142.93.253.187:9256]
+    labels:
+      zone: 'cluster'
+- job_name: oracle-metrics
+  scrape_interval: 30s
+  scrape_timeout: 20s
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets: [134.122.126.188:9162]
+    labels:
+      zone: 'external'
+      scrape_type: 'normal' 
+
+- job_name: 'jmx-metrics'
+  scrape_interval: 10s
+  kubernetes_sd_configs:
+    - role: pod
+      namespaces:
+        names:
+          - default
+          - app
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_container_port_number]
+    action: keep
+    regex: 9210
+  - source_labels: [__meta_kubernetes_namespace]
+    action: replace
+    target_label: namespace
+    regex: (.+)
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    action: replace
+    target_label: application
+    regex: (.+)
