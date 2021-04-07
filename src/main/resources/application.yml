@@ -42,10 +42,10 @@ spring:
         web-allow-others: true
   jpa:
     database: h2
-    generate-ddl: true # db schema 생성 여부
-    show-sql: false
+    generate-ddl: false # db schema 생성 여부
+    show-sql: true
     hibernate:
-      ddl-auto: create-drop
+     ddl-auto: create
 
     properties:
       hibernate.format_sql: true
