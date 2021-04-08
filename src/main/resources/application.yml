@@ -106,15 +106,20 @@ application:
       clusters:
         local:
           cluster-name: local
+          k8s:
+            # Digital Ocean Rancher Cluster for Reference
+            # Add hostname for rancher.do, prometheus.do, loki.do for Cluster Ingress Controller IP
+            # ex) 64.227.23.169   rancher.do prometheus.do
+            # for docker run, add --add-host=rancher.do:64.227.23.169
+            # for k8s run, add hostAliases to deployment manifest, yaml located in resources/
+            url: "https://rancher.do/k8s/clusters/local"
+            api-token: "kubeconfig-user-c7cpf:prf4v24k8d7tmhwgnl4v2zl7k2jn2lxb9r9jw9tldkkth76l8tsmwq"
           prometheus:
             proxy: true
-            url: "http://prometheus.km01"
-          loki:
-            proxy: true
-            url: "http://loki.do"
-          k8s:
-            url: "https://rancher.km01/k8s/clusters/local"
-            api-token: "kubeconfig-user-l5z58:bph4sgw6vw8xz47kszqpv6mk5shvc4pxhjqccn5r2wwhklgp7fpw6m"
+            url: "http://prometheus.do"
+#           loki:
+#            proxy: true
+#            url: "http://loki.do"
     dependencies:
       grafana:
         url: "http://162.243.175.190:3000"
