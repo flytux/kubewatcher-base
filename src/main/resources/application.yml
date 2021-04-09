@@ -20,6 +20,7 @@ spring:
     allow-bean-definition-overriding: true
 
   datasource:
+    initialization-mode: never
     driver-class-name: org.h2.Driver
     url: jdbc:h2:/opt/kube-watcher/data/kw-data;AUTO_SERVER=true;MODE=MySQL
     username: admin
@@ -45,7 +46,7 @@ spring:
     generate-ddl: false # db schema 생성 여부
     show-sql: true
     hibernate:
-     ddl-auto: create
+      ddl-auto: create
 
     properties:
       hibernate.format_sql: true
@@ -73,7 +74,6 @@ mybatis:
     call-setters-on-nulls: true
     map-underscore-to-camel-case: true
 #  type-handlers-package: com.kubeworks.watcher.data.typehandler
-
 
 management:
   endpoints:
@@ -117,14 +117,9 @@ application:
           prometheus:
             proxy: true
             url: "http://prometheus.do"
-#           loki:
-#            proxy: true
-#            url: "http://loki.do"
-    dependencies:
-      grafana:
-        url: "http://162.243.175.190:3000"
-        api-token: "eyJrIjoiczY0a1JhbWRsVEpnaDJ3MDRpZms0M1Y3aElSYTdoZHciLCJuIjoib25seSIsImlkIjoxfQ=="
-        login-cookie-name: "grafana_session"
+          loki:
+            proxy: true
+            url: "http://loki.do"
 
 logging:
   level:

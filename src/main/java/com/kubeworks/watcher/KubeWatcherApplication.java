@@ -1,7 +1,6 @@
 package com.kubeworks.watcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kubeworks.watcher.config.properties.GrafanaProperties;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.config.properties.UserProperties;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
@@ -31,8 +30,7 @@ import javax.annotation.PostConstruct;
 @EntityScan(basePackages = "com.kubeworks.watcher.data.entity")
 @EnableTransactionManagement
 @EnableFeignClients
-@EnableConfigurationProperties(value = {UserProperties.class, GrafanaProperties.class,
-    MonitoringProperties.class})
+@EnableConfigurationProperties(value = {UserProperties.class, MonitoringProperties.class})
 @SpringBootApplication
 public class KubeWatcherApplication {
 
