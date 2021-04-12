@@ -1,7 +1,7 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
 
-import com.kubeworks.watcher.config.properties.LokiUrlProperties;
+import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
 import lombok.AllArgsConstructor;
 import org.jose4j.json.internal.json_simple.parser.ParseException;
@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -27,8 +26,7 @@ public class LogController {
     private final ProxyApiService proxyApiService;
     private final MonitoringRestController monitoringRestController;
 
-    @Autowired
-    private LokiUrlProperties lokiUrl;
+    private final MonitoringProperties monitoringProperties;
 
     @GetMapping(value = "/monitoring/logging", produces = MediaType.TEXT_HTML_VALUE)
     public String logging(Model model) {
@@ -56,8 +54,8 @@ public class LogController {
         param = param.replace(",","|");
 
         String uri = "";
-        String apiHost = lokiUrl.getUrl()+"/loki/api/v1/query_range?query={uri}";
-        if("http://loki.do".equals(lokiUrl.getUrl())){
+        String apiHost = monitoringProperties.getDefaultLokiUrl() + "/loki/api/v1/query_range?query={uri}";
+        if("http://loki.do".equals(monitoringProperties.getDefaultLokiUrl())){
             uri = "sum(count_over_time({app=~"+param+"} |="+"\"error\""+"[1m])) by (app)"; //local 환경
         } else {
             uri = "sum(count_over_time({app=~"+param+",marker="+"\"FRT.TX_END\""+"} |="+"\"TX END : [1]\""+"[1m])) by (app)"; //TODO Caas환경용

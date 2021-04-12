@@ -40,6 +40,11 @@ public class MonitoringProperties {
         return defaultCluster.getK8s().getApiToken();
     }
 
+    public String getDefaultLokiUrl(){
+        ClusterConfig defaultCluster = getDefaultCluster();
+        return defaultCluster.getLoki().getUrl();
+    }
+
     @Getter @Setter
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class ClusterConfig {
