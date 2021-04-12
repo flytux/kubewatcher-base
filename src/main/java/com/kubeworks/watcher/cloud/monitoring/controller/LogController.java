@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
 
+import com.kubeworks.watcher.config.properties.LokiUrlProperties;
 import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
 import lombok.AllArgsConstructor;
 import org.jose4j.json.internal.json_simple.parser.ParseException;
@@ -26,6 +27,8 @@ public class LogController {
     private final ProxyApiService proxyApiService;
     private final MonitoringRestController monitoringRestController;
 
+    @Autowired
+    private LokiUrlProperties lokiUrl;
 
     @GetMapping(value = "/monitoring/logging", produces = MediaType.TEXT_HTML_VALUE)
     public String logging(Model model) {
@@ -33,9 +36,6 @@ public class LogController {
         model.addAllAttributes(response);
         return "monitoring/logging/logging";
     }
-
-
-
 
     @RequestMapping(value = "/monitoring/apiCall") //TODO Rest API로 server에서 ErrorCount 구하기
     public @ResponseBody String lokiApiCall(@RequestParam(value = "param")String param) throws ParseException {
@@ -54,10 +54,14 @@ public class LogController {
         startTime = startTime.concat(forNanoSeconds);
 
         param = param.replace(",","|");
-        String apiHost = "http://loki.do/loki/api/v1/query_range?query={uri}"; //TODO local환경상태 application.yml의 loki url부분 => Caas환경에서는 어떻게 가져오는지 확인필요
-//        String apiHost = "http://loki.dev/loki/api/v1/query_range?query={uri}"; // TODO Caas환경에서는 어떻게 가져오는지 확인필요
-        String uri = "sum(count_over_time({app=~"+param+"} |="+"\"error\""+"[1m])) by (app)"; //local 환경
-//        String uri = "sum(count_over_time({app=~"+param+",marker="+"\"FRT.TX_END\""+"} |="+"\"TX END : [1]\""+"[1m])) by (app)"; //TODO Caas환경용
+
+        String uri = "";
+        String apiHost = lokiUrl.getUrl()+"/loki/api/v1/query_range?query={uri}";
+        if("http://loki.do".equals(lokiUrl.getUrl())){
+            uri = "sum(count_over_time({app=~"+param+"} |="+"\"error\""+"[1m])) by (app)"; //local 환경
+        } else {
+            uri = "sum(count_over_time({app=~"+param+",marker="+"\"FRT.TX_END\""+"} |="+"\"TX END : [1]\""+"[1m])) by (app)"; //TODO Caas환경용
+        }
 
         String uriEnd = "&start="+startTime+"&end="+endTime+"&step=60"; //시간기준 nanosecond로 설정해야함.
 
