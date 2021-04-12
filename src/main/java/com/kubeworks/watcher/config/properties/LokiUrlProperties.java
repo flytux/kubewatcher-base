@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "application.properties.monitoring.clusters.local.loki.url")
+@ConfigurationProperties(prefix = "application.properties.monitoring.clusters.local.loki")
 public class LokiUrlProperties {
 
     private String url;
