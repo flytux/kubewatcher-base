@@ -1,9 +1,7 @@
 package com.kubeworks.watcher.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kubeworks.watcher.config.properties.GrafanaProperties;
 import feign.Logger;
-import feign.RequestInterceptor;
 import feign.codec.Decoder;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -31,12 +29,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class RestClientsConfig {
 
-
-
     @Bean
     public RestTemplateCustomizer restTemplateCustomizer(HttpClient httpClient) {
+
         return restTemplate -> {
             final ClientHttpRequestFactory requestFactory = restTemplate.getRequestFactory();
+
             if (requestFactory instanceof HttpComponentsClientHttpRequestFactory) {
                 final HttpComponentsClientHttpRequestFactory factory = (HttpComponentsClientHttpRequestFactory) requestFactory;
                 factory.setHttpClient(httpClient);
@@ -49,9 +47,11 @@ public class RestClientsConfig {
     @SneakyThrows
     @Bean(destroyMethod = "close")
     public CloseableHttpClient httpClient() {
-        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+
+        final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
         connManager.setMaxTotal(100);
         connManager.setDefaultMaxPerRoute(50);
+
         return HttpClients.custom()
             .setConnectionManager(connManager)
             .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
@@ -75,34 +75,7 @@ public class RestClientsConfig {
 
         @Bean
         public Decoder feignDecoder() {
-            return new ResponseEntityDecoder(
-                new SpringDecoder(() ->
-                    new HttpMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))));
+            return new ResponseEntityDecoder(new SpringDecoder(() -> new HttpMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))));
         }
-
     }
-
-    @Configuration
-    public static class GrafanaFeignClientConfig extends BaseFeignClientConfig {
-
-        private final GrafanaProperties grafanaProperties;
-
-        public GrafanaFeignClientConfig(ObjectMapper objectMapper, GrafanaProperties grafanaProperties) {
-            super(objectMapper);
-            this.grafanaProperties = grafanaProperties;
-        }
-
-        @Bean
-        @Override
-        public Decoder feignDecoder() {
-            return super.feignDecoder();
-        }
-
-        @Bean
-        public RequestInterceptor grafanaRequestInterceptor() {
-            return request -> request.header("Authorization", "Bearer " + grafanaProperties.getApiToken());
-        }
-
-    }
-
 }

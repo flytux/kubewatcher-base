@@ -26,10 +26,10 @@ INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, 
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	284	,	 '/api/v1/query?query=avg(sum(increase(tomcat_requestprocessor_processingtime{job="jmx-metrics", application=~"$application"}[1m]))/sum(increase(tomcat_requestprocessor_requestcount{job="jmx-metrics", application=~"$application"}[1m])))'	,	 'PROXY_METRIC'	,	 ''	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	159	);
 INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	285	,	 '/api/v1/query?query=sum(tomcat_requestprocessor_errorcount{job="jmx-metrics",application=~"$application"})'	,	 'PROXY_METRIC'	,	 ''	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	160	);
 
-INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	307	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '총건수'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
-INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	308	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="info" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '정상'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
-INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="error" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
-INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	310	,	 ''	,	 'PROXY_METRIC'	,	 'LOG'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	169	);
+-- INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	307	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '총건수'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+-- INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	308	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="info" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '정상'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+-- INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values	(	309	,	 '/loki/api/v1/query_range?query=sum(count_over_time({app=~"$application"} |="error" [1m])) by (app)'	,	 'PROXY_METRIC'	,	 '에러'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	168	);
+-- INSERT INTO chart_query (C_QUERY_ID, API_QUERY, QUERY_TYPE, LEGEND, QUERY_STEP, CREATE_TIME, UPDATE_TIME, PANEL_ID) values (	310	,	 ''	,	 'PROXY_METRIC'	,	 'LOG'	,	 '60'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	169	);
 
 INSERT INTO page_variable (VARIABLE_ID, NAME, SORT_ORDER, EDGE_FIELDS, QUERY_TYPE, VARIABLE_TYPE, REFRESH_INTERVAL, HIDDEN_YN, JOB_NAME, API_QUERY,  CREATE_TIME, UPDATE_TIME, PAGE_ID) values (	10	,	 'application'	,	1	,	 ''	,	 'PROXY_METRIC'	,'metric_label_values'	,	 '10s'	,	 'Y'	,	 'jmx-metrics'	,	 'count(jvm_info * on (application) group_left(deployment) label_replace(count(kube_deployment_created{deployment=~"$services"}) by (deployment), "application", "$1", "deployment", "(.*)(-deploy)?")) by (application)'	,	CURRENT_TIMESTAMP()	,	CURRENT_TIMESTAMP()	,	15	);
 
@@ -39,27 +39,15 @@ INSERT INTO kw_user_group (GROUPNAME, DESCRIPTION, CREATE_TIME, UPDATE_TIME) val
 INSERT INTO kw_user_group (GROUPNAME, DESCRIPTION, CREATE_TIME, UPDATE_TIME) values ( 'DATABASE', '설명3', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 INSERT INTO kw_user_group (GROUPNAME, DESCRIPTION, CREATE_TIME, UPDATE_TIME) values ( 'TEST', '테스터 그룹', CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 
-INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'testuser1', 'IT운영부', '김이박', 'password', '1000000', 'CLUSTER', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
-INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'testuser2', '개발사업부', '최소형', 'password', '1100000', 'CLUSTER', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
-INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'testuser3', 'DEVGRU', '김정남', 'password', '1200000', 'CLUSTER', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
-INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'testuser4', 'DEVELOPER', '최대형', 'password', '1300000', 'NODE', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
-INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'testuser5', 'IT운영부', '김정은', 'password', '1400000', 'NODE', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
-INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'testuser6', 'IT운영부', '트럼프', 'password', '1500000', 'DATABASE', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
-INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'testuser7', '개발사업부', '바이든', 'password', '1600000', 'DATABASE', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
-INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'test', '큐브웍스넷', '큐브웍스넷', 'test', '1700000', 'TEST', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'test1', 'ITO', 'KIM.E.H', 'test1', '1000000', 'CLUSTER', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+INSERT INTO kw_user (USERNAME, DEPT, NAME, PASSWORD, USERNO, GROUPNAME, CREATE_TIME, UPDATE_TIME) values ( 'test2', 'ITG', 'PARK.J.H', 'test2', '1100000', 'CLUSTER', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
 
 INSERT INTO kw_user_role_rule (RULE_ID, DESCRIPTION, RULE_NAME, RULE, CREATE_TIME, UPDATE_TIME) values ( 1,  '설명123abd' ,'Operator', '111111111111111111111111111111111111111111111',  CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 INSERT INTO kw_user_role_rule (RULE_ID, DESCRIPTION, RULE_NAME, RULE, CREATE_TIME, UPDATE_TIME) values ( 2,  '설명123abd' ,'Monitor', '110111011111011111011101111011101100001111111',  CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 INSERT INTO kw_user_role_rule (RULE_ID, DESCRIPTION, RULE_NAME, RULE, CREATE_TIME, UPDATE_TIME) values ( 3,  '설명123abd' ,'Manager', '000001111111000011110011111000011001101100111',  CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 
-INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator', '설명123abd', 'testuser1', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator', '설명123abd', 'testuser2', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator', '설명123abd', 'testuser3', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor', '설명123abd', 'testuser4', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor', '설명123abd', 'testuser5', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Monitor', '설명123abd', 'testuser6', 2, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager', '설명123abd', 'testuser6', 3, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
-INSERT INTO kw_user_role (ROLENAME, DESCRIPTION, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager', '설명123abd', 'test', 3, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Operator', 'test1', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
+INSERT INTO kw_user_role (ROLENAME, USERNAME, RULE_ID, CREATE_TIME, UPDATE_TIME) values ( 'Manager', 'test2', 1, CURRENT_TIMESTAMP(),   CURRENT_TIMESTAMP());
 
 
 -- Alert Rule

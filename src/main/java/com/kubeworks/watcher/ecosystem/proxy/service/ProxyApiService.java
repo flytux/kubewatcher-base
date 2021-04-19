@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface ProxyApiService {
 
-    String singleValueByQuery(String query);
+    String singleValueByQuery(final String query);
 
-    List<String> labelValuesQuery(String query);
+    List<String> labelValuesQuery(final String query);
 
-    List<String> multiValuesQuery(String query, String metricName);
+    List<String> multiValuesQuery(final String query, final String metricName);
 
-    List<String> query(PageVariable variable);
+    List<String> query(final PageVariable variable);
 }

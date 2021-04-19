@@ -3,12 +3,12 @@ package com.kubeworks.watcher.ecosystem.proxy.service.impl;
 import com.kubeworks.watcher.data.entity.PageVariable;
 import com.kubeworks.watcher.data.vo.VariableType;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
-import com.kubeworks.watcher.ecosystem.grafana.service.GrafanaSerivce;
 import com.kubeworks.watcher.ecosystem.prometheus.dto.PrometheusApiResponse;
 import com.kubeworks.watcher.ecosystem.prometheus.service.PrometheusService;
 import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -18,15 +18,14 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service(value = "proxyApiService")
+@Service(value="proxyApiService")
 public class ProxyApiServiceImpl implements ProxyApiService {
 
-    private final PrometheusService prometheusService;
-    private final GrafanaSerivce grafanaSerivce;
+    private final PrometheusService service;
 
-    public ProxyApiServiceImpl(PrometheusService prometheusService, GrafanaSerivce grafanaSerivce) {
-        this.prometheusService = prometheusService;
-        this.grafanaSerivce = grafanaSerivce;
+    @Autowired
+    public ProxyApiServiceImpl(final PrometheusService service) {
+        this.service = service;
     }
 
     /*
@@ -38,18 +37,20 @@ public class ProxyApiServiceImpl implements ProxyApiService {
                 - 응답값이 단일 값인지 혹은 리스트 인지, 타임라인 챠트 데이터 인지...
      */
     @Override
-    public String singleValueByQuery(String query) {
-        PrometheusApiResponse response = prometheusService.requestQuery(query);
+    public String singleValueByQuery(final String query) {
+
+        final PrometheusApiResponse response = service.requestQuery(query);
         if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
             return ExternalConstants.NONE_STR;
         }
+
         return singleValue(response);
     }
 
     @Override
-    public List<String> labelValuesQuery(String query) {
+    public List<String> labelValuesQuery(final String query) {
 
-        Matcher matcher = ExternalConstants.GRAFANA_TEMPLATE_VARIABLE_PATTERN.matcher(query);
+        final Matcher matcher = ExternalConstants.GRAFANA_TEMPLATE_VARIABLE_PATTERN.matcher(query);
         if (matcher.find()) {
             return Collections.emptyList();
         }
@@ -57,38 +58,45 @@ public class ProxyApiServiceImpl implements ProxyApiService {
         final String promQl = StringUtils.substring(query, query.indexOf("label_values(") + "label_values(".length(), query.lastIndexOf(',')).trim();
         final String metricName = StringUtils.substring(query, query.lastIndexOf(',') + 1, query.lastIndexOf(')')).trim();
 
-        PrometheusApiResponse response = prometheusService.requestQuery(promQl);
+        final PrometheusApiResponse response = service.requestQuery(promQl);
 
         if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
             return Collections.singletonList(ExternalConstants.NONE_STR);
         }
+
         return getMetricLabelValues(metricName, response);
     }
 
     @Override
-    public List<String> multiValuesQuery(String query, String metricName) {
-        PrometheusApiResponse response = prometheusService.requestQuery(query);
+    public List<String> multiValuesQuery(final String query, final String metricName) {
+
+        final PrometheusApiResponse response = service.requestQuery(query);
         if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
             return Collections.singletonList(ExternalConstants.NONE_STR);
         }
+
         return getMetricLabelValues(metricName, response);
     }
 
     @Override
-    public List<String> query(PageVariable variable) {
+    public List<String> query(final PageVariable variable) {
+
         if (variable.getVariableType() == VariableType.METRIC_LABEL_VALUES) {
-            PrometheusApiResponse response = prometheusService.requestQuery(variable.getApiQuery());
+            final PrometheusApiResponse response = service.requestQuery(variable.getApiQuery());
             if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
                 return Collections.emptyList();
             }
+
             return getMetricLabelValues(variable.getName(), response);
         } else {
             log.warn("unsupported variableType={}", variable.getVariableType());
         }
+
         return Collections.emptyList();
     }
 
-    private List<String> getMetricLabelValues(String metricName, PrometheusApiResponse response) {
+    private List<String> getMetricLabelValues(final String metricName, final PrometheusApiResponse response) {
+
         return response.getData().getResult().stream()
             .map(PrometheusApiResponse.PrometheusApiData.PrometheusApiResult::getMetric)
             .map(metric -> metric.get(metricName))
@@ -98,12 +106,11 @@ public class ProxyApiServiceImpl implements ProxyApiService {
             .collect(Collectors.toList());
     }
 
-    private String singleValue(PrometheusApiResponse prometheusApiResponse) {
-        List<PrometheusApiResponse.PrometheusApiData.PrometheusApiResult> result = prometheusApiResponse.getData().getResult();
-        if (result.isEmpty()) {
-            return ExternalConstants.NONE_STR;
-        }
-        if (result.get(0).getValue().isEmpty()) {
+    private String singleValue(final PrometheusApiResponse response) {
+
+        final List<PrometheusApiResponse.PrometheusApiData.PrometheusApiResult> result = response.getData().getResult();
+
+        if (result.isEmpty() || result.get(0).getValue().isEmpty()) {
             return ExternalConstants.NONE_STR;
         }
 
