@@ -1,4 +1,18 @@
 ---
+# Add k8s url and token from configmap
+# 
+#
+apiVersion: v1
+data:
+  kubernetes_service_token: kubeconfig-user-kg5b5:rmrtbhtnd5rcvlk2qrg7kr9qp54z5s4lfhpccnx4v7r6wdnpnh4zff
+  kubernetes_service_url: https://rancher.kw-demo/k8s/clusters/local
+  loki_service_url: http://loki.cattle-prometheus
+  prometheus_service_url: http://access-prometheus.cattle-prometheus
+kind: ConfigMap
+metadata:
+  name: kube-watcher-config
+  namespace: kube-watcher
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,8 +35,8 @@ spec:
         app: kube-watcher
     spec:
       containers:
-        - image: flytux/kube-watcher:0.1.0-minimum
-          imagePullPolicy: Always
+        - image: kw/kube-watcher:dev
+          imagePullPolicy: IfNotPresent
           name: kube-watcher
           ports:
             - containerPort: 8080
@@ -35,6 +49,27 @@ spec:
             privileged: false
             readOnlyRootFilesystem: false
             runAsNonRoot: false
+          env:
+            - name: KUBERNETES_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-watcher-config
+                  key: kubernetes_service_url
+            - name: KUBERNETES_SERVICE_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-watcher-config
+                  key: kubernetes_service_token
+            - name: PROMETHEUS_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-watcher-config
+                  key: prometheus_service_url
+            - name: LOKI_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-watcher-config
+                  key: loki_service_url
           stdin: true
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
@@ -43,11 +78,8 @@ spec:
       dnsPolicy: ClusterFirst
       hostAliases:
         - hostnames:
-            - rancher.do
-          ip: 64.227.23.169
-        - hostnames:
-            - prometheus.do
-          ip: 64.227.23.169
+            - rancher.kw-demo
+          ip:  172.104.92.240
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}

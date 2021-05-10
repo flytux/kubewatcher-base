@@ -225,10 +225,13 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                <to>
-			<image>127.0.0.1:30005/kw/kube-watcher:a1</image>
-                </to>
-		<allowInsecureRegistries>true</allowInsecureRegistries>
+                  <to>
+			<image>kw/kube-watcher:dev</image>
+                  </to>
+		  <allowInsecureRegistries>true</allowInsecureRegistries>
+		  <!--container>
+                    <extraClasspath>/app/config/*</extraClasspath>
+	          </container-->
                 </configuration>
             </plugin>
 
