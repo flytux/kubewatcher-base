@@ -19,6 +19,7 @@ import io.kubernetes.client.openapi.models.V1ServiceAccount;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -31,15 +32,14 @@ import java.util.stream.Collectors;
 @Service
 public class ServiceAccountServiceImpl implements ServiceAccountService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
     private final SecretService secretService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public ServiceAccountServiceImpl(ApiClient k8sApiClient, EventService eventService, SecretService secretService,
                                      K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.secretService = secretService;
@@ -49,10 +49,10 @@ public class ServiceAccountServiceImpl implements ServiceAccountService {
     @SneakyThrows
     @Override
     public List<ServiceAccountTable> allNamespaceServiceAccountTables() {
-        ApiResponse<V1ServiceAccountTableList> apiResponse = coreApi.allNamespaceServiceAccountAsTables("true");
+        ApiResponse<V1ServiceAccountTableList> apiResponse = coreApi.searchServiceAccountsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ServiceAccountTableList serviceAccounts = apiResponse.getData();
-            List<ServiceAccountTable> dataTable = serviceAccounts.getDataTable();
+            List<ServiceAccountTable> dataTable = serviceAccounts.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -65,10 +65,10 @@ public class ServiceAccountServiceImpl implements ServiceAccountService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceServiceAccountTables();
         }
-        ApiResponse<V1ServiceAccountTableList> apiResponse = coreApi.namespaceServiceAccountAsTables(namespace, "true");
+        ApiResponse<V1ServiceAccountTableList> apiResponse = coreApi.searchServiceAccountsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ServiceAccountTableList serviceAccounts = apiResponse.getData();
-            return serviceAccounts.getDataTable();
+            return serviceAccounts.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -76,7 +76,7 @@ public class ServiceAccountServiceImpl implements ServiceAccountService {
     @SneakyThrows
     @Override
     public Optional<ServiceAccountDescribe> serviceAccount(String namespace, String name) {
-        ApiResponse<V1ServiceAccount> apiResponse = coreApi.readNamespacedServiceAccountWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1ServiceAccount> apiResponse = coreApi.readNamespacedServiceAccountWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -89,7 +89,7 @@ public class ServiceAccountServiceImpl implements ServiceAccountService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("ServiceAccount",
             serviceAccountDescribe.getNamespace(), serviceAccountDescribe.getName(), serviceAccountDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> serviceAccountDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> serviceAccountDescribe.setEvents(v1EventTableList.createDataTableList()));
 
 
         List<String> secretNames = getSecretNames(data);
@@ -124,6 +124,4 @@ public class ServiceAccountServiceImpl implements ServiceAccountService {
         }
         return Collections.emptyList();
     }
-
-
 }

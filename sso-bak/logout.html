@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>logout-page</title>
+</head>
+<body style="background: #f4f7fa;">
+<script th:src="@{/assets/js/sso.js}"></script>
+<script>
+    (function() { logoutSSOClearYN(); window.location.href = '/login?logout'; })();
+</script>
+</body>
+</html>

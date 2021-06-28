@@ -6,7 +6,6 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.NetworkPolicyDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NetworkPolicyTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.NetworkingV1NetworkPolicyTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.NetworkingV1ApiExtendHandler;
-import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.NetworkPolicyService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
@@ -15,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,25 +24,27 @@ import java.util.stream.Collectors;
 @Service
 public class NetworkPolicyServiceImpl implements NetworkPolicyService {
 
-    private final ApiClient k8sApiClient;
+    private static final String EGRESS_POD_STR = "egressPod";
+    private static final String INGRESS_POD_STR = "ingressPod";
+    private static final String INGRESS_NAME_SPACE_STR = "ingressNameSpace";
+    private static final String EGRESS_NAME_SPACE_STR = "egressNameSpace";
+
     private final NetworkingV1ApiExtendHandler networkApi;
-    private final EventService eventService;
     private final K8sObjectManager k8sObjectManager;
 
-    public NetworkPolicyServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
+    @Autowired
+    public NetworkPolicyServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
         this.networkApi = new NetworkingV1ApiExtendHandler(k8sApiClient);
-        this.eventService = eventService;
         this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
     @Override
     public List<NetworkPolicyTable> allNamespaceNetworkPolicyTables() {
-        ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.allNamespaceNetworkPolicyAsTables("true");
+        ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.searchNetworkPoliciesTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             NetworkingV1NetworkPolicyTableList networkPolicies = apiResponse.getData();
-            List<NetworkPolicyTable> dataTable = networkPolicies.getDataTable();
+            List<NetworkPolicyTable> dataTable = networkPolicies.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -55,10 +57,10 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceNetworkPolicyTables();
         }
-        ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.namespaceNetworkPolicyAsTables(namespace, "true");
+        ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.searchNetworkPoliciesTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             NetworkingV1NetworkPolicyTableList networkPolicies = apiResponse.getData();
-            return networkPolicies.getDataTable();
+            return networkPolicies.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -66,7 +68,7 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
     @SneakyThrows
     @Override
     public Optional<NetworkPolicyDescribe> networkPolicy(String namespace, String name) {
-        ApiResponse<V1NetworkPolicy> apiResponse = networkApi.readNamespacedNetworkPolicyWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1NetworkPolicy> apiResponse = networkApi.readNamespacedNetworkPolicyWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -81,6 +83,7 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
     }
 
     private void setService(NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, V1NetworkPolicy data) {
+
         if (data.getMetadata() != null) {
             V1ObjectMeta metadata = data.getMetadata();
             builder.name(metadata.getName());
@@ -108,10 +111,10 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
                     V1LabelSelector ingressPod = from.getPodSelector();
                     V1LabelSelector ingressNameSpace = from.getNamespaceSelector();
                     if (ingressPod != null) {
-                        setFromToSelector(builder, ingressPod, "ingressPod");
+                        setFromToSelector(builder, ingressPod, INGRESS_POD_STR);
                     }
                     if (ingressNameSpace != null) {
-                        setFromToSelector(builder, ingressNameSpace, "ingressNameSpace");
+                        setFromToSelector(builder, ingressNameSpace, INGRESS_NAME_SPACE_STR);
                     }
                 }
             }
@@ -125,10 +128,10 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
                     V1LabelSelector egressPod = to.getPodSelector();
                     V1LabelSelector egressNameSpace = to.getNamespaceSelector();
                     if (egressPod != null) {
-                        setFromToSelector(builder, egressPod, "egressPod");
+                        setFromToSelector(builder, egressPod, EGRESS_POD_STR);
                     }
                     if (egressNameSpace != null) {
-                        setFromToSelector(builder, egressNameSpace, "egressNameSpace");
+                        setFromToSelector(builder, egressNameSpace, EGRESS_NAME_SPACE_STR);
                     }
                 }
             }
@@ -156,16 +159,16 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
     private void setFromToSelector(NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, V1LabelSelector selector, String select) {
         if (selector.getMatchLabels() != null) {
             switch (select) {
-                case "ingressPod" :
+                case INGRESS_POD_STR :
                     builder.ingressPod(selector.getMatchLabels());
                     break;
-                case "ingressNameSpace" :
+                case INGRESS_NAME_SPACE_STR :
                     builder.ingressNamespace(selector.getMatchLabels());
                     break;
-                case "egressPod" :
+                case EGRESS_POD_STR :
                     builder.egressPod(selector.getMatchLabels());
                     break;
-                case "egressNameSpace" :
+                case EGRESS_NAME_SPACE_STR :
                     builder.egressNamespace(selector.getMatchLabels());
                     break;
                 default:
@@ -181,16 +184,16 @@ public class NetworkPolicyServiceImpl implements NetworkPolicyService {
                     }));
 
                 switch (select) {
-                    case "ingressPod" :
+                    case INGRESS_POD_STR :
                         builder.ingressPod(selectMatchExpr);
                         break;
-                    case "ingressNameSpace" :
+                    case INGRESS_NAME_SPACE_STR :
                         builder.ingressNamespace(selectMatchExpr);
                         break;
-                    case "egressPod" :
+                    case EGRESS_POD_STR :
                         builder.egressPod(selectMatchExpr);
                         break;
-                    case "egressNameSpace" :
+                    case EGRESS_NAME_SPACE_STR :
                         builder.egressNamespace(selectMatchExpr);
                         break;
                     default:

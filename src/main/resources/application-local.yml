@@ -1,0 +1,17 @@
+spring.datasource.url: jdbc:h2:file:${EMBEDDED_TOMCAT_BASE}/data/kubeworksdb;AUTO_SERVER=TRUE;IFEXISTS=false;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;MODE=MySQL;
+spring.datasource.username: sa
+spring.datasource.password:
+
+logging.level.okhttp3: debug
+logging.level.com.squareup.okhttp3: debug
+logging.level.io.kubernetes.client.openapi: debug
+
+logging.level.org.apache.http: debug
+logging.level.org.springframework.web: debug
+logging.level.org.springframework.cloud.netflix.zuul: debug
+
+logging.level.com.kubeworks.watcher: debug
+
+logging.level.org.springframework.security: debug
+logging.level.org.springframework.web.filter: debug
+

@@ -14,10 +14,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
+@Service(value="pageViewService")
 public class PageViewServiceImpl implements PageViewService {
 
     private final PageRepository pageRepository;
@@ -43,7 +44,7 @@ public class PageViewServiceImpl implements PageViewService {
         return page.getRows().stream()
             .map(PageRow::getPageRowPanels)
             .flatMap(Collection::stream)
-            .collect(Collectors.toMap(PageRowPanel::getSortOrder, pageRowPanel -> pageRowPanel));
+            .collect(Collectors.toMap(PageRowPanel::getSortOrder, Function.identity()));
     }
 
     /*
@@ -51,26 +52,10 @@ public class PageViewServiceImpl implements PageViewService {
      */
     @Override
     public Page getPageInfo(long menuId) {
-        Optional<Page> optional = pageRepository.findByMenuId(menuId);
-        Page page = optional.get();
-//        log.info(">>>>> pageOptional : "+page.getTitle());
-//        List<PageRow> pageRows = page.getRows();
-//        pageRows.stream().forEach(pageRow -> {
-//            log.info(">>>>> page row title : "+pageRow.getTitle());
-//            List<PageRowPanel> pagePanels = pageRow.getPageRowPanels();
-//            pagePanels.stream().forEach(panel -> {
-//                log.info(">>>>> page panel title : "+panel.getTitle());
-//                List<ChartQuery> queries = panel.getChartQueries();
-//                queries.stream().forEach(query -> {
-//                    log.info(">>>>> page panel query : "+query.getApiQuery());
-//                });
-//            });
-//        });
-        return page;
+        return pageRepository.findByMenuId(menuId).orElse(null);
     }
 
     public List<Page> getPageList() {
         return pageRepository.findAllBy();
     }
-
 }

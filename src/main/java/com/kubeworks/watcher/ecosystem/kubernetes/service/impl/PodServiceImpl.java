@@ -19,9 +19,13 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static io.kubernetes.client.openapi.models.V1ContainerState.*;
@@ -32,14 +36,13 @@ public class PodServiceImpl implements PodService {
 
     public static final String FIELD_SELECTOR_NODE_NAME_KEY = "status.phase!=Failed,status.phase!=Succeeded,spec.nodeName=";
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
     private final MetricService metricService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public PodServiceImpl(ApiClient k8sApiClient, EventService eventService, MetricService metricService, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.metricService = metricService;
@@ -49,10 +52,10 @@ public class PodServiceImpl implements PodService {
     @SneakyThrows
     @Override
     public List<PodTable> allNamespacePodTables() {
-        ApiResponse<V1PodTableList> apiResponse = coreApi.allNamespacePodAsTable("true", null, null);
+        ApiResponse<V1PodTableList> apiResponse = coreApi.searchPodsTableList(null, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodTableList pod = apiResponse.getData();
-            List<PodTable> dataTable = pod.getDataTable();
+            List<PodTable> dataTable = pod.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -76,15 +79,15 @@ public class PodServiceImpl implements PodService {
             .map(entry -> entry.getKey() + "=" + entry.getValue())
             .collect(Collectors.joining(","));
 
-        ApiResponse<V1PodTableList> apiResponse = coreApi.namespacePodAsTable(namespace,null, labelSelectors, "true");
+        ApiResponse<V1PodTableList> apiResponse = coreApi.searchPodsTableList(namespace, null, labelSelectors);
 
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodTableList pod = apiResponse.getData();
-            List<PodTable> podTables =  pod.getDataTable();
+            List<PodTable> podTables =  pod.createDataTableList();
             List<MetricTable> metricTables = metricService.podMetrics(namespace, selector);
 
             for (PodTable podTable : podTables) {
-                 for (MetricTable metricTable : metricTables) {
+                for (MetricTable metricTable : metricTables) {
                     if (podTable.getName().equals(metricTable.getName())) {
                         podTable.setCpu(metricTable.getCpu());
                         podTable.setMemory(metricTable.getMemory());
@@ -100,7 +103,7 @@ public class PodServiceImpl implements PodService {
     @SneakyThrows
     @Override
     public Optional<PodDescribe> pod(String namespace, String podName) {
-        ApiResponse<V1Pod> podApiResponse = coreApi.readNamespacedPodWithHttpInfo(podName, namespace, "true", true, false);
+        ApiResponse<V1Pod> podApiResponse = coreApi.readNamespacedPodWithHttpInfo(podName, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(podApiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -113,7 +116,7 @@ public class PodServiceImpl implements PodService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Pod",
             podDescribe.getNamespace(), podDescribe.getName(), podDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> podDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> podDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(podDescribe);
     }
@@ -135,9 +138,9 @@ public class PodServiceImpl implements PodService {
         Optional<PodDescribe> podOptional = pod(namespace, podName);
         return podOptional
             .map(podDescribe -> podDescribe.getContainers().stream()
-                    .map(V1Container::getName)
-                    .collect(Collectors.toList())
-            ).orElse(Collections.emptyList());
+                .map(V1Container::getName)
+                .collect(Collectors.toList())
+            ).orElseGet(Collections::emptyList);
     }
 
 

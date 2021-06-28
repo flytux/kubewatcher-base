@@ -7,7 +7,6 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.StorageV1StorageClassT
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.StorageV1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
-import com.kubeworks.watcher.ecosystem.kubernetes.service.PodService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.StorageService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
@@ -15,6 +14,7 @@ import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1StorageClass;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -25,25 +25,22 @@ import java.util.Optional;
 @Service
 public class StorageServiceImpl implements StorageService {
 
-    private final ApiClient k8sApiClient;
     private final StorageV1ApiExtendHandler storageV1ApiExtendHandler;
-    private final PodService podService;
     private final EventService eventService;
 
-    public StorageServiceImpl(ApiClient k8sApiClient, PodService podService, EventService eventService) {
-        this.k8sApiClient = k8sApiClient;
+    @Autowired
+    public StorageServiceImpl(ApiClient k8sApiClient, EventService eventService) {
         this.storageV1ApiExtendHandler = new StorageV1ApiExtendHandler(k8sApiClient);
-        this.podService = podService;
         this.eventService = eventService;
     }
 
     @SneakyThrows
     @Override
     public List<StorageClassTable> allStorageClassClaimTables() {
-        ApiResponse<StorageV1StorageClassTableList> apiResponse = storageV1ApiExtendHandler.allNamespaceStorageClassAsTable("true");
+        ApiResponse<StorageV1StorageClassTableList> apiResponse = storageV1ApiExtendHandler.searchStorageClassesTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             StorageV1StorageClassTableList storageClasses = apiResponse.getData();
-            return storageClasses.getDataTable();
+            return storageClasses.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -51,7 +48,7 @@ public class StorageServiceImpl implements StorageService {
     @SneakyThrows
     @Override
     public Optional<StorageClassDescribe> storageClass(String name) {
-        ApiResponse<V1StorageClass> apiResponse = storageV1ApiExtendHandler.readStorageClassWithHttpInfo(name, "true", true, false);
+        ApiResponse<V1StorageClass> apiResponse = storageV1ApiExtendHandler.readStorageClassWithHttpInfo(name, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -64,7 +61,7 @@ public class StorageServiceImpl implements StorageService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("StorageClass", "",
             storageClassDescribe.getName(), storageClassDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> storageClassDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> storageClassDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(storageClassDescribe);
     }

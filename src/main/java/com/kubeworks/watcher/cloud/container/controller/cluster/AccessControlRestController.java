@@ -1,4 +1,4 @@
-package com.kubeworks.watcher.cloud.container.controller.accessControl;
+package com.kubeworks.watcher.cloud.container.controller.cluster;
 
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.*;

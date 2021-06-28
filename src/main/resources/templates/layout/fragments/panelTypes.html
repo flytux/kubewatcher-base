@@ -725,16 +725,15 @@
         </div>
     </th:block>
 
-    <th:block th:fragment="col-3-app-group-head-card-panel(panel, services)">
+    <!-- // TODO 코드수정함 services 확인 필요 20210409 -->
+    <th:block th:fragment="col-3-app-group-head-card-panel(panel)">
         <div class="col-md-12 col-lg-3"
              th:with="subPanelMap=${T(com.kubeworks.watcher.ecosystem.ExternalConstants).thymeleafConvertList2Map(panel?.subPanel)}">
             <!--card view start -->
             <div class="box_panel" >
                 <div class="row" >
-                    <div th:if="${services != null}" class="box_panel-stitle" style="color: #f37320"
-                         th:text="|${panel?.title} (${services.getDisplayName(panel?.title)})|">Panel Title</div>
-                    <div th:unless="${services != null}" class="box_panel-stitle" style="color: #f37320"
-                         th:text="${panel?.title}">Panel Title</div>
+                    <!-- // TODO 코드수정함 services 확인 필요 20210409 -->
+                    <div class="box_panel-stitle" style="color: #f37320" th:text="|${panel?.title} (${@applicationService.getDisplayName(panel?.title)})|">Panel Title</div>
                 </div>
                 <div class="row pt_5">
                     <div th:if="${subPanelMap.get('Application Status')}"

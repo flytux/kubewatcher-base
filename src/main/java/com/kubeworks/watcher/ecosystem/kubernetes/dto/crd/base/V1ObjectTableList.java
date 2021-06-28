@@ -1,82 +1,67 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.gson.annotations.SerializedName;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.NamespaceSettable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1ObjectColumnDefinition;
+import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ListMeta;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Getter @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
-public abstract class V1ObjectTableList<T, O> {
+public abstract class V1ObjectTableList<T extends NamespaceSettable, O extends KubernetesObject> {
 
-    public static final String SERIALIZED_NAME_API_VERSION = "apiVersion";
-    @SerializedName(SERIALIZED_NAME_API_VERSION)
-    private String apiVersion;
+    @SerializedName("apiVersion") private String apiVersion;
+    @SerializedName("kind") private String kind;
+    @SerializedName("metadata") private V1ListMeta metadata;
+    @SerializedName("rows") private List<V1ObjectAsTable<O>> rows;
+    @SerializedName("columnDefinitions") List<V1ObjectColumnDefinition> columnDefinitions;
 
-    public static final String SERIALIZED_NAME_KIND = "kind";
-    @SerializedName(SERIALIZED_NAME_KIND)
-    private String kind;
-
-    public static final String SERIALIZED_NAME_METADATA = "metadata";
-    @SerializedName(SERIALIZED_NAME_METADATA)
-    private V1ListMeta metadata;
-
-    public static final String SERIALIZED_NAME_ITEMS = "rows";
-    @SerializedName(SERIALIZED_NAME_ITEMS)
-    private List<V1ObjectAsTable<O>> rows;
-
-    public static final String SERIALIZED_COLUMN_DEFINITIONS = "columnDefinitions";
-    @SerializedName(SERIALIZED_COLUMN_DEFINITIONS)
-    List<V1ObjectColumnDefinition> columnDefinitions;
-
-    public void setRows(List<V1ObjectAsTable<O>> rows) {
-        if (rows == null) {
-            this.rows = Collections.emptyList();
-        }
-        this.rows = rows;
+    public void setRows(final List<V1ObjectAsTable<O>> rows) {
+        this.rows = Objects.nonNull(rows) ? rows : ImmutableList.of();
     }
 
-    public void setColumnDefinitions(List<V1ObjectColumnDefinition> columnDefinitions) {
-        if (columnDefinitions == null) {
-            this.columnDefinitions = Collections.emptyList();
-        }
-        this.columnDefinitions = columnDefinitions;
+    public void setColumnDefinitions(final List<V1ObjectColumnDefinition> columnDefinitions) {
+        this.columnDefinitions = Objects.nonNull(columnDefinitions) ? columnDefinitions : ImmutableList.of();
     }
 
-    protected abstract T getDataObject();
+    protected abstract T createInstance();
 
-    protected abstract void makeObject(T builder, String fieldName, String value);
+    protected abstract void putValueIntoField(final T builder, final String field, final String value);
 
+    protected abstract void executeExtraProcess(final T data, final V1ObjectAsTable<O> row);
 
-    public List<T> getDataTable() {
-        if (rows == null || columnDefinitions == null) {
-            return Collections.emptyList();
-        }
+    public List<T> createDataTableList() {
 
-        List<T> list = new ArrayList<>(rows.size());
-        for (V1ObjectAsTable<O> row : rows) {
-            T data = getDataObject();
-            final List<String> cells = row.getCells();
-            IntStream.range(0, cells.size()).forEach(index -> {
-                String value = cells.get(index);
-                V1ObjectColumnDefinition columnDefinition = columnDefinitions.get(index);
-                String fieldName = columnDefinition.getName().toLowerCase();
-                makeObject(data, fieldName, value);
-            });
-            list.add(data);
-        }
-        return list;
+        if (Objects.isNull(rows) || Objects.isNull(columnDefinitions)) { return ImmutableList.of(); }
+
+        final List<T> res = Lists.newArrayListWithExpectedSize(rows.size());
+
+        rows.forEach(e -> {
+            final T data = createInstance();
+
+            if (!CollectionUtils.isEmpty(e.getCells())) {
+                IntStream.range(0, e.getCells().size()).forEach(n ->
+                    putValueIntoField(data, columnDefinitions.get(n).getName().toLowerCase(Locale.getDefault()), e.getCells().get(n)));
+            }
+
+            if (Objects.nonNull(e.getObject().getMetadata())) {
+                data.setNamespace(e.getObject().getMetadata().getNamespace());
+            }
+
+            executeExtraProcess(data, e);
+
+            res.add(data);
+        });
+
+        return res;
     }
-
-
 }

@@ -16,6 +16,7 @@ import io.kubernetes.client.openapi.models.V1RoleList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -27,13 +28,12 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    private final ApiClient k8sApiClient;
     private final RbacV1ApiExtendHandler rbacV1Api;
     private final EventService eventService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public RoleServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.rbacV1Api = new RbacV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.k8sObjectManager = k8sObjectManager;
@@ -42,7 +42,6 @@ public class RoleServiceImpl implements RoleService {
     @SneakyThrows
     @Override
     public List<RoleTable> allNamespaceRoleTables() {
-//        ApiResponse<RbacV1RoleTableList> apiResponse = rbacV1Api.allNamespaceRoleAsTables("true");
 
         ApiResponse<V1RoleList> apiResponse = rbacV1Api.listRoleForAllNamespacesWithHttpInfo(null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, "false", null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
@@ -100,7 +99,7 @@ public class RoleServiceImpl implements RoleService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Role",
             roleDescribe.getNamespace(), roleDescribe.getName(), roleDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> roleDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> roleDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(roleDescribe);
     }
@@ -120,6 +119,5 @@ public class RoleServiceImpl implements RoleService {
         if (data.getRules() != null) {
             builder.rules(data.getRules());
         }
-
     }
 }

@@ -2,6 +2,7 @@ package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.kubeworks.watcher.base.MetricResponseData;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NodeDescribe;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,17 +34,14 @@ import java.util.stream.Collectors;
 @Service
 public class NodeServiceImpl implements NodeService {
 
-    public static final String RESOURCE_HUGE_PAGES_PREFIX = "hugepages-";
-
     public static final Quantity defaultQuantity = new Quantity("0");
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final PodService podService;
     private final EventService eventService;
 
+    @Autowired
     public NodeServiceImpl(ApiClient k8sApiClient, PodService podService, EventService eventService) {
-        this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.podService = podService;
         this.eventService = eventService;
@@ -51,7 +50,7 @@ public class NodeServiceImpl implements NodeService {
     @SneakyThrows
     @Override
     public List<NodeTable> nodes() {
-        ApiResponse<V1NodeTableList> response = coreApi.listNodeAsTable("true");
+        ApiResponse<V1NodeTableList> response = coreApi.searchNodesTableList();
         V1NodeTableList v1ObjectTableList = response.getData();
         return v1ObjectTableList.getDataTable();
     }
@@ -59,7 +58,7 @@ public class NodeServiceImpl implements NodeService {
     @SneakyThrows
     @Override
     public NodeTable node(String nodeName) {
-        ApiResponse<V1NodeTableList> response = coreApi.readNodeAsTable(nodeName, "true");
+        ApiResponse<V1NodeTableList> response = coreApi.searchNodesTableList(nodeName);
         V1NodeTableList v1ObjectTableList = response.getData();
         Optional<NodeTable> nodeTableOptional = v1ObjectTableList.getDataTable().stream().findFirst();
         return nodeTableOptional.orElse(null);
@@ -88,7 +87,7 @@ public class NodeServiceImpl implements NodeService {
 
             // node pod list
             List<ObjectUsageResource> objectUsageResources = pods.getItems().stream()
-                .map(v1Pod -> getResource(v1Node, v1Pod)).collect(Collectors.toList());
+                .map(this::getResource).collect(Collectors.toList());
             nodeDescribeBuilder.pods(objectUsageResources);
 
             // node resource usage
@@ -100,7 +99,7 @@ public class NodeServiceImpl implements NodeService {
                         return firstResource;
                     }
                     if (firstRequests == null) {
-                        firstRequests = new HashMap<>(secondRequest.size());
+                        firstRequests = Maps.newHashMapWithExpectedSize(secondRequest.size());
                     }
                     computeResource(firstRequests, secondRequest, false);
                     return firstResource;
@@ -113,7 +112,7 @@ public class NodeServiceImpl implements NodeService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Node",
             "", nodeDescribe.getName(), nodeDescribe.getName());
-        eventTableListOptional.ifPresent(v1EventTableList -> nodeDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> nodeDescribe.setEvents(v1EventTableList.createDataTableList()));
 
 
         return nodeDescribe;
@@ -193,7 +192,7 @@ public class NodeServiceImpl implements NodeService {
         return taints.stream().collect(Collectors.toMap(V1Taint::getKey, V1Taint::getKey, (o1, o2) -> o2));
     }
 
-    private ObjectUsageResource getResource(V1Node v1Node, V1Pod pod) {
+    private ObjectUsageResource getResource(V1Pod pod) {
 
         List<V1Container> containers = pod.getSpec().getContainers();
         List<V1Container> initContainers = pod.getSpec().getInitContainers();
@@ -253,6 +252,4 @@ public class NodeServiceImpl implements NodeService {
             aggResource.put(resourceKey, new Quantity(add, aggQuantity.getFormat()));
         });
     }
-
-
 }

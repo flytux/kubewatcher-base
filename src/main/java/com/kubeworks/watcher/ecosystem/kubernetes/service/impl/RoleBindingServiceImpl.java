@@ -14,6 +14,7 @@ import io.kubernetes.client.openapi.models.V1RoleBindingList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -25,12 +26,11 @@ import java.util.stream.Collectors;
 @Service
 public class RoleBindingServiceImpl implements RoleBindingService {
 
-    private final ApiClient k8sApiClient;
     private final RbacV1ApiExtendHandler rbacApi;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public RoleBindingServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.rbacApi = new RbacV1ApiExtendHandler(k8sApiClient);
         this.k8sObjectManager = k8sObjectManager;
     }
@@ -38,7 +38,6 @@ public class RoleBindingServiceImpl implements RoleBindingService {
     @SneakyThrows
     @Override
     public List<RoleBindingTable> allNamespaceRoleBindingTables() {
-//        ApiResponse<RbacV1RoleBindingTableList> apiResponse = rbacApi.allNamespaceRoleBindingAsTables("true");
         ApiResponse<V1RoleBindingList> apiResponse = rbacApi.listRoleBindingForAllNamespacesWithHttpInfo(null, null, null, null, ExternalConstants.DEFAULT_K8S_OBJECT_LIMIT, "false", null, ExternalConstants.DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1RoleBindingList data = apiResponse.getData();

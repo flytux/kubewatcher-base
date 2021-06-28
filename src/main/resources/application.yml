@@ -100,7 +100,6 @@ ribbon:
 
 application:
   properties:
-    root-domain: ''
     monitoring:
       default-cluster-name: local
       clusters:
@@ -109,16 +108,14 @@ application:
           # modified to set k8s url and token from environment variables 
           # initial value from configmap - kube-watcher-config
           k8s:
-            url: ${KUBERNETES_SERVICE_URL}
-            api-token: ${KUBERNETES_SERVICE_TOKEN}
+            url: "https://rancher.do/k8s/clusters/local"
+            api-token: "kubeconfig-user-c7cpf:prf4v24k8d7tmhwgnl4v2zl7k2jn2lxb9r9jw9tldkkth76l8tsmwq"
           prometheus:
             proxy: true
-            url: ${PROMETHEUS_SERVICE_URL}
+            url: "http://prometheus.do"
           loki:
             proxy: true
-            url: ${LOKI_SERVICE_URL}
+            url: "http://loki.do"
 logging:
   level:
     root: info
-    com.squareup.okhttp3: debug
-    com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeginClient: info

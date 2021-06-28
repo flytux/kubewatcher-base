@@ -23,7 +23,8 @@
             <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
                     <th:block th:if="${#strings.equalsIgnoreCase(panel.panelType, 'PANEL_GROUP')}">
-                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel}, ${services})"/>
+                        <!-- // TODO 코드수정함 -->
+                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
                     </th:block>
 
                     <th:block th:unless="${#strings.equalsIgnoreCase(panel.panelType, 'PANEL_GROUP')}">
@@ -35,7 +36,8 @@
         </div>
     </div>
 
-    <input type="hidden" id="var-services" th:value="${services?.serviceNamesOfPromQL}">
+    <!-- // TODO 코드수정함 -->
+    <input type="hidden" id="var-services" th:value="${@applicationService.getServiceNamesOfPromQL()}">
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/axios/axios.min.js}"></script>
@@ -45,7 +47,8 @@
         /*<![CDATA[*/
         let pageRows = [[${page?.rows}]],
             apiHost = [[${host}]],
-            serviceMap = [[${services?.serviceMap}]];
+            // TODO 코드수정함
+            serviceMap = [[${@applicationService.getServiceMap()}]];
         /*]]>*/
 
         $(document).ready(function () {
@@ -56,9 +59,7 @@
                 }
             }));
         });
-
     </script>
-
 </div>
 </body>
 </html>

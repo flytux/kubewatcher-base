@@ -8,17 +8,12 @@ import java.util.Map;
 public interface ApplicationService {
 
     List<ApplicationManagement> getApplicationManagementList();
-
     String getServiceNamesOfPromQL();
-
     String getServiceNamesLoki();
-
     List<String> getNamespaces();
-
     Map<String, List<ApplicationManagement>> getManagementByNamespace();
-
     List<String> getManagementByName();
-
     ApplicationManagement getUnknownBoard();
-
+    String getDisplayName(final String name);
+    Map<String, ApplicationManagement> getServiceMap();
 }

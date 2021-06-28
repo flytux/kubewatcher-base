@@ -20,12 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@AllArgsConstructor(onConstructor_={@Autowired})
 public class ApplicationPageMetricService implements PageMetricService<Page> {
 
     private final PageViewService pageViewService;
@@ -42,7 +43,7 @@ public class ApplicationPageMetricService implements PageMetricService<Page> {
 
         Map<String, PageVariable> variableMap = variables.stream()
             .map(this::getValuesByVariable)
-            .collect(Collectors.toMap(PageVariable::getName, var -> var));
+            .collect(Collectors.toMap(PageVariable::getName, Function.identity()));
 
         /* subGroup */
         pageView.getRows().forEach(row -> {
@@ -113,6 +114,4 @@ public class ApplicationPageMetricService implements PageMetricService<Page> {
         variable.setValues(values);
         return variable;
     }
-
-
 }

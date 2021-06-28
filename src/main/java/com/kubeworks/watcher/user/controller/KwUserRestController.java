@@ -20,8 +20,13 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import java.util.*;
 
 @Controller
-@AllArgsConstructor(onConstructor_ = {@Autowired})
-public class kwUserRestController {
+@AllArgsConstructor(onConstructor_={@Autowired})
+public class KwUserRestController {
+
+
+    private static final String USER_LIST_STR = "userList";
+    private static final String GROUP_LIST_STR = "groupList";
+    private static final String VIEW_NAME = "security/users";
 
     private final KwUserService kwUserService;
     private final KwGroupService kwGroupService;
@@ -37,9 +42,9 @@ public class kwUserRestController {
         ApiResponse<String> save = kwGroupService.saveGroup(kwUserGroup);
         List<KwUserGroup> groupList = kwGroupService.getKwUserGroupList();
 
-        saveGroup.put("groupList", groupList);
+        saveGroup.put(GROUP_LIST_STR, groupList);
         String groupHtml = springTemplateEngine.process("security/groups",
-            Collections.singleton("groupList"), new Context(Locale.KOREA, saveGroup));
+            Collections.singleton(GROUP_LIST_STR), new Context(Locale.KOREA, saveGroup));
 
         saveGroup.put("html", groupHtml);
         saveGroup.put("save", save);
@@ -56,9 +61,9 @@ public class kwUserRestController {
         ApiResponse<String> delete = kwGroupService.deleteGroup(kwUserGroup);
         List<KwUserGroup> groupList = kwGroupService.getKwUserGroupList();
 
-        deleteGroup.put("groupList", groupList);
+        deleteGroup.put(GROUP_LIST_STR, groupList);
         String groupHtml = springTemplateEngine.process("security/groups",
-            Collections.singleton("groupList"), new Context(Locale.KOREA, deleteGroup));
+            Collections.singleton(GROUP_LIST_STR), new Context(Locale.KOREA, deleteGroup));
 
         deleteGroup.put("html", groupHtml);
         deleteGroup.put("delete", delete);
@@ -76,9 +81,9 @@ public class kwUserRestController {
         ApiResponse<String> modify = kwUserService.modifyUser(kwUser, groupName, roleList);
         List<KwUser> userList = kwUserService.getKwUserList();
 
-        modifyUser.put("userList", userList);
-        String userHtml = springTemplateEngine.process("security/users",
-            Collections.singleton("userList"), new Context(Locale.KOREA, modifyUser));
+        modifyUser.put(USER_LIST_STR, userList);
+        String userHtml = springTemplateEngine.process(VIEW_NAME,
+            Collections.singleton(USER_LIST_STR), new Context(Locale.KOREA, modifyUser));
 
         modifyUser.put("html", userHtml);
         modifyUser.put("modify", modify);
@@ -95,9 +100,9 @@ public class kwUserRestController {
         ApiResponse<String> delete = kwUserService.deleteUser(kwUser);
         List<KwUser> userList = kwUserService.getKwUserList();
 
-        deleteUser.put("userList", userList);
-        String userHtml = springTemplateEngine.process("security/users",
-            Collections.singleton("userList"), new Context(Locale.KOREA, deleteUser));
+        deleteUser.put(USER_LIST_STR, userList);
+        String userHtml = springTemplateEngine.process(VIEW_NAME,
+            Collections.singleton(USER_LIST_STR), new Context(Locale.KOREA, deleteUser));
 
         deleteUser.put("html", userHtml);
         deleteUser.put("delete", delete);
@@ -115,9 +120,9 @@ public class kwUserRestController {
         ApiResponse<String> save = kwUserService.saveUser(kwUser, groupName, roleList);
         List<KwUser> userList = kwUserService.getKwUserList();
 
-        saveUser.put("userList", userList);
-        String userHtml = springTemplateEngine.process("security/users",
-            Collections.singleton("userList"), new Context(Locale.KOREA, saveUser));
+        saveUser.put(USER_LIST_STR, userList);
+        String userHtml = springTemplateEngine.process(VIEW_NAME,
+            Collections.singleton(USER_LIST_STR), new Context(Locale.KOREA, saveUser));
 
         saveUser.put("html", userHtml);
         saveUser.put("save", save);

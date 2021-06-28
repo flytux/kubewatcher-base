@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.YamlHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.CronJobDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.CronJobTable;
@@ -9,7 +10,6 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.BatchV1beta1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.CronJobService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
-import com.kubeworks.watcher.ecosystem.kubernetes.service.PodService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.*;
@@ -17,8 +17,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.Yaml;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,30 +28,24 @@ import java.util.Optional;
 @Service
 public class CronJobServiceImpl implements CronJobService {
 
-    private final ApiClient k8sApiClient;
     private final BatchV1beta1ApiExtendHandler batchV1beta1Api;
     private final EventService eventService;
-    private final PodService podService;
-    private final Yaml yaml;
     private final K8sObjectManager k8sObjectManager;
 
-    public CronJobServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService, Yaml yaml,
-                              K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
+    @Autowired
+    public CronJobServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
         this.batchV1beta1Api = new BatchV1beta1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
-        this.podService = podService;
-        this.yaml = yaml;
         this.k8sObjectManager = k8sObjectManager;
     }
 
     @SneakyThrows
     @Override
     public List<CronJobTable> allNamespaceCronJobTables() {
-        ApiResponse<BatchV1beta1CronJobTableList> apiResponse = batchV1beta1Api.allNamespaceCronJobAsTable("true");
+        ApiResponse<BatchV1beta1CronJobTableList> apiResponse = batchV1beta1Api.searchCronJobsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             BatchV1beta1CronJobTableList statefulSets = apiResponse.getData();
-            List<CronJobTable> dataTable = statefulSets.getDataTable();
+            List<CronJobTable> dataTable = statefulSets.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -64,10 +58,10 @@ public class CronJobServiceImpl implements CronJobService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceCronJobTables();
         }
-        ApiResponse<BatchV1beta1CronJobTableList> apiResponse = batchV1beta1Api.allNamespaceCronJobAsTable("true");
+        ApiResponse<BatchV1beta1CronJobTableList> apiResponse = batchV1beta1Api.searchCronJobsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             BatchV1beta1CronJobTableList statefulSets = apiResponse.getData();
-            return statefulSets.getDataTable();
+            return statefulSets.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -75,7 +69,7 @@ public class CronJobServiceImpl implements CronJobService {
     @SneakyThrows
     @Override
     public Optional<CronJobDescribe> cronJob(String namespace, String name) {
-        ApiResponse<V1beta1CronJob> apiResponse = batchV1beta1Api.readNamespacedCronJobWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1beta1CronJob> apiResponse = batchV1beta1Api.readNamespacedCronJobWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
 
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
@@ -90,7 +84,7 @@ public class CronJobServiceImpl implements CronJobService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("CronJob",
             cronJobDescribe.getNamespace(), cronJobDescribe.getName(), cronJobDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> cronJobDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> cronJobDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(cronJobDescribe);
     }
@@ -126,9 +120,7 @@ public class CronJobServiceImpl implements CronJobService {
     private void setTemplate(CronJobDescribe.CronJobDescribeBuilder builder, V1beta1JobTemplateSpec jobTemplateSpec) {
         if (jobTemplateSpec.getSpec() != null && jobTemplateSpec.getSpec().getTemplate().getSpec() != null) {
             List<V1Container> containers = jobTemplateSpec.getSpec().getTemplate().getSpec().getContainers();
-            String dump = yaml.dump(containers);
-            builder.podTemplate(Collections.singletonList(dump));
+            builder.podTemplate(Collections.singletonList(YamlHandler.serialize(containers)));
         }
     }
-
 }

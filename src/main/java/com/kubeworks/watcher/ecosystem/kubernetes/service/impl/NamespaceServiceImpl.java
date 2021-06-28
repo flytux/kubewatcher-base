@@ -19,6 +19,7 @@ import io.kubernetes.client.openapi.models.V1NamespaceStatus;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -29,16 +30,14 @@ import java.util.Optional;
 @Service
 public class NamespaceServiceImpl implements NamespaceService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
     private final ResourceQuotaService resourceQuotaService;
     private final LimitRangeService limitRangeService;
     private final K8sObjectManager k8sObjectManager;
 
-
+    @Autowired
     public NamespaceServiceImpl(ApiClient k8sApiClient, ResourceQuotaService resourceQuotaService,
                                 LimitRangeService limitRangeService, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.resourceQuotaService = resourceQuotaService;
         this.limitRangeService = limitRangeService;
@@ -48,7 +47,7 @@ public class NamespaceServiceImpl implements NamespaceService {
     @SneakyThrows
     @Override
     public List<NamespaceTable> allNamespaceTables() {
-        ApiResponse<V1NamespaceTableList> apiResponse = coreV1Api.allNamespaceAsTable("true");
+        ApiResponse<V1NamespaceTableList> apiResponse = coreV1Api.searchNamespacesTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1NamespaceTableList namespaces = apiResponse.getData();
             List<NamespaceTable> dataTable = namespaces.getDataTable();
@@ -61,7 +60,7 @@ public class NamespaceServiceImpl implements NamespaceService {
     @SneakyThrows
     @Override
     public Optional<NamespaceDescribe> namespace(String name) {
-        ApiResponse<V1Namespace> apiResponse = coreV1Api.readNamespaceWithHttpInfo(name, "true", true, false);
+        ApiResponse<V1Namespace> apiResponse = coreV1Api.readNamespaceWithHttpInfo(name, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -102,6 +101,5 @@ public class NamespaceServiceImpl implements NamespaceService {
             builder.conditions(status.getConditions());
             builder.status(status.getPhase());
         }
-
     }
 }

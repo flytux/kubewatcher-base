@@ -15,6 +15,7 @@ import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -27,12 +28,11 @@ import java.util.stream.Collectors;
 @Service
 public class EventServiceImpl implements EventService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public EventServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.k8sObjectManager = k8sObjectManager;
     }
@@ -42,7 +42,7 @@ public class EventServiceImpl implements EventService {
         ApiResponse<V1EventTableList> apiResponse = eventTables(null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EventTableList eventTableList = apiResponse.getData();
-            List<EventTable> dataTable = eventTableList.getDataTable();
+            List<EventTable> dataTable = eventTableList.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -55,10 +55,10 @@ public class EventServiceImpl implements EventService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceEventTables();
         }
-        ApiResponse<V1EventTableList> apiResponse = coreApi.listNamespaceEventAsTable(namespace, "true", null);
+        ApiResponse<V1EventTableList> apiResponse = coreApi.searchEventsTableList(namespace, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EventTableList eventTableList = apiResponse.getData();
-            return eventTableList.getDataTable();
+            return eventTableList.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -85,7 +85,7 @@ public class EventServiceImpl implements EventService {
     @SneakyThrows
     @Override
     public Optional<EventDescribe> event(String namespace, String name) {
-        ApiResponse<V1Event> apiResponse = coreApi.readNamespacedEventWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1Event> apiResponse = coreApi.readNamespacedEventWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -109,7 +109,7 @@ public class EventServiceImpl implements EventService {
 
     @SneakyThrows
     private ApiResponse<V1EventTableList> eventTables(String fieldSelector) {
-        return coreApi.listAllNamespaceEventAsTable("true", fieldSelector);
+        return coreApi.searchEventsTableList(fieldSelector);
     }
 
     private void setEvent(EventDescribe.EventDescribeBuilder builder, V1Event data) {
@@ -155,5 +155,4 @@ public class EventServiceImpl implements EventService {
 
         return joiner.toString();
     }
-
 }

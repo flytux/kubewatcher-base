@@ -9,9 +9,9 @@ public interface AlertRuleConfigService {
 
     List<AlertRule> alertRules();
 
-    AlertRule alertRule(long ruleId);
+    AlertRule alertRule(final Long ruleId);
 
-    ApiResponse<String> registrationAlarmRule(AlertRule alertRule);
+    ApiResponse<String> registrationAlarmRule(final AlertRule alertRule);
 
-    ApiResponse<String> updateAlarmRule(AlertRule alertRule);
+    ApiResponse<String> updateAlarmRule(final AlertRule alertRule);
 }

@@ -3,15 +3,12 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 import io.kubernetes.client.custom.Quantity;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
-public class PodTable {
+@Getter @Setter
+@FieldDefaults(level=AccessLevel.PRIVATE)
+public class PodTable implements NamespaceSettable {
 
     String name;
     String namespace;
@@ -25,5 +22,4 @@ public class PodTable {
     String readinessGates;
     Quantity cpu;
     Quantity memory;
-
 }

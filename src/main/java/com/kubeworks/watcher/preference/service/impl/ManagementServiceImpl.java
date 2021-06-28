@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Slf4j
-@Service("managementService")
+@Service(value="managementService")
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class ManagementServiceImpl implements ManagementService {
 
@@ -25,7 +25,7 @@ public class ManagementServiceImpl implements ManagementService {
         return applicationService.getApplicationManagementList().stream()
             .filter(service -> StringUtils.equalsIgnoreCase(service.getName(), name))
             .findFirst()
-            .orElse(applicationService.getUnknownBoard());
+            .orElseGet(applicationService::getUnknownBoard);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ManagementServiceImpl implements ManagementService {
         return services.stream()
             .filter(service -> StringUtils.startsWith(name, service.getName()))
             .findFirst()
-            .orElse(applicationService.getUnknownBoard());
+            .orElseGet(applicationService::getUnknownBoard);
     }
 
     @Override

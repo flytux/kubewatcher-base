@@ -20,7 +20,6 @@ public class KwUserRoleRule extends BaseEntity {
     @Column(name = "rule_id", columnDefinition = "bigint unsigned", nullable = false)
     long ruleId;
 
-
     @Column(name = "rule_name", length = 200, nullable = false)
     String rulename;
 
@@ -29,7 +28,4 @@ public class KwUserRoleRule extends BaseEntity {
 
     @Column(name = "description", length = 200, nullable = false)
     String description; //description
-
-//    @OneToOne(mappedBy = "rule")
-//    private KwUserRole userRole;
 }

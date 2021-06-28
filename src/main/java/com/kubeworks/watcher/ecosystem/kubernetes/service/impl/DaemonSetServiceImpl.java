@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,15 +32,14 @@ import java.util.stream.Collectors;
 @Service
 public class DaemonSetServiceImpl implements DaemonSetService {
 
-    private final ApiClient k8sApiClient;
     private final AppsV1ApiExtendHandler appsV1Api;
     private final EventService eventService;
     private final PodService podService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public DaemonSetServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService,
                                 K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.appsV1Api = new AppsV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.podService = podService;
@@ -49,10 +49,10 @@ public class DaemonSetServiceImpl implements DaemonSetService {
     @SneakyThrows
     @Override
     public List<DaemonSetTable> allNamespaceDaemonSetTables() {
-        ApiResponse<AppsV1DaemonSetTableList> apiResponse = appsV1Api.allNamespaceDaemonSetAsTable("true");
+        ApiResponse<AppsV1DaemonSetTableList> apiResponse = appsV1Api.searchDaemonSetsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AppsV1DaemonSetTableList daemonSets = apiResponse.getData();
-            List<DaemonSetTable> dataTable = daemonSets.getDataTable();
+            List<DaemonSetTable> dataTable = daemonSets.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -65,10 +65,10 @@ public class DaemonSetServiceImpl implements DaemonSetService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceDaemonSetTables();
         }
-        ApiResponse<AppsV1DaemonSetTableList> apiResponse = appsV1Api.namespaceDaemonSetAsTable(namespace, "true");
+        ApiResponse<AppsV1DaemonSetTableList> apiResponse = appsV1Api.searchDaemonSetsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AppsV1DaemonSetTableList daemonSets = apiResponse.getData();
-            return daemonSets.getDataTable();
+            return daemonSets.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -76,7 +76,7 @@ public class DaemonSetServiceImpl implements DaemonSetService {
     @SneakyThrows
     @Override
     public Optional<DaemonSetDescribe> daemonSet(String namespace, String name) {
-        ApiResponse<V1DaemonSet> apiResponse = appsV1Api.readNamespacedDaemonSetWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1DaemonSet> apiResponse = appsV1Api.readNamespacedDaemonSetWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -93,7 +93,7 @@ public class DaemonSetServiceImpl implements DaemonSetService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("DaemonSet",
             daemonSetDescribe.getNamespace(), daemonSetDescribe.getName(), daemonSetDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> daemonSetDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> daemonSetDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(daemonSetDescribe);
     }
@@ -128,9 +128,9 @@ public class DaemonSetServiceImpl implements DaemonSetService {
         if (data.getStatus() != null) {
             V1DaemonSetStatus status = data.getStatus();
             if (status.getNumberAvailable() != null) {
-                builder.podStatus(status.getNumberAvailable().toString() + "/" + status.getDesiredNumberScheduled().toString());
+                builder.podStatus(status.getNumberAvailable() + "/" + status.getDesiredNumberScheduled());
             } else {
-                builder.podStatus("/" + status.getDesiredNumberScheduled().toString());
+                builder.podStatus("/" + status.getDesiredNumberScheduled());
             }
             builder.conditions(status.getConditions());
         }
@@ -144,7 +144,7 @@ public class DaemonSetServiceImpl implements DaemonSetService {
             if (updateStrategy.getRollingUpdate() != null
                 && updateStrategy.getRollingUpdate().getMaxUnavailable() != null) {
                 type = type + " [maxUnavailable: "
-                    + updateStrategy.getRollingUpdate().getMaxUnavailable().toString() + "]";
+                    + updateStrategy.getRollingUpdate().getMaxUnavailable() + "]";
             }
             builder.strategy(type);
         }
@@ -206,5 +206,4 @@ public class DaemonSetServiceImpl implements DaemonSetService {
             return new Quantity(add, quantity1.getFormat());
         });
     }
-
 }

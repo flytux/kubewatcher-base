@@ -16,5 +16,4 @@ public interface KwUserRoleRuleRepository extends JpaRepository<KwUserRoleRule, 
     KwUserRoleRule findByRulename(String rulename);
 
     KwUserRoleRule findByRuleId(Long ruleId);
-
 }

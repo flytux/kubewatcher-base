@@ -140,7 +140,8 @@
             </th:block>
         </div>
     </div>
-    <input type="hidden" id="var-services" th:value="${services?.serviceNamesOfPromQL}">
+    <!-- // TODO 코드수정함 -->
+    <input type="hidden" id="var-services" th:value="${@applicationService.getServiceNamesOfPromQL()}">
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
@@ -148,7 +149,8 @@
         /*<![CDATA[*/
         let pageRows = [[${page?.rows}]],
             apiHost = [[${host}]],
-            serviceMap = [[${services?.serviceMap}]];;
+            // TODO 코드수정함
+            serviceMap = [[${@applicationService.getServiceMap()}]];
         /*]]>*/
         $(document).ready(function () {
             pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));

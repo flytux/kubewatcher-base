@@ -9,7 +9,6 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.joda.time.DateTime;
 
-import java.util.List;
 import java.util.Map;
 
 @Getter

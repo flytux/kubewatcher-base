@@ -16,6 +16,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -27,12 +28,11 @@ import java.util.Optional;
 @Service
 public class ComponentStatusServiceImpl implements ComponentStatusService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
 
+    @Autowired
     public ComponentStatusServiceImpl(ApiClient k8sApiClient, EventService eventService) {
-        this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
     }
@@ -47,7 +47,7 @@ public class ComponentStatusServiceImpl implements ComponentStatusService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("ComponentStatus",
             null, componentStatusDescribe.getName(), null);
-        eventTableListOptional.ifPresent(v1EventTableList -> componentStatusDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> componentStatusDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.empty();
     }
@@ -106,5 +106,4 @@ public class ComponentStatusServiceImpl implements ComponentStatusService {
         }
         builder.message(ExternalConstants.UNKNOWN);
     }
-
 }

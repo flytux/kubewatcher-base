@@ -1,12 +1,11 @@
 package com.kubeworks.watcher.alarm.batch;
 
-import com.kubeworks.watcher.config.properties.MonitoringProperties;
+import com.kubeworks.watcher.base.BaseException;
 import com.kubeworks.watcher.data.entity.AlertHistory;
 import com.kubeworks.watcher.data.entity.AlertRule;
 import com.kubeworks.watcher.data.entity.AlertRuleId;
 import com.kubeworks.watcher.data.entity.AlertRuleMetric;
 import com.kubeworks.watcher.data.repository.AlertHistoryRepository;
-import com.kubeworks.watcher.data.repository.AlertRuleMetricRepository;
 import com.kubeworks.watcher.data.repository.AlertRuleRepository;
 import com.kubeworks.watcher.data.vo.AlertCategory;
 import com.kubeworks.watcher.data.vo.AlertResource;
@@ -15,7 +14,7 @@ import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.EventDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import com.kubeworks.watcher.ecosystem.prometheus.dto.PrometheusApiResponse;
-import com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeginClient;
+import com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeignClient;
 import io.kubernetes.client.openapi.models.V1ObjectReference;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,17 +35,16 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Component
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@AllArgsConstructor(onConstructor_={@Autowired})
 public class AlertMonitorManager {
 
-    private final String clusterTotalMemoryByteApi = "/api/v1/query?query=sum(node_memory_MemTotal_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"}) - sum(node_memory_MemAvailable_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"})";
-    private final long defaultStep = 60;
+    private static final long DEFAULT_STEP = 60;
+    private static final String CLUSTER_TOTAL_MEMORY_BYTE_API = "/api/v1/query?query=sum(node_memory_MemTotal_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"}) - sum(node_memory_MemAvailable_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"})";
+
     private final ZoneId defaultZone = ZoneId.of("Asia/Seoul");
 
-    private final MonitoringProperties monitoringProperties;
-    private final PrometheusFeginClient prometheusFeginClient;
+    private final PrometheusFeignClient prometheusFeignClient;
     private final AlertRuleRepository alertRuleRepository;
-    private final AlertRuleMetricRepository alertRuleMetricRepository;
     private final AlertHistoryRepository alertHistoryRepository;
     private final EventService eventService;
 
@@ -59,14 +57,14 @@ public class AlertMonitorManager {
 
         alertRules.stream()
             .filter(alertRule -> alertRule.getAlertRuleMetric() != null)
-            .forEach(alertRule -> {
+            .forEach((final AlertRule alertRule) -> {
                 List<AlertHistory> alerts = Collections.emptyList();
                 AlertRuleMetric alertRuleMetric = alertRule.getAlertRuleMetric();
                 AlertRuleId alertRuleId = alertRule.getAlertRuleId();
                 switch (alertRuleId.getType()) {
                     case METRIC:
                         String apiUri = getApiUri(alertRule, alertRuleId, alertRuleMetric.getExpression());
-                        PrometheusApiResponse queryRange = prometheusFeginClient.getQueryRange(apiUri, now.minusMinutes(alertRule.getDuration()).atZone(defaultZone).toEpochSecond(), now.atZone(defaultZone).toEpochSecond(), defaultStep);
+                        PrometheusApiResponse queryRange = prometheusFeignClient.getQueryRange(apiUri, now.minusMinutes(alertRule.getDuration()).atZone(defaultZone).toEpochSecond(), now.atZone(defaultZone).toEpochSecond(), DEFAULT_STEP);
                         if (queryRange.getData() == null) { return; }
 
                         String resultType = queryRange.getData().getResultType();
@@ -83,9 +81,10 @@ public class AlertMonitorManager {
                                 .map(eventDescribe -> getLogAlerts(alertRule, eventDescribe))
                                 .collect(Collectors.toList());
                         } else if (alertRuleId.getCategory() == AlertCategory.LOG) {
-                            // no implementation
+                            log.debug("Unimplemented type -> {} : {}", alertRuleId.getType(), alertRuleId.getCategory());
+                        } else {
+                            log.debug("Unexpected type -> {} : {}", alertRuleId.getType(), alertRuleId.getCategory());
                         }
-
                         break;
                     default:
                         log.warn("unsupported alert type={}", alertRuleId.getType());
@@ -163,15 +162,11 @@ public class AlertMonitorManager {
             .build();
     }
 
-    private String getPrometheusHost() {
-        return monitoringProperties.getDefaultPrometheusUrl();
-    }
-
     private String getClusterTotalMemoryBytesString() {
         try {
-            PrometheusApiResponse prometheusApiResponse = prometheusFeginClient.getQuery(clusterTotalMemoryByteApi);
+            PrometheusApiResponse prometheusApiResponse = prometheusFeignClient.getQuery(CLUSTER_TOTAL_MEMORY_BYTE_API);
             if (prometheusApiResponse.getData() == null) {
-                throw new IllegalAccessException("empty node_memory_MemTotal_bytes metrics");
+                throw new BaseException("empty node_memory_MemTotal_bytes metrics");
             }
             Optional<Object> valueOptional = prometheusApiResponse.getData().getResult().stream()
                 .map(result -> result.getValue().get(1)).findFirst();

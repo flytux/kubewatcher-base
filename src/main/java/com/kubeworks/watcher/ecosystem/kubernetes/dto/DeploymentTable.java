@@ -5,10 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class DeploymentTable {
+@Getter @Setter
+@FieldDefaults(level=AccessLevel.PRIVATE)
+public class DeploymentTable implements NamespaceSettable {
 
     String name;
     String namespace;
@@ -19,5 +18,4 @@ public class DeploymentTable {
     String containers;
     String images;
     String selector;
-
 }

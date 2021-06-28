@@ -4,77 +4,54 @@ import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.RoleBindingTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectAsTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1RoleBinding;
+import io.kubernetes.client.openapi.models.V1RoleRef;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Objects;
 
 public class RbacV1RoleBindingTableList extends V1ObjectTableList<RoleBindingTable, V1RoleBinding> {
     @Override
-    protected RoleBindingTable getDataObject() {
+    protected RoleBindingTable createInstance() {
         return new RoleBindingTable();
     }
 
     @Override
-    protected void makeObject(RoleBindingTable builder, String fieldName, String value) {
-        switch (fieldName) {
+    protected void putValueIntoField(final RoleBindingTable builder, final String field, final String value) {
+
+        switch (field) {
             case "name" :
-                builder.setName(value);
-                break;
+                builder.setName(value); break;
             case "role" :
-                builder.setRole(value);
-                break;
+                builder.setRole(value); break;
             case "age" :
-                builder.setAge(value);
-                break;
+                builder.setAge(value); break;
             case "users" :
-                builder.setUsers(value);
-                break;
+                builder.setUsers(value); break;
             case "groups" :
-                builder.setGroups(value);
-                break;
+                builder.setGroups(value); break;
             case "serviceaccounts" :
-                builder.setServiceaccounts(value);
-                break;
-            default:
-                break;
+                builder.setServiceaccounts(value); break;
+            default: break;
         }
     }
 
     @Override
-    public List<RoleBindingTable> getDataTable() {
-        if (super.getRows() == null || super.getColumnDefinitions() == null) {
-            return Collections.emptyList();
+    protected void executeExtraProcess(final RoleBindingTable data, final V1ObjectAsTable<V1RoleBinding> row) {
+
+        final V1RoleBinding binding = row.getObject();
+        final V1ObjectMeta meta = binding.getMetadata();
+
+        if (Objects.nonNull(meta)) {
+            data.setName(meta.getName());
+
+            if (Objects.nonNull(meta.getCreationTimestamp())) {
+                data.setAge(ExternalConstants.getBetweenPeriodDay(meta.getCreationTimestamp().toInstant().getMillis()));
+            }
         }
 
-        List<RoleBindingTable> list = new ArrayList<>(super.getRows().size());
-        for (V1ObjectAsTable<V1RoleBinding> row : super.getRows()) {
-            RoleBindingTable data = getDataObject();
-            final List<String> cells = row.getCells();
-            IntStream.range(0, cells.size()).forEach(index -> {
-                String value = cells.get(index);
-                V1ObjectColumnDefinition columnDefinition = super.getColumnDefinitions().get(index);
-                String fieldName = columnDefinition.getName().toLowerCase();
-                makeObject(data, fieldName, value);
-            });
-            if (row.getObject().getMetadata() != null) {
-                data.setName(row.getObject().getMetadata().getName());
-                data.setNamespace(row.getObject().getMetadata().getNamespace());
-                if (row.getObject().getMetadata().getCreationTimestamp() != null) {
-                    String age = ExternalConstants.getBetweenPeriodDay(row.getObject().getMetadata().getCreationTimestamp().toInstant().getMillis());
-                    data.setAge(age);
-                }
-            }
+        final V1RoleRef ref = binding.getRoleRef();
 
-            if (row.getObject().getRoleRef() != null) {
-                String role = row.getObject().getRoleRef().getKind() + "/" + row.getObject().getRoleRef().getName();
-                data.setRole(role);
-            }
-
-            list.add(data);
-        }
-        return list;
+        if (Objects.nonNull(ref)) { data.setRole(ref.getKind() + "/" + ref.getName()); }
     }
 }

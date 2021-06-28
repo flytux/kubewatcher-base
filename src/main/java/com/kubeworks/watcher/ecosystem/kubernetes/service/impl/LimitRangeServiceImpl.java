@@ -15,6 +15,7 @@ import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -26,21 +27,20 @@ import java.util.stream.Collectors;
 @Service
 public class LimitRangeServiceImpl implements LimitRangeService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
 
+    @Autowired
     public LimitRangeServiceImpl(ApiClient k8sApiClient) {
-        this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
     }
 
     @SneakyThrows
     @Override
     public List<LimitRangeTable> allNamespaceLimitRangeTables() {
-        ApiResponse<V1LimitRangeTableList> apiResponse = coreV1Api.allNamespaceLimitRangeAsTable("true");
+        ApiResponse<V1LimitRangeTableList> apiResponse = coreV1Api.searchLimitRangesTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1LimitRangeTableList limitRanges = apiResponse.getData();
-            return limitRanges.getDataTable();
+            return limitRanges.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -66,7 +66,7 @@ public class LimitRangeServiceImpl implements LimitRangeService {
     @Override
     public Optional<LimitRangeDescribe> limitRange(String namespace, String name) {
 
-        ApiResponse<V1LimitRange> apiResponse = coreV1Api.readNamespacedLimitRangeWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1LimitRange> apiResponse = coreV1Api.readNamespacedLimitRangeWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }

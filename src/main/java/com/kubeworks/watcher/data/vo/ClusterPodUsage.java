@@ -45,7 +45,7 @@ public class ClusterPodUsage {
     }
 
     public void setMaxCpu(BigDecimal maxCpu) {
-        this.maxCpu = new Quantity(maxCpu, Quantity.Format.DECIMAL_SI);;
+        this.maxCpu = new Quantity(maxCpu, Quantity.Format.DECIMAL_SI);
     }
 
     @JsonIgnore
@@ -62,7 +62,7 @@ public class ClusterPodUsage {
     }
 
     public void setAvgCpu(BigDecimal avgCpu) {
-        this.avgCpu = new Quantity(avgCpu, Quantity.Format.DECIMAL_SI);;
+        this.avgCpu = new Quantity(avgCpu, Quantity.Format.DECIMAL_SI);
     }
 
     @JsonIgnore
@@ -108,5 +108,4 @@ public class ClusterPodUsage {
     public void addPodCount(int podCount) {
         this.podCount += podCount;
     }
-
 }

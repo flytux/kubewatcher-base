@@ -1,63 +1,68 @@
 package com.kubeworks.watcher.alarm.controller;
 
 import com.kubeworks.watcher.alarm.service.AlertRuleConfigService;
+import com.kubeworks.watcher.base.BaseController;
 import com.kubeworks.watcher.data.entity.AlertRule;
 import com.kubeworks.watcher.data.entity.AlertRuleId;
-import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.data.vo.AlertCategory;
 import com.kubeworks.watcher.data.vo.AlertResource;
 import com.kubeworks.watcher.data.vo.AlertType;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@AllArgsConstructor(onConstructor_ = {@Autowired})
-public class AlarmController {
+@RequestMapping(value="/setting/alarm")
+@AllArgsConstructor(onConstructor_={@Autowired})
+public class AlarmController implements BaseController {
 
-    private final AlertRuleConfigService alertRuleConfigService;
+    private static final long MENU_ID = 500;
+
+    private static final String VIEW_NAME = "setting-alarm-list";
+
     private final PageViewService pageViewService;
+    private final AlertRuleConfigService alertRuleConfigService;
 
     @ModelAttribute("alertRule")
     public AlertRule alertRule() {
-        AlertRule alertRule = new AlertRule();
+
+        final AlertRule alertRule = new AlertRule();
         alertRule.setAlertRuleId(new AlertRuleId(AlertType.METRIC, AlertCategory.NODE, AlertResource.CPU));
+
         return alertRule;
     }
 
-    @GetMapping(value = "/setting/alarm/list", produces = MediaType.TEXT_HTML_VALUE)
-    public String alertConfigList(Model model) {
+    @GetMapping(value="/list")
+    public String alertConfigList(final Model model) {
 
-        List<AlertRule> alertConfigList = alertRuleConfigService.alertRules();
-        model.addAttribute("alertConfigList", alertConfigList);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(MENU_ID));
+        model.addAttribute("alertConfigList", alertRuleConfigService.alertRules());
 
-        Page page = pageViewService.getPageView(500);
-        model.addAttribute("page", page);
-
-        return "setting/alarm/setting-alarm-list";
+        return createViewName(VIEW_NAME);
     }
 
-    @GetMapping(value = "/setting/alarm/rule", produces = MediaType.TEXT_HTML_VALUE)
-    public String alertConfig(Model model) {
-        return "setting/alarm/setting-alarm-list :: modalContents";
+    @GetMapping(value="/rule")
+    public String alertConfig() {
+        return createViewName(VIEW_NAME, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/setting/alarm/rule/{ruleId}", produces = MediaType.TEXT_HTML_VALUE)
-    public String alertConfig(Model model, @PathVariable long ruleId) {
-        AlertRule alertRule = alertRuleConfigService.alertRule(ruleId);
-        model.addAttribute("alertRule", alertRule);
-        model.addAttribute("editMode", true);
-        return "setting/alarm/setting-alarm-list :: modalContents";
+    @GetMapping(value = "/rule/{ruleId}")
+    public String alertConfig(@PathVariable final Long ruleId, final Model model) {
+
+        model.addAttribute("editMode", Boolean.TRUE);
+        model.addAttribute("alertRule", alertRuleConfigService.alertRule(ruleId));
+
+        return createViewName(VIEW_NAME, Props.MODAL_CONTENTS);
     }
 
-
-
+    @Override
+    public String retrieveViewNamePrefix() {
+        return "setting/alarm/";
+    }
 }

@@ -4,7 +4,6 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController()
-@RequestMapping(path = "/api/v1")
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@RestController
+@RequestMapping(value="/api/v1/cluster/config")
+@AllArgsConstructor(onConstructor_={@Autowired})
 public class ConfigRestController {
 
     private final ConfigMapService configMapService;
@@ -24,84 +23,83 @@ public class ConfigRestController {
     private final NamespaceService namespaceService;
     private final CustomResourceService customResourceService;
 
-    @GetMapping(value = "/cluster/config/configmaps", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/configmaps")
     public List<ConfigMapTable> configMaps() {
         return configMapService.allNamespaceConfigMapTables();
     }
 
-    @GetMapping(value = "/cluster/config/namespace/{namespace}/configmaps", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ConfigMapTable> configMaps(@PathVariable String namespace) {
+    @GetMapping(value="/namespace/{namespace}/configmaps")
+    public List<ConfigMapTable> configMaps(@PathVariable final String namespace) {
         return configMapService.configMaps(namespace);
     }
 
-    @GetMapping(value = "/cluster/config/configmaps/namespace/{namespace}/configmap/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ConfigMapDescribe configMap(@PathVariable String namespace, @PathVariable String name) {
+    @GetMapping(value="/configmaps/namespace/{namespace}/configmap/{name}")
+    public ConfigMapDescribe configMap(@PathVariable final String namespace, @PathVariable final String name) {
         return configMapService.configMap(namespace, name).orElse(null);
     }
 
-    @GetMapping(value = "/cluster/config/secrets", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/secrets")
     public List<SecretTable> secrets() {
         return secretService.allNamespaceSecretTables();
     }
 
-    @GetMapping(value = "/cluster/config/namespace/{namespace}/secrets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<SecretTable> secrets(@PathVariable String namespace) {
+    @GetMapping(value="/namespace/{namespace}/secrets")
+    public List<SecretTable> secrets(@PathVariable final String namespace) {
         return secretService.secrets(namespace);
     }
 
-    @GetMapping(value = "/cluster/config/secrets/namespace/{namespace}/secret/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SecretDescribe secret(@PathVariable String namespace, @PathVariable String name) {
+    @GetMapping(value="/secrets/namespace/{namespace}/secret/{name}")
+    public SecretDescribe secret(@PathVariable final String namespace, @PathVariable final String name) {
         return secretService.secret(namespace, name).orElse(null);
     }
 
-    @GetMapping(value = "/cluster/config/resource-quotas", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/resource-quotas")
     public List<ResourceQuotaTable> resourceQuotas() {
         return resourceQuotaService.allNamespaceResourceQuotaTables();
     }
 
-    @GetMapping(value = "/cluster/config/namespace/{namespace}/resource-quotas", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResourceQuotaTable> resourceQuotas(@PathVariable String namespace) {
+    @GetMapping(value="/namespace/{namespace}/resource-quotas")
+    public List<ResourceQuotaTable> resourceQuotas(@PathVariable final String namespace) {
         return resourceQuotaService.resourceQuotas(namespace);
     }
 
-    @GetMapping(value = "/cluster/config/resource-quotas/namespace/{namespace}/resourceQuota/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResourceQuotaDescribe resourceQuota(@PathVariable String namespace, @PathVariable String name) {
+    @GetMapping(value="/resource-quotas/namespace/{namespace}/resourceQuota/{name}")
+    public ResourceQuotaDescribe resourceQuota(@PathVariable final String namespace, @PathVariable final String name) {
         return resourceQuotaService.resourceQuota(namespace, name).orElse(null);
     }
 
-    @GetMapping(value = "/cluster/config/hpa", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/hpa")
     public List<HPATable> hpa() {
         return hpaService.allNamespaceHPATables();
     }
 
-    @GetMapping(value = "/cluster/config/namespace/{namespace}/hpa", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<HPATable> hpa(@PathVariable String namespace) {
+    @GetMapping(value="/namespace/{namespace}/hpa")
+    public List<HPATable> hpa(@PathVariable final String namespace) {
         return hpaService.hpa(namespace);
     }
 
-    @GetMapping(value = "/cluster/config/hpa/namespace/{namespace}/hpas/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HPADescribe hpas(@PathVariable String namespace, @PathVariable String name) {
+    @GetMapping(value="/hpa/namespace/{namespace}/hpas/{name}")
+    public HPADescribe hpas(@PathVariable final String namespace, @PathVariable final String name) {
         return hpaService.hpa(namespace, name).orElse(null);
     }
 
-    @GetMapping(value = "/cluster/config/namespaces", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/namespaces")
     public List<NamespaceTable> namespaces() {
         return namespaceService.allNamespaceTables();
     }
 
-    @GetMapping(value = "/cluster/config/namespaces/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public NamespaceDescribe namespace(@PathVariable String name) {
+    @GetMapping(value="/namespaces/{name}")
+    public NamespaceDescribe namespace(@PathVariable final String name) {
         return namespaceService.namespace(name).orElse(null);
     }
 
-    @GetMapping(value = "/cluster/config/custom-resources", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/custom-resources")
     public List<CustomResourceTable> customResources() {
         return customResourceService.allCustomResourceTables();
     }
 
-    @GetMapping(value = "/cluster/config/custom-resources/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CustomResourceDescribe customResource(@PathVariable String name) {
+    @GetMapping(value="/custom-resources/{name}")
+    public CustomResourceDescribe customResource(@PathVariable final String name) {
         return customResourceService.customResource(name).orElse(null);
     }
-
 }

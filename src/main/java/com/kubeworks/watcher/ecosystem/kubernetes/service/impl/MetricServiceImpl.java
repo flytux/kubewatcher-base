@@ -42,7 +42,6 @@ public class MetricServiceImpl implements MetricService {
     private static final String H2_FORMATDATE = "FORMATDATETIME(create_time, '%s')";
     private static final String MYSQL_FORMATDATE = "DATE_FORMAT(create_time ,%s)";
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
     private final ClusterPodUsageMapper clusterPodUsageMapper;
 
@@ -52,7 +51,6 @@ public class MetricServiceImpl implements MetricService {
     public String databaseEngine;
 
     public MetricServiceImpl(ApiClient k8sApiClient, ClusterPodUsageMapper clusterPodUsageMapper, ApplicationService applicationService) {
-        this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.clusterPodUsageMapper = clusterPodUsageMapper;
         this.applicationService = applicationService;
@@ -61,10 +59,10 @@ public class MetricServiceImpl implements MetricService {
     @SneakyThrows
     @Override
     public List<MetricTable> nodeMetrics() {
-        ApiResponse<V1NodeMetricTableList> apiResponse = coreV1Api.listMetricNodeAsTable("true");
+        ApiResponse<V1NodeMetricTableList> apiResponse = coreV1Api.searchNodeMetricTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1NodeMetricTableList metric = apiResponse.getData();
-            return metric.getDataTable();
+            return metric.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -72,7 +70,7 @@ public class MetricServiceImpl implements MetricService {
     @SneakyThrows
     @Override
     public MetricTable nodeMetric(String name) {
-        ApiResponse<NodeMetrics> apiResponse = coreV1Api.metricNode(name, "true");
+        ApiResponse<NodeMetrics> apiResponse = coreV1Api.searchNodeMetric(name);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
 
             NodeMetrics node = apiResponse.getData();
@@ -91,10 +89,10 @@ public class MetricServiceImpl implements MetricService {
     @SneakyThrows
     @Override
     public List<MetricTable> podMetrics() {
-        ApiResponse<V1PodMetricTableList> apiResponse = coreV1Api.metricPodAsTable("true", null, null);
+        ApiResponse<V1PodMetricTableList> apiResponse = coreV1Api.searchPodMetricTableList(null, null);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodMetricTableList metric = apiResponse.getData();
-            return metric.getDataTable();
+            return metric.createDataTableList();
 
         }
         return Collections.emptyList();
@@ -109,10 +107,10 @@ public class MetricServiceImpl implements MetricService {
             .map(entry -> entry.getKey() + "=" + entry.getValue())
             .collect(Collectors.joining(","));
 
-        ApiResponse<V1PodMetricTableList> apiResponse = coreV1Api.namespacePodMetricAsTable(namespace, null, labelSelectors, "true");
+        ApiResponse<V1PodMetricTableList> apiResponse = coreV1Api.searchPodMetricTableList(namespace, null, labelSelectors);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PodMetricTableList metric = apiResponse.getData();
-            return metric.getDataTable();
+            return metric.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -165,7 +163,6 @@ public class MetricServiceImpl implements MetricService {
         }
         return response;
     }
-
 
     @Scheduled(cron = "0 * * * * ?", zone = "Asia/Seoul")
     public void aggregateUsageByManagementApplication() {
@@ -228,7 +225,10 @@ public class MetricServiceImpl implements MetricService {
                 return ImmutableList.of(epochMilli, clusterPodUsage.getMaxMemory().getNumber());
             }
             return ImmutableList.of(epochMilli, clusterPodUsage.getAvgMemory().getNumber());
+        } else {
+            log.warn("Unexpected type -> {}", usageMetricType);
         }
+
         return Collections.emptyList();
     }
 

@@ -34,12 +34,12 @@ public class AlertRuleConfigServiceImpl implements AlertRuleConfigService {
     }
 
     @Override
-    public AlertRule alertRule(long ruleId) {
-        return alertRuleRepository.findById(ruleId).orElseGet(null);
+    public AlertRule alertRule(final Long ruleId) {
+        return alertRuleRepository.findById(ruleId).orElse(null);
     }
 
     @Override
-    public ApiResponse<String> registrationAlarmRule(AlertRule alertRule) {
+    public ApiResponse<String> registrationAlarmRule(final AlertRule alertRule) {
         ApiResponse<String> response = new ApiResponse<>();
 
         Optional<AlertRuleMetric> alertRuleMetricOptional = alertRuleMetricRepository.findById(alertRule.getAlertRuleId());
@@ -64,7 +64,7 @@ public class AlertRuleConfigServiceImpl implements AlertRuleConfigService {
 
     @Transactional
     @Override
-    public ApiResponse<String> updateAlarmRule(AlertRule alertRule) {
+    public ApiResponse<String> updateAlarmRule(final AlertRule alertRule) {
         ApiResponse<String> response = new ApiResponse<>();
         Optional<AlertRule> dbAlertRuleOptional = alertRuleRepository.findById(alertRule.getRuleId());
         if (!dbAlertRuleOptional.isPresent()) {

@@ -85,24 +85,24 @@
                 </div>
             </div>
         </div>
-<!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
-<!--            <nav>-->
-<!--                <ul class="pagination" >-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Previous">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                    <li class="active"><a href="#">1</a></li>-->
-<!--                    <li><a href="#">2</a></li>-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Next">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </nav>-->
-<!--        </div>-->
+        <!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
+        <!--            <nav>-->
+        <!--                <ul class="pagination" >-->
+        <!--                    <li>-->
+        <!--                        <a href="#" aria-label="Previous">-->
+        <!--                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>-->
+        <!--                        </a>-->
+        <!--                    </li>-->
+        <!--                    <li class="active"><a href="#">1</a></li>-->
+        <!--                    <li><a href="#">2</a></li>-->
+        <!--                    <li>-->
+        <!--                        <a href="#" aria-label="Next">-->
+        <!--                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>-->
+        <!--                        </a>-->
+        <!--                    </li>-->
+        <!--                </ul>-->
+        <!--            </nav>-->
+        <!--        </div>-->
         <!-- [클러스터 Pods] End-->
     </div>
     <!-- [Modal] start -->
@@ -240,32 +240,19 @@
                                     </tr>
                                     <tr>
                                         <th>Environment</th>
-                                        <td>
-                                            <div th:if="${container?.env != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.env)}"> </div>
-                                            <div th:if="${container?.env == null}">-</div>
-                                        </td>
+                                        <td><div th:utext="${T(com.kubeworks.watcher.ecosystem.YamlHandler).serializeIntoHtml(container?.env, '-')}"> </div></td>
                                     </tr>
                                     <tr>
                                         <th>Mounts</th>
-                                        <td>
-                                            <div th:if="${container?.volumeMounts != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.volumeMounts)}"> </div>
-                                            <div th:if="${container?.volumeMounts == null}">-</div>
-                                        </td>
-
+                                        <td><div th:utext="${T(com.kubeworks.watcher.ecosystem.YamlHandler).serializeIntoHtml(container?.volumeMounts, '-')}"> </div></td>
                                     </tr>
                                     <tr>
                                         <th>Liveness</th>
-                                        <td>
-                                            <div th:if="${container?.livenessProbe != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.livenessProbe)}"> </div>
-                                            <div th:if="${container?.livenessProbe == null}"> - </div>
-                                        </td>
+                                        <td><div th:utext="${T(com.kubeworks.watcher.ecosystem.YamlHandler).serializeIntoHtml(container?.livenessProbe, '-')}"> </div></td>
                                     </tr>
                                     <tr>
                                         <th>Readness</th>
-                                        <td>
-                                            <div th:if="${container?.readinessProbe != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.readinessProbe)}"> </div>
-                                            <div th:if="${container?.readinessProbe == null}"> - </div>
-                                        </td>
+                                        <td><div th:utext="${T(com.kubeworks.watcher.ecosystem.YamlHandler).serializeIntoHtml(container?.readinessProbe, '-')}"> </div></td>
                                     </tr>
                                     <tr>
                                         <th>Command</th>
@@ -275,7 +262,6 @@
                                         </td>
                                     </tr>
                                 </table>
-
                             </div>
                         </div>
                     </div>
@@ -370,7 +356,7 @@
 
     <script type="text/javascript" th:inline="javascript">
 
-    /*<![CDATA[*/
+        /*<![CDATA[*/
         let pageRows = [[${page?.rows}]];
         let containerPanel = new Map();
 
@@ -431,7 +417,7 @@
                 error: function (e) {
                     if (e.status === 401) {
                         $(location).attr('href',
-                        '/login?logout')
+                            '/login?logout')
                     }
                 }
             });
@@ -472,7 +458,7 @@
                     error: function (e) {
                         if (e.status === 401) {
                             $(location).attr('href',
-                            '/login?logout')
+                                '/login?logout')
                         }
                     }
                 });
@@ -525,7 +511,7 @@
                 error: function (e) {
                     if (e.status === 401) {
                         $(location).attr('href',
-                        '/login?logout')
+                            '/login?logout')
                     }
                 }
             });

@@ -1,7 +1,7 @@
 package com.kubeworks.watcher.ecosystem.prometheus.service.impl;
 
 import com.kubeworks.watcher.ecosystem.prometheus.dto.PrometheusApiResponse;
-import com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeginClient;
+import com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeignClient;
 import com.kubeworks.watcher.ecosystem.prometheus.service.PrometheusService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,16 +13,16 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class PrometheusServiceImpl implements PrometheusService {
 
-    private final PrometheusFeginClient prometheusFeginClient;
+    private final PrometheusFeignClient prometheusFeignClient;
 
     @Override
     public PrometheusApiResponse requestQuery(String query) {
-        return prometheusFeginClient.getQuery(query);
+        return prometheusFeignClient.getQuery(query);
     }
 
     @Override
     public PrometheusApiResponse requestQueryRange(String query, long startTimestamp, long endTimestamp) {
         // TODO Step 계산식 정의 필요 -- 기준은 Grafana와 동일하게 유지
-        return prometheusFeginClient.getQueryRange(query, startTimestamp, endTimestamp, 15);
+        return prometheusFeignClient.getQueryRange(query, startTimestamp, endTimestamp, 15);
     }
 }

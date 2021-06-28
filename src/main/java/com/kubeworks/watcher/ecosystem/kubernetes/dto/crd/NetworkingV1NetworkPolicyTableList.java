@@ -1,70 +1,50 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
-import com.google.gson.annotations.SerializedName;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
-
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.NetworkPolicyTable;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectAsTable;
+import io.kubernetes.client.openapi.models.V1NetworkPolicy;
+import io.kubernetes.client.openapi.models.V1NetworkPolicySpec;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
-
-import io.kubernetes.client.openapi.models.*;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.FieldDefaults;
-
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class NetworkingV1NetworkPolicyTableList extends V1ObjectTableList<NetworkPolicyTable, V1NetworkPolicy> {
-
-    @SerializedName("items")
-    private List<V1NetworkPolicy> items;
+public class NetworkingV1NetworkPolicyTableList extends AbstractNetworkingV1TableList<NetworkPolicyTable, V1NetworkPolicy> {
 
     @Override
-    protected NetworkPolicyTable getDataObject() {
+    protected NetworkPolicyTable createInstance() {
         return new NetworkPolicyTable();
     }
 
     @Override
-    protected void makeObject(NetworkPolicyTable builder, String fieldName, String value) {
-        // no implementation
+    protected void putValueIntoField(final NetworkPolicyTable builder, final String field, final String value) {
+        throw new UnsupportedOperationException("putValueIntoField not supported");
     }
 
     @Override
-    public List<NetworkPolicyTable> getDataTable() {
-        if (getItems() == null) {
-            return Collections.emptyList();
+    protected void executeExtraProcess(final NetworkPolicyTable data, final V1ObjectAsTable<V1NetworkPolicy> row) {
+        throw new UnsupportedOperationException("executeExtraProcess not supported");
+    }
+
+    @Override
+    protected void executeExtraProcessWithMeta(final NetworkPolicyTable data, final V1NetworkPolicy e, final V1ObjectMeta meta) {
+
+        if (Objects.nonNull(meta)) {
+            data.setName(meta.getName());
+
+            if (Objects.nonNull(meta.getCreationTimestamp())) {
+                data.setAge(ExternalConstants.getBetweenPeriodDay(meta.getCreationTimestamp().toInstant().getMillis()));
+            }
         }
 
-        List<NetworkPolicyTable> list = new ArrayList<>(getItems().size());
-        for (V1NetworkPolicy rowObject : getItems()) {
-            NetworkPolicyTable data = getDataObject();
-            if (rowObject.getMetadata() != null) {
-                data.setName(rowObject.getMetadata().getName());
-                data.setNamespace(rowObject.getMetadata().getNamespace());
-                if (rowObject.getMetadata().getCreationTimestamp() != null) {
-                    data.setAge(ExternalConstants.getBetweenPeriodDay(rowObject.getMetadata().getCreationTimestamp().toInstant().getMillis()));
-                }
+        final V1NetworkPolicySpec spec = e.getSpec();
+        if (Objects.nonNull(spec)) {
+            final List<String> types = spec.getPolicyTypes();
+            if (Objects.nonNull(types)) {
+                data.setPolicyType(types.stream().map(String::toString).collect(Collectors.joining("/")));
             }
-            if (rowObject.getSpec() != null) {
-                V1NetworkPolicySpec spec = rowObject.getSpec();
-                List<String> policyTypes = spec.getPolicyTypes();
-
-                String type = policyTypes.stream().map(String::toString)
-                    .collect(Collectors.joining("/"));
-
-                data.setPolicyType(type);
-
-            }
-
-            list.add(data);
         }
-
-        return list;
     }
 }

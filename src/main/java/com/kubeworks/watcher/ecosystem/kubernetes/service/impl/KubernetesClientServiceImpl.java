@@ -28,19 +28,19 @@ public class KubernetesClientServiceImpl implements KubernetesClientService {
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
     }
 
+    /** @deprecated */
     @Deprecated
     @SneakyThrows
     @Override
     public V1NodeTableList nodesTable() {
-        ApiResponse<V1NodeTableList> response = coreApi.listNodeAsTable("true");
+        ApiResponse<V1NodeTableList> response = coreApi.searchNodesTableList();
         V1NodeTableList nodeList = response.getData();
-        nodeList.getRows().forEach(v1Node -> {
-            log.info("node={}", v1Node.getCells().get(0));
-        });
+        nodeList.getRows().forEach(v1Node -> log.info("node={}", v1Node.getCells().get(0)));
         return nodeList;
     }
 
 
+    /** @deprecated */
     @Deprecated
     @SneakyThrows
     @Override
@@ -70,9 +70,7 @@ public class KubernetesClientServiceImpl implements KubernetesClientService {
     @SneakyThrows
     private V1NamespaceList getAllNameSpaces() {
         V1NamespaceList namespaceList = coreApi.listNamespace("true", null, null, null, null, 0, null, 3, Boolean.FALSE);
-        namespaceList.getItems().forEach(v1Namespace -> {
-            log.info("namespace={}", v1Namespace.getMetadata().getName());
-        });
+        namespaceList.getItems().forEach(v1Namespace -> log.info("namespace={}", v1Namespace.getMetadata().getName()));
         return namespaceList;
     }
 

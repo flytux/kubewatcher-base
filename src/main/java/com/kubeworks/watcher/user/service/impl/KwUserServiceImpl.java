@@ -37,8 +37,7 @@ public class KwUserServiceImpl implements KwUserService {
     */
     @Override
     public KwUser getKwUser(String username) {
-        Optional<KwUser> kwUser = kwUserRepository.findById(username);
-        return kwUser.get();
+        return kwUserRepository.findById(username).orElse(null);
     }
 
     /*
@@ -58,7 +57,7 @@ public class KwUserServiceImpl implements KwUserService {
             dbUser.setPassword(kwUser.getPassword());
             dbUser.setDept(kwUser.getDept());
 
-            if (groupName != "") {
+            if (!"".equals(groupName)) {
                 KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
                 dbUser.setKwUserGroup(group);
             } else {
@@ -103,7 +102,7 @@ public class KwUserServiceImpl implements KwUserService {
                 throw new IllegalArgumentException("이미 등록되어 있는 ID입니다. Id=" + kwUser.getUsername());
             }
 
-            if (groupName != "") {
+            if (!"".equals(groupName)) {
                 KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
                 kwUser.setKwUserGroup(group);
             } else {
@@ -138,8 +137,6 @@ public class KwUserServiceImpl implements KwUserService {
             log.error("사용자 등록 실패 // username={}", kwUser.getUsername());
             response.setSuccess(false);
             response.setMessage(e.getMessage());
-            //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-
         }
         return response;
     }
@@ -159,6 +156,4 @@ public class KwUserServiceImpl implements KwUserService {
         }
         return response;
     }
-
 }
-

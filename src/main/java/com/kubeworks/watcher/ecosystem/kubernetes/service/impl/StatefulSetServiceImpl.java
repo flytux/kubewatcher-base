@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,15 +32,14 @@ import java.util.stream.Collectors;
 @Service
 public class StatefulSetServiceImpl implements StatefulSetService {
 
-    private final ApiClient k8sApiClient;
     private final AppsV1ApiExtendHandler appsV1Api;
     private final EventService eventService;
     private final PodService podService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public StatefulSetServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService,
                                   K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.appsV1Api = new AppsV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.podService = podService;
@@ -49,10 +49,10 @@ public class StatefulSetServiceImpl implements StatefulSetService {
     @SneakyThrows
     @Override
     public List<StatefulSetTable> allNamespaceStatefulSetTables() {
-        ApiResponse<AppsV1StatefulSetTableList> apiResponse = appsV1Api.allNamespaceStatefulSetAsTable("true");
+        ApiResponse<AppsV1StatefulSetTableList> apiResponse = appsV1Api.searchStatefulSetsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AppsV1StatefulSetTableList statefulSets = apiResponse.getData();
-            List<StatefulSetTable> dataTable = statefulSets.getDataTable();
+            List<StatefulSetTable> dataTable = statefulSets.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -66,10 +66,10 @@ public class StatefulSetServiceImpl implements StatefulSetService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceStatefulSetTables();
         }
-        ApiResponse<AppsV1StatefulSetTableList> apiResponse = appsV1Api.namespaceStatefulSetAsTable(namespace, "true");
+        ApiResponse<AppsV1StatefulSetTableList> apiResponse = appsV1Api.searchStatefulSetsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AppsV1StatefulSetTableList statefulSets = apiResponse.getData();
-            return statefulSets.getDataTable();
+            return statefulSets.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -77,7 +77,7 @@ public class StatefulSetServiceImpl implements StatefulSetService {
     @SneakyThrows
     @Override
     public Optional<StatefulSetDescribe> statefulSet(String namespace, String name) {
-        ApiResponse<V1StatefulSet> apiResponse = appsV1Api.readNamespacedStatefulSetWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1StatefulSet> apiResponse = appsV1Api.readNamespacedStatefulSetWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -94,7 +94,7 @@ public class StatefulSetServiceImpl implements StatefulSetService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("StatefulSet",
             statefulSetDescribe.getNamespace(), statefulSetDescribe.getName(), statefulSetDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> statefulSetDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> statefulSetDescribe.setEvents(v1EventTableList.createDataTableList()));
 
 
         return Optional.of(statefulSetDescribe);
@@ -127,15 +127,13 @@ public class StatefulSetServiceImpl implements StatefulSetService {
         }
 
         if (data.getStatus() != null) {
-            if (data.getStatus() != null) {
-                V1StatefulSetStatus status = data.getStatus();
-                if (status.getCurrentReplicas() != null) {
-                    builder.podStatus(status.getCurrentReplicas().toString() + "/" + status.getReplicas().toString());
-                } else {
-                    builder.podStatus("-/" + status.getReplicas().toString());
-                }
-                builder.conditions(status.getConditions());
+            V1StatefulSetStatus status = data.getStatus();
+            if (status.getCurrentReplicas() != null) {
+                builder.podStatus(status.getCurrentReplicas() + "/" + status.getReplicas());
+            } else {
+                builder.podStatus("-/" + status.getReplicas());
             }
+            builder.conditions(status.getConditions());
         }
     }
 
@@ -146,7 +144,7 @@ public class StatefulSetServiceImpl implements StatefulSetService {
             if (updateStrategy.getRollingUpdate() != null
                 && updateStrategy.getRollingUpdate().getPartition() != null) {
                 type = type + " [partition: "
-                    + updateStrategy.getRollingUpdate().getPartition().toString() + "]";
+                    + updateStrategy.getRollingUpdate().getPartition() + "]";
             }
             builder.strategy(type);
         }

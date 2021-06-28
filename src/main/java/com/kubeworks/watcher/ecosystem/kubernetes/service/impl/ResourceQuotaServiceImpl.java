@@ -14,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,12 +24,11 @@ import java.util.stream.Collectors;
 @Service
 public class ResourceQuotaServiceImpl implements ResourceQuotaService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public ResourceQuotaServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.k8sObjectManager = k8sObjectManager;
     }
@@ -37,10 +37,10 @@ public class ResourceQuotaServiceImpl implements ResourceQuotaService {
     @SneakyThrows
     @Override
     public List<ResourceQuotaTable> allNamespaceResourceQuotaTables() {
-        ApiResponse<V1ResourceQuotaTableList> apiResponse = coreV1Api.allNamespaceResourceQuotaAsTable("true");
+        ApiResponse<V1ResourceQuotaTableList> apiResponse = coreV1Api.searchResourceQuotasTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ResourceQuotaTableList resourceQuotas = apiResponse.getData();
-            List<ResourceQuotaTable> dataTable = resourceQuotas.getDataTable();
+            List<ResourceQuotaTable> dataTable = resourceQuotas.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -54,10 +54,10 @@ public class ResourceQuotaServiceImpl implements ResourceQuotaService {
             return allNamespaceResourceQuotaTables();
         }
 
-        ApiResponse<V1ResourceQuotaTableList> apiResponse = coreV1Api.namespaceResourceQuotaAsTable(namespace, "true");
+        ApiResponse<V1ResourceQuotaTableList> apiResponse = coreV1Api.searchResourceQuotasTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ResourceQuotaTableList resourceQuotas = apiResponse.getData();
-            return resourceQuotas.getDataTable();
+            return resourceQuotas.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -81,7 +81,7 @@ public class ResourceQuotaServiceImpl implements ResourceQuotaService {
     @SneakyThrows
     @Override
     public Optional<ResourceQuotaDescribe> resourceQuota(String namespace, String name) {
-        ApiResponse<V1ResourceQuota> apiResponse = coreV1Api.readNamespacedResourceQuotaWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1ResourceQuota> apiResponse = coreV1Api.readNamespacedResourceQuotaWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }

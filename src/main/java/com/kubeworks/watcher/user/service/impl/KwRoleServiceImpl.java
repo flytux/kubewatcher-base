@@ -64,6 +64,8 @@ public class KwRoleServiceImpl implements KwRoleService {
         try {
             for (int i = 0; i < rolenameList.size(); i++) {
                 KwUserRoleRule kwUserRoleRule = kwUserRoleRuleRepository.findByRulename(rolenameList.get(i));
+
+                // TODO ?????
                 for (int j = i; j < ruleList.size(); j++) {
                     kwUserRoleRule.setRule(ruleList.get(j));
                     kwUserRoleRule.setRule(kwUserRoleRule.getRule());

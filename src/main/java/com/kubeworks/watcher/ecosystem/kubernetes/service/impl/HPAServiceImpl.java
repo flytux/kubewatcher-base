@@ -20,22 +20,23 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class HPAServiceImpl implements HPAService {
 
-    private final ApiClient k8sApiClient;
     private final AutoscalingV1ApiExtendHandler autoscalingV1Api;
     private final EventService eventService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public HPAServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.autoscalingV1Api = new AutoscalingV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.k8sObjectManager = k8sObjectManager;
@@ -44,10 +45,10 @@ public class HPAServiceImpl implements HPAService {
     @SneakyThrows
     @Override
     public List<HPATable> allNamespaceHPATables() {
-        ApiResponse<AutoScalingV1HPATableList> apiResponse = autoscalingV1Api.allNamespaceHPAAsTable("true");
+        ApiResponse<AutoScalingV1HPATableList> apiResponse = autoscalingV1Api.searchHorizontalPodAutoScalersTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AutoScalingV1HPATableList hpaTableList = apiResponse.getData();
-            List<HPATable> dataTable = hpaTableList.getDataTable();
+            List<HPATable> dataTable = hpaTableList.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -60,10 +61,10 @@ public class HPAServiceImpl implements HPAService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceHPATables();
         }
-        ApiResponse<AutoScalingV1HPATableList> apiResponse = autoscalingV1Api.namespaceHPAAsTable(namespace, "true");
+        ApiResponse<AutoScalingV1HPATableList> apiResponse = autoscalingV1Api.searchHorizontalPodAutoScalersTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AutoScalingV1HPATableList hpaTableList = apiResponse.getData();
-            return hpaTableList.getDataTable();
+            return hpaTableList.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -83,7 +84,7 @@ public class HPAServiceImpl implements HPAService {
         hpaDescribe.ifPresent(hpa -> {
             Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("HorizontalPodAutoscaler",
                 hpa.getNamespace(), hpa.getName(), hpa.getUid());
-            eventTableListOptional.ifPresent(v1EventTableList -> hpa.setEvents(v1EventTableList.getDataTable()));
+            eventTableListOptional.ifPresent(v1EventTableList -> hpa.setEvents(v1EventTableList.createDataTableList()));
         });
 
         return hpaDescribe;
@@ -91,7 +92,7 @@ public class HPAServiceImpl implements HPAService {
 
     private Optional<HPADescribe> hpaV2beta2(String namespace, String name) throws ApiException {
         final AutoscalingV2beta2Api v2beta2Api = autoscalingV1Api.getV2beta2Api();
-        ApiResponse<V2beta2HorizontalPodAutoscaler> apiResponse = v2beta2Api.readNamespacedHorizontalPodAutoscalerWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V2beta2HorizontalPodAutoscaler> apiResponse = v2beta2Api.readNamespacedHorizontalPodAutoscalerWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
 
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
@@ -105,7 +106,7 @@ public class HPAServiceImpl implements HPAService {
     }
 
     private Optional<HPADescribe> hpaV1(String namespace, String name) throws ApiException {
-        ApiResponse<V1HorizontalPodAutoscaler> apiResponse = autoscalingV1Api.readNamespacedHorizontalPodAutoscalerWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1HorizontalPodAutoscaler> apiResponse = autoscalingV1Api.readNamespacedHorizontalPodAutoscalerWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
 
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
@@ -132,7 +133,7 @@ public class HPAServiceImpl implements HPAService {
 
         setSpec(builder, data);
         setStatus(builder, data);
-        setMetrics(builder, data);
+        setMetrics(builder, (V2beta2HorizontalPodAutoscaler)data);
 
     }
 
@@ -149,7 +150,7 @@ public class HPAServiceImpl implements HPAService {
             builder.minReplicas(spec.getMinReplicas());
             builder.maxReplicas(spec.getMaxReplicas());
 
-        } else if(data instanceof V1HorizontalPodAutoscaler) {
+        } else if (data instanceof V1HorizontalPodAutoscaler) {
             V1HorizontalPodAutoscaler v1Hpa = (V1HorizontalPodAutoscaler) data;
             if (v1Hpa.getSpec() == null) {
                 return;
@@ -160,6 +161,8 @@ public class HPAServiceImpl implements HPAService {
                 spec.getScaleTargetRef().getName()));
             builder.minReplicas(spec.getMinReplicas());
             builder.maxReplicas(spec.getMaxReplicas());
+        } else {
+            log.warn("Unimplemented type -> {}", data.getClass().getName());
         }
     }
 
@@ -177,7 +180,7 @@ public class HPAServiceImpl implements HPAService {
             builder.conditions(status.getConditions());
             builder.lastScaleTime(status.getLastScaleTime());
 
-        } else if(data instanceof V1HorizontalPodAutoscaler) {
+        } else if (data instanceof V1HorizontalPodAutoscaler) {
             V1HorizontalPodAutoscaler v1Hpa = (V1HorizontalPodAutoscaler) data;
 
             if (v1Hpa.getStatus() == null) {
@@ -188,22 +191,22 @@ public class HPAServiceImpl implements HPAService {
             builder.currentReplicas(status.getCurrentReplicas());
             builder.desiredReplicas(status.getDesiredReplicas());
             builder.lastScaleTime(status.getLastScaleTime());
+        } else {
+            log.warn("Unimplemented type -> {}", data.getClass().getName());
         }
     }
 
-    private void setMetrics(HPADescribe.HPADescribeBuilder builder, KubernetesObject data) {
+    private void setMetrics(HPADescribe.HPADescribeBuilder builder, V2beta2HorizontalPodAutoscaler data) {
 
-        V2beta2HorizontalPodAutoscaler v2beta2Hpa = (V2beta2HorizontalPodAutoscaler) data;
-
-        V2beta2HorizontalPodAutoscalerSpec spec = v2beta2Hpa.getSpec();
+        V2beta2HorizontalPodAutoscalerSpec spec = data.getSpec();
 
         if (spec == null || CollectionUtils.isEmpty(spec.getMetrics())) {
             return;
         }
 
         List<V2beta2MetricStatus> currentMetrics = Collections.emptyList();
-        if (v2beta2Hpa.getStatus() != null && CollectionUtils.isNotEmpty(v2beta2Hpa.getStatus().getCurrentMetrics())) {
-            currentMetrics = v2beta2Hpa.getStatus().getCurrentMetrics();
+        if (data.getStatus() != null && CollectionUtils.isNotEmpty(data.getStatus().getCurrentMetrics())) {
+            currentMetrics = data.getStatus().getCurrentMetrics();
         }
 
         Map<String, List<V2beta2MetricStatus>> currentMetricGroups = currentMetrics.stream().collect(Collectors.groupingBy(V2beta2MetricStatus::getType));
@@ -216,88 +219,89 @@ public class HPAServiceImpl implements HPAService {
 
     }
 
-    private HPAMetric convertHPAMetric(V2beta2MetricSpec v2beta2MetricSpec, List<V2beta2MetricStatus> v2beta2MetricStatuses) {
-        HPAMetric.HPAMetricBuilder metricBuilder = HPAMetric.builder();
-        String type = v2beta2MetricSpec.getType();
-        metricBuilder.type(type);
-        switch (type) {
-            case "Resource":
-                if (v2beta2MetricSpec.getResource() != null) {
-                    V2beta2ResourceMetricSource resource = v2beta2MetricSpec.getResource();
-                    metricBuilder.name(resource.getName());
-                    metricBuilder.target(resource.getTarget());
+    private void processResourceType(
+        final HPAMetric.HPAMetricBuilder builder, final V2beta2MetricSpec spec, final List<V2beta2MetricStatus> statuses) {
 
-                    if (v2beta2MetricStatuses != null) {
-                        Optional<V2beta2ResourceMetricStatus> currentOptional = v2beta2MetricStatuses.stream()
-                            .map(V2beta2MetricStatus::getResource)
-                            .filter(status -> Objects.nonNull(status) && StringUtils.equals(status.getName(), resource.getName()))
-                            .findFirst();
-                        currentOptional.ifPresent(current -> metricBuilder.status(current.getCurrent()));
-                    }
-                }
-                break;
-            case "Object":
-                if (v2beta2MetricSpec.getObject() != null) {
-                    V2beta2ObjectMetricSource object = v2beta2MetricSpec.getObject();
-                    V2beta2CrossVersionObjectReference describedObject = object.getDescribedObject();
-                    V2beta2MetricIdentifier metric = object.getMetric();
+        if (Objects.nonNull(spec.getResource())) {
+            builder.name(spec.getResource().getName()).target(spec.getResource().getTarget());
 
-                    metricBuilder.type(type + "(" + String.join("/", describedObject.getKind(), describedObject.getName()) + ")");
-                    metricBuilder.name(metric.getName());
-                    metricBuilder.metric(metric);
-                    metricBuilder.target(object.getTarget());
-
-                    if (v2beta2MetricStatuses != null) {
-                        Optional<V2beta2ObjectMetricStatus> currentOptional = v2beta2MetricStatuses.stream()
-                            .map(V2beta2MetricStatus::getObject)
-                            .filter(status -> Objects.nonNull(status)
-                                && StringUtils.equals(status.getMetric().getName(), metric.getName())
-                                && StringUtils.equals(status.getDescribedObject().getKind(), describedObject.getKind())
-                                && StringUtils.equals(status.getDescribedObject().getName(), describedObject.getName())
-                            ).findFirst();
-                        currentOptional.ifPresent(current -> metricBuilder.status(current.getCurrent()));
-                    }
-                }
-                break;
-            case "Pods":
-                if (v2beta2MetricSpec.getPods() != null) {
-                    V2beta2PodsMetricSource pods = v2beta2MetricSpec.getPods();
-                    V2beta2MetricIdentifier metric = pods.getMetric();
-                    metricBuilder.name(metric.getName());
-                    metricBuilder.metric(metric);
-                    metricBuilder.target(pods.getTarget());
-
-                    if (v2beta2MetricStatuses != null) {
-                        Optional<V2beta2PodsMetricStatus> currentOptional = v2beta2MetricStatuses.stream()
-                            .map(V2beta2MetricStatus::getPods)
-                            .filter(status -> Objects.nonNull(status) && StringUtils.equals(status.getMetric().getName(), metric.getName()))
-                            .findFirst();
-                        currentOptional.ifPresent(current -> metricBuilder.status(current.getCurrent()));
-                    }
-                }
-                break;
-            case "External":
-                if (v2beta2MetricSpec.getExternal() != null) {
-                    V2beta2ExternalMetricSource external = v2beta2MetricSpec.getExternal();
-                    V2beta2MetricIdentifier metric = external.getMetric();
-                    metricBuilder.name(metric.getName());
-                    metricBuilder.metric(metric);
-                    metricBuilder.target(external.getTarget());
-
-                    if (v2beta2MetricStatuses != null) {
-                        Optional<V2beta2ExternalMetricStatus> currentOptional = v2beta2MetricStatuses.stream()
-                            .map(V2beta2MetricStatus::getExternal)
-                            .filter(status -> Objects.nonNull(status) && StringUtils.equals(status.getMetric().getName(), metric.getName()))
-                            .findFirst();
-                        currentOptional.ifPresent(current -> metricBuilder.status(current.getCurrent()));
-                    }
-                }
-                break;
-            default:
-                break;
+            if (Objects.nonNull(statuses)) {
+                statuses.stream().map(V2beta2MetricStatus::getResource)
+                    .filter(status -> Objects.nonNull(status) && StringUtils.equals(status.getName(), spec.getResource().getName()))
+                    .findFirst().ifPresent(current -> builder.status(current.getCurrent()));
+            }
         }
-
-        return metricBuilder.build();
     }
 
+    private void processObjectType(
+        final HPAMetric.HPAMetricBuilder builder, final V2beta2MetricSpec spec, final List<V2beta2MetricStatus> statuses) {
+
+        if (Objects.nonNull(spec.getObject())) {
+            final V2beta2ObjectMetricSource object = spec.getObject();
+
+            builder.name(object.getMetric().getName()).metric(object.getMetric()).target(object.getTarget());
+            builder.type(spec.getType() + "(" + object.getDescribedObject().getKind() + "/" + object.getDescribedObject().getName() + ")");
+
+            if (Objects.nonNull(statuses)) {
+                statuses.stream().map(V2beta2MetricStatus::getObject).filter(createPredicate(object)).findFirst().ifPresent(s -> builder.status(s.getCurrent()));
+            }
+        }
+    }
+
+    private Predicate<V2beta2ObjectMetricStatus> createPredicate(final V2beta2ObjectMetricSource source) {
+
+        return status -> Objects.nonNull(status)
+            && StringUtils.equals(status.getMetric().getName(), source.getMetric().getName())
+            && StringUtils.equals(status.getDescribedObject().getKind(), source.getDescribedObject().getKind())
+            && StringUtils.equals(status.getDescribedObject().getName(), source.getDescribedObject().getName());
+    }
+
+    private void processPodsType(
+        final HPAMetric.HPAMetricBuilder builder, final V2beta2MetricSpec spec, final List<V2beta2MetricStatus> statuses) {
+
+        if (Objects.nonNull(spec.getPods())) {
+            builder.name(spec.getPods().getMetric().getName()).metric(spec.getPods().getMetric()).target(spec.getPods().getTarget());
+
+            if (Objects.nonNull(statuses)) {
+                statuses.stream().map(V2beta2MetricStatus::getPods)
+                    .filter(status -> Objects.nonNull(status) && StringUtils.equals(status.getMetric().getName(), spec.getPods().getMetric().getName()))
+                    .findFirst().ifPresent(s -> builder.status(s.getCurrent()));
+            }
+        }
+    }
+
+    private void processExternalType(
+        final HPAMetric.HPAMetricBuilder builder, final V2beta2MetricSpec spec, final List<V2beta2MetricStatus> statuses) {
+
+        if (Objects.nonNull(spec.getExternal())) {
+            final V2beta2ExternalMetricSource external = spec.getExternal();
+
+            builder.name(external.getMetric().getName()).metric(external.getMetric()).target(external.getTarget());
+
+            if (Objects.nonNull(statuses)) {
+                statuses.stream().map(V2beta2MetricStatus::getExternal)
+                    .filter(status -> Objects.nonNull(status) && StringUtils.equals(status.getMetric().getName(), external.getMetric().getName()))
+                    .findFirst().ifPresent(s -> builder.status(s.getCurrent()));
+            }
+        }
+    }
+
+    private HPAMetric convertHPAMetric(final V2beta2MetricSpec spec, final List<V2beta2MetricStatus> statuses) {
+
+        final HPAMetric.HPAMetricBuilder builder = HPAMetric.builder().type(spec.getType());
+
+        switch (spec.getType()) {
+            case "Resource":
+                processResourceType(builder, spec, statuses); break;
+            case "Object":
+                processObjectType(builder, spec, statuses); break;
+            case "Pods":
+                processPodsType(builder, spec, statuses); break;
+            case "External":
+                processExternalType(builder, spec, statuses); break;
+            default: break;
+        }
+
+        return builder.build();
+    }
 }

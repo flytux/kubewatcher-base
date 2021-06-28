@@ -19,6 +19,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AlertRuleId implements Serializable {
 
+    private static final long serialVersionUID = -8472345303069653722L;
+
     public AlertRuleId(AlertType type, AlertCategory category, AlertResource resource) {
         this.type = type;
         this.category = category;
