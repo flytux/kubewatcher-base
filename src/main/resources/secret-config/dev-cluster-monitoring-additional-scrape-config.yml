@@ -9,7 +9,7 @@
     - targets: [10.253.216.11:9100, 10.253.216.23:9100]
       labels:
         zone: 'external'
-- jab_name: process-metrics
+- job_name: process-metrics
   scrape_interval: 15s
   scrape_timeout: 10s
   metrics_path: /metrics
@@ -21,7 +21,7 @@
     - targets: [10.253.208.150:9256, 10.253.208.151:9256, 10.253.208.152:9256, 10.253.208.153:9256, 10.253.208.154:9256, 10.253.208.155:9256, 10.253.208.156:9256, 10.253.208.157:9256]
       labels:
         zone: 'cluster'
-- jab_name: oracle-metrics
+- job_name: oracle-metrics
   scrape_interval: 39s
   scrape_timeout: 38s
   metrics_path: /metrics
@@ -31,7 +31,7 @@
       labels:
         zone: 'external'
         scrape_type: 'normal'
-- jab_name: 'jmx-metrics'
+- job_name: 'jmx-metrics'
   scrape_interval: 10s
   kubernetes_sd_configs:
     - role: pod
