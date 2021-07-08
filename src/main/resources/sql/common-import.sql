@@ -552,3 +552,4 @@ INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPL
 INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 4 ,  'VIT'  , 'visits' ,       'app'  , 'Visits' );
 INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 5 ,  'PRO'  , 'prometheus' ,   'prometheus'  , 'prometheus' );
 INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 6 ,  'LOKI'  , 'loki' ,        'loki'  , 'loki' );
+INSERT INTO application_management (APPLICATION_ID, CODE, NAME, NAMESPACE, DISPLAY_NAME) values ( 7 ,  'PET'  , 'petclinic' , 'default', 'petclinic' );
