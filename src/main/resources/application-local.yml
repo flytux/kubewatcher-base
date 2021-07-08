@@ -38,6 +38,10 @@ application:
         name: visits
         namespace: app
         displayName: Visits
+      - code: PET-CLC
+        name: petclinic
+        namespace: default
+        displayName: 펫-클리닉        
 
 logging:
   level:
