@@ -3,100 +3,92 @@ package com.kubeworks.watcher.user.service.impl;
 import com.kubeworks.watcher.base.ApiResponse;
 import com.kubeworks.watcher.data.entity.KwUserRoleRule;
 import com.kubeworks.watcher.data.entity.Page;
-import com.kubeworks.watcher.data.repository.KwUserRoleRepository;
 import com.kubeworks.watcher.data.repository.KwUserRoleRuleRepository;
 import com.kubeworks.watcher.data.repository.PageRepository;
 import com.kubeworks.watcher.user.service.KwRoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
 public class KwRoleServiceImpl implements KwRoleService {
 
-    private final KwUserRoleRepository kwUserRoleRepository;
-    private final PageRepository pageRepository;
-    private final KwUserRoleRuleRepository kwUserRoleRuleRepository;
+    private final PageRepository pr;
+    private final KwUserRoleRuleRepository kurrr;
 
     @Autowired
-    public KwRoleServiceImpl(KwUserRoleRepository kwUserRoleRepository, PageRepository pageRepository, KwUserRoleRuleRepository kwUserRoleRuleRepository) {
-        this.kwUserRoleRepository = kwUserRoleRepository;
-        this.pageRepository = pageRepository;
-        this.kwUserRoleRuleRepository = kwUserRoleRuleRepository;
-    }
-
-    /*
-        KwUserRole 목록을 조회한다.
-    */
-    @Override
-    public List<String> getKwUserRoleList() {
-        return kwUserRoleRepository.findDistinctAllBy();
-    }
-
-    /*
-        KwUserRole & Rule (screen) 목록을 조회한다.
-    */
-    @Override
-    public List<Page> getKwUserRoleScreenList() {
-        return pageRepository.findAllBy(Sort.by(Sort.Direction.ASC, "pageId"));
-    }
-
-    /*
-        KwUserRole & Rule (rule) 목록을 조회한다.
-    */
-    @Override
-    public List<KwUserRoleRule> getKwUserRoleRuleList() {
-        return kwUserRoleRuleRepository.findAllBy();
+    public KwRoleServiceImpl(final PageRepository pr, final KwUserRoleRuleRepository kurrr) {
+        this.pr = pr;
+        this.kurrr = kurrr;
     }
 
     @Override
-    public List<String> getKwUserRoleRule() {
-        return kwUserRoleRuleRepository.findByName();
+    public List<Page> searchKwUserRoleScreenList() {
+        return pr.findAllBy(Sort.by(Sort.Direction.ASC, "pageId"));
     }
 
     @Override
-    public ApiResponse<String> modifyKwUserRoleRule(List<String> rolenameList, List<String> ruleList) {
-        ApiResponse<String> response = new ApiResponse<>();
+    public List<KwUserRoleRule> searchKwUserRoleRuleList() {
+        return kurrr.findAllBy();
+    }
+
+    @Override
+    public List<String> searchKwUserRoleRule() {
+        return kurrr.findByName();
+    }
+
+    @Override
+    public ApiResponse<String> createKwUserRoleRule(final KwUserRoleRule rule) {
+
         try {
-            for (int i = 0; i < rolenameList.size(); i++) {
-                KwUserRoleRule kwUserRoleRule = kwUserRoleRuleRepository.findByRulename(rolenameList.get(i));
-
-                // TODO ?????
-                for (int j = i; j < ruleList.size(); j++) {
-                    kwUserRoleRule.setRule(ruleList.get(j));
-                    kwUserRoleRule.setRule(kwUserRoleRule.getRule());
-                    kwUserRoleRuleRepository.save(kwUserRoleRule);
-                    break;
-                }
+            if (Objects.nonNull(kurrr.findByRulename(rule.getRulename()))) {
+                throw new IllegalArgumentException("이미 등록되어 있는 Role Name 입니다. Role Name=" + rule.getRulename());
             }
-            response.setSuccess(true);
-        } catch (Exception e) {
-            log.error("role 수정 실패");
-            response.setSuccess(false);
-            response.setMessage(e.getMessage());
+            kurrr.save(rule);
+
+            return createSuccessResponse();
+        } catch (final Exception e) {
+            log.warn("role 등록 실패 // Role Name={}", rule.getRulename());
+            return createResponse(false, e.getMessage());
         }
-        return response;
     }
 
     @Override
-    public ApiResponse<String> saveKwUserRoleRule(KwUserRoleRule kwUserRoleRule) {
-        ApiResponse<String> response = new ApiResponse<>();
-        try {
-            KwUserRoleRule dbKwRoleRuleOptional = kwUserRoleRuleRepository.findByRulename(kwUserRoleRule.getRulename());
-            if (dbKwRoleRuleOptional != null) {
-                throw new IllegalArgumentException("이미 등록되어 있는 Role Name 입니다. Role Name=" + kwUserRoleRule.getRulename());
-            }
-            kwUserRoleRuleRepository.save(kwUserRoleRule);
-            response.setSuccess(true);
-        } catch (Exception e) {
-            log.error("role 등록 실패 // Role Name={}", kwUserRoleRule.getRulename());
-            response.setSuccess(false);
-            response.setMessage(e.getMessage());
+    public ApiResponse<String> updateKwUserRoleRule(final List<String> roles, final List<String> rules) {
+
+        if (CollectionUtils.isEmpty(roles) || CollectionUtils.isEmpty(rules) || roles.size() != rules.size()) {
+            log.info("roles and rules data not matched");
+            return createResponse(false, "roles and rules data not matched");
         }
-        return response;
+
+        try {
+            IntStream.range(0, roles.size()).forEach(e -> {
+                final KwUserRoleRule rule = kurrr.findByRulename(roles.get(e));
+                rule.setRule(rules.get(e)); kurrr.save(rule);
+            });
+
+            return createSuccessResponse();
+        } catch (final Exception e) {
+            log.warn("role 수정 실패");
+            return createResponse(false, e.getMessage());
+        }
+    }
+
+    private ApiResponse<String> createSuccessResponse() {
+        return createResponse(true, null);
+    }
+
+    private ApiResponse<String> createResponse(final boolean value, @Nullable final String message) {
+        final ApiResponse<String> res = new ApiResponse<>();
+        res.setSuccess(value); res.setMessage(message);
+        return res;
     }
 }

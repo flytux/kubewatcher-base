@@ -1,107 +1,603 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<th:block th:fragment="page-row-header(title)">
+    <div th:if="${#strings.isEmpty(title)}" class="main_title col-xs-12"></div>
+    <div th:unless="${#strings.isEmpty(title)}" class="main_title col-xs-12">
+        <i class="feather icon-chevrons-right"></i>&nbsp;[[${title}]]
+    </div>
+</th:block>
 
-    <th:block th:fragment="page-row-header(title)">
-        <div th:if="${#strings.isEmpty(title)}" class="main_title col-xs-12">
+<th:block th:fragment="page-row-variable-header(variables)">
+    <div class="main_title03">
+        <div class="f_r">
+            <div th:each="variable : ${variables}" class="dropdown d_ib">
+                <select th:name="|var-${variable?.name}|" th:id="|var-${variable?.name}|" th:disabled="${variable?.values == null ? 'true' : 'false'}" class="custom-select">
+                    <option value="" selected disabled hidden> -- select variable -- </option>
+                    <option th:each="value : ${variable?.values}" th:value="${variable}" th:text="${value}"></option>
+                </select>
+            </div>
         </div>
-        <div th:unless="${#strings.isEmpty(title)}" class="main_title col-xs-12">
-            <i class="feather icon-chevrons-right"></i> [[${title}]]
-        </div>
-    </th:block>
+    </div>
+</th:block>
 
-    <th:block th:fragment="page-row-variable-header(variables)">
-        <div class="main_title03">
+<th:block th:fragment="page-row-variable-header-db(variables, title)">
+    <div class="row" style="height: 1px"></div>
+    <div th:if="${#strings.isEmpty(title)}" class="main_title col-xs-8"></div>
+    <div th:unless="${#strings.isEmpty(title)}" class="main_title col-xs-8">
+        <i class="feather icon-chevrons-right"></i>&nbsp;[[${title}]]
+    </div>
+    <div class="main_title03">
+        <div class="f_r">
+            <div th:each="variable : ${variables}" class="dropdown d_ib">
+                <select th:name="|var-${variable?.name}|" th:id="|var-${variable?.name}|" th:disabled="${variable?.values == null ? 'true' : 'false'}" class="custom-select">
+                    <option value="" selected disabled hidden> -- select variable -- </option>
+                    <option th:each="value : ${variable?.values}" th:value="${variable}" th:text="${value}"></option>
+                </select>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="value-card-panel(panel)">
+    <div class="col-md-12 col-lg-15">
+        <div class="box1">
+            <div th:text="${panel?.title}" class="title">VM</div>
+            <div th:id="|container-${panel?.panelId}|" class="b_txt text-center">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-3-value-card-panel(panel)">
+    <div class="col-md-12 col-lg-3" >
+        <div class="box1">
+            <div th:text="${panel?.title}" class="title">VM</div>
+            <div style="font-size:2em;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-4-value-card-panel(panel)">
+    <div class="col-md-12 col-lg-4">
+        <div class="box1">
+            <div th:text="${panel?.title}" class="title">VM</div>
+            <div style="font-size:2em;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="headless-card-panel(panel)">
+    <div class="col-md-12 col-lg-15">
+        <figure class="highcharts-figure">
+            <div th:id="|container-${panel?.panelId}|" class="chart-container box_panel" style="min-height: 160px; max-height: 130px;">
+                <div class="col-lg-12 text-center spinner-center">
+                    <div class="col-lg-12 text-center">
+                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </figure>
+    </div>
+</th:block>
+
+<th:block th:fragment="full-headless-card-panel(panel)">
+    <div class="col-md-12 col-lg-12">
+        <figure class="highcharts-figure">
+            <div th:id="|container-${panel?.panelId}|" class="chart-container box_panel" style="min-height: 160px; max-height: 130px;">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </figure>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-3-headless-card-panel(panel)">
+    <div class="col-md-12 col-lg-3">
+        <figure class="highcharts-figure">
+            <div th:id="|container-${panel?.panelId}|" class="chart-container box_panel" style="height: 122px;">
+                <div class="col-lg-12 text-center spinner-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </figure>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-2-headless-card-panel(panel)">
+    <div class="col-md-12 col-lg-2">
+        <figure class="highcharts-figure">
+            <div th:id="|container-${panel?.panelId}|" class="chart-container box_panel" style="min-height: 270px;">
+                <div class="col-lg-12 text-center spinner-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </figure>
+    </div>
+</th:block>
+
+<th:block th:fragment="head-card-panel(panel)">
+    <div class="col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div th:id="|container-${panel?.panelId}|" style="height:300px;">
+                <div class="col-lg-12 text-center spinner-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="full-head-card-panel(panel)">
+    <div class="col-md-12 col-lg-12" style="padding-right:0px; padding-bottom:0px;">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div th:id="|container-${panel?.panelId}|" style="height:300px;">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-odd-head-card-panel(panel)">
+    <div class="col-md-12 col-lg-15" style="padding-right:0px; padding-bottom:0px;">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div th:id="|container-${panel?.panelId}|" style="height:300px;">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-2-head-card-panel(panel)">
+    <div class="col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div th:id="|container-${panel?.panelId}|" style="height:300px;">
+                <div class="col-lg-12 text-center spinner-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-6-head-card-panel(panel)">
+    <div class="col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div th:id="|container-${panel?.panelId}|" style="height:300px;">
+                <div class="col-lg-12 text-center spinner-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-6-head-card-panel-in-logtable(panel)">
+    <div class="col-md-12 col-lg-6">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div class="box_panel-body" style="min-height: 400px;">
+                <table th:id="|container-${panel?.panelId}|" class="list_table700">
+                    <thead>
+                    <tr>
+                        <th>
+                            <div class="col-lg-12 text-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-6-head-card-panel-in-errorlogtable(panel)">
+    <div class="col-md-12 col-lg-6">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"><i class="feather icon-chevrons-right"></i></div>
+            <div class="d_ib" style="line-height: 30px; text-align: center; margin-left: 20px;">
+                <span id="appName" class="d_ib" style="font-weight: bold; font-size: 14px;"></span>
+            </div>
             <div class="f_r">
-                <div th:each="variable : ${variables}" class="dropdown d_ib">
-                    <select th:name="|var-${variable?.name}|" th:id="|var-${variable?.name}|"
-                            th:disabled="${variable?.values == null ? 'true' : 'false'}" class="custom-select">
-                        <option value="" selected disabled hidden> -- select variable -- </option>
-                        <option th:each="value : ${variable?.values}"
-                                th:value="${variable}" th:text="${value}" value="">value</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="page-row-variable-header-db(variables, title)">
-        <div class="row" style="height: 1px"></div>
-        <div th:if="${#strings.isEmpty(title)}" class="main_title col-xs-8">
-        </div>
-        <div th:unless="${#strings.isEmpty(title)}" class="main_title col-xs-8">
-            <i class="feather icon-chevrons-right"></i> [[${title}]]
-        </div>
-        <div class="main_title03">
-            <div class="f_r">
-                <div th:each="variable : ${variables}" class="dropdown d_ib">
-                    <select th:name="|var-${variable?.name}|" th:id="|var-${variable?.name}|"
-                            th:disabled="${variable?.values == null ? 'true' : 'false'}" class="custom-select">
-                        <option value="" selected disabled hidden> -- select variable -- </option>
-                        <option th:each="value : ${variable?.values}"
-                                th:value="${variable}" th:text="${value}" value="">value</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-
-    <th:block th:fragment="value-card-panel(panel)">
-        <div class="col-md-12 col-lg-15">
-            <div class="box1">
-                <div th:text="${panel?.title}" class="title">VM</div>
-                <div th:id="|container-${panel?.panelId}|" class="b_txt text-center">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
+                <div class=" d_ib search_padding">
+                    <div class="form-group has-feedback d_ib">
+                        <div class="d_ib" style="line-height: 30px; text-align: center;">
+                            <span id="toDay" style="font-weight: bold; font-size: 14px;"></span>&nbsp;&nbsp;
                         </div>
+                        <div class="d_ib">
+                            <div class="form-group">
+                                <div class='input-group date d_ib' id='datetimepicker1'>
+                                    <input th:value="${#temporals.format(searchDate,'yyyy-MM-dd')}" id="startDate" name="startDate" placeholder="Start Date" type="text" class="form-control search-input" style="font-size: 12px; width: 130px !important;" readonly />
+                                    <span class="input-group-addon glyphicon search-span align-middle">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <span> ~ </span>
+                        <div class="d_ib">
+                            <div class="form-group">
+                                <div class='input-group date d_ib' id='datetimepicker2'>
+                                    <input th:value="${#temporals.format(searchDate,'yyyy-MM-dd')}" id="endDate" name="endDate" placeholder="End Date" type="text" class="form-control search-input" style="font-size: 12px; width: 130px !important;" readonly />
+                                    <span class="input-group-addon glyphicon search-span align-middle">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="button" class="btn btn-md btn-outline-white" value="조회" id="searchBtn">
+                    </div>
+                </div>
+            </div>
+            <div class="box_panel-body" style="min-height: 300px;">
+                <table th:id="|container-${panel?.panelId}|" class="list_table">
+                    <thead>
+                    <tr>
+                        <th>
+                            <div class="col-lg-12 text-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block th:fragment="head-card-panel-in-table(panel)">
+    <div class="col-md-12 col-lg-3">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div class="box_panel-body" style="min-height: 300px;">
+                <table th:id="|container-${panel?.panelId}|" class="list_table">
+                    <thead>
+                    <tr>
+                        <th>
+                            <div class="col-lg-12 text-center spinner-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-6-head-card-panel-in-table(panel)">
+    <div class="col-md-12 col-lg-6">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div class="box_panel-body" style="min-height: 300px;">
+                <table th:id="|container-${panel?.panelId}|" class="list_table">
+                    <thead>
+                    <tr>
+                        <th>
+                            <div class="col-lg-12 text-center spinner-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="head-app-card-panel-in-table(panel)">
+    <div class="col-md-12 col-lg-12">
+        <div class="box_chart2">
+            <div th:text="${panel?.title}" class="title_chart"></div>
+            <div th:id="|container-${panel?.panelId}|" class="list_table" style="min-height: 125px;">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
                     </div>
                 </div>
             </div>
         </div>
-    </th:block>
+    </div>
+</th:block>
 
-    <th:block th:fragment="col-3-value-card-panel(panel)">
-        <div class="col-md-12 col-lg-3" >
-            <div class="box1">
-                <div th:text="${panel?.title}" class="title">VM</div>
-                <div style="font-size:2em;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
+<th:block th:fragment="col-3-head-app-card-panel-in-table(panel)">
+    <div class="col-md-12 col-lg-3">
+        <div class="box_chart2">
+            <div th:text="${panel?.title}" class="title_chart"></div>
+            <div th:id="|container-${panel?.panelId}|" class="list_table" style="min-height: 125px;">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
                     </div>
                 </div>
             </div>
         </div>
-    </th:block>
+    </div>
+</th:block>
 
-    <th:block th:fragment="col-4-value-card-panel(panel)">
-        <div class="col-md-12 col-lg-4" >
-            <div class="box1">
-                <div th:text="${panel?.title}" class="title">VM</div>
-                <div style="font-size:2em;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
+<th:block th:fragment="full-head-card-panel-in-table(panel)">
+    <div class="col-md-12 col-lg-12">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div class="box_panel-body" style="min-height: 300px;">
+                <table th:id="|container-${panel?.panelId}|" class="list_table">
+                    <thead>
+                    <tr>
+                        <th>
+                            <div class="col-lg-12 text-center spinner-center">
+                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="full-head-card-panel-in-table-modal(panel)">
+    <div class="col-md-12 col-lg-12">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div class="box_panel-body" style="min-height: 300px;">
+                <table th:id="|container-${panel?.panelId}|" class="list_table235"></table>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+</th:block>
+
+<th:block th:fragment="head-card-db-dummy(title, key, dbPanel)">
+    <div class="col-xs-12 col-md-12 col-lg-4" style=" padding-right:0px;">
+        <div class="col-xs-12 box1_pb15">
+            <div th:each="dbNode : ${dbPanel}">
+                <th:block th:if="${dbNode.title} == 'Available Node'">
+                    <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                        <div class="title col-xs-12" th:text="|${title} [${key}]|"></div>
+                    </div>
+                    <div class="row col-xs-6" style="padding-left:5px; padding-right:0px; height: 100px;">
+                        <div th:id="|container-${dbNode?.panelId}|"></div>
+                    </div>
+                </th:block>
+                <th:block th:if="${dbNode.title} == 'CPU'">
+                    <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
+                        <div class="col-xs-12">
+                            <figure class="highcharts-figure">
+                                <div th:id="|container-${dbNode?.panelId}|"
+                                     class="chart-container box_panel" style="min-height: 170px; max-height: 140px;"></div>
+                            </figure>
                         </div>
+                    </div>
+                </th:block>
+                <th:block th:if="${dbNode.title} == 'Memory'">
+                    <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
+                        <div class="col-xs-12">
+                            <figure class="highcharts-figure">
+                                <div th:id="|container-${dbNode?.panelId}|"
+                                     class="chart-container box_panel" style="min-height: 170px; max-height: 140px;"></div>
+                            </figure>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="head-card-app-dummy(appPanel, index)">
+    <div class="col-md-12 col-lg-3">
+        <div class="box_panel">
+            <div class="row">
+                <div th:each="appNode, order : ${appPanel}">
+                    <th:block th:if="${order.count} == 1">
+                        <div class="row  mb_5" >
+                            <div class="box_panel-stitle" style="color: #f37320" th:text="${appNode.title}"><span class="box_panel-sstext"></span></div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${appNode.title} == 'Application Status'">
+                        <div class="row pt-5 col-xs-4">
+                            <div th:id="|container-${appNode?.panelId}|"></div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${appNode.title} == 'Application Transaction'">
+                        <div class="row pt-5 col-xs-8">
+                            <figure class="highcharts-figure">
+                                <div th:id="|container-${appNode?.panelId}|" class="box_middle_d point"></div>
+                            </figure>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${appNode.title} == 'Application POD'">
+                        <div class="row" style="height: 1px"></div>
+                        <div class="col-xs-4" >
+                            <div class="col-xs-12 box_chart4">
+                                <div class="txt fb"></div>
+                                <div class="stxt text-center mb_20"></div>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${appNode.title} == 'CPU'">
+                        <div class="col-xs-4">
+                            <div class="col-xs-12">
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${appNode?.panelId}|" class="chart-container box_panel" style="min-height: 110px; max-height: 90px;"></div>
+                                </figure>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${appNode.title} == 'Memory'">
+                        <div class="col-xs-4" >
+                            <div class="col-xs-12">
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${appNode?.panelId}|" class="chart-container box_panel" style="min-height: 110px; max-height: 90px;"></div>
+                                </figure>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+
+            <input type="checkbox" name="accordion" th:id="|answer${index}|">
+            <label th:for="|answer${index}|"><em></em></label>
+            <div class="row">
+                <div th:each="appNode, order : ${appPanel}">
+                    <th:block th:if="${appNode.title} == 'Application histogram'">
+                        <div class="col-xs-7 col-lg-7">
+                            <div class="box_panel">
+                                <div class="box_panel-text3">응답시간 히스토그램</div>
+                                <figure class="highcharts-figure">
+                                    <div th:id="|container-${appNode?.panelId}|" class="chart-container box_panel" style="min-height: 100px;"></div>
+                                </figure>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${appNode.title} == 'Application avg. response time'">
+                        <div class="col-xs-5 col-lg-5 box_chart2 mb_10">
+                            <div class="txt text-center">평균 응답시간</div>
+                            <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${appNode.title} == 'Application error count'">
+                        <div class="col-xs-5 col-lg-5 box_chart_red">
+                            <div class="txt text-center">Error Count</div>
+                            <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="box-chart-panel(panel)">
+    <figure class="highcharts-figure">
+        <div th:id="|container-${panel?.panelId}|"
+             class="chart-container box_panel" style="height: 90px;">
+            <div class="col-lg-12 text-center spinner-center" style="position: relative;">
+                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </figure>
+</th:block>
+
+<th:block th:fragment="small-head-card-panel(panel)">
+    <div class="col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
+        <div class="box_panel">
+            <div class="box_panel-heading" th:text="${panel?.title}"></div>
+            <div th:id="|container-${panel?.panelId}|" style="height:250px;">
+                <div class="col-lg-12 text-center spinner-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
                     </div>
                 </div>
             </div>
         </div>
-    </th:block>
+    </div>
+</th:block>
 
-    <th:block th:fragment="headless-card-panel(panel)">
-        <div class="col-md-12 col-lg-15">
-            <figure class="highcharts-figure">
-                <div th:id="|container-${panel?.panelId}|"
-                     class="chart-container box_panel" style="min-height: 160px; max-height: 130px;">
-                    <div class="col-lg-12 text-center spinner-center">
+<th:block th:fragment="head-charts-panel(panel)">
+    <div class="col-md-12 col-lg-3">
+        <div class="box_panel">
+            <div th:text="${panel?.title}" class="box_panel-heading1">VM</div>
+            <div style="font-size:2em; min-height: 178px;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">
+                <div class="col-lg-12 text-center spinner-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="count-card-panel(panel)">
+    <div class="col-xs-12 col-md-15 col-lg-2" style="height: 119px;">
+        <div class="box_panel">
+            <div th:text="${panel?.title}" class="box_panel-heading1">Event</div>
+            <div th:id="|container-${panel?.panelId}|" class="box_panel-text4">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="count-card-sets-panel(panel)">
+    <div class="col-xs-12 col-md-15 col-lg-2">
+        <div class="box_panel">
+            <div class="box_panel-heading1" th:text="${panel?.title}">Node</div>
+            <th:block th:if="${panel?.panelType} == 'UP/DOWN'">
+                <div class="box_panel-text4">
+                    <div class="box_big_g mb_7 mt_6 w70" th:id="|container-${panel?.panelId}|">
                         <div class="col-lg-12 text-center">
                             <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
                                 <span class="sr-only">Loading...</span>
@@ -109,703 +605,168 @@
                         </div>
                     </div>
                 </div>
-            </figure>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="full-headless-card-panel(panel)">
-        <div class="col-md-12 col-lg-12">
-            <figure class="highcharts-figure">
-                <div th:id="|container-${panel?.panelId}|"
-                     class="chart-container box_panel" style="min-height: 160px; max-height: 130px;">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </figure>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-3-headless-card-panel(panel)">
-        <div class="col-md-12 col-lg-3">
-            <figure class="highcharts-figure">
-                <div th:id="|container-${panel?.panelId}|"
-                     class="chart-container box_panel" style="height: 122px;">
-                    <div class="col-lg-12 text-center spinner-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </figure>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-2-headless-card-panel(panel)">
-        <div class="col-md-12 col-lg-2">
-            <figure class="highcharts-figure">
-                <div th:id="|container-${panel?.panelId}|"
-                     class="chart-container box_panel" style="min-height: 270px;">
-                    <div class="col-lg-12 text-center spinner-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </figure>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="head-card-panel(panel)">
-        <div class="col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div th:id="|container-${panel?.panelId}|" style="height:300px;">
-                    <div class="col-lg-12 text-center spinner-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="full-head-card-panel(panel)">
-        <div class="col-md-12 col-lg-12" style="padding-right:0px; padding-bottom:0px;">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div th:id="|container-${panel?.panelId}|" style="height:300px;">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-odd-head-card-panel(panel)">
-        <div class="col-md-12 col-lg-15" style="padding-right:0px; padding-bottom:0px;">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div th:id="|container-${panel?.panelId}|" style="height:300px;">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-2-head-card-panel(panel)">
-        <div class="col-md-12 col-lg-2" style="padding-right:0px; padding-bottom:0px;">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div th:id="|container-${panel?.panelId}|" style="height:300px;">
-                    <div class="col-lg-12 text-center spinner-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-6-head-card-panel(panel)">
-        <div class="col-md-12 col-lg-6" style="padding-right:0px; padding-bottom:0px;">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div th:id="|container-${panel?.panelId}|" style="height:300px;">
-                    <div class="col-lg-12 text-center spinner-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-6-head-card-panel-in-logtable(panel)">
-        <div class="col-md-12 col-lg-6">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div class="box_panel-body" style="min-height: 300px;">
-                    <table th:id="|container-${panel?.panelId}|" class="list_table700">
-                        <thead>
-                        <tr><th>
-                            <div class="col-lg-12 text-center">
-                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                        </th></tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-6-head-card-panel-in-errorlogtable(panel)">
-        <div class="col-md-12 col-lg-6">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}"><i class="feather icon-chevrons-right"></i>Panel Title</div>
-                <div class="f_r">
-                    <div class=" d_ib search_padding">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="date" class="search_date" id="startDate" disabled>
-                            <input type="time" class="search_time" id="startTime">
-                            ~
-                            <input type="date" class="search_date" id="endDate" disabled>
-                            <input type="time" class="search_time" id="endTime">
-                            <input type="button" class="btn btn-md btn-outline-white" value="조회" id="searchBtn">
-                        </div>
-                    </div>
-                </div>
-                <div class="box_panel-body" style="min-height: 300px;">
-                    <table th:id="|container-${panel?.panelId}|" class="list_table">
-                        <thead>
-                        <tr><th>
-                            <div class="col-lg-12 text-center">
-                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                        </th></tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-
-    <th:block th:fragment="head-card-panel-in-table(panel)">
-        <div class="col-md-12 col-lg-3">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div class="box_panel-body" style="min-height: 300px;">
-                    <table th:id="|container-${panel?.panelId}|" class="list_table">
-                        <thead>
-                        <tr><th>
-                            <div class="col-lg-12 text-center spinner-center">
-                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                        </th></tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-
-    <th:block th:fragment="col-6-head-card-panel-in-table(panel)">
-        <div class="col-md-12 col-lg-6">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div class="box_panel-body" style="min-height: 300px;">
-                    <table th:id="|container-${panel?.panelId}|" class="list_table">
-                        <thead>
-                            <tr><th>
-                                <div class="col-lg-12 text-center spinner-center">
-                                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                                        <span class="sr-only">Loading...</span>
-                                    </div>
-                                </div>
-                            </th></tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="head-app-card-panel-in-table(panel)">
-        <div class="col-md-12 col-lg-12">
-            <div class="box_chart2">
-                <div th:text="${panel?.title}" class="title_chart">Panel Title</div>
-                <div th:id="|container-${panel?.panelId}|" class="list_table" style="min-height: 125px;">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-3-head-app-card-panel-in-table(panel)">
-        <div class="col-md-12 col-lg-3">
-            <div class="box_chart2">
-                <div th:text="${panel?.title}" class="title_chart">Panel Title</div>
-                <div th:id="|container-${panel?.panelId}|" class="list_table" style="min-height: 125px;">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="full-head-card-panel-in-table(panel)">
-        <div class="col-md-12 col-lg-12">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div class="box_panel-body" style="min-height: 300px;">
-                    <table th:id="|container-${panel?.panelId}|" class="list_table">
-                        <thead>
-                        <tr><th>
-                            <div class="col-lg-12 text-center spinner-center">
-                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                        </th></tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-
-    <th:block th:fragment="full-head-card-panel-in-table-modal(panel)">
-        <div class="col-md-12 col-lg-12">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div class="box_panel-body" style="min-height: 300px;">
-                    <table th:id="|container-${panel?.panelId}|"
-                           class="list_table235">
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        </div>
-    </th:block>
-
-    <th:block th:fragment="head-card-db-dummy(title, key, dbPanel)">
-        <div class="col-xs-12 col-md-12 col-lg-4" style=" padding-right:0px;">
-            <div class="col-xs-12 box1_pb15">
-                <div th:each="dbNode : ${dbPanel}">
-                    <th:block th:if="${dbNode.title} == 'Available Node'">
-                        <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
-                            <div class="title col-xs-12" th:text="|${title} [${key}]|"></div>
-                        </div>
-                        <div class="row col-xs-6" style="padding-left:5px; padding-right:0px; height: 100px;">
-                            <div th:id="|container-${dbNode?.panelId}|"></div>
-                        </div>
-                    </th:block>
-                    <th:block th:if="${dbNode.title} == 'CPU'">
-                        <div class="row col-xs-6" style="padding-left:0px; padding-right:5px;">
-                            <div class="col-xs-12">
-                                <figure class="highcharts-figure">
-                                    <div th:id="|container-${dbNode?.panelId}|"
-                                         class="chart-container box_panel" style="min-height: 170px; max-height: 140px;"></div>
-                                </figure>
+            </th:block>
+            <th:block th:unless="${panel?.panelType} == 'UP/DOWN'">
+                <div class="box_panel-text4">
+                    <span th:id="|container-${panel?.panelId}|" class="color_g">
+                        <div class="col-lg-12 text-center">
+                            <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                                <span class="sr-only">Loading...</span>
                             </div>
                         </div>
-                    </th:block>
-                    <th:block th:if="${dbNode.title} == 'Memory'">
-                        <div class="row col-xs-6" style="padding-left:5px; padding-right:0px;">
-                            <div class="col-xs-12">
-                                <figure class="highcharts-figure">
-                                    <div th:id="|container-${dbNode?.panelId}|"
-                                         class="chart-container box_panel" style="min-height: 170px; max-height: 140px;"></div>
-                                </figure>
-                            </div>
-                        </div>
-                    </th:block>
+                    </span>
+                    <span th:id="|container--${panel?.panelId}|" class="st"></span>
                 </div>
-            </div>
+            </th:block>
         </div>
-    </th:block>
+    </div>
+</th:block>
 
-    <th:block th:fragment="head-card-app-dummy(appPanel, index)">
-        <!-- [card view] 1(5ea) start-->
-        <div class="col-md-12 col-lg-3">
-            <!--card view start -->
-            <div class="box_panel" >
-                <div class="row">
-                    <div th:each="appNode, order : ${appPanel}">
-                        <th:block th:if="${order.count} == 1">
-                            <div class="row  mb_5" >
-                                <div class="box_panel-stitle" style="color: #f37320" th:text="${appNode.title}">통합고객관리<span class="box_panel-sstext"></span></div><!-- box name -->
-                            </div>
-                        </th:block>
-                        <th:block th:if="${appNode.title} == 'Application Status'">
-                            <div class="row pt-5 col-xs-4">
-                                <div th:id="|container-${appNode?.panelId}|"></div>
-    <!--                            <div class="box_middle_g">정상</div>-->
-                            </div>
-                        </th:block>
-                        <th:block th:if="${appNode.title} == 'Application Transaction'">
-                            <div class="row pt-5 col-xs-8">
-                                <figure class="highcharts-figure">
-                                    <div th:id="|container-${appNode?.panelId}|" class="box_middle_d point"></div>
-                                </figure>
-    <!--                            <div class="box_middle_d">Today <span class="point">2,304,040</span></div>-->
-                            </div>
-                        </th:block>
-                        <th:block th:if="${appNode.title} == 'Application POD'">
-                            <div class="row" style="height: 1px"></div>
-                            <div class="col-xs-4" >
-                                <div class="col-xs-12 box_chart4" >
-                                    <div class="txt fb">Container</div>
-                                    <div class="stxt text-center mb_20">00/00/00</div>
-                                </div>
-                            </div>
-                        </th:block>
-                        <th:block th:if="${appNode.title} == 'CPU'">
-                            <div class="col-xs-4">
-                                <div class="col-xs-12">
-                                    <figure class="highcharts-figure">
-                                        <div th:id="|container-${appNode?.panelId}|"
-                                             class="chart-container box_panel" style="min-height: 110px; max-height: 90px;"></div>
-                                    </figure>
-    <!--                                <div class="txt text-center">CPU</div>-->
-    <!--                                <div class="t_chart_md text-center  mt_10">00%</div>-->
-                                </div>
-                            </div>
-                        </th:block>
-                        <th:block th:if="${appNode.title} == 'Memory'">
-                            <div class="col-xs-4" >
-                                <div class="col-xs-12">
-                                    <figure class="highcharts-figure">
-                                        <div th:id="|container-${appNode?.panelId}|"
-                                             class="chart-container box_panel" style="min-height: 110px; max-height: 90px;"></div>
-                                    </figure>
-    <!--                                <div class="txt text-center">Memory</div>-->
-    <!--                                <div class="t_chart_md text-center mt_10">00%</div>-->
-                                </div>
-                            </div>
-                            <!--                            </div>-->
-                        </th:block>
-                    </div>
-                </div>
-                <!--내용열림 시작 -->
-                <input type="checkbox" name="accordion" th:id="|answer${index}|">
-                <label th:for="|answer${index}|"><em></em></label>
-                <div class="row">
-                    <div th:each="appNode, order : ${appPanel}">
-                        <th:block th:if="${appNode.title} == 'Application histogram'">
-                            <div class="col-xs-7 col-lg-7">
-                                <div class="box_panel">
-                                    <div class="box_panel-text3">응답시간 히스토그램</div>
-                                    <figure class="highcharts-figure">
-                                        <div th:id="|container-${appNode?.panelId}|"
-                                             class="chart-container box_panel" style="min-height: 100px;"></div>
-                                    </figure>
-                                </div>
-                            </div>
-                        </th:block>
-                        <th:block th:if="${appNode.title} == 'Application avg. response time'">
-                            <div class="col-xs-5 col-lg-5 box_chart2 mb_10">
-                                <div class="txt text-center">평균 응답시간</div>
-                                <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
-                            </div>
-                        </th:block>
-                        <th:block th:if="${appNode.title} == 'Application error count'">
-                            <div class="col-xs-5 col-lg-5 box_chart_red">
-                                <div class="txt text-center">Error Count</div>
-                                <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
-                            </div>
-                        </th:block>
-                    </div>
-                </div>
-                <!--내용열림 끝-->
-                <!--card view end -->
+<th:block th:fragment="mini-table-panel(panel)">
+    <div class="col-lg-12 col-lg-8">
+        <div class="col-xs-12 box1" style="min-height: 300px;">
+            <div class="row col-xs-12">
+                <div th:text="${panel?.title}" class="title_chart_c col-xs-12"></div>
             </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="box-chart-panel(panel)">
-        <figure class="highcharts-figure">
-            <div th:id="|container-${panel?.panelId}|"
-                 class="chart-container box_panel" style="height: 90px;">
-                <div class="col-lg-12 text-center spinner-center" style="position: relative;">
+            <div th:id="|container-${panel?.panelId}|" class="row col-xs-12">
+                <div class="col-lg-12 text-center spinner-center" style="transform: translate(0px, 300%);">
                     <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
                         <span class="sr-only">Loading...</span>
                     </div>
                 </div>
             </div>
-        </figure>
-    </th:block>
+        </div>
+    </div>
+</th:block>
 
-    <th:block th:fragment="small-head-card-panel(panel)">
-        <div class="col-md-12 col-lg-3" style="padding-right:0px; padding-bottom:0px;">
-            <div class="box_panel">
-                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
-                <div th:id="|container-${panel?.panelId}|" style="height:250px;">
-                    <div class="col-lg-12 text-center spinner-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
+<th:block th:fragment="dashboard-table-panel(panel)">
+    <div class="box_panel">
+        <div class="box_panel-heading" th:text="${panel?.title}">
+            <div class="box_table-body">
+                <table class="list_system" th:id="|container-${panel?.panelId}|">
+                    <thead>
+                    <tr>
+                        <th>Alarm명</th>
+                        <th>Message</th>
+                        <th>Severity</th>
+                        <th>Category</th>
+                        <th>System</th>
+                        <th>Time</th>
+                        <th>Check</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><div class="circle c_normal"></div></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><button class="btn btn-md btn-outline-white">&nbsp;Check</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="col-3-app-board(panel)">
+    <div class="col-md-12 col-lg-3">
+        <div class="col-xs-12 box1">
+            <div class="row col-xs-12">
+                <div th:text="${panel?.title}" class="title_chart_c col-xs-12"></div>
+            </div>
+            <div th:id="|container-${panel?.panelId}|" class="row col-xs-12">
+                <div class="col-lg-12 text-center">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
                     </div>
                 </div>
             </div>
         </div>
-    </th:block>
+    </div>
+</th:block>
 
-    <th:block th:fragment="head-charts-panel(panel)">
-        <div class="col-md-12 col-lg-3">
-            <div class="box_panel">
-                <div th:text="${panel?.title}" class="box_panel-heading1">VM</div>
-                <div style="font-size:2em; min-height: 178px;" th:id="|container-${panel?.panelId}|" class="b_txt text-center">
-                    <div class="col-lg-12 text-center spinner-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
+<th:block th:fragment="col-6-app-board(panel)">
+    <div class="col-md-12 col-lg-6">
+        <div class="col-xs-12 box1">
+            <div class="row col-xs-12">
+                <div th:text="${panel?.title}" class="title_chart_c col-xs-12"></div>
+            </div>
+            <div th:id="|container-${panel?.panelId}|" class="row col-xs-12">
+                <div class="col-lg-12 text-center spinner-center" style="transform: translate(0px, 300%);">
+                    <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
+                        <span class="sr-only">Loading...</span>
                     </div>
                 </div>
             </div>
         </div>
-    </th:block>
+    </div>
+</th:block>
 
-    <th:block th:fragment="count-card-panel(panel)">
-        <div class="col-xs-12 col-md-15 col-lg-2" style="height: 119px;">
-            <div class="box_panel">
-                <div th:text="${panel?.title}" class="box_panel-heading1">Event</div>
-                <div th:id="|container-${panel?.panelId}|" class="box_panel-text4">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
+<th:block th:fragment="col-3-app-group-head-card-panel(panel)">
+    <div class="col-md-12 col-lg-3" th:with="subPanelMap=${T(com.kubeworks.watcher.ecosystem.ExternalConstants).thymeleafConvertList2Map(panel?.subPanel)}">
+        <div class="box_panel" >
+            <div class="row" >
+                <div class="box_panel-stitle" style="color: #f37320" th:text="|${panel?.title} (${@applicationService.getDisplayName(panel?.title)})|"></div>
+            </div>
+            <div class="row pt_5">
+                <div th:if="${subPanelMap.get('Application Status')}" th:with="appNode=${subPanelMap.get('Application Status')}" class="col-xs-4">
+                    <div th:id="|container-${appNode?.panelId}|"></div>
+                </div>
+                <div th:if="${subPanelMap.get('Application Transaction')}" th:with="appNode=${subPanelMap.get('Application Transaction')}" class="col-xs-8">
+                    <div th:id="|container-${appNode?.panelId}|" class="box_middle_d point"></div>
+                </div>
+            </div>
+            <div class="row pt_5">
+                <div th:if="${subPanelMap.get('Replica Sets')}" th:with="appNode=${subPanelMap.get('Replica Sets')}" class="col-xs-6" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="col-xs-12" style="padding-left: 5px; padding-right: 0px;">
+                        <div th:id="|container-${appNode?.panelId}|" style="min-height: 150px; padding-left: 0px; padding-right: 0px;" class="box_middle_d point"></div>
+                    </div>
+                </div>
+                <div th:if="${subPanelMap.get('VM Instance')}" th:with="appNode=${subPanelMap.get('VM Instance')}" class="col-xs-6" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="col-xs-12" style="padding-left: 5px; padding-right: 0px;">
+                        <div th:id="|container-${appNode?.panelId}|" style="min-height: 150px; padding-left: 0px; padding-right: 0px;" class="box_middle_d point"></div>
+                    </div>
+                </div>
+                <div th:if="${subPanelMap.get('CPU')}" th:with="appNode=${subPanelMap.get('CPU')}" class="col-xs-3" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="col-xs-12" style="padding-left: 5px; padding-right: 0px;">
+                        <div th:id="|container-${appNode?.panelId}|" class="chart-container box_panel" style="min-height: 150px; padding-left: 0px; padding-right: 0px;"></div>
+                    </div>
+                </div>
+                <div th:if="${subPanelMap.get('Memory')}" th:with="appNode=${subPanelMap.get('Memory')}" class="col-xs-3" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="col-xs-12" style="padding-left: 5px; padding-right: 5px;">
+                        <div th:id="|container-${appNode?.panelId}|" class="chart-container box_panel" style="min-height: 150px; padding-left: 0px; padding-right: 0px;"></div>
                     </div>
                 </div>
             </div>
-        </div>
-    </th:block>
 
-    <th:block th:fragment="count-card-sets-panel(panel)">
-        <div class="col-xs-12 col-md-15 col-lg-2">
-            <div class="box_panel">
-                <div class="box_panel-heading1" th:text="${panel?.title}">Node</div>
-                <th:block th:if="${panel?.panelType} == 'UP/DOWN'">
-                    <div class="box_panel-text4">
-                        <div class="box_big_g mb_7 mt_6 w70" th:id="|container-${panel?.panelId}|">
-                            <div class="col-lg-12 text-center">
-                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                        </div>
+            <!--
+            <input type="checkbox" name="accordion" th:id="|answer-${panel?.panelId}|">
+            <label th:for="|answer-${panel?.panelId}|"><em></em></label>
+            <div class="row">
+                <div th:if="${subPanelMap.get('Application histogram')}" th:with="appNode=${subPanelMap.get('Application histogram')}" class="col-xs-8">
+                    <div class="box_panel" style="border-bottom-width: 0px;">
+                        <div class="box_panel-text3">응답시간 히스토그램</div>
+                        <div th:id="|container-${appNode?.panelId}|" class="chart-container box_panel" style="min-height: 100px;"></div>
                     </div>
-                </th:block>
-                <th:block th:unless="${panel?.panelType} == 'UP/DOWN'">
-                    <div class="box_panel-text4">
-                        <span th:id="|container-${panel?.panelId}|" class="color_g">
-                            <div class="col-lg-12 text-center">
-                                <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                        </span>
-                        <span th:id="|container--${panel?.panelId}|" class="st"></span>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="mini-table-panel(panel)">
-        <div class="col-lg-12 col-lg-8">
-            <div class="col-xs-12 box1" style="min-height: 300px;">
-                <div class="row col-xs-12">
-                    <div th:text="${panel?.title}" class="title_chart_c col-xs-12">Panel Title</div>
                 </div>
-                <div th:id="|container-${panel?.panelId}|" class="row col-xs-12">
-                    <div class="col-lg-12 text-center spinner-center" style="transform: translate(0px, 300%);">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
+                <div class="row col-xs-4">
+                    <div th:if="${subPanelMap.get('Application avg. response time')}" th:with="appNode=${subPanelMap.get('Application avg. response time')}" class="box_chart2 mb_7">
+                        <div class="txt text-center">평균 응답시간</div>
+                        <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
+                    </div>
+                    <div th:if="${subPanelMap.get('Application error count')}" th:with="appNode=${subPanelMap.get('Application error count')}" class="box_chart_red">
+                        <div class="txt text-center">Error Count</div>
+                        <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
                     </div>
                 </div>
             </div>
+            -->
         </div>
-    </th:block>
-
-    <th:block th:fragment="dashboard-table-panel(panel)">
-        <div class="box_panel">
-            <!--            <div class="box_panel-heading2" th:text="${panel?.title}"><div class="circle c_normal"></div>Normal&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_warning"></div>Warning&nbsp;&nbsp;&nbsp;&nbsp;<div class="circle c_danger"></div>Danger</div>-->
-            <div class="box_panel-heading" th:text="${panel?.title}">
-                <div class="box_table-body">
-                    <table class="list_system" th:id="|container-${panel?.panelId}|">
-                        <thead>
-                        <tr>
-                            <th>Alarm명</th>
-                            <th>Message</th>
-                            <th>Severity</th>
-                            <th>Category</th>
-                            <th>System</th>
-                            <th>Time</th>
-                            <th>Check</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>CPU High</td>
-                            <td>HLI1000 CPU 80%</td>
-                            <td><div class="circle c_normal"></div></td>
-                            <td>VM</td>
-                            <td>HLI1000</td>
-                            <td>2020-03-24   12:34:05</td>
-                            <td><button class="btn btn-md btn-outline-white"> Check</button></td>
-                        </tr>
-                        <tr>
-                            <td>CPU High</td>
-                            <td>HLI1000 CPU 80%</td>
-                            <td><div class="circle c_warning"></div></td>
-                            <td>VM</td>
-                            <td>HLI1000</td>
-                            <td>2020-03-24   12:34:05</td>
-                            <td><button class="btn btn-md btn-outline-white"><i class="feather icon-check-circle"></i> 확 인</button></td>
-                        </tr>
-                        <tr>
-                            <td>CPU High</td>
-                            <td>HLI1000 CPU 80%</td>
-                            <td><div class="circle c_danger"></div></td>
-                            <td>VM</td>
-                            <td>HLI1000</td>
-                            <td>2020-03-24   12:34:05</td>
-                            <td><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> Check</button></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-3-app-board(panel)">
-        <div class="col-md-12 col-lg-3">
-            <div class="col-xs-12 box1">
-                <div class="row col-xs-12">
-                    <div th:text="${panel?.title}" class="title_chart_c col-xs-12">Panel Title</div>
-                </div>
-                <div th:id="|container-${panel?.panelId}|" class="row col-xs-12">
-                    <div class="col-lg-12 text-center">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="col-6-app-board(panel)">
-        <div class="col-md-12 col-lg-6">
-            <div class="col-xs-12 box1">
-                <div class="row col-xs-12">
-                    <div th:text="${panel?.title}" class="title_chart_c col-xs-12">Panel Title</div>
-                </div>
-                <div th:id="|container-${panel?.panelId}|" class="row col-xs-12">
-                    <div class="col-lg-12 text-center spinner-center" style="transform: translate(0px, 300%);">
-                        <div class="spinner-border" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
-
-    <!-- // TODO 코드수정함 services 확인 필요 20210409 -->
-    <th:block th:fragment="col-3-app-group-head-card-panel(panel)">
-        <div class="col-md-12 col-lg-3"
-             th:with="subPanelMap=${T(com.kubeworks.watcher.ecosystem.ExternalConstants).thymeleafConvertList2Map(panel?.subPanel)}">
-            <!--card view start -->
-            <div class="box_panel" >
-                <div class="row" >
-                    <!-- // TODO 코드수정함 services 확인 필요 20210409 -->
-                    <div class="box_panel-stitle" style="color: #f37320" th:text="|${panel?.title} (${@applicationService.getDisplayName(panel?.title)})|">Panel Title</div>
-                </div>
-                <div class="row pt_5">
-                    <div th:if="${subPanelMap.get('Application Status')}"
-                         th:with="appNode=${subPanelMap.get('Application Status')}"
-                         class="col-xs-4">
-                        <div th:id="|container-${appNode?.panelId}|"></div>
-                    </div>
-                    <div th:if="${subPanelMap.get('Application Transaction')}"
-                        th:with="appNode=${subPanelMap.get('Application Transaction')}"
-                        class="col-xs-8">
-                        <div th:id="|container-${appNode?.panelId}|" class="box_middle_d point"></div>
-                    </div>
-                </div>
-                <div class="row pt_5">
-                    <div th:if="${subPanelMap.get('Replica Sets')}"
-                         th:with="appNode=${subPanelMap.get('Replica Sets')}"
-                         class="col-xs-6" style="padding-left: 0px; padding-right: 0px;">
-                        <div class="col-xs-12" style="padding-left: 5px; padding-right: 0px;">
-                            <div th:id="|container-${appNode?.panelId}|" style="min-height: 110px; padding-left: 0px; padding-right: 0px;"
-                                 class="box_middle_d point"></div>
-                        </div>
-                    </div>
-                    <div th:if="${subPanelMap.get('CPU')}"
-                         th:with="appNode=${subPanelMap.get('CPU')}"
-                         class="col-xs-3" style="padding-left: 0px; padding-right: 0px;">
-                        <div class="col-xs-12" style="padding-left: 5px; padding-right: 0px;">
-                            <div th:id="|container-${appNode?.panelId}|"
-                                 class="chart-container box_panel" style="min-height: 110px; padding-left: 0px; padding-right: 0px;"></div>
-                        </div>
-                    </div>
-                    <div th:if="${subPanelMap.get('Memory')}"
-                         th:with="appNode=${subPanelMap.get('Memory')}"
-                         class="col-xs-3" style="padding-left: 0px; padding-right: 0px;">
-                        <div class="col-xs-12" style="padding-left: 5px; padding-right: 5px;">
-                            <div th:id="|container-${appNode?.panelId}|"
-                                 class="chart-container box_panel" style="min-height: 110px; padding-left: 0px; padding-right: 0px;"></div>
-                        </div>
-                    </div>
-                </div>
-                <!--내용열림 시작 -->
-                <input type="checkbox" name="accordion" th:id="|answer-${panel?.panelId}|">
-                <label th:for="|answer-${panel?.panelId}|"><em></em></label>
-                <div class="row">
-                    <div th:if="${subPanelMap.get('Application histogram')}"
-                         th:with="appNode=${subPanelMap.get('Application histogram')}"
-                         class="col-xs-8">
-                        <div class="box_panel" style="border-bottom-width: 0px;">
-                            <div class="box_panel-text3">응답시간 히스토그램</div>
-                            <div th:id="|container-${appNode?.panelId}|"
-                                 class="chart-container box_panel" style="min-height: 100px;"></div>
-                        </div>
-                    </div>
-                    <div class="row col-xs-4">
-                        <div th:if="${subPanelMap.get('Application avg. response time')}"
-                             th:with="appNode=${subPanelMap.get('Application avg. response time')}"
-                             class="box_chart2 mb_7">
-                            <div class="txt text-center">평균 응답시간</div>
-                            <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
-                        </div>
-                        <div th:if="${subPanelMap.get('Application error count')}"
-                             th:with="appNode=${subPanelMap.get('Application error count')}"
-                             class="box_chart_red">
-                            <div class="txt text-center">Error Count</div>
-                            <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>
-                        </div>
-                    </div>
-                </div>
-                <!--내용열림 끝-->
-            </div>
-            <!--card view end -->
-        </div>
-    </th:block>
-
+    </div>
+</th:block>
 </body>
 </html>

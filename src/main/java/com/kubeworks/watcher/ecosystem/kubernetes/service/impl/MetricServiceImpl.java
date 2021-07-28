@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 public class MetricServiceImpl implements MetricService {
 
     private static final String H2_FORMATDATE = "FORMATDATETIME(create_time, '%s')";
-    private static final String MYSQL_FORMATDATE = "DATE_FORMAT(create_time ,%s)";
+    private static final String MYSQL_FORMATDATE = "DATE_FORMAT(create_time, '%s')";
 
     private final CoreV1ApiExtendHandler coreV1Api;
     private final ClusterPodUsageMapper clusterPodUsageMapper;
@@ -181,21 +181,32 @@ public class MetricServiceImpl implements MetricService {
         log.debug("end={} // count={}, aggregateUsage={}", System.currentTimeMillis() - startMs,
             aggregateUsage.size(), aggregateUsage);
 
-        clusterPodUsageMapper.inserts(aggregateUsage);
+        if (aggregateUsage.size() != 0) {
+            clusterPodUsageMapper.inserts(aggregateUsage); return;
+        }
+
+        log.debug("skip database insert operation -> usage data size 0");
     }
 
     private String getUsageGroupByFormat(ChronoUnit unit) {
-        String format = MYSQL_FORMATDATE;
+
         if (StringUtils.equalsIgnoreCase(databaseEngine, "h2")) {
-            format = H2_FORMATDATE;
+            if (unit == ChronoUnit.DAYS) {
+                return String.format(H2_FORMATDATE, "yyyy-MM-dd HH:00:00");
+            }
+            if (unit == ChronoUnit.MONTHS) {
+                return String.format(H2_FORMATDATE, "yyyy-MM-dd 00:00:00");
+            }
+        } else if (StringUtils.equalsIgnoreCase(databaseEngine, "mysql")) {
+            if (unit == ChronoUnit.DAYS) {
+                return String.format(MYSQL_FORMATDATE, "%Y-%m-%d %h:00:00");
+            }
+            if (unit == ChronoUnit.MONTHS) {
+                return String.format(MYSQL_FORMATDATE, "%Y-%m-%d 00:00:00");
+            }
         }
-        if (unit == ChronoUnit.DAYS) {
-            return String.format(format, "yyyy-MM-dd HH:00:00");
-        } else if (unit == ChronoUnit.MONTHS) {
-            return String.format(format, "yyyy-MM-dd 00:00:00");
-        } else {
-            throw new IllegalArgumentException("unsupported unit // unit=" + unit);
-        }
+
+        throw new IllegalArgumentException("unsupported unit // unit=" + unit);
     }
 
     private MetricResponseData.MetricResult getMetricValue(UsageMetricType usageMetricType, List<ClusterPodUsage> clusterPodUsages, String metricName, boolean isMax) {

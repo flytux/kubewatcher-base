@@ -133,11 +133,11 @@ public class KwUserRestController {
     @ResponseBody
     @PostMapping("/security/roles/user-role-management/save")
     public ApiResponse<String> saveRole(@ModelAttribute KwUserRoleRule kwUserRoleRule) {
-        return kwRoleService.saveKwUserRoleRule(kwUserRoleRule); }
+        return kwRoleService.createKwUserRoleRule(kwUserRoleRule); }
 
     @ResponseBody
     @PostMapping("/security/roles/user-role-management/modify")
     public ApiResponse<String> modifyRule(@RequestParam("rolenameList") List<String> rolenameList, @RequestParam("ruleList") List<String> ruleList) {
-        return kwRoleService.modifyKwUserRoleRule(rolenameList, ruleList);
+        return kwRoleService.updateKwUserRoleRule(rolenameList, ruleList);
     }
 }

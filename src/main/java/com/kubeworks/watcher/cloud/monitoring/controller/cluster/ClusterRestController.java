@@ -19,8 +19,8 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import java.util.*;
 
 @RestController
-@RequestMapping(value="/api/v1/monitoring/cluster")
 @AllArgsConstructor(onConstructor_={@Autowired})
+@RequestMapping(value="/api/v1/monitoring/cluster")
 public class ClusterRestController {
 
     private static final long NODE_MENU_ID = 112;

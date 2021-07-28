@@ -3,6 +3,7 @@ package com.kubeworks.watcher.config;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -72,7 +73,7 @@ public class SecurityNativeConfig {
 
     private static final String[] NO_CSRF_PATTERNS = {"/h2-console/**"};
     private static final String[] NO_AUTH_PATTERNS = {"/login*", "/logout*", "/error*", "/h2-console/**"};
-    private static final String[] STATIC_RESOURCES_PATTERNS = {"/assets/**", "/vendor/**", "/**/*.js.map", "/favicon.ico"};
+    private static final String[] STATIC_RESOURCES_PATTERNS = {"/assets/**", "/vendor/**", "/**/*.css.map", "/**/*.js.map", "/**/*.map", "/favicon.ico"};
 
     @Getter @ToString
     public static class MenuInfo {
@@ -177,6 +178,10 @@ public class SecurityNativeConfig {
 
             return ((ExtendedWebAuthenticationDetails)o).getMenuAuthorities();
         }
+
+        public static boolean containsAnyMenuId(final Set<Long> menuAuthorities, final Long... menuIds) {
+            return Arrays.stream(menuIds).anyMatch(menuAuthorities::contains);
+        }
     }
 
     @Bean
@@ -247,9 +252,10 @@ public class SecurityNativeConfig {
     @Slf4j
     static class MenuAuthoritiesVoter implements AccessDecisionVoter<FilterInvocation> {
 
-        private static final String ROOT_PATH = "/";
-        private static final List<String> PROXY_PATHS = ImmutableList.of("/proxy/loki/", "/proxy/prometheus/", "/proxy/prometheusTBD");
         private static final UrlPathHelper HELPER = new UrlPathHelper();
+
+        private static final String ROOT_PATH = "/";
+        private static final List<String> EXCLUSION_PATH = ImmutableList.of("/api/v1/", "/proxy/loki/", "/proxy/prometheus/", "/proxy/prometheusTBD");
 
         @Override
         public boolean supports(final ConfigAttribute attribute) { return true; }
@@ -282,8 +288,8 @@ public class SecurityNativeConfig {
                 return ACCESS_ABSTAIN;
             }
 
-            if (ROOT_PATH.equals(requested) || PROXY_PATHS.stream().anyMatch(requested::startsWith)) {
-                log.debug("Request matched to either '/' or zuul proxy managed path -> {}", requested);
+            if (ROOT_PATH.equals(requested) || EXCLUSION_PATH.stream().anyMatch(requested::startsWith)) {
+                log.debug("Request matched to either '/' or zuul proxy managed path or rest api path -> {}", requested);
                 return ACCESS_GRANTED;
             }
 
@@ -312,7 +318,7 @@ public class SecurityNativeConfig {
         @Override public int getOrder() { return 0; }
     }
 
-    @Getter @ToString
+    @Getter @ToString @EqualsAndHashCode(callSuper=true)
     static class ExtendedWebAuthenticationDetails extends WebAuthenticationDetails {
 
         private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
@@ -329,16 +335,6 @@ public class SecurityNativeConfig {
             super(request);
             this.menuAuthorities = ImmutableSet.copyOf(menuAuthorities);
             this.pathAuthorities = ImmutableMap.copyOf(pathAuthorities);
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            return super.equals(o);
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
         }
     }
 
@@ -393,8 +389,8 @@ public class SecurityNativeConfig {
 
             super(); super.setAuthenticationManager(manager);
             super.setAuthenticationDetailsSource (new ExtendedAuthenticationDetailsSource ());
-            super.setAuthenticationSuccessHandler(new ExtendedAuthenticationSuccessHandler(handler));
             super.setAuthenticationFailureHandler(new ExtendedAuthenticationFailureHandler());
+            super.setAuthenticationSuccessHandler(new ExtendedAuthenticationSuccessHandler(handler));
         }
     }
 

@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [Services] start -->
         <div class="row">
-            <div class="main_title_top"> <i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -32,85 +24,73 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(services) ? '0' : services.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(services) ? '0' : services.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Type</th>
-                            <th>Cluster IP</th>
-                            <th>Ports</th>
-                            <th>External IP</th>
-                            <th>Selector</th>
-                            <th>Age</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>Type</th>
+                                <th>Cluster IP</th>
+                                <th>Ports</th>
+                                <th>External IP</th>
+                                <th>Selector</th>
+                                <th>Age</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(services)}">
-                            <td colspan="8" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(services)}" th:each="service : ${services}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:serviceDetail(&quot;' + ${service?.namespace} + '&quot;, &quot;'+ ${service?.name} + '&quot;)'"
-                                   th:utext="${service?.name}">Name</a>
-                            </td>
-                            <td  th:text="${service?.namespace}">Namespace</td>
-                            <td th:text="${service?.type}">Type</td>
-                            <td th:text="${service?.clusterIp}">Cluster IP</td>
-                            <td th:text="${service?.ports}">Ports</td>
-                            <td th:text="${service?.externalIp}">External IP</td>
-                            <td>
-                                <div class="row" th:each="select : ${service?.selector}" >
-                                <span class="madal_label"
-                                      th:if = " ${#strings.contains(select,',')}"
-                                      th:text = "${#strings.length(#strings.arraySplit(select,',')[0])}>30?
-                                      |${#strings.arraySplit(select,',')[0]}...| : |${#strings.arraySplit(select,',')[0]}...| ">
-                                      Selector</span>
-                                    <span class="madal_label"
-                                          th:unless = " ${#strings.contains(select,',')}"
-                                          th:text = "${#strings.length(select)}>30 ? |${select}...| : ${select}">
-                                      Selector</span>
-                                </div>
-                            </td>
-                            <td th:text="${service?.age}">Age</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(services)}">
+                                <td colspan="8" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(services)}" th:each="service : ${services}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${service?.namespace}, data-name=${service?.name}" th:utext="${service?.name}"></a>
+                                </td>
+                                <td th:text="${service?.namespace}"></td>
+                                <td th:text="${service?.type}"></td>
+                                <td th:text="${service?.clusterIp}"></td>
+                                <td th:text="${service?.ports}"></td>
+                                <td th:text="${service?.externalIp}"></td>
+                                <td>
+                                    <div class="row" th:each="select : ${service?.selector}">
+                                        <span class="madal_label" th:if="${#strings.contains(select,',')}" th:text="${#strings.length(#strings.arraySplit(select,',')[0])}>30? |${#strings.arraySplit(select,',')[0]}...| : |${#strings.arraySplit(select,',')[0]}...|"></span>
+                                        <span class="madal_label" th:unless="${#strings.contains(select,',')}" th:text="${#strings.length(select)}>30 ? |${select}...| : ${select}"></span>
+                                    </div>
+                                </td>
+                                <td th:text="${service?.age}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [Services] End-->
     </div>
 
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Service : ${service?.name}|">Service : Service 명</span>
+                        <span id="myModalLabel" th:text="|Service : ${service?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <table class="table-nt">
                         <tr>
                             <th>Created</th>
-                            <td th:text="${#dates.format(service?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <td th:text="${#dates.format(service?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td th:text="${service?.name}">Kube-dns</td>
+                            <td th:text="${service?.name}"></td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td th:text="${service?.namespace}">kube-system</td>
+                            <td th:text="${service?.namespace}"></td>
                         </tr>
                         <tr>
                             <th>Labels</th>
@@ -133,123 +113,88 @@
                         <tr>
                             <th>Selector</th>
                             <td>
-                                <div class="row" th:each="item : ${service?.selector}" >
-                                    <span class="madal_label" th:text="|${item.key} : ${item.value}|">label</span>
+                                <div class="row" th:each="item : ${service?.selector}">
+                                    <span class="madal_label" th:text="|${item.key} : ${item.value}|"></span>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>Type</th>
-                            <td th:text="${service?.type}">ClusterIP</td>
+                            <td th:text="${service?.type}"></td>
                         </tr>
                     </table>
 
-                    <div class="table-title">
-                        Connection
-                    </div>
+                    <div class="table-title">Connection</div>
                     <table class="table-nt">
                         <tr>
                             <th>Cluster IP</th>
-                            <td th:text="${service?.clusterIp}">000.000.000.000</td>
+                            <td th:text="${service?.clusterIp}"></td>
                         </tr>
                         <tr>
                             <th>Ports</th>
                             <td>
-                               <div th:if="${service?.ports}" th:each="port : ${service?.ports}" th:text = "|${port.port}/${port.protocol}|"></div>
+                                <div th:if="${service?.ports}" th:each="port : ${service?.ports}" th:text = "|${port.port}/${port.protocol}|"></div>
                                 <div th:unless="${service?.ports}">-</div>
                             </td>
                         </tr>
                     </table>
 
-                    <div class="table-title">
-                        Endpoint
-                    </div>
+                    <div class="table-title">Endpoint</div>
                     <table class="table-nt">
                         <div th:if="${service?.endpoints}" th:each = "endpoint : ${service?.endpoints}">
                             <tr>
                                 <th>Name</th>
-                                <td th:text="${#strings.isEmpty(endpoint.name) ? '-' : endpoint.name}">Object-name</td>
+                                <td th:text="${#strings.isEmpty(endpoint.name) ? '-' : endpoint.name}"></td>
                             </tr>
                             <tr>
                                 <th>Endpoints</th>
-                                <td th:text="${#strings.isEmpty(endpoint.endpoints) ? '-' : endpoint.endpoints}">Object-name</td>
+                                <td th:text="${#strings.isEmpty(endpoint.endpoints) ? '-' : endpoint.endpoints}"></td>
                             </tr>
                         </div>
                     </table>
 
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(service?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${service?.events}" th:each="event : ${service?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Object-name</td>
-                            <td th:text="${event?.lastSeen}">2020-05-22 12:41:05</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(service?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${service?.events}" th:each="event : ${service?.events}">
+                                <td th:text="${event?.type}"></td>
+                                <td th:text="${event?.source}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
                         <tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        const linkUrl= [[${link}]];
+        const pathPrefix = '/cluster/network/services/namespace/';
+        /*]]>*/
 
-        var $contentList = $("#contentList"),
-            linkUrl= [[${link}]];
-
-        function serviceDetail(namespace, name) {
-            $.ajax({
-                url: "/cluster/network/services/namespace/" + namespace + "/service/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
             });
-        }
 
-        $(document).ready(function () {
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('namespace') + '/service/' + $(this).data('name'));
             });
         });
     </script>

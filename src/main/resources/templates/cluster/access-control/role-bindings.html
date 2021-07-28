@@ -1,95 +1,87 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  xmlns:th="http://www.thymeleaf.org"
-	  layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
+    <title>rb</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
     <th:block th:with="page=${@pageViewService.getPageView(321)}">
         <th:block th:replace="layout/header :: header(${page?.nav})" />
-    <div id="main_contents">
-        <!-- [Alarm 설정 목록] start -->
-        <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
-                <div class="f_r">
-                    <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
-                            <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
-                        </select>
+
+        <div id="main_contents">
+            <div class="row">
+                <div class="main_title_top">
+                    <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
+                    <div class="f_r">
+                        <div class="dropdown d_ib">
+                            <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
+                                <option value="all" selected> All </option>
+                                <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contentList" class="row">
+                <div th:fragment="contentList" class="box_panel">
+                    <div class="box_panel-total">
+                        Total : <span th:text="${#arrays.isEmpty(roleBindings) ? '0' : roleBindings.size()}" class="point pr_10"></span>
+                    </div>
+                    <div class="box_table-body">
+                        <table class="list_table70vh">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Namespace</th>
+                                    <th>Role</th>
+                                    <th>Age</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#arrays.isEmpty(roleBindings)}">
+                                    <td colspan="4" class="text-center">No results</td>
+                                </tr>
+                                <tr th:unless="${#arrays.isEmpty(roleBindings)}" th:each="roleBinding : ${roleBindings}">
+                                    <td>
+                                        <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${roleBinding?.namespace}, data-name=${roleBinding?.name}" th:utext="${roleBinding?.name}"></a>
+                                    </td>
+                                    <td th:text="${roleBinding?.namespace}"></td>
+                                    <td th:text="${roleBinding?.role}"></td>
+                                    <td th:text="${roleBinding?.age}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="contentList" class="row">
-            <div th:fragment="contentList" class="box_panel">
-                <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(roleBindings) ? '0' : roleBindings.size()}" class="point pr_10">6</span>
-                </div>
-                <div class="box_table-body">
-                    <table class="list_table70vh">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Role</th>
-                            <th>Age</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:if="${#arrays.isEmpty(roleBindings)}">
-                            <td colspan="4" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(roleBindings)}" th:each="roleBinding : ${roleBindings}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:roleBindingDetail(&quot;' + ${roleBinding?.namespace} + '&quot;, &quot;'+ ${roleBinding?.name} + '&quot;)'"
-                                   th:utext="${roleBinding?.name}">Name</a>
-                            </td>
-                            <td th:text="${roleBinding?.namespace}">kube-system</td>
-                            <td th:text="${roleBinding?.role}">system:master</td>
-                            <td th:text="${roleBinding?.age}">2020-06-29 14:21:05</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
     </th:block>
 
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Role Binding : ${roleBinding?.name}|" >Role Bindings : Role Bindings 명</span>
+                        <span id="myModalLabel" th:text="|Role Binding : ${roleBinding?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <div class="row">
                         <table class="table-nt">
                             <tr>
                                 <th>Created</th>
-                                <td th:text="${#dates.format(roleBinding?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${#dates.format(roleBinding?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td th:text="${roleBinding?.name}">cluster-admin</td>
+                                <td th:text="${roleBinding?.name}"></td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td th:text="${roleBinding?.namespace}">kube-system</td>
+                                <td th:text="${roleBinding?.namespace}"></td>
                             </tr>
                             <tr>
                                 <th>Labels</th>
@@ -111,51 +103,47 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="table-title">
-                        Reference
-                    </div>
+                    <div class="table-title">Reference</div>
                     <div class="row">
                         <table class="list_mtable_100">
                             <thead>
-                            <tr>
-                                <th>Kind</th>
-                                <th>Name</th>
-                                <th>API Group</th>
-                            </tr>
+                                <tr>
+                                    <th>Kind</th>
+                                    <th>Name</th>
+                                    <th>API Group</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr th:if="${#arrays.isEmpty(roleBinding?.roleRefs)}">
-                                <td colspan="3" class="text-center">No results</td>
-                            </tr>
-                            <tr th:if="${roleBinding?.roleRefs}" th:each = "roleRef : ${roleBinding?.roleRefs}">
-                                <td th:text="${#strings.isEmpty(roleRef.kind) ? '-' : roleRef.kind}">Cluster</td>
-                                <td th:text="${#strings.isEmpty(roleRef.name) ? '-' : roleRef.name}">cluster-admin</td>
-                                <td th:text="${#strings.isEmpty(roleRef.apiGroup) ? '-' : roleRef.apiGroup}">rbac.authorization.k8s.io</td>
-                            </tr>
+                                <tr th:if="${#arrays.isEmpty(roleBinding?.roleRefs)}">
+                                    <td colspan="3" class="text-center">No results</td>
+                                </tr>
+                                <tr th:if="${roleBinding?.roleRefs}" th:each = "roleRef : ${roleBinding?.roleRefs}">
+                                    <td th:text="${#strings.isEmpty(roleRef.kind) ? '-' : roleRef.kind}"></td>
+                                    <td th:text="${#strings.isEmpty(roleRef.name) ? '-' : roleRef.name}"></td>
+                                    <td th:text="${#strings.isEmpty(roleRef.apiGroup) ? '-' : roleRef.apiGroup}"></td>
+                                </tr>
                             <tbody>
                         </table>
                     </div>
-                    <div class="table-title">
-                        Bindings
-                    </div>
+                    <div class="table-title">Bindings</div>
                     <div class="row">
                         <table class="list_mtable_100">
                             <thead>
-                            <tr>
-                                <th>Binding</th>
-                                <th>Type</th>
-                                <th>Namespace</th>
-                            </tr>
+                                <tr>
+                                    <th>Binding</th>
+                                    <th>Type</th>
+                                    <th>Namespace</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr th:if="${#arrays.isEmpty(roleBinding?.subjects)}">
-                                <td colspan="3" class="text-center">No results</td>
-                            </tr>
-                            <tr th:if="${roleBinding?.subjects}" th:each="binding : ${roleBinding?.subjects}">
-                                <td th:text="${#strings.isEmpty(binding?.kind) ? '-' : binding.kind}">system:master</td>
-                                <td th:text="${#strings.isEmpty(binding?.name) ? '-' : binding.name}">Group</td>
-                                <td th:text="${#strings.isEmpty(roleBinding?.namespace) ? '-' : roleBinding.namespace}">kube-system</td>
-                            </tr>
+                                <tr th:if="${#arrays.isEmpty(roleBinding?.subjects)}">
+                                    <td colspan="3" class="text-center">No results</td>
+                                </tr>
+                                <tr th:if="${roleBinding?.subjects}" th:each="binding : ${roleBinding?.subjects}">
+                                    <td th:text="${#strings.isEmpty(binding?.kind) ? '-' : binding.kind}"></td>
+                                    <td th:text="${#strings.isEmpty(binding?.name) ? '-' : binding.name}"></td>
+                                    <td th:text="${#strings.isEmpty(roleBinding?.namespace) ? '-' : roleBinding.namespace}"></td>
+                                </tr>
                             <tbody>
                         </table>
                     </div>
@@ -163,48 +151,20 @@
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        const pathPrefix = '/cluster/acl/role-bindings/namespace/';
+        const linkUrl= [[${T(com.kubeworks.watcher.preference.service.PageConstants).API_URL_BY_NAMESPACED_ROLEBINDINGS}]];
+        /*]]>*/
 
-        var $contentList = $("#contentList");
-        var linkUrl= [[${T(com.kubeworks.watcher.preference.service.PageConstants).API_URL_BY_NAMESPACED_ROLEBINDINGS}]];
-
-        function roleBindingDetail(namespace, name) {
-            $.ajax({
-                url: "/cluster/acl/role-bindings/namespace/" + namespace + "/role-binding/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
             });
-        }
 
-        $(document).ready(function () {
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('namespace') + '/role-binding/' + $(this).data('name'));
             });
         });
     </script>

@@ -24,181 +24,187 @@ import java.util.stream.Collectors;
 @Service
 public class NetworkPolicyServiceImpl implements NetworkPolicyService {
 
-    private static final String EGRESS_POD_STR = "egressPod";
-    private static final String INGRESS_POD_STR = "ingressPod";
-    private static final String INGRESS_NAME_SPACE_STR = "ingressNameSpace";
-    private static final String EGRESS_NAME_SPACE_STR = "egressNameSpace";
+    private static final String POD = "Pod";
+    private static final String EGRESS = "egress";
+    private static final String INGRESS = "ingress";
+    private static final String NAMESPACE = "NameSpace";
 
-    private final NetworkingV1ApiExtendHandler networkApi;
-    private final K8sObjectManager k8sObjectManager;
+    private static final String EGRESS_POD_STR = EGRESS + POD;
+    private static final String INGRESS_POD_STR = INGRESS + POD;
+    private static final String EGRESS_NAMESPACE_STR = EGRESS + NAMESPACE;
+    private static final String INGRESS_NAMESPACE_STR = INGRESS + NAMESPACE;
+
+    private final K8sObjectManager manager;
+    private final NetworkingV1ApiExtendHandler handler;
 
     @Autowired
-    public NetworkPolicyServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
-        this.networkApi = new NetworkingV1ApiExtendHandler(k8sApiClient);
-        this.k8sObjectManager = k8sObjectManager;
+    public NetworkPolicyServiceImpl(final K8sObjectManager manager, final ApiClient client) {
+        this.manager = manager;
+        this.handler = new NetworkingV1ApiExtendHandler(client);
     }
 
-    @SneakyThrows
     @Override
+    @SneakyThrows
     public List<NetworkPolicyTable> allNamespaceNetworkPolicyTables() {
-        ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.searchNetworkPoliciesTableList();
-        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
-            NetworkingV1NetworkPolicyTableList networkPolicies = apiResponse.getData();
-            List<NetworkPolicyTable> dataTable = networkPolicies.createDataTableList();
-            dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
+
+        final ApiResponse<NetworkingV1NetworkPolicyTableList> response = handler.searchNetworkPoliciesTableList();
+
+        if (ExternalConstants.isSuccessful(response.getStatusCode())) {
+            final List<NetworkPolicyTable> dataTable = response.getData().createDataTableList();
+            dataTable.sort((o, n) -> manager.compareByNamespace(o.getNamespace(), n.getNamespace()));
+
             return dataTable;
         }
+
         return Collections.emptyList();
     }
 
-    @SneakyThrows
     @Override
-    public List<NetworkPolicyTable> policies(String namespace) {
+    @SneakyThrows
+    public List<NetworkPolicyTable> policies(final String namespace) {
+
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceNetworkPolicyTables();
         }
-        ApiResponse<NetworkingV1NetworkPolicyTableList> apiResponse = networkApi.searchNetworkPoliciesTableList(namespace);
-        if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
-            NetworkingV1NetworkPolicyTableList networkPolicies = apiResponse.getData();
-            return networkPolicies.createDataTableList();
+
+        final ApiResponse<NetworkingV1NetworkPolicyTableList> response = handler.searchNetworkPoliciesTableList(namespace);
+
+        if (ExternalConstants.isSuccessful(response.getStatusCode())) {
+            return response.getData().createDataTableList();
         }
+
         return Collections.emptyList();
     }
 
-    @SneakyThrows
     @Override
-    public Optional<NetworkPolicyDescribe> networkPolicy(String namespace, String name) {
-        ApiResponse<V1NetworkPolicy> apiResponse = networkApi.readNamespacedNetworkPolicyWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
-        if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
+    @SneakyThrows
+    public Optional<NetworkPolicyDescribe> networkPolicy(final String namespace, final String name) {
+
+        final ApiResponse<V1NetworkPolicy> response = handler.readNamespacedNetworkPolicyWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
+
+        if (!ExternalConstants.isSuccessful(response.getStatusCode())) {
             return Optional.empty();
         }
 
-        NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder = NetworkPolicyDescribe.builder();
-        V1NetworkPolicy data = apiResponse.getData();
-        setService(builder, data);
+        final NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder = NetworkPolicyDescribe.builder();
+        setService(builder, response.getData());
 
-        NetworkPolicyDescribe networkPolicyDescribe = builder.build();
-
-        return Optional.of(networkPolicyDescribe);
+        return Optional.of(builder.build());
     }
 
-    private void setService(NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, V1NetworkPolicy data) {
+    private void setService(final NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, final V1NetworkPolicy data) {
 
-        if (data.getMetadata() != null) {
-            V1ObjectMeta metadata = data.getMetadata();
-            builder.name(metadata.getName());
-            builder.namespace(metadata.getNamespace());
-            builder.labels(metadata.getLabels());
-            builder.uid(metadata.getUid());
-            builder.annotations(metadata.getAnnotations());
-            builder.creationTimestamp(metadata.getCreationTimestamp());
+        if (Objects.nonNull(data.getMetadata())) {
+            final V1ObjectMeta metadata = data.getMetadata();
+
+            builder.name(metadata.getName()).namespace(metadata.getNamespace()).labels(metadata.getLabels())
+                .uid(metadata.getUid()).annotations(metadata.getAnnotations()).creationTimestamp(metadata.getCreationTimestamp());
         }
 
-        if (data.getSpec() != null) {
-            V1NetworkPolicySpec spec = data.getSpec();
+        if (Objects.nonNull(data.getSpec())) {
+            final V1NetworkPolicySpec spec = data.getSpec();
+            final List<V1NetworkPolicyIngressRule> ingresses = spec.getIngress();
 
-            builder.egresses(spec.getEgress());
-            builder.ingresses(spec.getIngress());
-
+            builder.egresses(spec.getEgress()).ingresses(ingresses);
             setSelector(builder, spec);
 
-            // ingress
-            List<V1NetworkPolicyIngressRule> ingresses = spec.getIngress();
-            for (V1NetworkPolicyIngressRule ingress : ingresses) {
-                List<V1NetworkPolicyPeer> fromList = ingress.getFrom();
+            Optional.ofNullable(ingresses).filter(CollectionUtils::isNotEmpty).ifPresent(e -> processIngresses(builder, e));
+            Optional.ofNullable(spec.getEgress()).filter(CollectionUtils::isNotEmpty).ifPresent(e -> processEgresses(builder, e));
+        }
+    }
 
-                for (V1NetworkPolicyPeer from : fromList) {
-                    V1LabelSelector ingressPod = from.getPodSelector();
-                    V1LabelSelector ingressNameSpace = from.getNamespaceSelector();
-                    if (ingressPod != null) {
-                        setFromToSelector(builder, ingressPod, INGRESS_POD_STR);
-                    }
-                    if (ingressNameSpace != null) {
-                        setFromToSelector(builder, ingressNameSpace, INGRESS_NAME_SPACE_STR);
-                    }
-                }
-            }
+    private void processIngresses(final NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, final List<V1NetworkPolicyIngressRule> ingresses) {
 
-            // egress
-            List<V1NetworkPolicyEgressRule> egresses = spec.getEgress();
-            for (V1NetworkPolicyEgressRule egress : egresses) {
-                List<V1NetworkPolicyPeer> toList = egress.getTo();
+        for (final V1NetworkPolicyIngressRule rule : ingresses) {
+            final List<V1NetworkPolicyPeer> fromPeer = rule.getFrom();
 
-                for (V1NetworkPolicyPeer to : toList) {
-                    V1LabelSelector egressPod = to.getPodSelector();
-                    V1LabelSelector egressNameSpace = to.getNamespaceSelector();
-                    if (egressPod != null) {
-                        setFromToSelector(builder, egressPod, EGRESS_POD_STR);
+            if (CollectionUtils.isNotEmpty(fromPeer)) {
+                for (final V1NetworkPolicyPeer peer : fromPeer) {
+                    final V1LabelSelector pod = peer.getPodSelector();
+                    final V1LabelSelector namespace = peer.getNamespaceSelector();
+
+                    if (Objects.nonNull(pod)) {
+                        setFromToSelector(builder, pod, INGRESS_POD_STR);
                     }
-                    if (egressNameSpace != null) {
-                        setFromToSelector(builder, egressNameSpace, EGRESS_NAME_SPACE_STR);
+                    if (Objects.nonNull(namespace)) {
+                        setFromToSelector(builder, namespace, INGRESS_NAMESPACE_STR);
                     }
                 }
             }
         }
     }
 
-    private void setSelector(NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, V1NetworkPolicySpec spec) {
-        V1LabelSelector selector = spec.getPodSelector();
+    private void processEgresses(final NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, final List<V1NetworkPolicyEgressRule> egresses) {
 
-        if (selector.getMatchLabels() != null) {
+        for (final V1NetworkPolicyEgressRule egress : egresses) {
+            final List<V1NetworkPolicyPeer> toPeer = egress.getTo();
+
+            if (CollectionUtils.isNotEmpty(toPeer)) {
+                for (final V1NetworkPolicyPeer to : toPeer) {
+                    final V1LabelSelector pod = to.getPodSelector();
+                    final V1LabelSelector namespace = to.getNamespaceSelector();
+
+                    if (Objects.nonNull(pod)) {
+                        setFromToSelector(builder, pod, EGRESS_POD_STR);
+                    }
+                    if (Objects.nonNull(namespace)) {
+                        setFromToSelector(builder, namespace, EGRESS_NAMESPACE_STR);
+                    }
+                }
+            }
+        }
+    }
+
+    private void setSelector(final NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, final V1NetworkPolicySpec spec) {
+
+        final V1LabelSelector selector = spec.getPodSelector();
+
+        if (Objects.nonNull(selector.getMatchLabels())) {
             builder.podSelector(selector.getMatchLabels());
         } else {
-            if (CollectionUtils.isNotEmpty(selector.getMatchExpressions())) {
-                Map<String, String> selectMatchExpr = selector.getMatchExpressions().stream()
-                    .filter(requirement -> Objects.nonNull(requirement.getValues()) && Objects.nonNull(requirement.getKey()))
-                    .collect(Collectors.toMap(V1LabelSelectorRequirement::getKey, requirement -> {
-                        String values = String.join(", ", requirement.getValues());
-                        return values + "(" + requirement.getOperator() + ")";
-                    }));
-                builder.podSelector(selectMatchExpr);
+            final List<V1LabelSelectorRequirement> expressions = selector.getMatchExpressions();
+            if (CollectionUtils.isNotEmpty(expressions)) {
+                builder.podSelector(createPodSelector(expressions));
             }
         }
     }
 
-    private void setFromToSelector(NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, V1LabelSelector selector, String select) {
-        if (selector.getMatchLabels() != null) {
-            switch (select) {
-                case INGRESS_POD_STR :
-                    builder.ingressPod(selector.getMatchLabels());
-                    break;
-                case INGRESS_NAME_SPACE_STR :
-                    builder.ingressNamespace(selector.getMatchLabels());
-                    break;
-                case EGRESS_POD_STR :
-                    builder.egressPod(selector.getMatchLabels());
-                    break;
-                case EGRESS_NAME_SPACE_STR :
-                    builder.egressNamespace(selector.getMatchLabels());
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            if (CollectionUtils.isNotEmpty(selector.getMatchExpressions())) {
-                Map<String, String> selectMatchExpr = selector.getMatchExpressions().stream()
-                    .filter(requirement -> Objects.nonNull(requirement.getValues()) && Objects.nonNull(requirement.getKey()))
-                    .collect(Collectors.toMap(V1LabelSelectorRequirement::getKey, requirement -> {
-                        String values = String.join(", ", requirement.getValues());
-                        return values + "(" + requirement.getOperator() + ")";
-                    }));
+    private Map<String, String> createPodSelector(final List<V1LabelSelectorRequirement> expressions) {
+        return expressions.stream().filter(r -> Objects.nonNull(r.getValues()) && Objects.nonNull(r.getKey()))
+            .collect(Collectors.toMap(V1LabelSelectorRequirement::getKey, v -> String.join(", ", v.getValues()) + "(" + v.getOperator() + ")"));
+    }
 
-                switch (select) {
-                    case INGRESS_POD_STR :
-                        builder.ingressPod(selectMatchExpr);
-                        break;
-                    case INGRESS_NAME_SPACE_STR :
-                        builder.ingressNamespace(selectMatchExpr);
-                        break;
-                    case EGRESS_POD_STR :
-                        builder.egressPod(selectMatchExpr);
-                        break;
-                    case EGRESS_NAME_SPACE_STR :
-                        builder.egressNamespace(selectMatchExpr);
-                        break;
-                    default:
-                        break;
-                }
+    private void setFromToSelector(final NetworkPolicyDescribe.NetworkPolicyDescribeBuilder builder, final V1LabelSelector selector, final String select) {
+
+        final Map<String, String> matchLabels = selector.getMatchLabels();
+        if (Objects.nonNull(matchLabels)) {
+            switch (select) {
+                case INGRESS_POD_STR:
+                    builder.ingressPod(matchLabels); break;
+                case INGRESS_NAMESPACE_STR:
+                    builder.ingressNamespace(matchLabels); break;
+                case EGRESS_POD_STR:
+                    builder.egressPod(matchLabels); break;
+                case EGRESS_NAMESPACE_STR:
+                    builder.egressNamespace(matchLabels); break;
+                default: break;
+            }
+            return;
+        }
+
+        final List<V1LabelSelectorRequirement> expressions = selector.getMatchExpressions();
+        if (CollectionUtils.isNotEmpty(expressions)) {
+            final Map<String, String> selectMatchExpr = createPodSelector(expressions);
+            switch (select) {
+                case INGRESS_POD_STR:
+                    builder.ingressPod(selectMatchExpr); break;
+                case INGRESS_NAMESPACE_STR:
+                    builder.ingressNamespace(selectMatchExpr); break;
+                case EGRESS_POD_STR:
+                    builder.egressPod(selectMatchExpr); break;
+                case EGRESS_NAMESPACE_STR:
+                    builder.egressNamespace(selectMatchExpr); break;
+                default: break;
             }
         }
     }

@@ -53,7 +53,6 @@ public class KwUser extends BaseEntity {
     @JoinColumn(name = "groupname", foreignKey = @ForeignKey(name = "KW_USER_FK01"))
     KwUserGroup kwUserGroup;
 
-    // TODO 코드수정 확인 필요
     public String getUserRole() {
 
         final List<String> rolenameList = new ArrayList<>();

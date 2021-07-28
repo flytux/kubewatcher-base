@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -41,7 +42,7 @@ public abstract class V1ObjectTableList<T extends NamespaceSettable, O extends K
 
     public List<T> createDataTableList() {
 
-        if (Objects.isNull(rows) || Objects.isNull(columnDefinitions)) { return ImmutableList.of(); }
+        if (Objects.isNull(rows) || Objects.isNull(columnDefinitions)) { return Collections.emptyList(); }
 
         final List<T> res = Lists.newArrayListWithExpectedSize(rows.size());
 

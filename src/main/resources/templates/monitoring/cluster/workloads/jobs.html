@@ -1,32 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
-    <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
-    <link rel="stylesheet" th:href="@{/vendor/highlight/yaml.min.js}">
-
-    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [클러스터 Jobs] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -36,100 +24,77 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(jobs) ? '0' : jobs.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(jobs) ? '0' : jobs.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Completions</th>
-                            <th>Age</th>
-                            <th>Conditions</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>Completions</th>
+                                <th>Age</th>
+                                <th>Conditions</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(jobs)}">
-                            <td colspan="5" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(jobs)}" th:each="job : ${jobs}">
-                            <td>
-                            <a class="table2-link" th:href="'javascript:jobDetail(&quot;' + ${job?.namespace} + '&quot;, &quot;'+ ${job?.name} + '&quot;)'"
-                               th:utext="${job?.name}">Name</a>
-                            </td>
-                            <td th:text="${job?.namespace}">Namespace</td>
-                            <td th:text="${job?.completions}">Completions</td>
-                            <td th:text="${job?.age}">Age</td>
-                            <td th:switch="${job?.statusCondition}">
-                                <span th:case="Complete" class="madal_label_active" th:text="${job?.statusCondition}">Complete</span>
-                                <span th:case="Running" class="madal_label_warning" th:text="${job?.statusCondition}">Running</span>
-                                <span th:case="Pending" class="madal_label_warning" th:text="${job?.statusCondition}">Pending</span>
-                                <span th:case="Succeeded" class="madal_label_active" th:text="${job?.statusCondition}">Succeeded</span>
-                                <span th:case="Failed" class="madal_label_danger" th:text="${job?.statusCondition}">Failed</span>
-                                <span th:case="Unknown" class="madal_label" th:text="${job?.statusCondition}">Unknown</span>
-                                <span th:case="*" class="madal_label" th:text="${job?.statusCondition}"></span>
-                            </td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(jobs)}">
+                                <td colspan="5" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(jobs)}" th:each="job : ${jobs}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${job?.namespace}, data-name=${job?.name}" th:utext="${job?.name}"></a>
+                                </td>
+                                <td th:text="${job?.namespace}"></td>
+                                <td th:text="${job?.completions}"></td>
+                                <td th:text="${job?.age}"></td>
+                                <td th:switch="${job?.statusCondition}">
+                                    <span th:case="Complete" class="madal_label_active" th:text="${job?.statusCondition}"></span>
+                                    <span th:case="Running" class="madal_label_warning" th:text="${job?.statusCondition}"></span>
+                                    <span th:case="Pending" class="madal_label_warning" th:text="${job?.statusCondition}"></span>
+                                    <span th:case="Succeeded" class="madal_label_active" th:text="${job?.statusCondition}"></span>
+                                    <span th:case="Failed" class="madal_label_danger" th:text="${job?.statusCondition}"></span>
+                                    <span th:case="Unknown" class="madal_label" th:text="${job?.statusCondition}"></span>
+                                    <span th:case="*" class="madal_label" th:text="${job?.statusCondition}"></span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
-<!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
-<!--            <nav>-->
-<!--                <ul class="pagination" >-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Previous">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                    <li class="active"><a href="#">1</a></li>-->
-<!--                    <li><a href="#">2</a></li>-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Next">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </nav>-->
-<!--        </div>-->
-        <!-- [클러스터 Jobs] End-->
     </div>
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Job : ${job?.name}|">Jobs : Jobs 명</span>
+                        <span id="myModalLabel" th:text="|Job : ${job?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <div class="row">
                         <table class="table-nt">
                             <tr>
                                 <th>Created</th>
-                                <td th:text="${#dates.format(job?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${#dates.format(job?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td th:text="${job?.name}">pi</td>
+                                <td th:text="${job?.name}"></td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td th:text="${job?.namespace}">default</td>
+                                <td th:text="${job?.namespace}"></td>
                             </tr>
                             <tr>
                                 <th>Selector</th>
                                 <td>
-                                    <div class="row" th:each="item : ${job?.selector}" >
-                                        <span class="madal_label" th:text="|${item.key} : ${item.value} |">controller-uid=c99483s</span>
+                                    <div class="row" th:each="item : ${job?.selector}">
+                                        <span class="madal_label" th:text="|${item.key} : ${item.value}|"></span>
                                     </div>
                                 </td>
                             </tr>
@@ -153,117 +118,85 @@
                             </tr>
                             <tr>
                                 <th>Parallelism</th>
-                                <td th:text="${job?.parallelism}">1</td>
+                                <td th:text="${job?.parallelism}"></td>
                             </tr>
                             <tr>
                                 <th>Completions</th>
-                                <td th:text="${job?.completions}">1</td>
+                                <td th:text="${job?.completions}"></td>
                             </tr>
                             <tr>
                                 <th>Start Time</th>
-                                <td th:text="${#dates.format(job?.startTime,'yyyy-MM-dd HH:mm:ss')}">Mon, 02 Dec 2019 14:20:11 +200</td>
+                                <td th:text="${#dates.format(job?.startTime,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                             <tr>
                                 <th>Completed At</th>
-                                <td th:text="${#strings.isEmpty(job?.completionTime) ? '-' : #dates.format(job?.completionTime,'yyyy-MM-dd HH:mm:ss')}">Mon, 02 Dec 2019 14:20:11 +200</td>
+                                <td th:text="${#strings.isEmpty(job?.completionTime) ? '-' : #dates.format(job?.completionTime,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                             <tr>
                                 <th>Duration</th>
-                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).getFormatDuration(job?.duration)}">65s</td>
+                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).getFormatDuration(job?.duration)}"></td>
                             </tr>
                             <tr>
                                 <th>Pod Status</th>
-                                <td th:text="${job?.jobStatus}">0 Running / 1 Succeeded / 0 Failed</td>
+                                <td th:text="${job?.jobStatus}"></td>
                             </tr>
                             <tr>
                                 <th>Pod Template</th>
-                                <td>
-                                    <link rel="stylesheet" th:href="@{/vendor/highlight/vs2015.min.css}">
-                                    <script th:src="@{/vendor/highlight/highlight.min.js}"></script>
-                                    <script>hljs.initHighlightingOnLoad();</script>
-                                    <pre style="color:gray; font-size: 100%;"><code th:each="template : ${job?.podTemplate}" th:text="${template}" ></code></pre>
-                                </td>
+                                <td><pre><code class="hljs language-yaml" style="background-color: transparent;" th:each="template : ${job?.podTemplate}" th:text="${template}"></code></pre></td>
                             </tr>
                         </table>
                     </div>
 
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(job?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${job?.events}" th:each="event : ${job?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(job?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${job?.events}" th:each="event : ${job?.events}">
+                                <td th:text="${event?.type}"></td>
+                                <td th:text="${event?.source}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
                         <tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
+
+    <link rel="stylesheet" th:href="@{/vendor/highlight/styles/base16/solarized-dark.min.css}">
+
+    <script th:src="@{/vendor/highlight/highlight.js}"></script>
+    <script th:src="@{/vendor/highlight/languages/yaml.min.js}"></script>
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        const linkUrl= [[${link}]];
+        const pathPrefix = '/monitoring/cluster/workloads/namespace/';
+        /*]]>*/
 
-        var $contentList = $("#contentList"),
-            linkUrl= [[${link}]];
-
-        function jobDetail(namespace, name) {
-            $.ajax({
-                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/jobs/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
             });
-        }
 
-        $(document).ready(function () {
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('namespace') + '/jobs/' + $(this).data('name'), hljs.highlightAll);
             });
         });
     </script>
-
 </div>
 </body>
 </html>

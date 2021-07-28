@@ -1,13 +1,23 @@
--- `kube-watcher`.page definition
+CREATE TABLE IF NOT EXISTS `application_management` (
+	`application_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+	`code` varchar(50) NOT NULL,
+	`name` varchar(50) NOT NULL,
+	`namespace` varchar(50) NOT NULL,
+	`display_name` varchar(50) NOT NULL,
+	PRIMARY KEY (`application_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS cluster_pod_usage (
-    application VARCHAR(255) NOT NULL,
-    namespace VARCHAR(255) NOT NULL,
-    podCount INT(11) UNSIGNED DEFAULT 0 NOT NULL,
-    cpu VARCHAR(255) DEFAULT '0' NOT NULL,
-    memory VARCHAR(255) DEFAULT '0' NOT NULL,
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)  ENGINE=INNODB;
+CREATE TABLE IF NOT EXISTS `cluster_pod_usage` (
+    `application` varchar(255) NOT NULL,
+    `namespace` varchar(255) NOT NULL,
+    `pod_count` int unsigned NOT NULL DEFAULT '0',
+    `max_cpu` decimal(27,9) unsigned NOT NULL DEFAULT '0.000000000',
+    `avg_cpu` decimal(27,9) unsigned NOT NULL DEFAULT '0.000000000',
+    `max_memory` decimal(18,0) unsigned NOT NULL DEFAULT '0',
+    `avg_memory` decimal(18,0) unsigned NOT NULL DEFAULT '0',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`application`,`namespace`,`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `page` (
     `page_id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -19,8 +29,6 @@ CREATE TABLE IF NOT EXISTS `page` (
     `title` varchar(200) NOT NULL,
     PRIMARY KEY (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- `kube-watcher`.page_row definition
 
 CREATE TABLE IF NOT EXISTS `page_row` (
     `page_row_id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -34,8 +42,6 @@ CREATE TABLE IF NOT EXISTS `page_row` (
     KEY `PAGE_ROW_FK01` (`page_id`),
     CONSTRAINT `PAGE_ROW_FK01` FOREIGN KEY (`page_id`) REFERENCES `page` (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- `kube-watcher`.page_row_panel definition
 
 CREATE TABLE IF NOT EXISTS `page_row_panel` (
       `panel_id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -61,8 +67,6 @@ CREATE TABLE IF NOT EXISTS `page_row_panel` (
       CONSTRAINT `PAGE_ROW_PANEL_FK01` FOREIGN KEY (`page_row_id`) REFERENCES `page_row` (`page_row_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- `kube-watcher`.page_variable definition
-
 CREATE TABLE IF NOT EXISTS `page_variable` (
     `variable_id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -82,8 +86,6 @@ CREATE TABLE IF NOT EXISTS `page_variable` (
     CONSTRAINT `PAGE_VARIABLE_FK01` FOREIGN KEY (`page_id`) REFERENCES `page` (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- `kube-watcher`.chart_query definition
-
 CREATE TABLE IF NOT EXISTS `chart_query` (
     `c_query_id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -98,13 +100,3 @@ CREATE TABLE IF NOT EXISTS `chart_query` (
     CONSTRAINT `CHART_QUERY_FK01` FOREIGN KEY (`panel_id`) REFERENCES `page_row_panel` (`panel_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- `kube-watcher`.application_management definition
-
-CREATE TABLE IF NOT EXISTS `application_management` (
-    `application_id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `code` varchar(50) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `namespace` varchar(50) NOT NULL,
-    `display_name` varchar(50) NOT NULL,
-    PRIMARY KEY (`application_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;

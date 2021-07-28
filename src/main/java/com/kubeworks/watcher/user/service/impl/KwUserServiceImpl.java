@@ -9,7 +9,9 @@ import com.kubeworks.watcher.user.service.KwUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -24,12 +26,14 @@ public class KwUserServiceImpl implements KwUserService {
     private final KwUserRepository kwUserRepository;
     private final KwUserRoleRuleRepository kwUserRoleRuleRepository;
     private final KwGroupService kwGroupService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public KwUserServiceImpl(KwUserRepository kwUserRepository, KwUserRoleRuleRepository kwUserRoleRuleRepository, KwGroupService kwGroupService) {
+    public KwUserServiceImpl(KwUserRepository kwUserRepository, KwUserRoleRuleRepository kwUserRoleRuleRepository, KwGroupService kwGroupService, PasswordEncoder passwordEncoder) {
         this.kwUserRepository = kwUserRepository;
         this.kwUserRoleRuleRepository = kwUserRoleRuleRepository;
         this.kwGroupService = kwGroupService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /*
@@ -49,15 +53,15 @@ public class KwUserServiceImpl implements KwUserService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<String> modifyUser(KwUser kwUser, String groupName, List<String> roleList) {
         ApiResponse<String> response = new ApiResponse<>();
         try {
             Optional<KwUser> dbUserOptional = kwUserRepository.findById(kwUser.getUsername());
             KwUser dbUser = dbUserOptional.orElseThrow(() -> new IllegalArgumentException("user not found // username=" + kwUser.getUsername()));
-            dbUser.setPassword(kwUser.getPassword());
             dbUser.setDept(kwUser.getDept());
 
-            if (!"".equals(groupName)) {
+            if (groupName != null && !"".equals(groupName)) {
                 KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
                 dbUser.setKwUserGroup(group);
             } else {
@@ -94,6 +98,7 @@ public class KwUserServiceImpl implements KwUserService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<String> saveUser(KwUser kwUser, String groupName, List<String> roleList) {
         ApiResponse<String> response = new ApiResponse<>();
         try {
@@ -102,7 +107,7 @@ public class KwUserServiceImpl implements KwUserService {
                 throw new IllegalArgumentException("이미 등록되어 있는 ID입니다. Id=" + kwUser.getUsername());
             }
 
-            if (!"".equals(groupName)) {
+            if (groupName != null && !"".equals(groupName)) {
                 KwUserGroup group = kwGroupService.getKwUserGroup(groupName);
                 kwUser.setKwUserGroup(group);
             } else {
@@ -112,6 +117,7 @@ public class KwUserServiceImpl implements KwUserService {
             LocalDateTime now = LocalDateTime.now();
             kwUser.setCreateTime(now);
             kwUser.setUpdateTime(now);
+            kwUser.setPassword(passwordEncoder.encode("hlihli1!"));
 
             if (CollectionUtils.isEmpty(roleList)) {
                 kwUser.setRole(Collections.emptyList(),"save");
@@ -142,6 +148,7 @@ public class KwUserServiceImpl implements KwUserService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<String> deleteUser(KwUser kwUser) {
         ApiResponse<String> response = new ApiResponse<>();
         try {

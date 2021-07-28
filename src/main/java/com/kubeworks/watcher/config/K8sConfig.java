@@ -19,7 +19,7 @@ import java.time.Duration;
 import java.util.Locale;
 
 @Configuration
-@EnableConfigurationProperties(value= MonitoringProperties.class)
+@EnableConfigurationProperties(value=MonitoringProperties.class)
 public class K8sConfig {
 
     private static final Long READ_TIMEOUT = 3L;

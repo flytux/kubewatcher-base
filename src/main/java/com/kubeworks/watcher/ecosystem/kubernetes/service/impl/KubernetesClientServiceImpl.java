@@ -28,7 +28,6 @@ public class KubernetesClientServiceImpl implements KubernetesClientService {
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
     }
 
-    /** @deprecated */
     @Deprecated
     @SneakyThrows
     @Override
@@ -40,7 +39,6 @@ public class KubernetesClientServiceImpl implements KubernetesClientService {
     }
 
 
-    /** @deprecated */
     @Deprecated
     @SneakyThrows
     @Override

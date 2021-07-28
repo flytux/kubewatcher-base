@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-        <!-- [Alarm 설정 목록] start -->
         <div class="row">
-            <div class="main_title_top col-xs-12 pr_0" ><i class="feather icon-chevrons-right"></i> Alarm 설정 목록
+            <div class="main_title_top col-xs-12 pr_0">
+                <i class="feather icon-chevrons-right"></i>&nbsp;Alarm 설정 목록
                 <div class="f_r">
                     <div class="d_ib">
-                        <button class="btn btn-md btn-outline-white" id="btnNew"><i class="feather icon-file-text"></i> NEW</button>
+                        <button class="btn btn-md btn-outline-white" id="btnNew"><i class="feather icon-file-text"></i>&nbsp;NEW&nbsp;</button>
                     </div>
                 </div>
             </div>
@@ -28,41 +25,40 @@
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Detect type</th>
-                            <th>Category</th>
-                            <th>Resource</th>
-                            <th>Danger (%)</th>
-                            <th>Warning (%)</th>
-                            <th>Duration (min)</th>
-                            <th>Detect string</th>
-                            <th>Severity</th>
-                        </tr>
+                            <tr>
+                                <th>Detect type</th>
+                                <th>Category</th>
+                                <th>Resource</th>
+                                <th>Danger (%)</th>
+                                <th>Warning (%)</th>
+                                <th>Duration (min)</th>
+                                <th>Detect string</th>
+                                <th>Severity</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(alertConfigList)}">
-                            <td colspan="8" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(alertConfigList)}" th:each="alertConfig : ${alertConfigList}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:alertConfigRule(&quot;' + ${alertConfig?.ruleId} + '&quot;)'"
-                                   th:text="${alertConfig?.alertRuleId?.type}"></a>
-                            </td>
-                            <td th:text="${alertConfig?.alertRuleId?.category}"></td>
-                            <td th:text="${alertConfig?.alertRuleId?.resource}"></td>
-                            <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.dangerLevel : '-'}"></td>
-                            <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.warningLevel : '-'}"></td>
-                            <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.duration : '-'}"></td>
-                            <td th:text="${#strings.isEmpty(alertConfig?.detectString) ? '-' : alertConfig?.detectString}"></td>
-                            <td th:text="${T(com.kubeworks.watcher.data.vo.AlertSeverity).NONE == alertConfig?.severity ? '-' : alertConfig?.severity}"></td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(alertConfigList)}">
+                                <td colspan="8" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(alertConfigList)}" th:each="alertConfig : ${alertConfigList}">
+                                <td>
+                                    <a class="table2-link" th:href="'javascript:alertConfigRule(&quot;' + ${alertConfig?.ruleId} + '&quot;)'" th:text="${alertConfig?.alertRuleId?.type}"></a>
+                                </td>
+                                <td th:text="${alertConfig?.alertRuleId?.category}"></td>
+                                <td th:text="${alertConfig?.alertRuleId?.resource}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.dangerLevel : '-'}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.warningLevel : '-'}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.data.vo.AlertType).METRIC == alertConfig?.alertRuleId?.type ? alertConfig?.duration : '-'}"></td>
+                                <td th:text="${#strings.isEmpty(alertConfig?.detectString) ? '-' : alertConfig?.detectString}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.data.vo.AlertSeverity).NONE == alertConfig?.severity ? '-' : alertConfig?.severity}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [Modal 메트릭] start -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
                 <div class="modal-content">
                     <div class="modal-title_box">
@@ -84,18 +80,15 @@
                                             <div class="radio" >
                                                 <th:block  th:each="typeEnum : ${T(com.kubeworks.watcher.data.vo.AlertType).values()}">
                                                     <label>
-                                                        <input type="radio" th:if="${#bools.isTrue(editMode)}" th:field="*{alertRuleId.type}" th:value="${typeEnum.name()}"
-                                                               th:text="${typeEnum.name()}" onclick="return(false);"/>
-                                                        <input type="radio" th:unless="${#bools.isTrue(editMode)}" th:field="*{alertRuleId.type}" th:value="${typeEnum.name()}"
-                                                               th:text="${typeEnum.name()}"/>
+                                                        <input type="radio" th:if="${#bools.isTrue(editMode)}" th:field="*{alertRuleId.type}" th:value="${typeEnum.name()}" th:text="${typeEnum.name()}" onclick="return(false);" />
+                                                        <input type="radio" th:unless="${#bools.isTrue(editMode)}" th:field="*{alertRuleId.type}" th:value="${typeEnum.name()}" th:text="${typeEnum.name()}" />
                                                     </label>
                                                 </th:block>
                                             </div>
                                         </td>
                                     </tr>
                                 </table>
-                                <table id="metricRuleTable" class="table-nt" style="border-top: 0px;"
-                                       th:styleappend="*{alertRuleId.type == T(com.kubeworks.watcher.data.vo.AlertType).METRIC ? '' : 'display: none'}">
+                                <table id="metricRuleTable" class="table-nt" style="border-top: 0px;" th:styleappend="*{alertRuleId.type == T(com.kubeworks.watcher.data.vo.AlertType).METRIC ? '' : 'display: none'}">
                                     <tr>
                                         <th>Category</th>
                                         <td>
@@ -105,10 +98,8 @@
                                                         th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
                                                         th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}">
                                                     <option value="" selected disabled hidden> --- select ---</option>
-                                                    <option th:each="category : ${T(com.kubeworks.watcher.data.vo.AlertCategory).getAlertCategories(T(com.kubeworks.watcher.data.vo.AlertType).METRIC)}"
-                                                            th:value="${category.name()}" th:text="${category.name()}"></option>
+                                                    <option th:each="category : ${T(com.kubeworks.watcher.data.vo.AlertCategory).getAlertCategories(T(com.kubeworks.watcher.data.vo.AlertType).METRIC)}" th:value="${category.name()}" th:text="${category.name()}"></option>
                                                 </select>
-
                                             </div>
                                         </td>
                                     </tr>
@@ -121,30 +112,25 @@
                                                         th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
                                                         th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}">
                                                     <option value="" selected disabled hidden> --- select ---</option>
-                                                    <option th:each="resource : ${T(com.kubeworks.watcher.data.vo.AlertResource).getAlertResourcesByMetric()}"
-                                                            th:value="${resource.name()}" th:text="${resource.name()}"></option>
+                                                    <option th:each="resource : ${T(com.kubeworks.watcher.data.vo.AlertResource).getAlertResourcesByMetric()}" th:value="${resource.name()}" th:text="${resource.name()}"></option>
                                                 </select>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Danger Level</th>
-                                        <td><input type="number" id="dangerLevel" style="width:60px;" th:field="*{dangerLevel}"
-                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> %</td>
+                                        <td><input type="number" id="dangerLevel" style="width:60px;" th:field="*{dangerLevel}" th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> %</td>
                                     </tr>
                                     <tr>
                                         <th>Warning Level</th>
-                                        <td><input type="number" id="minLevel" style="width:60px;" th:field="*{warningLevel}"
-                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> %</td>
+                                        <td><input type="number" id="minLevel" style="width:60px;" th:field="*{warningLevel}" th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> %</td>
                                     </tr>
                                     <tr>
                                         <th>Duration</th>
-                                        <td><input type="number" id="duration" style="width:60px;" th:field="*{duration}"
-                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> min</td>
+                                        <td><input type="number" id="duration" style="width:60px;" th:field="*{duration}" th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).METRIC}"> min</td>
                                     </tr>
                                 </table>
-                                <table id="logRuleTable" class="table-nt" style="border-top: 0px;"
-                                       th:styleappend="*{alertRuleId.type == T(com.kubeworks.watcher.data.vo.AlertType).LOG ? '' : 'display: none'}">
+                                <table id="logRuleTable" class="table-nt" style="border-top: 0px;" th:styleappend="*{alertRuleId.type == T(com.kubeworks.watcher.data.vo.AlertType).LOG ? '' : 'display: none'}">
                                     <tr>
                                         <th>Category</th>
                                         <td>
@@ -154,8 +140,7 @@
                                                         th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
                                                         th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
                                                     <option value="" selected disabled hidden> --- select ---</option>
-                                                    <option th:each="category : ${T(com.kubeworks.watcher.data.vo.AlertCategory).getAlertCategories(T(com.kubeworks.watcher.data.vo.AlertType).LOG)}"
-                                                            th:value="${category.name()}" th:text="${category.name()}"></option>
+                                                    <option th:each="category : ${T(com.kubeworks.watcher.data.vo.AlertCategory).getAlertCategories(T(com.kubeworks.watcher.data.vo.AlertType).LOG)}" th:value="${category.name()}" th:text="${category.name()}"></option>
                                                 </select>
                                             </div>
                                         </td>
@@ -169,26 +154,22 @@
                                                         th:onChange="${#bools.isTrue(editMode)} ? 'this.selectedIndex = this.initialSelect;'"
                                                         th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
                                                     <option value="" selected disabled hidden> --- select ---</option>
-                                                    <option th:each="resource : ${T(com.kubeworks.watcher.data.vo.AlertResource).getAlertResourcesByLog()}"
-                                                            th:value="${resource.name()}" th:text="${resource.name()}"></option>
+                                                    <option th:each="resource : ${T(com.kubeworks.watcher.data.vo.AlertResource).getAlertResourcesByLog()}" th:value="${resource.name()}" th:text="${resource.name()}"></option>
                                                 </select>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Detect string</th>
-                                        <td><input type="text" id="detectString" style="width:200px;" th:field="*{detectString}"
-                                                   th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}"/></td>
+                                        <td><input type="text" id="detectString" style="width:200px;" th:field="*{detectString}" th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}"/></td>
                                     </tr>
                                     <tr>
                                         <th>Severity</th>
                                         <td>
                                             <div class="dropdown d_ib">
-                                                <select class="custom-select" id="severity" th:field="*{severity}"
-                                                        th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
+                                                <select class="custom-select" id="severity" th:field="*{severity}" th:disabled="*{alertRuleId.type != T(com.kubeworks.watcher.data.vo.AlertType).LOG}">
                                                     <option value="" selected disabled hidden> --- select ---</option>
-                                                    <option th:each="severityEnum : ${T(com.kubeworks.watcher.data.vo.AlertSeverity).getAlertSeverity()}"
-                                                            th:value="${severityEnum.name()}" th:text="${severityEnum.value}"></option>
+                                                    <option th:each="severityEnum : ${T(com.kubeworks.watcher.data.vo.AlertSeverity).getAlertSeverity()}" th:value="${severityEnum.name()}" th:text="${severityEnum.value}"></option>
                                                 </select>
                                             </div>
                                         </td>
@@ -200,12 +181,46 @@
                 </div>
             </div>
         </div>
-        <!-- [Modal 메트릭] End
-    < !-- [Alarm 설정 목록] End-->
     </div>
+
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
         var $contentList = $("#contentList"),
             linkUrl= [[${link}]];
+        /*]]>*/
+
+        function alertDeleteRule(ruleId){
+            if (confirm(`delete rule?`) === false) {
+                return false;
+            }
+
+            let object = {"ruleId": ruleId};
+            let data = JSON.stringify(object);
+
+            $.ajax({
+                type : "POST",
+                contentType: "application/json",
+                data : data,
+                url : "/api/v1/setting/alarm/rule/delete",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    if (data.success === false) {
+                        alert(data.message);
+                        return false;
+                    }
+                    alert("삭제가 완료되었습니다.");
+                    $("#myModal").modal('hide');
+                    location.reload();
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr("href", "/login?logout")
+                    }
+                }
+            });
+        }
 
         function alertConfigRule(ruleId) {
             let url = ruleId === "" || ruleId === undefined ? "/setting/alarm/rule" : "/setting/alarm/rule/" + ruleId
@@ -215,6 +230,9 @@
                 success: function (data) {
                     $("#myModal").text("");
                     $("#myModal").html(data);
+                    if(ruleId != ""){
+                        $("#myModalLabel").after('<div class="f_r"><button class="btn_save_i feather icon-trash-2" id="delete" onclick="javascript:alertDeleteRule(' + ruleId + ')"></button></div>');
+                    }
                     $("#myModal").modal();
                 },
                 error: function (e) {
@@ -279,10 +297,20 @@
                     object[name] = value;
                 }
 
-                if(Number(object.dangerLevel) > 100 || Number(object.warningLevel) > 100){
-                    alert("DangerLevel, WarningLevel 값은 100%를 넘을수 없습니다.");
+                if(Number(object.dangerLevel) === 0 || Number(object.warningLevel) === 0){
+                    alert("DangerLevel, WarningLevel 값은 0의 값이 될수 없습니다.");
                     return false;
                 }
+
+                if(Number(object.duration) === 0){
+                    alert("Duration 값은 0의 값이 될수 없습니다.");
+                    return false;
+                }
+
+<!--                if(Number(object.dangerLevel) > 100 || Number(object.warningLevel) > 100){-->
+<!--                    alert("DangerLevel, WarningLevel 값은 100%를 넘을수 없습니다.");-->
+<!--                    return false;-->
+<!--                }-->
 
                 if(Number(object.dangerLevel) < Number(object.warningLevel)){
                     alert("DangerLevel 값보다 WarningLevel 값이 클수 없습니다.");

@@ -125,7 +125,7 @@ public class PodServiceImpl implements PodService {
     public Optional<V1PodList> nodePods(String nodeName) {
 
         String nodeFieldSelector = FIELD_SELECTOR_NODE_NAME_KEY + nodeName;
-        ApiResponse<V1PodList> podsResponse = pods(nodeFieldSelector, null);
+        ApiResponse<V1PodList> podsResponse = pods(nodeFieldSelector);
         if (ExternalConstants.isSuccessful(podsResponse.getStatusCode())) {
             V1PodList data = podsResponse.getData();
             return Optional.ofNullable(data);
@@ -145,12 +145,8 @@ public class PodServiceImpl implements PodService {
 
 
     @SneakyThrows
-    private ApiResponse<V1PodList> pods(String fieldSelector, String labelSelector) {
-        return coreApi.listPodForAllNamespacesWithHttpInfo(null, null,
-            fieldSelector, labelSelector,
-            500, "true",
-            null, 0,
-            Boolean.FALSE);
+    private ApiResponse<V1PodList> pods(String fieldSelector) {
+        return coreApi.listPodForAllNamespacesWithHttpInfo(null, null, fieldSelector, null, 500, "true", null, 0, Boolean.FALSE);
     }
 
     private void setPod(PodDescribe.PodDescribeBuilder builder, V1Pod pod) {

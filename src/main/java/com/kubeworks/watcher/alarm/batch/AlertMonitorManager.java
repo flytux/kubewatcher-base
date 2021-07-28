@@ -38,10 +38,9 @@ import java.util.stream.IntStream;
 @AllArgsConstructor(onConstructor_={@Autowired})
 public class AlertMonitorManager {
 
-    private static final long DEFAULT_STEP = 60;
+    private static final long DEFAULT_STEP = 60L;
+    private static final ZoneId DEFAULT_ZONE = ZoneId.of("Asia/Seoul");
     private static final String CLUSTER_TOTAL_MEMORY_BYTE_API = "/api/v1/query?query=sum(node_memory_MemTotal_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"}) - sum(node_memory_MemAvailable_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"})";
-
-    private final ZoneId defaultZone = ZoneId.of("Asia/Seoul");
 
     private final PrometheusFeignClient prometheusFeignClient;
     private final AlertRuleRepository alertRuleRepository;
@@ -64,7 +63,7 @@ public class AlertMonitorManager {
                 switch (alertRuleId.getType()) {
                     case METRIC:
                         String apiUri = getApiUri(alertRule, alertRuleId, alertRuleMetric.getExpression());
-                        PrometheusApiResponse queryRange = prometheusFeignClient.getQueryRange(apiUri, now.minusMinutes(alertRule.getDuration()).atZone(defaultZone).toEpochSecond(), now.atZone(defaultZone).toEpochSecond(), DEFAULT_STEP);
+                        PrometheusApiResponse queryRange = prometheusFeignClient.getQueryRange(apiUri, now.minusMinutes(alertRule.getDuration()).atZone(DEFAULT_ZONE).toEpochSecond(), now.atZone(DEFAULT_ZONE).toEpochSecond(), DEFAULT_STEP);
                         if (queryRange.getData() == null) { return; }
 
                         String resultType = queryRange.getData().getResultType();
@@ -93,7 +92,6 @@ public class AlertMonitorManager {
                 List<AlertHistory> alertHistories = alertHistoryRepository.saveAll(alerts);
                 log.info("size={}, alert = {}", alertHistories.size(), alertHistories);
             });
-
     }
 
     private AlertHistory getLogAlerts(AlertRule alertRule, EventDescribe eventDescribe) {

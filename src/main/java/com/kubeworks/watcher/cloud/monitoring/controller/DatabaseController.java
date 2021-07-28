@@ -49,7 +49,7 @@ public class DatabaseController implements BaseController {
 
                 List<ChartQuery> dbPanelQueries = pageRowPanel.getChartQueries();
                 for (ChartQuery chartQuery : dbPanelQueries) {
-                    if (hostList.size() <= dbCnt) break;
+                    if (hostList.size() <= dbCnt) { break; }
                     chartQuery.setApiQuery(changeVariable(chartQuery.getApiQuery(), hostList.get(dbCnt)));
                 }
 
@@ -75,7 +75,6 @@ public class DatabaseController implements BaseController {
         return createViewName("database");
     }
 
-    // TODO 코드수정함 확인 필요
     private String changeVariable(final String q, final String host) {
 
         // DB 노드 UP/DOWN 체크를 위해 프로세스 익스포터 노드에 노드 익스포터 포트로 변경

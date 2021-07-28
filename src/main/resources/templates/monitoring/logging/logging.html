@@ -1,37 +1,22 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-    </head>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
+<head>
+    <title>Title</title>
+</head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block
-        th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Logging')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Monitoring<i class=&quot;feather icon-chevron-right&quot; ></i>Logging')" />
     <div id="main_contents">
         <div th:each="panelRow : ${page?.rows}">
-<!--            <div class="row">-->
-<!--                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>-->
-<!--            </div>-->
             <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
-                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                 </th:block>
-<!--                <th:block th:if="${appNode.title} == '보험코어 어플리케이션 에러 카운트'">-->
-<!--                    <div class="col-xs-5 col-lg-5 box_chart_red">-->
-<!--                        <div class="txt text-center">Error Count</div>-->
-<!--                        <div th:id="|container-${appNode?.panelId}|" class="t_chart_md text-center"></div>-->
-<!--                    </div>-->
-<!--                </th:block>-->
             </div>
         </div>
     </div>
 
-
-    <!-- [Modal] Start -->
-    <div class="modal fade" id="logModal" tabindex="-1" role="dialog" aria-labelledby="logModalLabel" aria-hidden="true" >
+    <div class="modal fade" id="logModal" tabindex="-1" role="dialog" aria-labelledby="logModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px table-layout:fixed;">
             <div class="modal-content">
                 <div class="modal-title_box">
@@ -41,67 +26,52 @@
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title" id="">
-                    </div>
+                    <div class="table-title" id=""></div>
                     <div class="row">
-                        <table id="logModalTable" class="list_table">
-                        </table>
+                        <table id="logModalTable" class="list_table"></table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
 
+    <input type="hidden" id="var-application" th:value="${applicationValue}" />
 
-    <input type="hidden" id="var-application" th:value="${applicationValue}">
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap-datetimepicker.css}">
 
-
-<!--    <script th:src="@{/assets/js/common-charts.js}"></script>-->
     <script th:src="@{/assets/js/loki.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
     <script th:src="@{/assets/js/moment.js}"></script>
+    <script th:src="@{/assets/js/moment.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-datetimepicker.js}"></script>
 
     <script type="text/javascript" th:inline="javascript">
-
         /*<![CDATA[*/
-        let pageRows = [[${page?.rows}]],
-            apiHost = [[${host}]],
-            serviceMap = [[${services}]];
+        const apiHost = [[${host}]];
+        const pageRows = [[${page?.rows}]];
+        const serviceMap = [[${services}]];
         /*]]>*/
 
-        console.log("pageRows :",pageRows);
-        console.log(typeof(serviceMap),"serviceMap :",serviceMap);
-        // lokiApiCall(serviceMap);
+        $(document).ready(function() {
+            const options = {
+                showTimeSelect: true, format: "hh:mm A",
+                timepickerLeftMargin: "0px", ignoreReadonly: true, useCurrent: true
+            };
 
-       document.getElementById('startDate').value = moment().format('YYYY-MM-DD');
-       document.getElementById('startTime').value = moment("12:00:00 AM",["h:mm:ss A"]).format("HH:mm:ss");
-       document.getElementById('endDate').value = moment().format('YYYY-MM-DD');
-       document.getElementById('endTime').value = moment("11:59:59 PM",["h:mm:ss A"]).format("HH:mm:ss");
+            $('#toDay').text(moment().format('YYYY-MM-DD'));
+            pageRows.forEach(row => row['pageRowPanels'].forEach(panel => lokiJs.createPanel(panel,serviceMap)));
 
-        $(document).ready(function () {
-            pageRows.forEach(row => row.pageRowPanels.forEach(panel => lokiJs.createPanel(panel,serviceMap)));
-        });
+            $('#datetimepicker1').datetimepicker(options);
+            $('#datetimepicker2').datetimepicker(options);
 
-        function lokiApiCall(serviceMap) { // Application ErrorCount - REST API 호출.
-            var data = serviceMap.toString();
-            $.ajax({
-                url: "/monitoring/apiCall",
-                type : "GET",
-                async: false,
-                data : {
-                    param : JSON.stringify(data)
-                },
-                success: function (data) {
-<!--                    console.log("success :",data);-->
-                    lokiJs.convertErrorCount(data);
-                },
-                error:function(data, status, opt){
-                    console.log("code:"+data.status+"\n"+"message:"+data.responseText+"\n"+"error:"+opt);
-                }
+            $("#datetimepicker1").on("dp.change", function(e) {
+                $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
             });
-        };
+            $("#datetimepicker2").on("dp.change", function(e) {
+                $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+            });
+        });
     </script>
 </div>
 </body>

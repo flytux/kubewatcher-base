@@ -115,9 +115,6 @@ public class ZuulProxyConfig {
                 }).filter(Objects::nonNull).collect(Collectors.toList());
         }
 
-        /**
-         * copy in SimpleRouteLocator{@link SimpleRouteLocator#getMatchingRoute}
-         */
         @Override
         public Route getMatchingRoute(final String path) {
 
@@ -126,9 +123,6 @@ public class ZuulProxyConfig {
             return super.getRoute(this.getZuulRoute(adjustedPath), adjustedPath);
         }
 
-        /**
-         * copy in SimpleRouteLocator{@link SimpleRouteLocator#adjustPath}
-         */
         protected String getAdjustPath(final String path) {
 
             String adjustedPath = path;

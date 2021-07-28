@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
+import com.kubeworks.watcher.alarm.service.AlertAlarmListService;
 import com.kubeworks.watcher.base.BaseController;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.preference.service.PageViewService;
@@ -17,12 +18,14 @@ public class MainDashboardController implements BaseController {
 
     private final MonitoringProperties properties;
     private final PageViewService pageViewService;
+    private final AlertAlarmListService alertAlarmListService;
 
     @GetMapping(value="/main")
     public String main(final Model model) {
 
         model.addAttribute(Props.HOST, properties.getDefaultPrometheusUrl());
         model.addAttribute(Props.PAGE, pageViewService.getPageView(MAIN_MENU_ID));
+        model.addAttribute("alertHistoryList", alertAlarmListService.alertPageHistory(1, null, null, null, null, null, null, 20));
 
         return createViewName("main");
     }

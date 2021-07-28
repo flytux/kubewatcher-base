@@ -1,26 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block
-        th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
         <div th:each="panelRow : ${page?.rows}">
-<!--            <div class="row">-->
-<!--                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>-->
-<!--            </div>-->
             <div th:if="${panelRow?.rowType == T(com.kubeworks.watcher.data.vo.PageRowType).VARIABLE}" class="row">
-                <th:block th:replace="layout/fragments/panelTypes :: page-row-variable-header-db(${page?.variables}, ${panelRow?.title})"/>
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-variable-header-db(${page?.variables}, ${panelRow?.title})" />
             </div>
             <div th:unless="${panelRow?.rowType == T(com.kubeworks.watcher.data.vo.PageRowType).VARIABLE}" class="row">
-                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})" />
             </div>
 
             <div class="row">
@@ -28,52 +20,37 @@
                     <th:block th:if="${panel?.mainYn} == 'Y'">
                         <th:block th:if="${panel?.fragmentName} == 'head-card-db-dummy'">
                             <th:block th:each="entry: ${dbPanels}">
-                                <th:block th:replace="layout/fragments/panelTypes :: head-card-db-dummy (${panel?.title}, ${entry.key}, ${entry.value})"/>
+                                <th:block th:replace="layout/fragments/panelTypes :: head-card-db-dummy (${panel?.title}, ${entry.key}, ${entry.value})" />
                             </th:block>
                         </th:block>
                         <th:block th:unless="${panel?.fragmentName} == 'head-card-db-dummy'">
-                            <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                            <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                         </th:block>
                     </th:block>
                 </th:block>
             </div>
         </div>
     </div>
+
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
 
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        let pageRows = [[${page?.rows}]],
-            apiHost = [[${host}]];
+        const apiHost = [[${host}]];
+        const pageRows = [[${page?.rows}]];
+        const variables = [[${page?.variables}]];
         /*]]>*/
 
-        $(document).ready(function () {
-            commonVariablesJs.createVariables([[${page?.variables}]]);
-            commonVariablesJs.generateVariable();
+        $(document).ready(function() {
+            commonVariables.init(commonVariablesJs, commonChartsJs, pageRows, variables);
 
-            if (commonVariablesJs.isSelectedAllVariable()) {
-                pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
-            }
-
-            $("select[name^='var-']").change(function () {
-                const selectedId = comnJs.replace($(this).attr('id'), 'var-', '');
-                let variable = commonVariablesJs.getVariable(selectedId);
-                commonVariablesJs.refreshEdgeVariableData(selectedId);
-                if (commonVariablesJs.isSelectedAllVariable()) {
-                    commonChartsJs.resetReadyTimestamp();
-                    pageRows.forEach(row => row.pageRowPanels.forEach(panel => {
-                        commonChartsJs.removeChart(panel);
-                        commonChartsJs.createPanel(panel)
-                    }));
-                }
+            $(document).on('change', "select[name^='var-']", function() {
+                commonVariables.handleChangeEvent(commonVariablesJs, commonChartsJs, pageRows, comnJs.replace($(this).prop('id'), 'var-', ''));
             });
-
         });
-
     </script>
-
 </div>
 </body>
 </html>

@@ -1,71 +1,61 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  xmlns:th="http://www.thymeleaf.org"
-	  layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
+    <title>roles</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
     <th:block th:with="page=${@pageViewService.getPageView(322)}">
         <th:block th:replace="layout/header :: header(${page?.nav})" />
-    <div id="main_contents">
-        <!-- [Role 조회 조건] start -->
-        <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
-                <div class="f_r">
-                    <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
-                            <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
-                        </select>
+
+        <div id="main_contents">
+            <div class="row">
+                <div class="main_title_top">
+                    <i class="feather icon-chevrons-right"></i><span th:text="${page?.title}"></span>
+                    <div class="f_r">
+                        <div class="dropdown d_ib">
+                            <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
+                                <option value="all" selected> All </option>
+                                <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contentList" class="row">
+                <div th:fragment="contentList" class="box_panel">
+                    <div class="box_panel-total">
+                        Total : <span th:text="${#arrays.isEmpty(roles) ? '0' : roles.size()}" class="point pr_10"></span>
+                    </div>
+                    <div class="box_table-body">
+                        <table class="list_table70vh">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>Age</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#arrays.isEmpty(roles)}">
+                                <td colspan="4" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(roles)}" th:each="role : ${roles}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${role?.namespace}, data-name=${role?.name}" th:utext="${role?.name}"></a>
+                                </td>
+                                <td th:text="${role?.namespace}"></td>
+                                <td th:text="${role?.age}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- [Role 조회 조건] end -->
-
-        <!-- [Role 설정 목록] start -->
-        <div id="contentList" class="row">
-            <div th:fragment="contentList" class="box_panel">
-                <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(roles) ? '0' : roles.size()}" class="point pr_10">6</span>
-                </div>
-                <div class="box_table-body">
-                    <table class="list_table70vh">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Age</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:if="${#arrays.isEmpty(roles)}">
-                            <td colspan="4" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(roles)}" th:each="role : ${roles}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:roleDetail(&quot;' + ${role?.namespace} + '&quot;, &quot;'+ ${role?.name} + '&quot;)'"
-                                   th:utext="${role?.name}"></a>
-                            </td>
-                            <td th:text="${role?.namespace}"></td>
-                            <td th:text="${role?.age}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- [Role 설정 목록] End-->
-    </div>
     </th:block>
 
-    <!-- [Modal] start -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
@@ -76,15 +66,12 @@
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <div class="row">
                         <table class="table-nt">
                             <tr>
                                 <th>Created</th>
-                                <td th:text="${#dates.format(roleDescribe?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">
-                                24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${#dates.format(roleDescribe?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                             <tr>
                                 <th>Name</th>
@@ -114,9 +101,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="table-title">
-                        Rules
-                    </div>
+                    <div class="table-title">Rules</div>
                     <div class="row">
                         <table class="list_mtable_100">
                             <thead>
@@ -131,85 +116,56 @@
                                 <td colspan="5" class="text-center">No rules</td>
                             </tr>
                             <tr th:if="${roleDescribe?.rules}" th:each="rule : ${roleDescribe?.rules}">
-                                <td th:if="${rule?.resources}" th:text ="${#strings.arrayJoin(rule?.resources,', ')}"> </td>
-                                <td th:if="${rule?.verbs}" th:text = "${#strings.arrayJoin(rule?.verbs,', ')}"> </td>
+                                <td th:if="${rule?.resources}" th:text ="${#strings.arrayJoin(rule?.resources,', ')}"></td>
+                                <td th:if="${rule?.verbs}" th:text = "${#strings.arrayJoin(rule?.verbs,', ')}"></td>
                                 <td th:if="${rule?.apiGroups}" th:text = "${#strings.arrayJoin(rule?.apiGroups,', ')}"></td>
                             </tr>
                             <tbody>
                         </table>
                     </div>
-                    <div class="table-title">
-                        Events
+                    <div class="table-title">Events</div>
+                    <div class="row">
+                        <table class="list_mtable_100">
+                            <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#arrays.isEmpty(roleDescribe?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${roleDescribe?.events}" th:each="event : ${job?.events}">
+                                <td th:text="${event?.type}"></td>
+                                <td th:text="${event?.source}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
+                            <tbody>
+                        </table>
                     </div>
-                    <table class="list_mtable_100">
-                        <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:if="${#arrays.isEmpty(roleDescribe?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${roleDescribe?.events}" th:each="event : ${job?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">24일 15시 32분 (2020-05-24 15:32:08)</td>
-                        </tr>
-                        <tbody>
-                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
-
     <script type="text/javascript" th:inline="javascript">
-
-        var $contentList = $("#contentList");
-        var linkUrl= [[${T(com.kubeworks.watcher.preference.service.PageConstants).API_URL_BY_NAMESPACED_ROLES}]];
-
-        function roleDetail(namespace, name) {
-            $.ajax({
-                url: "/cluster/acl/roles/namespace/" + namespace + "/role/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
-        }
+        /*<![CDATA[*/
+        const pathPrefix = '/cluster/acl/roles/namespace/';
+        const linkUrl= [[${T(com.kubeworks.watcher.preference.service.PageConstants).API_URL_BY_NAMESPACED_ROLES}]];
+        /*]]>*/
 
         $(document).ready(function () {
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
+            });
+
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('namespace') + '/role/' + $(this).data('name'));
             });
         });
     </script>

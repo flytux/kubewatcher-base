@@ -30,9 +30,11 @@ public class LogController implements BaseController {
 
     @Autowired
     public LogController(final LokiFeignClient client, final PageViewService pageViewService,
-                         final MonitoringProperties properties, final ApplicationService applicationService) {
-        this.client = client; this.pageViewService = pageViewService;
-        this.properties = properties; this.applicationService = applicationService;
+            final MonitoringProperties properties, final ApplicationService applicationService) {
+        this.client = client;
+        this.pageViewService = pageViewService;
+        this.properties = properties;
+        this.applicationService = applicationService;
     }
 
     @GetMapping(value="/logging")
@@ -51,7 +53,6 @@ public class LogController implements BaseController {
     @GetMapping(value="/apiCall")
     public String lokiApiCall(@RequestParam(value="param") final String param) {
 
-        // TODO 코드수정함 확인 필요
         final String padding = "000000";
         final Instant current = Instant.now();
         final String st = current.atZone(ZoneId.systemDefault()).minusHours(1).toInstant().toEpochMilli() + padding;

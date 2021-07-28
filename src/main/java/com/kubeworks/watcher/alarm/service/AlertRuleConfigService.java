@@ -14,4 +14,6 @@ public interface AlertRuleConfigService {
     ApiResponse<String> registrationAlarmRule(final AlertRule alertRule);
 
     ApiResponse<String> updateAlarmRule(final AlertRule alertRule);
+
+    ApiResponse<String> deleteAlarmRule(final AlertRule alertRule);
 }

@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [클러스터 StatefulSet] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -32,109 +24,84 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(statefulSets) ? '0' : statefulSets.size()}" class="point pr_10">20</span>
+                    Total : <span th:text="${#arrays.isEmpty(statefulSets) ? '0' : statefulSets.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Pods</th>
-                            <th>Age</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>Pods</th>
+                                <th>Age</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(statefulSets)}">
-                            <td colspan="4" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(statefulSets)}" th:each="statefulSet : ${statefulSets}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:statefulSetDetail(&quot;' + ${statefulSet?.namespace} + '&quot;, &quot;'+ ${statefulSet?.name} + '&quot;)'"
-                                   th:utext="${statefulSet?.name}">Name</a>
-                            </td>
-                            <td th:text="${statefulSet?.namespace}">Namespace</td>
-                            <td th:text="${statefulSet?.ready}">Pods</td>
-                            <td th:text="${statefulSet?.age}">Age</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(statefulSets)}">
+                                <td colspan="4" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(statefulSets)}" th:each="statefulSet : ${statefulSets}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${statefulSet?.namespace}, data-name=${statefulSet?.name}" th:utext="${statefulSet?.name}"></a>
+                                </td>
+                                <td th:text="${statefulSet?.namespace}"></td>
+                                <td th:text="${statefulSet?.ready}"></td>
+                                <td th:text="${statefulSet?.age}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
-<!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
-<!--            <nav>-->
-<!--                <ul class="pagination" >-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Previous">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                    <li class="active"><a href="#">1</a></li>-->
-<!--                    <li><a href="#">2</a></li>-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Next">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </nav>-->
-<!--        </div>-->
-        <!-- [클러스터 StatefulSet] End-->
     </div>
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|StatefulSet : ${statefulSet?.name}|">StatefulSet : StatefulSet 명</span>
+                        <span id="myModalLabel" th:text="|StatefulSet : ${statefulSet?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metrics
-                    </div>
+                    <div class="table-title">Metrics</div>
                     <div class="row">
                         <div class="row" th:each="panelRow : ${page?.rows}">
                             <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
                                 <div class="box_panel">
-                                    <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                    <div class="box_panel-heading" th:text="${panel?.title}"></div>
                                     <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="table-title">
-                            Metadata
-                        </div>
+                        <div class="table-title">Metadata</div>
                         <table class="table-nt">
                             <tr>
                                 <th>Created</th>
-                                <td th:text="${#dates.format(statefulSet?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${#dates.format(statefulSet?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td th:text="${statefulSet?.name}">prometheus</td>
+                                <td th:text="${statefulSet?.name}"></td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td th:text="${statefulSet?.namespace}">default</td>
+                                <td th:text="${statefulSet?.namespace}"></td>
                             </tr>
                             <tr>
                                 <th>Selector</th>
                                 <td>
                                     <div class="row" th:each="item : ${statefulSet?.selector}" >
-                                        <span class="madal_label" th:text="|${item.key} : ${item.value}|">name=prometheus</span>
+                                        <span class="madal_label" th:text="|${item.key} : ${item.value}|"></span>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Images</th>
-                                <td th:text="${#strings.isEmpty(statefulSet?.images) ? '-' : statefulSet?.images}">docker.io/prom/Prometheus:v2.17.2</td>
+                                <td th:text="${#strings.isEmpty(statefulSet?.images) ? '-' : statefulSet?.images}"></td>
                             </tr>
                             <tr>
                                 <th>Annotations</th>
@@ -147,157 +114,127 @@
                             </tr>
                             <tr>
                                 <th>Pod Status</th>
-                                <td th:text="${#strings.isEmpty(statefulSet?.podStatus) ? '-' : statefulSet?.podStatus}">Running  : 2 </td>
+                                <td th:text="${#strings.isEmpty(statefulSet?.podStatus) ? '-' : statefulSet?.podStatus}"></td>
                             </tr>
                             <tr>
                                 <th>CPU</th>
                                 <td>
-                                    <span th:text="|Request ${statefulSet?.getRequestResource('cpu')}|" class="madal_label">Request 0,000</span>
-                                    <span th:text="|Limit ${statefulSet?.getRequestResource('cpu')}|" class="madal_label">Limit 0,000</span>
+                                    <span th:text="|Request ${statefulSet?.getRequestResource('cpu')}|" class="madal_label"></span>
+                                    <span th:text="|Limit ${statefulSet?.getRequestResource('cpu')}|" class="madal_label"></span>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Memory</th>
                                 <td>
-                                    <span th:text="|Request ${statefulSet?.getRequestResource('memory')}|" class="madal_label">Request 0,000</span>
-                                    <span th:text="|Limit ${statefulSet?.getLimitsMetric('memory')}|" class="madal_label">Limit 0,000</span>
+                                    <span th:text="|Request ${statefulSet?.getRequestResource('memory')}|" class="madal_label"></span>
+                                    <span th:text="|Limit ${statefulSet?.getLimitsMetric('memory')}|" class="madal_label"></span>
                                 </td>
                             </tr>
                         </table>
                     </div>
 
-                    <div class="table-title">
-                        Pods
-                    </div>
+                    <div class="table-title">Pods</div>
                     <table class="list_mtable_100_no">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>CPU</th>
-                            <th>Memory</th>
-                            <th>Status</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>CPU</th>
+                                <th>Memory</th>
+                                <th>Status</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(statefulSet?.pods)}">
-                            <td colspan="5" class="text-center">No pods</td>
-                        </tr>
-                        <tr th:if="${statefulSet?.pods}" th:each="pod : ${statefulSet?.pods}">
-                            <td th:text="${pod?.name}">Name</td>
-                            <td th:text="${pod?.namespace}">Namespace</td>
-                            <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(pod?.cpu)}">CPU</td>
-                            <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(pod?.memory)}">Memory</td>
-                            <td th:switch="${pod?.status}">
-                                <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
-                                <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>
-                                <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}">Pending</span>
-                                <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}">Succeeded</span>
-                                <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}">Failed</span>
-                                <span th:case="Unknown" class="madal_label" th:text="${pod?.status}">Unknown</span>
-                                <span th:case="*" class="madal_label" th:text="${pod?.status}"></span>
-                            </td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(statefulSet?.pods)}">
+                                <td colspan="5" class="text-center">No pods</td>
+                            </tr>
+                            <tr th:if="${statefulSet?.pods}" th:each="pod : ${statefulSet?.pods}">
+                                <td th:text="${pod?.name}"></td>
+                                <td th:text="${pod?.namespace}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(pod?.cpu)}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(pod?.memory)}"></td>
+                                <td th:switch="${pod?.status}">
+                                    <span th:case="Running" class="madal_label_active" th:text="${pod?.status}"></span>
+                                    <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}"></span>
+                                    <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}"></span>
+                                    <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}"></span>
+                                    <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}"></span>
+                                    <span th:case="Unknown" class="madal_label" th:text="${pod?.status}"></span>
+                                    <span th:case="*" class="madal_label" th:text="${pod?.status}"></span>
+                                </td>
+                            </tr>
                         <tbody>
                     </table>
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(statefulSet?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${statefulSet?.events}" th:each="event : ${statefulSet?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(statefulSet?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${statefulSet?.events}" th:each="event : ${statefulSet?.events}">
+                                <td th:text="${event?.type}"></td>
+                                <td th:text="${event?.source}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
                         <tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
 
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
 
-    <input type="hidden" id="var-namespace" value=""/>
-    <input type="hidden" id="var-name" value=""/>
+    <input type="hidden" id="var-name" value="" />
+    <input type="hidden" id="var-namespace" value="" />
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let apiHost;
 
-        var apiHost,
-            $namespace = $("#var-namespace"),
-            $name = $("#var-name"),
-            $contentList = $("#contentList"),
-            linkUrl= [[${link}]];
+        const linkUrl= [[${link}]];
+        const pathPrefix = '/api/v1/monitoring/cluster/workloads/namespace/';
+        /*]]>*/
 
-        function statefulSetDetail(namespace, name) {
-            $namespace.val(namespace);
-            $name.val(name);
-
-            $.ajax({
-                url: "/api/v1/monitoring/cluster/workloads/namespace/" + namespace + "/statefulsets/" + name + "/metrics",
-                success: function (data) {
-
-                    apiHost = data.host;
-                    data.page.rows.forEach(row => row.pageRowPanels.forEach(panel => {
-                        commonChartsJs.removeChart(panel);
-                        commonChartsJs.createPanel(panel)
-                     }));
-
-                    $('#myModal').text("");
-                    $('#myModal').html(data.describe);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
             });
-        }
 
-        $(document).ready(function () {
+            $(document).on('click', 'a.table2-link', function() {
+                const n = $(this).data('name'), ns = $(this).data('namespace');
+                const path = pathPrefix + ns + '/statefulsets/' + n + '/metrics';
 
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
+                $('#var-name').val(n);
+                $('#var-namespace').val(ns);
+
+                kube.execute(path, function(data) {
+                    apiHost = data.host;
+
+                    data.page.rows.forEach(r => r['pageRowPanels'].forEach(p => {
+                        commonChartsJs.removeChart(p);
+                        commonChartsJs.createPanel(p);
+                    }));
+
+                    $('#myModal').text('').html(data['describe']).modal();
+                    $('.knob').knob();
                 });
             });
         });
-
     </script>
-
 </div>
 </body>
 </html>

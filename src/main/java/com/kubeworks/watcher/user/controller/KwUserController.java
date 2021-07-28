@@ -73,7 +73,7 @@ public class KwUserController implements BaseController {
 
         model.addAttribute("userList", kwUserService.getKwUserList());
         model.addAttribute("groupList", kwGroupService.getKwUserGroupList());
-        model.addAttribute("roleList", kwRoleService.getKwUserRoleRule());
+        model.addAttribute("roleList", kwRoleService.searchKwUserRoleRule());
         model.addAttribute(Props.PAGE, pageViewService.getPageView(USER_LIST_MENU_ID));
 
         return createViewName(VIEW_USERS);
@@ -91,7 +91,7 @@ public class KwUserController implements BaseController {
             model.addAttribute("userRoles", "");
         }
 
-        model.addAttribute("roles", kwRoleService.getKwUserRoleRule());
+        model.addAttribute("roles", kwRoleService.searchKwUserRoleRule());
         model.addAttribute(VIEW_GROUPS, kwGroupService.getKwUserGroupList());
 
         return createViewName(VIEW_USERS, Props.MODAL_CONTENTS);
@@ -100,8 +100,8 @@ public class KwUserController implements BaseController {
     @GetMapping(value="/roles/user-role-management")
     public String roleRuleList(final Model model) {
 
-        final List<Page> pageList = kwRoleService.getKwUserRoleScreenList();
-        final List<KwUserRoleRule> ruleList = kwRoleService.getKwUserRoleRuleList();
+        final List<Page> pageList = kwRoleService.searchKwUserRoleScreenList();
+        final List<KwUserRoleRule> ruleList = kwRoleService.searchKwUserRoleRuleList();
 
         // map (pageId, rule bit) -> list -> model
         final List<Map<Long, String>> list = Lists.newArrayListWithExpectedSize(ruleList.size() + 1);

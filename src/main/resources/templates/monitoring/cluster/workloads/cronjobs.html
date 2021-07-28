@@ -1,27 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [클러스터 Cron Jobs] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -31,90 +24,67 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(cronJobs) ? '0' : cronJobs.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(cronJobs) ? '0' : cronJobs.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Schedule</th>
-                            <th>Suspend</th>
-                            <th>Active</th>
-                            <th>Last Schedule</th>
-                            <th>Age</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>Schedule</th>
+                                <th>Suspend</th>
+                                <th>Active</th>
+                                <th>Last Schedule</th>
+                                <th>Age</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(cronJobs)}">
-                            <td colspan="7" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(cronJobs)}" th:each="cronJob : ${cronJobs}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:cronJobDetail(&quot;' + ${cronJob?.namespace} + '&quot;, &quot;'+ ${cronJob?.name} + '&quot;)'"
-                                   th:utext="${cronJob?.name}">Name</a>
-                            </td>
-                            <td th:text="${cronJob?.namespace}">Namespace</td>
-                            <td th:text="${cronJob?.schedule}">Schedule</td>
-                            <td th:text="${cronJob?.suspend}">Suspend</td>
-                            <td th:text="${cronJob?.active}">Active</td>
-                            <td th:text="${#dates.format(cronJob?.lastSchedule,'yyyy-MM-dd HH:mm:ss')}">Last Schedule</td>
-                            <td th:text="${cronJob?.age}">Age</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(cronJobs)}">
+                                <td colspan="7" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(cronJobs)}" th:each="cronJob : ${cronJobs}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${cronJob?.namespace}, data-name=${cronJob?.name}" th:utext="${cronJob?.name}"></a>
+                                </td>
+                                <td th:text="${cronJob?.namespace}"></td>
+                                <td th:text="${cronJob?.schedule}"></td>
+                                <td th:text="${cronJob?.suspend}"></td>
+                                <td th:text="${cronJob?.active}"></td>
+                                <td th:text="${#dates.format(cronJob?.lastSchedule,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${cronJob?.age}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
-<!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
-<!--            <nav>-->
-<!--                <ul class="pagination" >-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Previous">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                    <li class="active"><a href="#">1</a></li>-->
-<!--                    <li><a href="#">2</a></li>-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Next">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </nav>-->
-<!--        </div>-->
-        <!-- [클러스터 Cron Jobs] End-->
     </div>
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|CronJob : ${cronJob?.name}|" >Cron Job : Cron Jobs 명</span>
+                        <span id="myModalLabel" th:text="|CronJob : ${cronJob?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <div class="row">
                         <table class="table-nt">
                             <tr>
                                 <th>Created</th>
-                                <td th:text="${#dates.format(cronJob?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${#dates.format(cronJob?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td th:text="${cronJob?.name}">heartbeat</td>
+                                <td th:text="${cronJob?.name}"></td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td th:text="${cronJob?.namespace}">default</td>
+                                <td th:text="${cronJob?.namespace}"></td>
                             </tr>
                             <tr>
                                 <th>Labels</th>
@@ -136,101 +106,68 @@
                             </tr>
                             <tr>
                                 <th>Schedule</th>
-                                <td th:text="${#strings.isEmpty(cronJob?.schedule) ? '-' : cronJob?.schedule}">25 8****</td>
+                                <td th:text="${#strings.isEmpty(cronJob?.schedule) ? '-' : cronJob?.schedule}"></td>
                             </tr>
                             <tr>
                                 <th>Active</th>
-                                <td th:text="${cronJob?.active}">0</td>
+                                <td th:text="${cronJob?.active}"></td>
                             </tr>
                             <tr>
                                 <th>Suspend</th>
-                                <td th:text="${cronJob?.suspend}">false</td>
+                                <td th:text="${cronJob?.suspend}"></td>
                             </tr>
                             <tr>
                                 <th>Last Schedule</th>
-                                <td th:text="${#dates.format(cronJob?.lastSchedule,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${#dates.format(cronJob?.lastSchedule,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                         </table>
                     </div>
 
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(cronJob?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${cronJob?.events}" th:each="event : ${cronJob?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(cronJob?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${cronJob?.events}" th:each="event : ${cronJob?.events}">
+                                <td th:text="${event?.type}"></td>
+                                <td th:text="${event?.source}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
                         <tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        const linkUrl= [[${link}]];
+        const pathPrefix = '/monitoring/cluster/workloads/namespace/';
+        /*]]>*/
 
-        var $contentList = $("#contentList"),
-            linkUrl= [[${link}]];
-
-        function cronJobDetail(namespace, name) {
-            $.ajax({
-                url: "/monitoring/cluster/workloads/namespace/" + namespace + "/cronjobs/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
             });
-        }
 
-        $(document).ready(function () {
-
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('namespace') + '/cronjobs/' + $(this).data('name'));
             });
         });
     </script>
-
 </div>
 </body>
 </html>

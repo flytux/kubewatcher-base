@@ -23,11 +23,6 @@ public class IngressTable implements NamespaceSettable {
     String age;
 
     public String getPathsHtml() {
-
-        if (StringUtils.isEmpty(paths)) {
-            return ExternalConstants.NONE_STR.toLowerCase(Locale.getDefault());
-        }
-
-        return String.join("<br />", StringUtils.split(paths, ","));
+        return StringUtils.isEmpty(paths) ? ExternalConstants.NONE_STR.toLowerCase(Locale.getDefault()) : String.join("<br />", StringUtils.split(paths, ","));
     }
 }

@@ -77,4 +77,19 @@ public class AlertRuleConfigServiceImpl implements AlertRuleConfigService {
         response.setSuccess(true);
         return response;
     }
+
+    @Override
+    @Transactional
+    public ApiResponse<String> deleteAlarmRule(final AlertRule alertRule) {
+        ApiResponse<String> response = new ApiResponse<>();
+        try {
+            alertRuleRepository.delete(alertRule);
+            response.setSuccess(true);
+        } catch (Exception e) {
+            log.error("알람 삭제 실패 // ruleId={}", alertRule);
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+        }
+        return response;
+    }
 }

@@ -58,6 +58,7 @@ public class V1PodMetricTableList extends V1ObjectTableList<MetricTable, PodMetr
 
             list.add(data);
         }
+
         return list;
     }
 }

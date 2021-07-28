@@ -53,7 +53,6 @@ public class ResourceQuotaDescribe {
     List<String> scopes;
     Map<String, String> scopeSelector;
 
-    // TODO 코드수정함
     public Map<String, Resource> getUsedHard() {
 
         if (CollectionUtils.isEmpty(hard)) { return ImmutableMap.of(); }

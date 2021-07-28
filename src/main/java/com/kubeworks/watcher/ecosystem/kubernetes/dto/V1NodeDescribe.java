@@ -29,7 +29,6 @@ public class V1NodeDescribe {
     private V1PodList pods;
     private V1EventList events;
 
-    // TODO 코드수정함
     public List<BigDecimal> requestCpu() {
 
         return pods.getItems().stream()

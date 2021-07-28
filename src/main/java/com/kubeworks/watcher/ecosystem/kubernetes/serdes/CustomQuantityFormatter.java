@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.serdes;
 
+import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.custom.SuffixFormatter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -7,10 +8,16 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
 
 public class CustomQuantityFormatter {
 
     public String format(final Quantity quantity) {
+
+        if (Objects.isNull(quantity) || Objects.isNull(quantity.getFormat())) {
+            return ExternalConstants.UNKNOWN_DASH;
+        }
+
         switch (quantity.getFormat()) {
             case DECIMAL_SI:
             case DECIMAL_EXPONENT:

@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
+import com.kubeworks.watcher.alarm.service.AlertAlarmListService;
 import com.kubeworks.watcher.cloud.monitoring.service.PageMetricService;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
 import com.kubeworks.watcher.data.entity.Page;
@@ -36,11 +37,7 @@ public class MonitoringRestController {
     private final MonitoringProperties monitoringProperties;
     private final PageMetricService<Page> applicationPageMetricService;
     private final ApplicationService applicationService;
-
-    @GetMapping(value="/monitoring/logging")
-    public Map<String, Object> logging() {
-        return lokiresponseData(pageViewService.getPageView(LOGGING_MENU_ID));
-    }
+    private final AlertAlarmListService alertAlarmListService;
 
     @GetMapping(value="/monitoring/application/overview")
     public Map<String, Object> application() {
@@ -91,8 +88,14 @@ public class MonitoringRestController {
 
         final Map<String, Object> response = responseData(pageViewService.getPageView(MAIN_MENU_ID));
         response.put(SERVICES_STR, applicationService);
+        response.put("alertHistoryList", alertAlarmListService.alertPageHistory(1, null, null, null, null, null, null, 20));
 
         return response;
+    }
+
+    @GetMapping(value="/monitoring/logging")
+    public Map<String, Object> logging() {
+        return lokiresponseData(pageViewService.getPageView(LOGGING_MENU_ID));
     }
 
     private Map<String, Object> responseData(final Page page) {

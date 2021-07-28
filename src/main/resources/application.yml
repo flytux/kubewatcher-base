@@ -52,7 +52,7 @@ spring:
       hibernate.format_sql: true
       hibernate.use_sql_comments: true
       hibernate.hbm2ddl.charset_name: UTF-8
-      hibernate.hbm2ddl.import_files: classpath:sql/common-import.sql,classpath:sql/default-import.sql
+      hibernate.hbm2ddl.import_files: classpath:sql/import.sql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
   task:
@@ -108,14 +108,14 @@ application:
           # modified to set k8s url and token from environment variables 
           # initial value from configmap - kube-watcher-config
           k8s:
-            url: "https://rancher.do/k8s/clusters/local"
-            api-token: "kubeconfig-user-c7cpf:prf4v24k8d7tmhwgnl4v2zl7k2jn2lxb9r9jw9tldkkth76l8tsmwq"
+            url: "https://rancher.kw01/k8s/clusters/local"
+            api-token: "kubeconfig-user-6nz9n:mgrpqct6998ktclpfqp5ctlfmksmcjppvvd9sgwnwphn9vr97nckcw"
           prometheus:
             proxy: true
-            url: "http://prometheus.do"
+            url: "http://prometheus.kw01"
           loki:
             proxy: true
-            url: "http://loki.do"
+            url: "http://loki.kw01"
 logging:
   level:
     root: info

@@ -28,7 +28,7 @@ public class ConfigController implements BaseController {
     private static final String VIEW_HPA = "hpa";
     private static final String VIEW_SECRETS = "secrets";
     private static final String VIEW_CONFIGMAPS = "configmaps";
-    private static final String VIEW_RESOURCE_QUOTAS = "resource_quotas";
+    private static final String VIEW_RESOURCE_QUOTAS = "resource-quotas";
     private static final String VIEW_CUSTOM_RESOURCES = "custom-resources";
 
     private final PageViewService pageViewService;

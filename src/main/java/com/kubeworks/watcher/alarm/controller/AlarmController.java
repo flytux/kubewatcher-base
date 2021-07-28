@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AlarmController implements BaseController {
 
     private static final long MENU_ID = 500;
-
     private static final String VIEW_NAME = "setting-alarm-list";
 
     private final PageViewService pageViewService;

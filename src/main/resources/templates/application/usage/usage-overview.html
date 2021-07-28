@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster Usage')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Cluster Usage')" />
     <div id="main_contents">
-
-        <!-- [Groups] start -->
         <div class="row">
-            <div class="main_title_top col-xs-12 pr_0 mb_0" ><i class="feather icon-chevrons-right"></i>
-                Application usage
+            <div class="main_title_top col-xs-12 pr_0 mb_0">
+                <i class="feather icon-chevrons-right"></i>Application usage
                 <div class="f_r">
                     <div class=" d_ib">
                         <div class="form-group">
-                            <div class='input-group date' name='datetimepicker' id='overview-datetimepicker'>
-                                <input th:value="${#temporals.format(searchDate,'yyyy-MM-dd')}"
-                                    id="searchDate" name="picker1Text" placeholder="Search Date" type="text"
-                                    class="form-control search-input" style="font-size: 12px;" readonly />
+                            <div class="input-group date div-datetimepicker" id="main-datetimepicker">
+                                <input th:value="${#temporals.format(searchDate,'yyyy-MM-dd')}" id="searchDate" name="picker1Text" placeholder="Search Date" type="text" class="form-control search-input" style="font-size: 12px;" readonly />
                                 <span class="input-group-addon glyphicon search-span align-middle">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -30,11 +22,9 @@
                         </div>
                     </div>
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:value="${value}" th:text="${value}">value</option>
+                            <option th:each="value : ${namespaces}" th:value="${value}" th:text="${value}"></option>
                         </select>
                     </div>
                 </div>
@@ -44,94 +34,63 @@
         <div id="contentList" class="row" >
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(usages) ? '0' : usages.size()}" class="point pr_10">20</span>
+                    Total : <span th:text="${#arrays.isEmpty(usages) ? '0' : usages.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Application</th>
-                            <th>Namespace</th>
-                            <th>Pod Max.</th>
-                            <th>Pod Avg.</th>
-                            <th>CPU Max.</th>
-                            <th>CPU Avg.</th>
-                            <th>MEM Max.</th>
-                            <th>MEM Avg.</th>
-                        </tr>
+                            <tr>
+                                <th>Application</th>
+                                <th>Namespace</th>
+                                <th>Pod Max.</th>
+                                <th>Pod Avg.</th>
+                                <th>CPU Max.</th>
+                                <th>CPU Avg.</th>
+                                <th>MEM Max.</th>
+                                <th>MEM Avg.</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(usages)}">
-                            <td colspan="8" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(usages)}" th:each="usage : ${usages}">
-                            <td>
-                                <a th:text="${@managementService.managementServiceWithDefault(usage?.namespace, usage?.application)?.displayName}"
-                                   th:href="'javascript:detail(&quot;' + ${usage?.namespace} + '&quot;, &quot;'+ ${usage?.application} + '&quot;)'"
-                                   href="" >신계약</a>
-                            </td>
-                            <td th:text="${usage?.namespace}">Namespace</td>
-                            <td th:text="${usage?.maxPodCount}">Pod Max.</td>
-                            <td th:text="${usage?.podCount}">Pod Avg.</td>
-                            <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(usage?.maxCpu)}">CPU Max.</td>
-                            <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(usage?.avgCpu)}">CPU Avg.</td>
-                            <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(usage?.maxMemory)}">MEM Max.</td>
-                            <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(usage?.avgMemory)}">MEM Avg.</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(usages)}">
+                                <td colspan="8" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(usages)}" th:each="usage : ${usages}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${usage?.namespace}, data-application=${usage?.application}" th:utext="${@managementService.managementServiceWithDefault(usage?.namespace, usage?.application)?.displayName}"></a>
+                                </td>
+                                <td th:text="${usage?.namespace}"></td>
+                                <td th:text="${usage?.maxPodCount}"></td>
+                                <td th:text="${usage?.podCount}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(usage?.maxCpu)}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(usage?.avgCpu)}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(usage?.maxMemory)}"></td>
+                                <td th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(usage?.avgMemory)}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-<!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
-<!--            <nav>-->
-<!--                <ul class="pagination" >-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Previous">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                    <li class="active"><a href="#">1</a></li>-->
-<!--                    <li><a href="#">2</a></li>-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Next">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </nav>-->
-<!--        </div>-->
-        <!-- [Groups] End-->
     </div>
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
-            <input type="hidden" id="var-namespace" th:value="${namespace}">
-            <input type="hidden" id="var-application" th:value="${application}">
-            <input type="hidden" id="var-unit" th:value="${unit?.name()}">
-<!--            <input type="hidden" id="var-searchDate" th:value="${searchDate}">-->
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel">Application : 신계약</span>
+                        <span id="myModalLabel" th:text="|Application : ${serviceName}|"></span>
                     </div>
                 </div>
 
                 <div class="modal-nbody row_scroll">
                     <div class="table-title">
                         <div class="radio">
-                            <label>
-                                <input type="radio" name="unit" id="dailyUnit" value="DAYS" checked>Daily
-                            </label>&nbsp;&nbsp;
-                            <label>
-                                <input type="radio" name="unit" id="monthlyUnit" value="MONTHS">Monthly
-                            </label>
+                            <label><input type="radio" name="unit" id="dailyUnit" value="DAYS" checked>Daily</label>&nbsp;&nbsp;
+                            <label><input type="radio" name="unit" id="monthlyUnit" value="MONTHS">Monthly</label>
                             <div class="form-group d_ib">
-                                <div class='input-group date' name='datetimepicker' id='detail-datetimepicker'>
-                                    <input th:value="${#temporals.format(searchDate,'yyyy-MM-dd')}"
-                                           id="var-searchDate" name="picker1Text" placeholder="Search Date" type='text'
-                                           class="form-control search-input" style="height: 25px;" readonly />
+                                <div class="input-group date div-datetimepicker" id="modal-datetimepicker">
+                                    <input th:value="${#temporals.format(searchDate,'yyyy-MM-dd')}" id="var-searchDate" name="picker1Text" placeholder="Search Date" type="text" class="form-control search-input" style="height: 25px;" readonly />
                                     <span id="picker1Span" class="input-group-addon glyphicon search-span">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
@@ -143,131 +102,88 @@
                     <th:block th:each="panelRow : ${page?.rows}">
                         <div class="row">
                             <th:block th:each="panel : ${panelRow?.pageRowPanels}">
-                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                             </th:block>
                         </div>
                     </th:block>
-
-
                 </div>
-
             </div>
+
+            <input type="hidden" id="var-unit" th:value="${unit?.name()}" />
+            <input type="hidden" id="var-namespace" th:value="${namespace}" />
+            <input type="hidden" id="var-application" th:value="${application}" />
         </div>
     </div>
-    <!-- [Modal] End -->
+
     <link rel="stylesheet" th:href="@{/assets/css/bootstrap-datetimepicker.css}">
+
     <script th:src="@{/assets/js/moment.js}"></script>
     <script th:src="@{/assets/js/bootstrap-datetimepicker.js}"></script>
     <script th:src="@{/vendor/d3/d3-format.v2.min.js}"></script>
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
     <script type="text/javascript" th:inline="javascript">
-
-
         /*<![CDATA[*/
-        let $contentList = $("#contentList"),
-            $namespace = $("#namespace"),
-            $searchDate = $("#searchDate"),
-            linkUrl= [[${link}]],
-            panelMap = new Map();
+        const linkUrl= [[${link}]];
+        const pathPrefix = '/api/v1/application/usage/detail/namespace/';
+        let panels = [];
         /*]]>*/
 
-        let renderCHart = function (panel) {
-            commonChartsJs.removeChart(panel);
-            commonChartsJs.createPanel(panel);
-            return panel;
-        }
-
-        function renderDatepicker() {
-            $("div[name='datetimepicker']").each(function () {
-                $(this).datetimepicker({
-                    showTimeSelect: false, format: "YYYY-MM-DD", timepickerLeftMargin: "160px", ignoreReadonly: true
-                });
+        const initDatepicker = function() {
+            $('div.div-datetimepicker').each(function() {
+                $(this).datetimepicker({ showTimeSelect: false, format: 'YYYY-MM-DD', timepickerLeftMargin: '160px', ignoreReadonly: true });
             });
-        }
+        };
 
-        function destroyContainerChart(){
-            panelMap.forEach((panel, key) => {
-                commonChartsJs.removeChart(panel)
+        const kubeReloadList = function(ns, dt) {
+            kube.reloadList(linkUrl.replace('{namespace}', ns) + "?searchDate=" + dt);
+        };
+
+        const redrawPanels = function() {
+            panels.forEach(p => { commonChartsJs.removeChart(p); commonChartsJs.createPanel(p); });
+        };
+
+        $(document).ready(function() {
+            initDatepicker();
+
+            $(document).on('change', '#namespace', function() {
+                kubeReloadList($.trim($(this).val()), $('#searchDate').val());
             });
-            panelMap.clear();
-        }
 
-        function detail(selectNamespace, selectApplication) {
-            destroyContainerChart();
-            $.ajax({
-                url: "/api/v1/application/usage/detail/namespace/" + selectNamespace + "/application/" + selectApplication + "?searchDate=" + $("#searchDate").val(),
-                success: function (data) {
+            $(document).on('dp.change', '#main-datetimepicker', function() {
+                kubeReloadList($.trim($('#namespace').val()), $('#searchDate').val());
+            });
 
-                    $('#myModal').text("");
-                    $('#myModal').html(data.describe);
-                    renderDatepicker();
-                    let rows = data.page.rows
-                    rows.forEach(row => {
-                        row.pageRowPanels.forEach(function (panel) {
-                            renderCHart(panel);
-                            panelMap.set(panel.panelId, panel);
+            $(document).on('click', 'a.table2-link', function() {
+                const path = pathPrefix + $(this).data('namespace') + '/application/' + $(this).data('application') + '?searchDate=' + $('#searchDate').val();
+
+                panels.forEach(p => commonChartsJs.removeChart(p)); panels = [];
+
+                kube.execute(path, function(data) {
+                    $('#myModal').text('').html(data['describe']);
+
+                    initDatepicker();
+
+                    data.page.rows.forEach(r => {
+                        r['pageRowPanels'].forEach(p => {
+                            commonChartsJs.removeChart(p); commonChartsJs.createPanel(p);
+                            panels.push(p);
                         });
                     });
+
                     $('#myModal').modal();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href',
-                            '/login?logout')
-                    }
-                }
-            });
-        }
-
-        function refreshList(selectedNamespace, searchDate) {
-            let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-            $.ajax({
-                url: url + "?searchDate=" + searchDate,
-                success: function (data) {
-                    $contentList.text("");
-                    $contentList.html(data);
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
-        }
-
-        $(document).ready(function () {
-
-            renderDatepicker();
-
-            $("#namespace").on("change", function () {
-                const selectedNamespace = $namespace.val();
-                const searchDate = $searchDate.val();
-                refreshList(selectedNamespace, searchDate);
+                });
             });
 
-            $(document).on("dp.change", "div[name=datetimepicker]", function () {
-                const datetimePickerId = $(this).attr("id");
-                if (datetimePickerId === "overview-datetimepicker") {
-                    const selectedNamespace = $namespace.val();
-                    const searchDate = $searchDate.val();
-                    refreshList(selectedNamespace, searchDate);
-                } else if (datetimePickerId === "detail-datetimepicker") {
-                    panelMap.forEach(renderCHart);
-                }
+            $(document).on('change', "input[name^='unit']", function() {
+                $('#var-unit').val($(this).val()); redrawPanels();
             });
 
-            $(document).on("change", "input[name^='unit']", function(){
-                $this = $(this);
-                $("#var-unit").val($this.val());
-                panelMap.forEach(renderCHart);
-            });
-
+            $(document).on('dp.change', '#modal-datetimepicker', function() { redrawPanels(); });
         });
-
     </script>
-
 </div>
 </body>
 </html>

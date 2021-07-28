@@ -1,83 +1,74 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  xmlns:th="http://www.thymeleaf.org"
-	  layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
+    <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [Namespaces] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
             </div>
         </div>
 
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(namespaces) ? '0' : namespaces.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(namespaces) ? '0' : namespaces.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Age</th>
-                            <th>Status</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Status</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(namespaces)}">
-                            <td colspan="3" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(namespaces)}" th:each="namespace : ${namespaces}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:namespaceDetail(&quot;'+ ${namespace?.name} + '&quot;)'"
-                                   th:utext="${namespace?.name}">Name</a>
-                            </td>
-                            <td th:text="${namespace?.age}">Age</td>
-                            <td th:switch="${namespace?.status}">
-                                <span th:case="Running" class="madal_label_active" th:text="${namespace?.status}">Available</span>
-                                <span th:case="Active" class="madal_label_active" th:text="${namespace?.status}">Bound</span>
-                                <span th:case="Ready" class="madal_label_active" th:text="${namespace?.status}">Pending</span>
-                                <span th:case="*" class="madal_label" th:text="${namespace?.status}"></span>
-                            </td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(namespaces)}">
+                                <td colspan="3" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(namespaces)}" th:each="namespace : ${namespaces}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-name=${namespace?.name}" th:utext="${namespace?.name}"></a>
+                                </td>
+                                <td th:text="${namespace?.age}"></td>
+                                <td th:switch="${namespace?.status}">
+                                    <span th:case="Running" class="madal_label_active" th:text="${namespace?.status}"></span>
+                                    <span th:case="Active" class="madal_label_active" th:text="${namespace?.status}"></span>
+                                    <span th:case="Ready" class="madal_label_active" th:text="${namespace?.status}"></span>
+                                    <span th:case="*" class="madal_label" th:text="${namespace?.status}"></span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [[Namespaces]] End-->
     </div>
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Namespaces : ${namespace?.name}|">Namespaces : Namespaces 명</span>
+                        <span id="myModalLabel" th:text="|Namespaces : ${namespace?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <table class="table-nt">
                         <tr>
                             <th>Created</th>
-                            <td th:text="${#dates.format(namespace?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08) </td>
+                            <td th:text="${#dates.format(namespace?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td th:text="${namespace?.name}">example</td>
+                            <td th:text="${namespace?.name}"></td>
                         </tr>
                         <tr>
                             <th>Labels</th>
@@ -100,48 +91,33 @@
                         <tr>
                             <th>Status</th>
                             <td th:switch="${namespace?.status}">
-                                <span th:case="Running" class="madal_label_active" th:text="${namespace?.status}">Available</span>
-                                <span th:case="Active" class="madal_label_active" th:text="${namespace?.status}">Bound</span>
-                                <span th:case="Ready" class="madal_label_active" th:text="${namespace?.status}">Pending</span>
+                                <span th:case="Running" class="madal_label_active" th:text="${namespace?.status}"></span>
+                                <span th:case="Active" class="madal_label_active" th:text="${namespace?.status}"></span>
+                                <span th:case="Ready" class="madal_label_active" th:text="${namespace?.status}"></span>
                                 <span th:case="*" class="madal_label" th:text="${namespace?.status}"></span>
                             </td>
                         </tr>
                             <th>Resource Quotas</th>
                             <td>
                                 <div th:if="${#arrays.isEmpty(namespace?.resourceQuotas)}">-</div>
-                                <div th:unless="${#arrays.isEmpty(namespace?.resourceQuotas)}"
-                                     th:each = "resourceQuota : ${namespace?.resourceQuotas}"
-                                     th:text="${resourceQuota}">
-                                </div>
+                                <div th:unless="${#arrays.isEmpty(namespace?.resourceQuotas)}" th:each="resourceQuota : ${namespace?.resourceQuotas}" th:text="${resourceQuota}"></div>
                             </td>
-
                         </tr>
                     </table>
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
-    <script type="text/javascript" th:inline="javascript">
-        function namespaceDetail(name) {
-            $.ajax({
-                url: "/cluster/config/namespaces/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
-        }
-    </script>
 
+    <script type="text/javascript" th:inline="javascript">
+        const pathPrefix = '/cluster/config/namespaces/';
+
+        $(document).ready(function() {
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('name'));
+            });
+        });
+    </script>
 </div>
 </body>
 </html>

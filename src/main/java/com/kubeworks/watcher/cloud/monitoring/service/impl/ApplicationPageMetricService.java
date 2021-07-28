@@ -7,6 +7,7 @@ import com.kubeworks.watcher.data.entity.ChartQuery;
 import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.data.entity.PageVariable;
+import com.kubeworks.watcher.data.vo.VariableType;
 import com.kubeworks.watcher.ecosystem.prometheus.service.ApplicationService;
 import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
 import com.kubeworks.watcher.preference.service.PageViewService;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(onConstructor_={@Autowired})
 public class ApplicationPageMetricService implements PageMetricService<Page> {
 
+    private static final Pattern PATTERN = Pattern.compile("\\$services");
+
     private final PageViewService pageViewService;
     private final ProxyApiService proxyApiService;
     private final ObjectMapper objectMapper;
@@ -42,7 +45,7 @@ public class ApplicationPageMetricService implements PageMetricService<Page> {
         List<PageVariable> variables = pageView.getVariables();
 
         Map<String, PageVariable> variableMap = variables.stream()
-            .map(this::getValuesByVariable)
+            .map(this::retrieveValuesFrom)
             .collect(Collectors.toMap(PageVariable::getName, Function.identity()));
 
         /* subGroup */
@@ -107,11 +110,22 @@ public class ApplicationPageMetricService implements PageMetricService<Page> {
     }
 
 
-    private PageVariable getValuesByVariable(PageVariable variable) {
-        String serviceNames = applicationService.getServiceNamesOfPromQL();
-        variable.setApiQuery(RegExUtils.replaceAll(variable.getApiQuery(), Pattern.compile("\\$services"), serviceNames));
-        List<String> values = proxyApiService.query(variable);
+    private PageVariable retrieveValuesFrom(final PageVariable variable) {
+
+        log.warn("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        log.warn(variable.getApiQuery());
+
+        variable.setApiQuery(RegExUtils.replaceAll(variable.getApiQuery(), PATTERN, applicationService.getServiceNamesOfPromQL()));
+
+        log.warn(variable.getApiQuery());
+        log.warn("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+
+        final List<String> values = proxyApiService.query(variable);
+        if (VariableType.METRIC_LABEL_VALUES == variable.getVariableType() && values.isEmpty()) {
+            log.warn("PageVariable :: Values not found from Prometheus Response -> {} :: {}", variable.getName(), variable.getApiQuery());
+        }
         variable.setValues(values);
+
         return variable;
     }
 }

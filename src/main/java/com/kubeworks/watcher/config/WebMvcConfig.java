@@ -25,22 +25,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(final ViewControllerRegistry registry) {
-
         registry.addViewController("/").setViewName("redirect:/main");
-
-        // 이 매핑들은 사용되지 않는걸로 판단됨
-        registry.addViewController("/monitoring/application/topologies").setViewName("monitoring/application/topologies");
-        registry.addViewController("/monitoring/alarm/list").setViewName("monitoring/alarm/alarm-list");
-        registry.addViewController("/application/catalog/applications").setViewName("application/catalog/application-list");
-        registry.addViewController("/application/catalog/releases").setViewName("application/catalog/release-list");
-        registry.addViewController("/security/keys").setViewName("security/keys");
-        registry.addViewController("/ncp/audit").setViewName("ncp/audit");
-        registry.addViewController("/ncp/authorization").setViewName("ncp/authorization");
-        registry.addViewController("/ncp/groups").setViewName("ncp/groups");
-        registry.addViewController("/ncp/policies").setViewName("ncp/policies");
-        registry.addViewController("/ncp/roles").setViewName("ncp/roles");
-        registry.addViewController("/ncp/users").setViewName("ncp/users");
-
-        registry.addViewController("/setting/preference").setViewName("setting/preference/preference");
     }
 }
