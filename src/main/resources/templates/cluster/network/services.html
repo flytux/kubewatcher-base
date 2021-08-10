@@ -46,7 +46,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(services)}" th:each="service : ${services}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${service?.namespace}, data-name=${service?.name}" th:utext="${service?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${service?.namespace}, data-name=${service?.name}" th:utext="${service?.name}"></a>
                                 </td>
                                 <td th:text="${service?.namespace}"></td>
                                 <td th:text="${service?.type}"></td>

@@ -647,12 +647,11 @@ let commonChartsJs = (function () {
                 tableData = dataArray[0];
             }
 
-            //어플리케이션 현황판용 렌더링 기능 분기 추가.
-            if (panel.title == '보험코어 어플리케이션') {
-                renderAppTable(panel, tableData);
-            } else {
-                renderTable(panel, tableData);
-            }
+            // 어플리케이션 현황판용 렌더링 기능 분기 추가.
+            // 현재 데이터 기준 아래 조건은 항상 else
+            // renderAppTable 함수에서 다르게 처리하고자 한 내용의 의도 역시 정확히 파악이 어려움 20210730
+            ('보험코어 어플리케이션' === panel['title']) ? renderAppTable(panel, tableData) : renderTable(panel, tableData);
+
             return panel;
         },
 

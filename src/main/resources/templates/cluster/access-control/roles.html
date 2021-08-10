@@ -43,7 +43,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(roles)}" th:each="role : ${roles}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${role?.namespace}, data-name=${role?.name}" th:utext="${role?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${role?.namespace}, data-name=${role?.name}" th:utext="${role?.name}"></a>
                                 </td>
                                 <td th:text="${role?.namespace}"></td>
                                 <td th:text="${role?.age}"></td>

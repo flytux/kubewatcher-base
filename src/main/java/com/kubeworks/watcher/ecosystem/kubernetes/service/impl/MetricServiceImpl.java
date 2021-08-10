@@ -181,7 +181,7 @@ public class MetricServiceImpl implements MetricService {
         log.debug("end={} // count={}, aggregateUsage={}", System.currentTimeMillis() - startMs,
             aggregateUsage.size(), aggregateUsage);
 
-        if (aggregateUsage.size() != 0) {
+        if (!aggregateUsage.isEmpty()) {
             clusterPodUsageMapper.inserts(aggregateUsage); return;
         }
 

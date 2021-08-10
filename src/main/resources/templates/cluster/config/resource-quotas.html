@@ -41,7 +41,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(resourceQuotas)}" th:each="resourceQuota : ${resourceQuotas}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${resourceQuota?.namespace}, data-name=${resourceQuota?.name}" th:utext="${resourceQuota?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${resourceQuota?.namespace}, data-name=${resourceQuota?.name}" th:utext="${resourceQuota?.name}"></a>
                                 </td>
                                 <td th:text="${resourceQuota?.namespace}"></td>
                                 <td th:text="${resourceQuota?.age}"></td>

@@ -23,7 +23,6 @@ import java.util.*;
 @AllArgsConstructor(onConstructor_={@Autowired})
 public class KwUserRestController {
 
-
     private static final String USER_LIST_STR = "userList";
     private static final String GROUP_LIST_STR = "groupList";
     private static final String VIEW_NAME = "security/users";

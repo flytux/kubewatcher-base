@@ -112,13 +112,7 @@ public class ApplicationPageMetricService implements PageMetricService<Page> {
 
     private PageVariable retrieveValuesFrom(final PageVariable variable) {
 
-        log.warn("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        log.warn(variable.getApiQuery());
-
         variable.setApiQuery(RegExUtils.replaceAll(variable.getApiQuery(), PATTERN, applicationService.getServiceNamesOfPromQL()));
-
-        log.warn(variable.getApiQuery());
-        log.warn("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
         final List<String> values = proxyApiService.query(variable);
         if (VariableType.METRIC_LABEL_VALUES == variable.getVariableType() && values.isEmpty()) {

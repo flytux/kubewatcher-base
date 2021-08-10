@@ -117,7 +117,7 @@ public class KwUserServiceImpl implements KwUserService {
             LocalDateTime now = LocalDateTime.now();
             kwUser.setCreateTime(now);
             kwUser.setUpdateTime(now);
-            kwUser.setPassword(passwordEncoder.encode("hlihli1!"));
+            kwUser.setPassword(passwordEncoder.encode("test1234!"));
 
             if (CollectionUtils.isEmpty(roleList)) {
                 kwUser.setRole(Collections.emptyList(),"save");

@@ -3,7 +3,7 @@ package com.kubeworks.watcher.base;
 public interface BaseController {
 
     default String retrieveViewNamePrefix() {
-        return "/";
+        return "";
     }
 
     default String createViewName(final String name) {

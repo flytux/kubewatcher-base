@@ -28,6 +28,6 @@ public class KwUserRoleRule extends BaseEntity {
     @Column(name="description", length=200, nullable=false)
     String description;
 
-    @Column(name="auth_code", length=3, nullable=false)
+    @Column(name="auth_code", length=3)
     String authcode;
 }

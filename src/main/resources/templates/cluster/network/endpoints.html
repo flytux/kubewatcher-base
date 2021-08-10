@@ -42,7 +42,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(endpoints)}" th:each="endpoint : ${endpoints}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${endpoint?.namespace}, data-name=${endpoint?.name}" th:utext="${endpoint?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${endpoint?.namespace}, data-name=${endpoint?.name}" th:utext="${endpoint?.name}"></a>
                                 </td>
                                 <td th:text="${endpoint?.namespace}"></td>
                                 <td th:if="${#strings.contains(endpoint?.endpoints,',')}" th:text="|${#strings.substringBefore(endpoint?.endpoints,',')}...|"></td>

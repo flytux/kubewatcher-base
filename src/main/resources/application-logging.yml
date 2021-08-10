@@ -10,3 +10,5 @@ logging.level.com.kubeworks.watcher: debug
 
 logging.level.org.springframework.security: debug
 logging.level.org.springframework.web.filter: debug
+
+logging.level.org.springframework.cache: trace

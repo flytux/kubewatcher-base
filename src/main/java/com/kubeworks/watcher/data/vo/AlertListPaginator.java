@@ -35,7 +35,7 @@ public class AlertListPaginator {
         this.setTotalLastPageNum();
     }
 
-    public void setTotalLastPageNum(){
+    private void setTotalLastPageNum() {
         if(totalPostCount == 0){
             this.totalLastPageNum = 1;
         } else {
@@ -43,48 +43,33 @@ public class AlertListPaginator {
         }
     }
 
-    private Map<String, Object> getBlock(Integer currentPageNum, Boolean isFixed){
+    private Map<String, Object> getBlock(Integer currentPageNum) {
 
         Map<String, Object> result = new HashMap<>();
 
-        if (pagesPerBlock % 2 ==0 && !isFixed){
-//            result.put("pageError", "");
+        if (pagesPerBlock % 2 == 0) {
             return null;
-//            throw new IllegalStateException("pagesPerBlock은 홀수만 가능합니다");
         }
 
         if (currentPageNum > totalLastPageNum && totalPostCount != 0 ){
-//            result.put("pageError", "마지막 페이지는 " + totalLastPageNum + " 페이지 입니다.");
             return null;
-//            throw  new IllegalStateException("currentPageNum가 총 페이지 개수(" + totalLastPageNum + ") 보다 큽니다");
         }
 
         Integer blockLastPageNum = totalLastPageNum;
         Integer blockFirstPageNum = 1;
 
-        if(isFixed) {
-            Integer mod = totalLastPageNum % pagesPerBlock;
-            if(totalPostCount - mod >= currentPageNum){
-                blockLastPageNum = (int) (Math.ceil((float)currentPageNum / pagesPerBlock) * pagesPerBlock);
-                blockFirstPageNum = blockLastPageNum - (pagesPerBlock - 1);
-            } else {
-                blockFirstPageNum = (int) (Math.ceil((float)currentPageNum / pagesPerBlock) * pagesPerBlock) - (pagesPerBlock - 1);
-            }
-        } else {
-            Integer mid = pagesPerBlock / 2;
-            if(currentPageNum <= pagesPerBlock){
-                blockLastPageNum = pagesPerBlock;
-            } else if(currentPageNum < totalLastPageNum - mid) {
-                blockLastPageNum = currentPageNum + mid;
-            }
+        Integer mid = pagesPerBlock / 2;
+        if(currentPageNum <= pagesPerBlock){
+            blockLastPageNum = pagesPerBlock;
+        } else if(currentPageNum < totalLastPageNum - mid) {
+            blockLastPageNum = currentPageNum + mid;
+        }
 
-            blockFirstPageNum = blockLastPageNum - (pagesPerBlock -1);
+        blockFirstPageNum = blockLastPageNum - (pagesPerBlock -1);
 
-            if(totalLastPageNum < pagesPerBlock){
-                blockLastPageNum = totalLastPageNum;
-                blockFirstPageNum = 1;
-            }
-
+        if(totalLastPageNum < pagesPerBlock){
+            blockLastPageNum = totalLastPageNum;
+            blockFirstPageNum = 1;
         }
 
         List<Integer> pageList = new ArrayList<>();
@@ -92,8 +77,8 @@ public class AlertListPaginator {
             pageList.add(i, val);
         }
 
-        result.put("isPrevExist", (int)currentPageNum > (int)pagesPerBlock);
-        result.put("isNextExist", blockLastPageNum != 1 ? (int)blockLastPageNum != (int)totalLastPageNum : false);
+        result.put("isPrevExist", currentPageNum > pagesPerBlock);
+        result.put("isNextExist", blockLastPageNum != 1 && !blockLastPageNum.equals(totalLastPageNum));
         result.put("totalListPageNum", totalLastPageNum);
         result.put("blockLastPageNum", blockLastPageNum);
         result.put("blockFirstPageNum", blockFirstPageNum);
@@ -106,11 +91,7 @@ public class AlertListPaginator {
         return result;
     }
 
-    public Map<String, Object> getElasticBolock(Integer currentPageNum){
-        return this.getBlock(currentPageNum, false);
-    }
-
-    public Map<String, Object> getFixedBlock(Integer currentPageNum){
-        return this.getBlock(currentPageNum, true);
+    public Map<String, Object> getElasticBlock(Integer currentPageNum){
+        return this.getBlock(currentPageNum);
     }
 }

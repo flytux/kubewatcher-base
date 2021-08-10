@@ -51,7 +51,7 @@
                             <tr th:unless="${#arrays.isEmpty(events)}" th:each="event : ${events}">
                                 <td th:text="${event?.type}"></td>
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${event?.namespace}, data-name=${event?.name}" th:utext="${event?.reason}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${event?.namespace}, data-name=${event?.name}" th:utext="${event?.reason}"></a>
                                 </td>
                                 <td th:text="${event?.namespace}"></td>
                                 <td th:text="${event?.object}"></td>

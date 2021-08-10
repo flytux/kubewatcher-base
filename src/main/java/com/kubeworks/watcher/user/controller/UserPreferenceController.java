@@ -23,7 +23,7 @@ public class UserPreferenceController {
     @GetMapping(value = "/setting/preference")
     public String preference(Model model){
         model.addAttribute("user", kwUserService.getKwUser(getUser().getUsername()));
-        return "/setting/preference/preference";
+        return "setting/preference/preference";
     }
 
     @ResponseBody

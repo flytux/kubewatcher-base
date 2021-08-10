@@ -43,7 +43,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(jobs)}" th:each="job : ${jobs}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${job?.namespace}, data-name=${job?.name}" th:utext="${job?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${job?.namespace}, data-name=${job?.name}" th:utext="${job?.name}"></a>
                                 </td>
                                 <td th:text="${job?.namespace}"></td>
                                 <td th:text="${job?.completions}"></td>

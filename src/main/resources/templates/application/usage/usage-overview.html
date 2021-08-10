@@ -56,7 +56,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(usages)}" th:each="usage : ${usages}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${usage?.namespace}, data-application=${usage?.application}" th:utext="${@managementService.managementServiceWithDefault(usage?.namespace, usage?.application)?.displayName}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${usage?.namespace}, data-application=${usage?.application}" th:utext="${@managementService.managementServiceWithDefault(usage?.namespace, usage?.application)?.displayName}"></a>
                                 </td>
                                 <td th:text="${usage?.namespace}"></td>
                                 <td th:text="${usage?.maxPodCount}"></td>
@@ -79,7 +79,7 @@
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Application : ${serviceName}|"></span>
+                        <span id="myModalLabel" th:utext="|Application : ${serviceName}|"></span>
                     </div>
                 </div>
 

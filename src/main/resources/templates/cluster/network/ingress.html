@@ -43,7 +43,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(ingresses)}" th:each="ingress : ${ingresses}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${ingress?.namespace}, data-name=${ingress?.name}" th:utext="${ingress?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${ingress?.namespace}, data-name=${ingress?.name}" th:utext="${ingress?.name}"></a>
                                 </td>
                                 <td th:text="${ingress?.namespace}"></td>
                                 <td th:text="${#strings.equals(ingress?.hosts, 'null') ? '<none>' : ingress?.hosts}"></td>

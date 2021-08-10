@@ -43,7 +43,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(deployments)}" th:each="deployment : ${deployments}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${deployment?.namespace}, data-name=${deployment?.name}" th:utext="${deployment?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${deployment?.namespace}, data-name=${deployment?.name}" th:utext="${deployment?.name}"></a>
                                 </td>
                                 <td th:text="${deployment?.namespace}"></td>
                                 <td th:text="${deployment?.ready}"></td>

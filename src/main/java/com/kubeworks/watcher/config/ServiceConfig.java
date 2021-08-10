@@ -10,6 +10,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,6 +42,10 @@ public class ServiceConfig {
             ObjectMapperHolder.putObjectMapper(builder.build());
         }
     }
+
+    @Configuration
+    @EnableCaching(proxyTargetClass=true)
+    protected static class CacheConfig { /* Spring Configuration Class */ }
 
     @Configuration
     @EnableScheduling

@@ -42,7 +42,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(configMaps)}" th:each="configMap : ${configMaps}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${configMap?.namespace}, data-name=${configMap?.name}" th:utext="${configMap?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${configMap?.namespace}, data-name=${configMap?.name}" th:utext="${configMap?.name}"></a>
                                 </td>
                                 <td th:text="${configMap?.namespace}"></td>
                                 <td th:text="${configMap?.dataCount}"></td>

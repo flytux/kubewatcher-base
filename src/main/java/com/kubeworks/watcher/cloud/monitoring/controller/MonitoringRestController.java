@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
+import com.google.common.collect.ImmutableMap;
 import com.kubeworks.watcher.alarm.service.AlertAlarmListService;
 import com.kubeworks.watcher.cloud.monitoring.service.PageMetricService;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
@@ -8,6 +9,7 @@ import com.kubeworks.watcher.ecosystem.prometheus.service.ApplicationService;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +40,8 @@ public class MonitoringRestController {
     private final PageMetricService<Page> applicationPageMetricService;
     private final ApplicationService applicationService;
     private final AlertAlarmListService alertAlarmListService;
+
+    private final ApplicationService.ApplicationManagementHandler handler;
 
     @GetMapping(value="/monitoring/application/overview")
     public Map<String, Object> application() {
@@ -118,5 +122,11 @@ public class MonitoringRestController {
         response.put("applicationValue", applicationService.getServiceNamesLoki());
 
         return response;
+    }
+
+    @DeleteMapping(value="/monitoring/cache")
+    public Map<String, String> clearApplicationManagementCache() {
+        handler.clearCache();
+        return ImmutableMap.of("res", "success");
     }
 }

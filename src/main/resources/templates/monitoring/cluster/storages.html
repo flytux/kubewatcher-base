@@ -44,7 +44,7 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(persistentVolumeClaims)}" th:each="persistentVolumeClaim : ${persistentVolumeClaims}">
                             <td>
-                                <a class="table2-link claim-modal-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${persistentVolumeClaim?.namespace}, data-name=${persistentVolumeClaim?.name}" th:utext="${persistentVolumeClaim?.name}"></a>
+                                <a class="table2-link claim-modal-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${persistentVolumeClaim?.namespace}, data-name=${persistentVolumeClaim?.name}" th:utext="${persistentVolumeClaim?.name}"></a>
                             </td>
                             <td th:text="${persistentVolumeClaim?.namespace}"></td>
                             <td th:text="${#strings.isEmpty(persistentVolumeClaim?.storageClass) ? '-' : persistentVolumeClaim?.storageClass}"></td>
@@ -91,7 +91,7 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(persistentVolumes)}" th:each="persistentVolume : ${persistentVolumes}">
                             <td>
-                                <a class="table2-link volume-modal-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-name=${persistentVolume?.name}" th:utext="${persistentVolume?.name}"></a>
+                                <a class="table2-link volume-modal-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${persistentVolume?.name}" th:utext="${persistentVolume?.name}"></a>
                             </td>
                             <td th:text="${#strings.isEmpty(persistentVolume?.storageClass) ? '-' : persistentVolume?.storageClass}"></td>
                             <td th:text="${persistentVolume?.capacity}"></td>
@@ -137,7 +137,7 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(storages)}" th:each="storage : ${storages}">
                             <td>
-                                <a class="table2-link storage-modal-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-name=${storage?.name}" th:utext="${storage?.name}"></a>
+                                <a class="table2-link storage-modal-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${storage?.name}" th:utext="${storage?.name}"></a>
                             </td>
                             <td th:text="${storage?.provisioner}"></td>
                             <td th:text="${storage?.reclaimPolicy}"></td>

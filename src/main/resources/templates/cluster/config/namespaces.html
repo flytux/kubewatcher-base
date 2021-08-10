@@ -33,7 +33,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(namespaces)}" th:each="namespace : ${namespaces}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-name=${namespace?.name}" th:utext="${namespace?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${namespace?.name}" th:utext="${namespace?.name}"></a>
                                 </td>
                                 <td th:text="${namespace?.age}"></td>
                                 <td th:switch="${namespace?.status}">

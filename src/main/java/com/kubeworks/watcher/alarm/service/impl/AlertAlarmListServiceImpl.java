@@ -1,5 +1,6 @@
 package com.kubeworks.watcher.alarm.service.impl;
 
+import com.google.common.collect.Lists;
 import com.kubeworks.watcher.alarm.service.AlertAlarmListService;
 import com.kubeworks.watcher.base.ApiResponse;
 import com.kubeworks.watcher.data.converter.AlertCategoryConverter;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -28,9 +30,13 @@ import java.util.*;
 @Service
 public class AlertAlarmListServiceImpl implements AlertAlarmListService {
 
-    private final AlertHistoryRepository alertHistoryRepository;
-    private static final int BLOCK_PAGE_NUMBER_COUNT = 5;
     private static final int PAGE_POST_COUNT = 100;
+    private static final int BLOCK_PAGE_NUMBER_COUNT = 5;
+
+    private static final String UPDATE_TIME_STR = "updateTime";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a", Locale.US);
+
+    private final AlertHistoryRepository alertHistoryRepository;
 
     @Autowired
     public AlertAlarmListServiceImpl(AlertHistoryRepository alertHistoryRepository) {
@@ -41,7 +47,7 @@ public class AlertAlarmListServiceImpl implements AlertAlarmListService {
     public Map<String, Object> alertPageHistory(Integer pageNumber, String startDate, String endDate, String severity, String category, String resource, String target, int pagePostCount) {
 
         Specification<AlertHistory> spec = Specification.where(searchHistory(startDate, endDate, severity, category, resource, target));
-        Pageable pageable = PageRequest.of(pageNumber-1, pagePostCount > 0 ? pagePostCount : 100, Sort.by(Sort.Direction.DESC, "updateTime"));
+        Pageable pageable = PageRequest.of(pageNumber-1, pagePostCount > 0 ? pagePostCount : 100, Sort.by(Sort.Direction.DESC, UPDATE_TIME_STR));
 
         Page<AlertHistory> page =  alertHistoryRepository.findAll(spec, pageable);
 
@@ -53,17 +59,17 @@ public class AlertAlarmListServiceImpl implements AlertAlarmListService {
     }
 
     @Override
-    public Map<String, Object> getPageList(Integer curPageNum, Long total_Count) {
+    public Map<String, Object> getPageList(Integer curPageNum, Long totalCount) {
 
-        AlertListPaginator alertListPaginator = new AlertListPaginator(BLOCK_PAGE_NUMBER_COUNT, PAGE_POST_COUNT, total_Count);
-        return alertListPaginator.getElasticBolock(curPageNum);
+        AlertListPaginator alertListPaginator = new AlertListPaginator(BLOCK_PAGE_NUMBER_COUNT, PAGE_POST_COUNT, totalCount);
+        return alertListPaginator.getElasticBlock(curPageNum);
     }
 
     @Override
     public Map<String, Object> alertSearchHistory(String startDate, String endDate, String severity, String category, String resource, String target) {
 
         Specification<AlertHistory> spec = Specification.where(searchHistory(startDate, endDate, severity, category, resource, target));
-        Pageable pageable = PageRequest.of(0, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "updateTime"));
+        Pageable pageable = PageRequest.of(0, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, UPDATE_TIME_STR));
 
         Page<AlertHistory> page =  alertHistoryRepository.findAll(spec, pageable);
 
@@ -100,7 +106,7 @@ public class AlertAlarmListServiceImpl implements AlertAlarmListService {
             Map<String, Object> map = new HashMap<>();
             if(startDate != null && !"".equals(startDate)){
                 map.put("createTime", startDate);
-                map.put("updateTime", endDate);
+                map.put(UPDATE_TIME_STR, endDate);
             }
             if(severity != null && !"".equals(severity)) {
                 map.put("severity", new AlertSeverityConverter().convertToEntityAttribute(severity));
@@ -114,33 +120,36 @@ public class AlertAlarmListServiceImpl implements AlertAlarmListService {
 
             map.put("target", target);
 
-            List<Predicate> predicates = getPredicateWithKeyword(map, root, criteriaBuilder);
+            List<Predicate> predicates = createPredicateFromKeyword(map, root, criteriaBuilder);
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
-    private List<Predicate> getPredicateWithKeyword(Map<String, Object> searchKeyword, Root<AlertHistory> root, CriteriaBuilder builder){
-        List<Predicate> predicates = new ArrayList<>();
-        for (String key : searchKeyword.keySet()){
-            if(searchKeyword.get(key) != null && "target".equals(key) && !"".equals(searchKeyword.get(key))) { // Like 검색
-                predicates.add(builder.like(root.get(key),"%"+searchKeyword.get(key)+"%"));
-            } else if("severity".equals(key)){
-                predicates.add(builder.equal(root.get(key), searchKeyword.get(key)));
-            } else if("category".equals(key) || "resource".equals(key)){
-                predicates.add(builder.equal(root.get("alertRuleId").get(key), searchKeyword.get(key)));
-            } else if("updateTime".equals(key)){
-                if(searchKeyword.get(key) != null) {
-                    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a", Locale.US);
-                    LocalDateTime createDate = LocalDateTime.parse(searchKeyword.get("createTime").toString(), dateFormat);
-                    LocalDateTime updateDate = LocalDateTime.parse(searchKeyword.get("updateTime").toString(), dateFormat);
+    private List<Predicate> createPredicateFromKeyword(final Map<String, Object> words, final Root<AlertHistory> root, final CriteriaBuilder builder) {
 
-                    predicates.add(builder.between(root.get(key), createDate, updateDate));
-                }
-            } else {
-                log.info("Not reachable for now -> {}", key);
+        final List<Predicate> predicates = Lists.newArrayList();
+
+        words.forEach((k, v) -> {
+            if ("target".equals(k) && !StringUtils.isEmpty(v)) {
+                predicates.add(builder.like(root.get(k), "%" + v + "%"));
             }
-        }
+            if ("severity".equals(k)) {
+                predicates.add(builder.equal(root.get(k), v));
+            }
+            if ("category".equals(k) || "resource".equals(k)) {
+                predicates.add(builder.equal(root.get("alertRuleId").get(k), v));
+            }
+            if (UPDATE_TIME_STR.equals(k) && Objects.nonNull(v)) {
+                predicates.add(builder.between(root.get(k), createLocalDateTime(words.get("createTime")), createLocalDateTime(v)));
+            }
+        });
+
         predicates.add(builder.equal(root.get("resolved"), 0));
+
         return predicates;
+    }
+
+    private LocalDateTime createLocalDateTime(final Object source) {
+        return LocalDateTime.parse(String.valueOf(source), FORMATTER);
     }
 }

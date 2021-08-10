@@ -43,7 +43,7 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(daemonSets)}" th:each="daemonSet : ${daemonSets}">
                             <td>
-                                <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${daemonSet?.namespace}, data-name=${daemonSet?.name}" th:utext="${daemonSet?.name}"></a>
+                                <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${daemonSet?.namespace}, data-name=${daemonSet?.name}" th:utext="${daemonSet?.name}"></a>
                             </td>
                             <td th:text="${daemonSet?.namespace}"></td>
                             <td th:text="|${daemonSet?.available}/${daemonSet?.desired}|"></td>

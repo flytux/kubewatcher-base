@@ -40,7 +40,7 @@ public class AlertMonitorManager {
 
     private static final long DEFAULT_STEP = 60L;
     private static final ZoneId DEFAULT_ZONE = ZoneId.of("Asia/Seoul");
-    private static final String CLUSTER_TOTAL_MEMORY_BYTE_API = "/api/v1/query?query=sum(node_memory_MemTotal_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"}) - sum(node_memory_MemAvailable_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"})";
+    private static final String CLUSTER_TOTAL_MEMORY_BYTE_API = "sum(node_memory_MemTotal_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"}) - sum(node_memory_MemAvailable_bytes{device!~\"rootfs|HarddiskVolume.+\",zone!=\"external\"})";
 
     private final PrometheusFeignClient prometheusFeignClient;
     private final AlertRuleRepository alertRuleRepository;

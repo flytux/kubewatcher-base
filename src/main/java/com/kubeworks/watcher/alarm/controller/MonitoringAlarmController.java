@@ -21,6 +21,11 @@ public class MonitoringAlarmController implements BaseController {
     private static final long MENU_ID = 150;
     private static final String VIEW_NAME = "alarm-list";
 
+    private static final String PAGE_LIST_STR = "pageList";
+    private static final String HISTORIES_STR = "histories";
+    private static final String TOTAL_COUNT_STR = "totalCount";
+    private static final String ALERT_HISTORY_LIST_STR = "alertHistoryList";
+
     private final PageViewService pageViewService;
     private final AlertAlarmListService alertAlarmListService;
 
@@ -31,8 +36,8 @@ public class MonitoringAlarmController implements BaseController {
 
         final Map<String, Object> resultMap = alertAlarmListService.alertPageHistory(pageNumber, null, null, null, null, null, null, 0);
 
-        model.addAttribute("alertHistoryList", resultMap.get("histories"));
-        model.addAttribute("pageList", alertAlarmListService.getPageList(pageNumber, (Long)resultMap.get("totalCount")));
+        model.addAttribute(ALERT_HISTORY_LIST_STR, resultMap.get(HISTORIES_STR));
+        model.addAttribute(PAGE_LIST_STR, alertAlarmListService.getPageList(pageNumber, (Long)resultMap.get(TOTAL_COUNT_STR)));
 
         return createViewName(VIEW_NAME);
     }
@@ -45,8 +50,8 @@ public class MonitoringAlarmController implements BaseController {
 
         final Map<String, Object> resultMap = alertAlarmListService.alertPageHistory(pageNumber, startDate, endDate, severity, category, resource, target, 0);
 
-        model.addAttribute("alertHistoryList", resultMap.get("histories"));
-        model.addAttribute("pageList", alertAlarmListService.getPageList(pageNumber, (Long)resultMap.get("totalCount")));
+        model.addAttribute(ALERT_HISTORY_LIST_STR, resultMap.get(HISTORIES_STR));
+        model.addAttribute(PAGE_LIST_STR, alertAlarmListService.getPageList(pageNumber, (Long)resultMap.get(TOTAL_COUNT_STR)));
 
         return createViewName(VIEW_NAME, " :: alarmList");
     }
@@ -58,10 +63,9 @@ public class MonitoringAlarmController implements BaseController {
             @RequestParam final String resource, @RequestParam final String system) {
 
         final Map<String, Object> resultMap = alertAlarmListService.alertSearchHistory(startDate, endDate, severity, category, resource, system);
-        model.addAttribute("alertHistoryList", resultMap.get("histories"));
 
-        final Map<String, Object> pageList = alertAlarmListService.getPageList(1, (Long)resultMap.get("totalCount"));
-        model.addAttribute("pageList", pageList);
+        model.addAttribute(ALERT_HISTORY_LIST_STR, resultMap.get(HISTORIES_STR));
+        model.addAttribute(PAGE_LIST_STR, alertAlarmListService.getPageList(1, (Long)resultMap.get(TOTAL_COUNT_STR)));
 
         return createViewName(VIEW_NAME, " :: alarmList");
     }

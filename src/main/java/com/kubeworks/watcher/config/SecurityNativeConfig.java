@@ -9,7 +9,6 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -71,8 +70,8 @@ public class SecurityNativeConfig {
 
     private static final String UNSUPPORTED_MESSAGE = "Cannot instantiate this class";
 
-    private static final String[] NO_CSRF_PATTERNS = {"/h2-console/**"};
-    private static final String[] NO_AUTH_PATTERNS = {"/login*", "/logout*", "/error*", "/h2-console/**"};
+    private static final String[] NO_CSRF_PATTERNS = {"/h2-console/**", "/api/v1/monitoring/cache"};
+    private static final String[] NO_AUTH_PATTERNS = {"/login*", "/logout*", "/error*", "/h2-console/**", "/api/v1/monitoring/cache"};
     private static final String[] STATIC_RESOURCES_PATTERNS = {"/assets/**", "/vendor/**", "/**/*.css.map", "/**/*.js.map", "/**/*.map", "/favicon.ico"};
 
     @Getter @ToString
@@ -402,8 +401,7 @@ public class SecurityNativeConfig {
     static class SpringSecurityFilterChainPostProcessor implements BeanPostProcessor {
 
         @Override
-        public Object postProcessAfterInitialization(
-                @NonNull final Object bean, @NonNull final String name) throws BeansException {
+        public Object postProcessAfterInitialization(@NonNull final Object bean, @NonNull final String name) {
 
             if (FilterChainProxy.class.isAssignableFrom(bean.getClass())) {
 

@@ -27,6 +27,7 @@
                             <tr>
                                 <th>Page ID</th>
                                 <th>화면명</th>
+                                <th style="width: 25%;">메뉴 경로</th>
                                 <th:block th:each="rule : ${ruleList}">
                                     <th th:text="${rule.rulename}" id="ruleList"></th>
                                 </th:block>
@@ -86,11 +87,11 @@
             for (var i = 0; i < pageList.length; i++) {
                 html += '<tr>';
                 html += '   <td>'+pageList[i]+'</td>';
-                html += '   <td>'+pageRuleList[0][pageList[i]]+'</td>';
-                for (var j = 1; j <= ruleList.length; j++){
-                    var ruleListName = 'ruleList-' + ruleList[j-1].rulename;
-                    html += ' <td><input name="' + ruleList[j-1].rulename + '" type="checkbox" ';
-                    if(pageRuleList[j][pageList[i]] === '1') {
+                html += '   <td style="text-align: left;">'+pageRuleList[0][pageList[i]]+'</td>';
+                html += '   <td style="text-align: left; width: 25%;">'+pageRuleList[1][pageList[i]]+'</td>'
+                for (var j = 0; j < ruleList.length; j++){
+                    html += ' <td><input name="' + ruleList[j].rulename + '" type="checkbox" ';
+                    if(pageRuleList[j+2][pageList[i]] === '1') {
                         html += 'checked="checked"';
                     }
                     html += '>';

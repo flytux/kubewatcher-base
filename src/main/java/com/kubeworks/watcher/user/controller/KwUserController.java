@@ -107,6 +107,7 @@ public class KwUserController implements BaseController {
         final List<Map<Long, String>> list = Lists.newArrayListWithExpectedSize(ruleList.size() + 1);
 
         list.add(pageList.stream().collect(Collectors.toMap(Page::getPageId, Page::getTitle)));
+        list.add(pageList.stream().collect(Collectors.toMap(Page::getPageId, Page::getNav)));
 
         for (final KwUserRoleRule rule : ruleList) {
             final String[] bit = rule.getRule().split("");

@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,12 +16,11 @@ import java.util.List;
 @Slf4j @Service
 public class NativeUserServiceImpl implements UserDetailsService {
 
-    private final PasswordEncoder encoder;
     private final KwUserRepository repository;
 
     @Autowired
-    public NativeUserServiceImpl(final PasswordEncoder encoder, final KwUserRepository repository) {
-        this.encoder = encoder; this.repository = repository;
+    public NativeUserServiceImpl(final KwUserRepository repository) {
+        this.repository = repository;
     }
 
     @Override
@@ -31,7 +29,7 @@ public class NativeUserServiceImpl implements UserDetailsService {
     }
 
     private UserDetails createUserDetails(final KwUser user) {
-        return User.withUsername(user.getUsername()).passwordEncoder(encoder::encode).password(user.getPassword()).roles(reformat(user)).build();
+        return User.withUsername(user.getUsername()).password(user.getPassword()).roles(reformat(user)).build();
     }
 
     private String[] reformat(final KwUser user) {

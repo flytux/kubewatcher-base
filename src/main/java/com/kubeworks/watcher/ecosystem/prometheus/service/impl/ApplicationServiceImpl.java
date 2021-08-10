@@ -18,51 +18,46 @@ import java.util.stream.Collectors;
 @Service(value="applicationService")
 public class ApplicationServiceImpl implements ApplicationService {
 
+    private final ApplicationRepository repo;
+    private final ApplicationManagementHandler handler;
     private final ApplicationManagement unknownBoard;
-    private final List<ApplicationManagement> managementList;
-
-    private final ApplicationRepository applicationRepository;
 
     @Autowired
-    public ApplicationServiceImpl(final ApplicationRepository applicationRepository) {
+    public ApplicationServiceImpl(final ApplicationRepository repo, final ApplicationManagementHandler handler) {
 
-        this.applicationRepository = applicationRepository;
-
-        this.managementList = applicationRepository.findAll();
-
-        this.unknownBoard = new ApplicationManagement();
-        this.unknownBoard.setName(ExternalConstants.UNKNOWN);
-        this.unknownBoard.setDisplayName(ExternalConstants.UNKNOWN_DASH);
+        this.repo = repo;
+        this.handler = handler;
+        this.unknownBoard = createUnknown();
     }
 
     @Override
     public List<ApplicationManagement> getApplicationManagementList() {
-        return applicationRepository.findAll();
+        return repo.findAll();
     }
 
     @Override
     public String getServiceNamesOfPromQL() {
-        return managementList.stream().map(ApplicationManagement::getName).collect(Collectors.joining(".*|", "", ".*"));
+        return handler.retrieve().stream().map(ApplicationManagement::getName).collect(Collectors.joining(".*|", "", ".*"));
     }
 
     @Override
     public String getServiceNamesLoki() {
-        return managementList.stream().map(ApplicationManagement::getName).collect(Collectors.joining("|"));
+        return handler.retrieve().stream().map(ApplicationManagement::getName).collect(Collectors.joining("|"));
     }
 
     @Override
     public List<String> getNamespaces() {
-        return managementList.stream().map(ApplicationManagement::getNamespace).distinct().collect(Collectors.toList());
+        return handler.retrieve().stream().map(ApplicationManagement::getNamespace).distinct().collect(Collectors.toList());
     }
 
     @Override
     public Map<String, List<ApplicationManagement>> getManagementByNamespace() {
-        return managementList.stream().collect(Collectors.groupingBy(ApplicationManagement::getNamespace));
+        return handler.retrieve().stream().collect(Collectors.groupingBy(ApplicationManagement::getNamespace));
     }
 
     @Override
     public List<String> getManagementByName() {
-        return managementList.stream().map(ApplicationManagement::getName).collect(Collectors.toList());
+        return handler.retrieve().stream().map(ApplicationManagement::getName).collect(Collectors.toList());
     }
 
     @Override
@@ -72,14 +67,20 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public String getDisplayName(final String name) {
-        return managementList.stream()
-            .filter(service -> StringUtils.equalsIgnoreCase(name, service.getName()))
-            .map(ApplicationManagement::getDisplayName)
-            .findFirst().orElse("Unknown");
+        return handler.retrieve().stream().filter(s -> StringUtils.equalsIgnoreCase(name, s.getName())).map(ApplicationManagement::getDisplayName).findFirst().orElse("Unknown");
     }
 
     @Override
     public Map<String, ApplicationManagement> getServiceMap() {
-        return managementList.stream().collect(Collectors.toConcurrentMap(ApplicationManagement::getName, Function.identity()));
+        return handler.retrieve().stream().collect(Collectors.toConcurrentMap(ApplicationManagement::getName, Function.identity()));
+    }
+
+    private ApplicationManagement createUnknown() {
+
+        final ApplicationManagement unknown = new ApplicationManagement();
+        unknown.setName(ExternalConstants.UNKNOWN);
+        unknown.setDisplayName(ExternalConstants.UNKNOWN_DASH);
+
+        return unknown;
     }
 }

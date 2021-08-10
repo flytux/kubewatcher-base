@@ -1553,7 +1553,7 @@ textarea.form-control {
 }
 
 .box_panel-heading {
-    padding: 10px 15px;
+    padding: 6px 15px;
     font-size:18px;
     color:#b1b1b1;
     font-weight:600;
@@ -1849,7 +1849,7 @@ textarea.form-control {
     height:23px;
     margin-bottom: 0px;
     border-radius: 3px;
-    background-color:#81c369;
+    background-color:#99c789;
     color:#444444;
     font-weight:1000;
     padding:5px 0px 0px 0px;
@@ -1860,8 +1860,8 @@ textarea.form-control {
     height:23px;
     margin-bottom: 0px;
     border-radius: 3px;
-    background-color:#139017;
-    color:#ffffff;
+    background-color:#63ce67;
+    color:#444444;
     font-weight:600;
     padding:5px 0px 0px 0px;
     text-align:center;
@@ -1871,8 +1871,8 @@ textarea.form-control {
     height:23px;
     margin-bottom: 0px;
     border-radius: 3px;
-    background-color:#1b5e20;
-    color:#ffffff;
+    background-color:#27a92c;
+    color:#444444;
     font-weight:600;
     padding:5px 0px 0px 0px;
     text-align:center;
@@ -4163,15 +4163,15 @@ color: #555555;
 
 /* green theme */
 .green_c_A{
-    background-color:#8bc34a;
+    background-color:#99c789;
 }
 
 .green_c_B{
-    background-color:#139017;
+    background-color:#63ce67;
 }
 
 .green_c_C{
-    background-color:#1b5e20;
+    background-color:#27a92c;
 }
 /* green theme */
 

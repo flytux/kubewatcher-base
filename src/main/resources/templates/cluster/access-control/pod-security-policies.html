@@ -36,7 +36,7 @@
                                 </tr>
                                 <tr th:unless="${#arrays.isEmpty(podSecurityPolicies)}" th:each="podSecurityPolicy : ${podSecurityPolicies}">
                                     <td width="20%">
-                                        <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-name=${podSecurityPolicy?.name}" th:utext="${podSecurityPolicy?.name}"></a>
+                                        <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${podSecurityPolicy?.name}" th:utext="${podSecurityPolicy?.name}"></a>
                                     </td>
                                     <td th:text="${podSecurityPolicy?.privileged}" width="20%"></td>
                                     <td th:text="${podSecurityPolicy?.volumes}" width="40%"></td>

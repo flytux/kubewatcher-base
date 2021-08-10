@@ -42,7 +42,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(statefulSets)}" th:each="statefulSet : ${statefulSets}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${statefulSet?.namespace}, data-name=${statefulSet?.name}" th:utext="${statefulSet?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${statefulSet?.namespace}, data-name=${statefulSet?.name}" th:utext="${statefulSet?.name}"></a>
                                 </td>
                                 <td th:text="${statefulSet?.namespace}"></td>
                                 <td th:text="${statefulSet?.ready}"></td>

@@ -54,6 +54,10 @@ public class KwRoleServiceImpl implements KwRoleService {
             }
             kurrr.save(rule);
 
+            KwUserRoleRule createKwUser = kurrr.findByRulename(rule.getRulename());
+            createKwUser.setAuthcode(String.format("%03d",createKwUser.getRuleId()));
+            kurrr.save(createKwUser);
+
             return createSuccessResponse();
         } catch (final Exception e) {
             log.warn("role 등록 실패 // Role Name={}", rule.getRulename());

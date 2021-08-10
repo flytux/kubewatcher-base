@@ -42,7 +42,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(policies)}" th:each="policy : ${policies}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer; text-decoration: underline;" th:attr="data-namespace=${policy?.namespace}, data-name=${policy?.name}" th:utext="${policy?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${policy?.namespace}, data-name=${policy?.name}" th:utext="${policy?.name}"></a>
                                 </td>
                                 <td th:text="${policy?.namespace}"></td>
                                 <td th:text="${policy?.policyType}"></td>
