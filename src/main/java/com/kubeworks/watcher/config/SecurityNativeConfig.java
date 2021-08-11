@@ -14,6 +14,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
@@ -48,7 +49,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ResourceUtils;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.util.UrlPathHelper;
@@ -58,8 +59,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -110,9 +111,11 @@ public class SecurityNativeConfig {
         private static final String PATH = "classpath:menu.txt";
 
         private final MenuAuthoritiesMapper mapper;
+        private final Map<Long, String> baseMenuPathInformation;
 
         MenuAuthoritiesHandlerImpl(final MenuAuthoritiesMapper mapper) {
             this.mapper = mapper;
+            this.baseMenuPathInformation = retrieveMenuPathInformation();
         }
 
         @Override
@@ -137,7 +140,12 @@ public class SecurityNativeConfig {
 
         @Override
         public Map<String, Long> retrieveMenuMappings(final Set<Long> source) {
-            return retrieveMenuPathInformation().entrySet().stream().collect(
+
+            if (CollectionUtils.isEmpty(baseMenuPathInformation)) {
+                log.warn("Empty 'baseMenuPathInformation' from -> {}", PATH); return ImmutableMap.of();
+            }
+
+            return baseMenuPathInformation.entrySet().stream().collect(
                 Collectors.toMap(Map.Entry::getValue, e -> source.contains(e.getKey()) ? e.getKey() : Long.MIN_VALUE));
         }
 
@@ -145,12 +153,11 @@ public class SecurityNativeConfig {
 
             final Map<Long, String> res = Maps.newHashMap();
 
-            try {
-                Files.readAllLines(ResourceUtils.getFile(PATH).toPath(), StandardCharsets.UTF_8).forEach(e ->
-                    makeIterable(e, ',').forEach(m -> Optional.of(ImmutableList.copyOf(makeIterable(m, '|')))
-                        .filter(kv -> SIZE == kv.size()).ifPresent(kv -> res.put(Long.valueOf(kv.get(0)), kv.get(1)))));
+            try (final InputStream stream = new PathMatchingResourcePatternResolver().getResource(PATH).getInputStream()) {
+                makeIterable(StreamUtils.copyToString(stream, StandardCharsets.UTF_8), ',').forEach(m ->
+                    Optional.of(ImmutableList.copyOf(makeIterable(m, '|'))).filter(kv -> SIZE == kv.size()).ifPresent(kv -> res.put(Long.valueOf(kv.get(0)), kv.get(1))));
             } catch (final IOException e) {
-                log.warn("Error while reading resource {}", PATH); log.warn("", e);
+                log.warn("Error while reading 'MenuPath Information' resource -> {}", PATH); log.warn("", e);
             }
 
             return res;
@@ -283,7 +290,7 @@ public class SecurityNativeConfig {
 
             if (Objects.isNull(details) || !(details instanceof ExtendedWebAuthenticationDetails)
                     || CollectionUtils.isEmpty(((ExtendedWebAuthenticationDetails)details).getPathAuthorities())) {
-                log.warn("cannot retrieve MenuPath object -> user : {}", auth.getName());
+                log.info("cannot retrieve MenuPath object (null or empty) -> user : {}", auth.getName());
                 return ACCESS_ABSTAIN;
             }
 
