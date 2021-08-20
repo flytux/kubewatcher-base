@@ -13,3 +13,7 @@ spring.datasource.password:
 
 spring.jpa.hibernate.ddl-auto: none
 spring.jpa.properties.hibernate.hbm2ddl.import_files: ""
+
+logging.file.path: ${TEST_HOME}/logs/
+spring.pid.fail-on-write-error: true
+spring.pid.file: ${TEST_HOME}/kube-watcher.pid

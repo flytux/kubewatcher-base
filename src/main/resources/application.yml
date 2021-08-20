@@ -1,5 +1,8 @@
 server.port: 8080
 
+server.shutdown: graceful
+spring.lifecycle.timeout-per-shutdown-phase: 30s
+
 spring.application.name: kube-watcher
 spring.main.allow-bean-definition-overriding: true
 spring.thymeleaf.cache: false
