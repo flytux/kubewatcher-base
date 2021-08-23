@@ -18,17 +18,16 @@ spring:
     cache: false
   main:
     allow-bean-definition-overriding: true
+
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kube-watcher?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
-    username: kwuser
-    password: kubeworks!@
-#    initialization-mode: always # SpringBoot JDBC 이용시 블럭 해제 (schema.sql 적용됨) 하이버네이트 JPA 이용시 블럭, import.sql, ddl-auto: false
-#    sql-script-encoding: UTF-8
-#    schema: classpath:schema.sql
-#    data: classpath:import.sql
+    initialization-mode: never
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:/opt/kube-watcher/data/kw-data;AUTO_SERVER=true;MODE=MySQL
+    username: admin
+    password: password
     hikari:
-      auto-commit: false
+      connection-init-sql: ""
+      auto-commit: true
       minimum-idle: 10
       maximum-pool-size: 10
       data-source-properties:
@@ -36,22 +35,26 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
-
-
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
   jpa:
-    database: mysql
+    database: h2
     generate-ddl: false # db schema 생성 여부
-    show-sql: false
+    show-sql: true
     hibernate:
-      ddl-auto: create-drop
-      # 엔티티 적용 방식 (update : 기존 데이터 유지, create : 신규 생성, create-drop : 신규 생성, validate : 검증),
-      # Entity 클래스의 컬럼정보로 테이블 생성
+      ddl-auto: create
+
     properties:
       hibernate.format_sql: true
       hibernate.use_sql_comments: true
       hibernate.hbm2ddl.charset_name: UTF-8
       hibernate.hbm2ddl.import_files: classpath:sql/common-import.sql,classpath:sql/default-import.sql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
   task:
     scheduling:
       pool:
@@ -71,7 +74,6 @@ mybatis:
     call-setters-on-nulls: true
     map-underscore-to-camel-case: true
 #  type-handlers-package: com.kubeworks.watcher.data.typehandler
-
 
 management:
   endpoints:
@@ -104,17 +106,19 @@ application:
       clusters:
         local:
           cluster-name: local
+          # modified to set k8s url and token from environment variables 
+          # initial value from configmap - kube-watcher-config
+          k8s:
+            url: ${KUBERNETES_SERVICE_URL}
+            api-token: ${KUBERNETES_SERVICE_TOKEN}
           prometheus:
             proxy: true
-            url: "http://prometheus.do"
+            url: ${PROMETHEUS_SERVICE_URL}
           loki:
             proxy: true
-            url: "http://loki.do"
-          k8s:
-            url: "https://rancher.do/k8s/clusters/local"
-            api-token: "kubeconfig-user-c7cpf:prf4v24k8d7tmhwgnl4v2zl7k2jn2lxb9r9jw9tldkkth76l8tsmwq"
-    dependencies:
-      grafana:
-        url: "http://162.243.175.190:3000"
-        api-token: "eyJrIjoiczY0a1JhbWRsVEpnaDJ3MDRpZms0M1Y3aElSYTdoZHciLCJuIjoib25seSIsImlkIjoxfQ=="
-        login-cookie-name: "grafana_session"
+            url: ${LOKI_SERVICE_URL}
+logging:
+  level:
+    root: info
+    com.squareup.okhttp3: debug
+    com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeginClient: info

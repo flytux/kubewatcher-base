@@ -1,0 +1,121 @@
+---
+# InCluster API 접속을 위한 ClusterRole 설정
+#
+#
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: k8s-rbac
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: kube-watcher
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+# Add k8s url and token from configmap
+# 
+#
+apiVersion: v1
+data:
+  kubernetes_service_token: kubeconfig-user-kg5b5:rmrtbhtnd5rcvlk2qrg7kr9qp54z5s4lfhpccnx4v7r6wdnpnh4zff
+  kubernetes_service_url: https://rancher.kw-demo/k8s/clusters/local
+  loki_service_url: http://loki.cattle-prometheus
+  prometheus_service_url: http://access-prometheus.cattle-prometheus
+kind: ConfigMap
+metadata:
+  name: kube-watcher-config
+  namespace: kube-watcher
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kube-watcher
+  name: kube-watcher
+  namespace: kube-watcher
+spec:
+  selector:
+    matchLabels:
+      app: kube-watcher
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: kube-watcher
+    spec:
+      containers:
+        - image: kw/kube-watcher:dev
+          imagePullPolicy: IfNotPresent
+          name: kube-watcher
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {}
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          env:
+            - name: KUBERNETES_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-watcher-config
+                  key: kubernetes_service_url
+            - name: KUBERNETES_SERVICE_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-watcher-config
+                  key: kubernetes_service_token
+            - name: PROMETHEUS_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-watcher-config
+                  key: prometheus_service_url
+            - name: LOKI_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-watcher-config
+                  key: loki_service_url
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+      dnsConfig: {}
+      dnsPolicy: ClusterFirst
+      hostAliases:
+        - hostnames:
+            - rancher.kw-demo
+          ip:  172.104.92.240
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kube-watcher
+  name: kube-watcher
+  namespace: kube-watcher
+spec:
+  ports:
+    - name: http-kube-watcher
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30080
+  selector:
+      app: kube-watcher
+  sessionAffinity: None
+  type: NodePort

@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS cluster_pod_usage (
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )  ENGINE=INNODB;
 
-
 CREATE TABLE IF NOT EXISTS `page` (
     `page_id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -20,7 +19,6 @@ CREATE TABLE IF NOT EXISTS `page` (
     `title` varchar(200) NOT NULL,
     PRIMARY KEY (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- `kube-watcher`.page_row definition
 
@@ -36,7 +34,6 @@ CREATE TABLE IF NOT EXISTS `page_row` (
     KEY `PAGE_ROW_FK01` (`page_id`),
     CONSTRAINT `PAGE_ROW_FK01` FOREIGN KEY (`page_id`) REFERENCES `page` (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- `kube-watcher`.page_row_panel definition
 
@@ -64,7 +61,6 @@ CREATE TABLE IF NOT EXISTS `page_row_panel` (
       CONSTRAINT `PAGE_ROW_PANEL_FK01` FOREIGN KEY (`page_row_id`) REFERENCES `page_row` (`page_row_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- `kube-watcher`.page_variable definition
 
 CREATE TABLE IF NOT EXISTS `page_variable` (
@@ -86,7 +82,6 @@ CREATE TABLE IF NOT EXISTS `page_variable` (
     CONSTRAINT `PAGE_VARIABLE_FK01` FOREIGN KEY (`page_id`) REFERENCES `page` (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- `kube-watcher`.chart_query definition
 
 CREATE TABLE IF NOT EXISTS `chart_query` (
@@ -96,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `chart_query` (
     `api_query` varchar(1000) NOT NULL,
     `legend` varchar(100) NOT NULL,
     `query_step` varchar(3) NOT NULL,
-    `query_type` varchar(10) NOT NULL DEFAULT 'METRIC',
+	`query_type` varchar(20) NOT NULL DEFAULT 'PROXY_METRIC',
     `panel_id` bigint unsigned DEFAULT NULL,
     PRIMARY KEY (`c_query_id`),
     KEY `CHART_QUERY_FK01` (`panel_id`),
@@ -111,5 +106,5 @@ CREATE TABLE IF NOT EXISTS `application_management` (
     `name` varchar(50) NOT NULL,
     `namespace` varchar(50) NOT NULL,
     `display_name` varchar(50) NOT NULL,
-    PRIMARY KEY (`board_id`)
+    PRIMARY KEY (`application_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

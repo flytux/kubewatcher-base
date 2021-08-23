@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.kubeworks</groupId>
     <artifactId>kube-watcher</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-minimum</version>
     <name>kube-watcher</name>
-    <description>cloud-container integration monitoring system</description>
+    <description>cloud native cluster monitoring</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -20,10 +20,11 @@
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
         <k8s-client.version>9.0.2</k8s-client.version>
         <jodatime-version>2.9.9</jodatime-version>
+        <docker-image.name>flytux/kube-watcher</docker-image.name>
+        <docker-image.tag>0.1.0-minimum</docker-image.tag>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -36,23 +37,11 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- auth -->
-<!--        <dependency>-->
-<!--            <groupId>org.keycloak</groupId>-->
-<!--            <artifactId>keycloak-spring-boot-starter</artifactId>-->
-<!--            <version>10.0.2</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-data-ldap</artifactId>-->
-<!--        </dependency>-->
-        <!-- auth -->
 
-        <!-- Thymeleaf -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -222,13 +211,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.keycloak.bom</groupId>-->
-<!--                <artifactId>keycloak-adapter-bom</artifactId>-->
-<!--                <version>10.0.2</version>-->
-<!--                <type>pom</type>-->
-<!--                <scope>import</scope>-->
-<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -238,7 +220,48 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                  <to>
+			<image>kw/kube-watcher:dev</image>
+                  </to>
+		  <allowInsecureRegistries>true</allowInsecureRegistries>
+		  <!--container>
+                    <extraClasspath>/app/config/*</extraClasspath>
+	          </container-->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.6</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals><goal>prepare-agent</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>report</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>3.8.0.2131</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

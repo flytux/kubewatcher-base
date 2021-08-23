@@ -2,7 +2,6 @@ package com.kubeworks.watcher.ecosystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kubeworks.watcher.data.entity.PageRowPanel;
-import com.kubeworks.watcher.ecosystem.grafana.dto.TemplateVariable;
 import com.kubeworks.watcher.ecosystem.kubernetes.serdes.CustomQuantityFormatter;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.custom.QuantityFormatter;
@@ -57,9 +56,6 @@ public class ExternalConstants {
     }
 
     public final String GRAFANA_API_PREFIX = "/api";
-    public final String GRAFANA_DASHBOARD_ALL_SEARCH_URI = GRAFANA_API_PREFIX + "/search?type=dash-db";
-    public final String GRAFANA_FOLDER_ALL_SEARCH_URI = GRAFANA_API_PREFIX + "/search?type=dash-folder";
-    public final String GRAFANA_DASHBOARD_GET_URI_PATTERN = GRAFANA_API_PREFIX + "/dashboards/uid/{uid}";
 
     public final String PROMETHEUS_QUERY_STRING_PREFIX = "?query=";
     public final String PROMETHEUS_QUERY_API_URI = GRAFANA_API_PREFIX + "/v1/query" + PROMETHEUS_QUERY_STRING_PREFIX;
@@ -104,14 +100,6 @@ public class ExternalConstants {
             result.add(matcher.group().replace("$", ""));
         }
         return result != null ? result : Collections.emptyList();
-    }
-
-    public int compareSortTemplateVariables(TemplateVariable o1, TemplateVariable o2) {
-        int compare = Integer.compare(o1.getRefFields().size(), o2.getRefFields().size());
-        if (compare == 0) {
-            return o2.getRefFields().contains(o1.getName()) ? -1 : 0;
-        }
-        return compare;
     }
 
     public boolean isSuccessful(int status) {

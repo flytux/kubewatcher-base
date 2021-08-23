@@ -29,10 +29,21 @@ public class K8sConfig {
 
     @Bean
     public ApiClient k8sApiClient() throws IOException {
-        ApiClient apiClient = ClientBuilder.standard(false)
-            .setBasePath(monitoringProperties.getDefaultK8sUrl())
-            .setVerifyingSsl(false)
-            .setAuthentication(getAuthentication()).build();
+
+        /*To-Do
+        Application.Yaml에 설정값을 이용하여 Rancher Cluster에 접속하는 경우 아래 로직을 이용하고
+        클러스터 내부에 배포될 때는 아래 InCluster 로직을 이용하도록 수정 필요
+         */
+        //ApiClient apiClient = ClientBuilder.standard(false)
+        //  .setBasePath(monitoringProperties.getDefaultK8sUrl())
+        //    .setVerifyingSsl(false)
+        //    .setAuthentication(getAuthentication()).build();
+
+        /* InCluster 배포시 ApiServer 접속
+           Namespace 내 default serviceaccount에 권한 부여 필요
+         */
+        ApiClient apiClient = io.kubernetes.client.util.Config.defaultClient();
+        io.kubernetes.client.openapi.Configuration.setDefaultApiClient(apiClient);
 
         return apiClient.setHttpClient(apiClient.getHttpClient().newBuilder()
             .addInterceptor(loggingInterceptor())
