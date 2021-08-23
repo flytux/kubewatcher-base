@@ -14,11 +14,12 @@ import java.io.Serializable;
 @Setter
 public class KwUserRoleId implements Serializable {
 
+    private static final long serialVersionUID = -7497402856003099681L;
+
     @EqualsAndHashCode.Include
     String username;
 
     @EqualsAndHashCode.Include
     @Column(name="rolename")
     String rolename;
-
 }

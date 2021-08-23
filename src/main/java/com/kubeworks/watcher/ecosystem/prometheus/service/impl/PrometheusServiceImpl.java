@@ -1,28 +1,31 @@
 package com.kubeworks.watcher.ecosystem.prometheus.service.impl;
 
 import com.kubeworks.watcher.ecosystem.prometheus.dto.PrometheusApiResponse;
-import com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeginClient;
+import com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeignClient;
 import com.kubeworks.watcher.ecosystem.prometheus.service.PrometheusService;
-import lombok.AllArgsConstructor;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Slf4j
-@Service
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@Slf4j @Service
 public class PrometheusServiceImpl implements PrometheusService {
 
-    private final PrometheusFeginClient prometheusFeginClient;
+    private final PrometheusFeignClient client;
 
-    @Override
-    public PrometheusApiResponse requestQuery(String query) {
-        return prometheusFeginClient.getQuery(query);
+    @Autowired
+    public PrometheusServiceImpl(final PrometheusFeignClient client) {
+        this.client = client;
     }
 
     @Override
-    public PrometheusApiResponse requestQueryRange(String query, long startTimestamp, long endTimestamp) {
-        // TODO Step 계산식 정의 필요 -- 기준은 Grafana와 동일하게 유지
-        return prometheusFeginClient.getQueryRange(query, startTimestamp, endTimestamp, 15);
+    public PrometheusApiResponse request(final String q) {
+
+        try {
+            return client.getQuery(q);
+        } catch (final FeignException e) {
+            log.error("Feign request failure -> {}", e.getMessage()); log.error("", e);
+            return new PrometheusApiResponse();
+        }
     }
 }

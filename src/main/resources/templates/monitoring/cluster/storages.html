@@ -1,27 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [Persistent Volume Claims] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> Persistent Volume Claims
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;Persistent Volume Claims
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -31,7 +24,7 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(persistentVolumeClaims) ? '0' : persistentVolumeClaims.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(persistentVolumeClaims) ? '0' : persistentVolumeClaims.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table155">
@@ -51,19 +44,18 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(persistentVolumeClaims)}" th:each="persistentVolumeClaim : ${persistentVolumeClaims}">
                             <td>
-                                <a class="table2-link" th:href="'javascript:persistentVolumesClaimDetail(&quot;' + ${persistentVolumeClaim?.namespace} + '&quot;, &quot;'+ ${persistentVolumeClaim?.name} + '&quot;)'"
-                                   th:utext="${persistentVolumeClaim?.name}">Name</a>
+                                <a class="table2-link claim-modal-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${persistentVolumeClaim?.namespace}, data-name=${persistentVolumeClaim?.name}" th:utext="${persistentVolumeClaim?.name}"></a>
                             </td>
-                            <td th:text="${persistentVolumeClaim?.namespace}">Namespace</td>
-                            <td th:text="${#strings.isEmpty(persistentVolumeClaim?.storageClass) ? '-' : persistentVolumeClaim?.storageClass}">Storage class</td>
-                            <td th:text="${persistentVolumeClaim?.capacity}">Size</td>
-                            <td th:text="${persistentVolumeClaim?.age}">Age</td>
+                            <td th:text="${persistentVolumeClaim?.namespace}"></td>
+                            <td th:text="${#strings.isEmpty(persistentVolumeClaim?.storageClass) ? '-' : persistentVolumeClaim?.storageClass}"></td>
+                            <td th:text="${persistentVolumeClaim?.capacity}"></td>
+                            <td th:text="${persistentVolumeClaim?.age}"></td>
                             <td th:switch="${persistentVolumeClaim?.status}">
-                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolumeClaim?.status}">Available</span>
-                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolumeClaim?.status}">Bound</span>
-                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolumeClaim?.status}">Pending</span>
-                                <span th:case="Released" class="madal_label" th:text="${persistentVolumeClaim?.status}">Released</span>
-                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolumeClaim?.status}">Failed</span>
+                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolumeClaim?.status}"></span>
+                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolumeClaim?.status}"></span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolumeClaim?.status}"></span>
+                                <span th:case="Released" class="madal_label" th:text="${persistentVolumeClaim?.status}"></span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolumeClaim?.status}"></span>
                                 <span th:case="*" class="madal_label" th:text="${persistentVolumeClaim?.status}"></span>
                             </td>
                         </tr>
@@ -72,16 +64,14 @@
                 </div>
             </div>
         </div>
-        <!-- [Persistent Volume Claims] End-->
-        <!-- [Persistent Volume] start -->
-        <div class="row">
-            <div class="main_title" ><i class="feather icon-chevrons-right"></i> Persistent Volumes</div>
-        </div>
 
+        <div class="row">
+            <div class="main_title"><i class="feather icon-chevrons-right"></i>&nbsp;Persistent Volumes</div>
+        </div>
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(persistentVolumes) ? '0' : persistentVolumes.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(persistentVolumes) ? '0' : persistentVolumes.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table155">
@@ -101,19 +91,18 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(persistentVolumes)}" th:each="persistentVolume : ${persistentVolumes}">
                             <td>
-                                <a class="table2-link" th:href="'javascript:persistentVolumesDetail(&quot;'+ ${persistentVolume?.name} + '&quot;)'"
-                                   th:utext="${persistentVolume?.name}">Name</a>
+                                <a class="table2-link volume-modal-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${persistentVolume?.name}" th:utext="${persistentVolume?.name}"></a>
                             </td>
-                            <td th:text="${#strings.isEmpty(persistentVolume?.storageClass) ? '-' : persistentVolume?.storageClass}">Storage class</td>
-                            <td th:text="${persistentVolume?.capacity}">Capacity</td>
-                            <td th:text="${persistentVolume?.claim}">Claim</td>
-                            <td th:text="${persistentVolume?.age}">Age</td>
+                            <td th:text="${#strings.isEmpty(persistentVolume?.storageClass) ? '-' : persistentVolume?.storageClass}"></td>
+                            <td th:text="${persistentVolume?.capacity}"></td>
+                            <td th:text="${persistentVolume?.claim}"></td>
+                            <td th:text="${persistentVolume?.age}"></td>
                             <td th:switch="${persistentVolume?.status}">
-                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolume?.status}">Available</span>
-                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolume?.status}">Bound</span>
-                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolume?.status}">Pending</span>
-                                <span th:case="Released" class="madal_label" th:text="${persistentVolume?.status}">Released</span>
-                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolume?.status}">Failed</span>
+                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolume?.status}"></span>
+                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolume?.status}"></span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolume?.status}"></span>
+                                <span th:case="Released" class="madal_label" th:text="${persistentVolume?.status}"></span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolume?.status}"></span>
                                 <span th:case="*" class="madal_label" th:text="${persistentVolume?.status}"></span>
                             </td>
                         </tr>
@@ -122,16 +111,15 @@
                 </div>
             </div>
         </div>
-        <!-- [Persistent Volume] End-->
-        <!-- [Storage Classes] start -->
+
         <div class="row">
-            <div class="main_title" ><i class="feather icon-chevrons-right"></i> Storage Classes</div>
+            <div class="main_title"><i class="feather icon-chevrons-right"></i>&nbsp;Storage Classes</div>
         </div>
 
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(storages) ? '0' : storages.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(storages) ? '0' : storages.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table155">
@@ -149,131 +137,121 @@
                         </tr>
                         <tr th:unless="${#arrays.isEmpty(storages)}" th:each="storage : ${storages}">
                             <td>
-                                <a class="table2-link" th:href="'javascript:storageClassesDetail(&quot;'+ ${storage?.name} + '&quot;)'"
-                                   th:utext="${storage?.name}">Name</a>
+                                <a class="table2-link storage-modal-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${storage?.name}" th:utext="${storage?.name}"></a>
                             </td>
-                            <td th:text="${storage?.provisioner}">Provisioner</td>
-                            <td th:text="${storage?.reclaimPolicy}">Reclaim Policy</td>
-                            <td th:text="${storage?.age}">Age</td>
+                            <td th:text="${storage?.provisioner}"></td>
+                            <td th:text="${storage?.reclaimPolicy}"></td>
+                            <td th:text="${storage?.age}"></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [Storage Classes] End-->
     </div>
-    <!-- [Modal : persistentVolumeClaim] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="pvcModalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Persistent Volume Claim : ${persistentVolumeClaim?.name}|">Persistent Volume Claim : PVC 명</span>
+                        <span id="myModalLabel" th:text="|Persistent Volume Claim : ${persistentVolumeClaim?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metrics
-                    </div>
+                    <div class="table-title">Metrics</div>
                     <div class="row" th:each="panelRow : ${page?.rows}">
                         <div th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-12">
                             <div class="box_panel">
-                                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                <div class="box_panel-heading" th:text="${panel?.title}"></div>
                                 <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="table-title">
-                            Metadata
-                        </div>
-                            <table class="table-nt">
-                                <tr>
-                                    <th>Created</th>
-                                    <td th:text="${#dates.format(persistentVolumeClaim?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                </tr>
-                                <tr>
-                                    <th>Name</th>
-                                    <td th:text="${persistentVolumeClaim?.name}">CLAIM-XXXX</td>
-                                </tr>
-                                <tr>
-                                    <th>Namespace</th>
-                                    <td th:text="${persistentVolumeClaim?.namespace}">kube-system</td>
-                                </tr>
-                                <tr>
-                                    <th>Labels</th>
-                                    <td>
-                                        <div class="row" th:if="${persistentVolumeClaim?.labels}" th:each="entry : ${persistentVolumeClaim?.labels}">
-                                            <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
-                                        </div>
-                                        <div th:unless="${persistentVolumeClaim?.labels}">-</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Annotations</th>
-                                    <td>
-                                        <div class="row" th:if="${persistentVolumeClaim?.annotations}" th:each="entry : ${persistentVolumeClaim?.annotations}">
-                                            <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
-                                        </div>
-                                        <div th:unless="${persistentVolumeClaim?.annotations}">-</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Finalizers</th>
-                                    <td th:each="finalizer : ${persistentVolumeClaim?.finalizers}" th:text="${finalizer}">&nbsp;&nbsp///&nbsp;&nbsp</td>
-                                </tr>
-                                <tr>
-                                    <th>Access Modes</th>
-                                    <td th:each="accessMode : ${persistentVolumeClaim?.accessModes}" th:text="${accessMode}">ReadWriteOnce</td>
-                                </tr>
-                                <tr>
-                                    <th>Storage Class Name</th>
-                                    <td th:text="${#strings.isEmpty(persistentVolumeClaim?.storageClassName) ? '-' :persistentVolumeClaim?.storageClassName}">Standard</td>
-                                </tr>
-                                <tr>
-                                    <th>Storage</th>
-                                    <td th:if="${persistentVolumeClaim?.capacity}" th:each="storage : ${persistentVolumeClaim?.capacity}" th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(storage.value)}">000G</td>
-                                    <td th:unless = "${persistentVolumeClaim?.capacity}"> - </td>
-                                </tr>
-                                <tr>
-                                    <th>Pods</th>
-                                    <td th:if = "${persistentVolumeClaim?.pods}" th:each="pod : ${persistentVolumeClaim?.pods}" th:text="${pod}"> </td>
-                                    <td th:unless = "${persistentVolumeClaim?.pods}"> - </td>
-                                </tr>
-                                <tr>
-                                    <th>Status</th>
-                                    <td th:switch="${persistentVolumeClaim?.status}">
-                                        <span th:case="Available" class="madal_label_active" th:text="${persistentVolumeClaim?.status}">Available</span>
-                                        <span th:case="Bound" class="madal_label_active" th:text="${persistentVolumeClaim?.status}">Bound</span>
-                                        <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolumeClaim?.status}">Pending</span>
-                                        <span th:case="Released" class="madal_label" th:text="${persistentVolumeClaim?.status}">Released</span>
-                                        <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolumeClaim?.status}">Failed</span>
-                                        <span th:case="*" class="madal_label" th:text="${persistentVolumeClaim?.status}"></span>
-                                    </td>
-                                </tr>
-                            </table>
+                        <div class="table-title">Metadata</div>
+                        <table class="table-nt">
+                            <tr>
+                                <th>Created</th>
+                                <td th:text="${#dates.format(persistentVolumeClaim?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            </tr>
+                            <tr>
+                                <th>Name</th>
+                                <td th:text="${persistentVolumeClaim?.name}"></td>
+                            </tr>
+                            <tr>
+                                <th>Namespace</th>
+                                <td th:text="${persistentVolumeClaim?.namespace}"></td>
+                            </tr>
+                            <tr>
+                                <th>Labels</th>
+                                <td>
+                                    <div class="row" th:if="${persistentVolumeClaim?.labels}" th:each="entry : ${persistentVolumeClaim?.labels}">
+                                        <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
+                                    </div>
+                                    <div th:unless="${persistentVolumeClaim?.labels}">-</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Annotations</th>
+                                <td>
+                                    <div class="row" th:if="${persistentVolumeClaim?.annotations}" th:each="entry : ${persistentVolumeClaim?.annotations}">
+                                        <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
+                                    </div>
+                                    <div th:unless="${persistentVolumeClaim?.annotations}">-</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Finalizers</th>
+                                <td th:each="finalizer : ${persistentVolumeClaim?.finalizers}" th:text="${finalizer}"></td>
+                            </tr>
+                            <tr>
+                                <th>Access Modes</th>
+                                <td th:each="accessMode : ${persistentVolumeClaim?.accessModes}" th:text="${accessMode}"></td>
+                            </tr>
+                            <tr>
+                                <th>Storage Class Name</th>
+                                <td th:text="${#strings.isEmpty(persistentVolumeClaim?.storageClassName) ? '-' :persistentVolumeClaim?.storageClassName}"></td>
+                            </tr>
+                            <tr>
+                                <th>Storage</th>
+                                <td th:if="${persistentVolumeClaim?.capacity}" th:each="storage : ${persistentVolumeClaim?.capacity}" th:text="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).toStringQuantity(storage.value)}"></td>
+                                <td th:unless = "${persistentVolumeClaim?.capacity}"> - </td>
+                            </tr>
+                            <tr>
+                                <th>Pods</th>
+                                <td th:if = "${persistentVolumeClaim?.pods}" th:each="pod : ${persistentVolumeClaim?.pods}" th:text="${pod}"></td>
+                                <td th:unless = "${persistentVolumeClaim?.pods}"> - </td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td th:switch="${persistentVolumeClaim?.status}">
+                                    <span th:case="Available" class="madal_label_active" th:text="${persistentVolumeClaim?.status}"></span>
+                                    <span th:case="Bound" class="madal_label_active" th:text="${persistentVolumeClaim?.status}"></span>
+                                    <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolumeClaim?.status}"></span>
+                                    <span th:case="Released" class="madal_label" th:text="${persistentVolumeClaim?.status}"></span>
+                                    <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolumeClaim?.status}"></span>
+                                    <span th:case="*" class="madal_label" th:text="${persistentVolumeClaim?.status}"></span>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
-                    <div class="table-title">
-                        Selector
-                    </div>
+                    <div class="table-title">Selector</div>
                     <table class="table-nt">
                         <tr>
                             <th>Match Labels</th>
-                            <td th:if = "${persistentVolumeClaim?.selector}" th:text="${persistentVolumeClaim?.selector?.matchLabels}"> </td>
-                            <td th:unless = "${persistentVolumeClaim?.selector}"> - </td>
+                            <td th:if="${persistentVolumeClaim?.selector}" th:text="${persistentVolumeClaim?.selector?.matchLabels}"></td>
+                            <td th:unless="${persistentVolumeClaim?.selector}"> - </td>
                         </tr>
                         <tr>
                             <th>Match Expressions</th>
-                            <td th:if = "${persistentVolumeClaim?.selector}" th:text="${persistentVolumeClaim?.selector?.matchExpressions}"></td>
-                            <td th:unless = "${persistentVolumeClaim?.selector}"> - </td>
+                            <td th:if="${persistentVolumeClaim?.selector}" th:text="${persistentVolumeClaim?.selector?.matchExpressions}"></td>
+                            <td th:unless="${persistentVolumeClaim?.selector}"> - </td>
                         </tr>
                     </table>
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
                         <tr>
@@ -289,44 +267,38 @@
                             <td colspan="5" class="text-center">No events</td>
                         </tr>
                         <tr th:if="${persistentVolumeClaim?.events}" th:each="event : ${persistentVolumeClaim?.events}">
-                            <td th:text="${event?.type}">Type</td>
-                            <td th:text="${event?.reason}">Reason</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">Count</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
+                            <td th:text="${event?.type}"></td>
+                            <td th:text="${event?.reason}"></td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                            <td th:text="${event?.lastSeen}"></td>
                         </tr>
                         <tbody>
                     </table>
-
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal : persistentVolumeClaim] End -->
-    <!-- [Modal : persistentVolume] start -->
-    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
         <div th:fragment="pvModalContents" class="modal-dialog modal-lg" style="width:765px"; >
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel2" th:text="|Persistent Volume : ${persistentVolume?.name}|">Persistent Volume : PV 명</span>
+                        <span id="myModalLabel2" th:text="|Persistent Volume : ${persistentVolume?.name}|"></span>
                     </div>
                 </div>
-                <div class="modal-nbody row_scroll" >
-                    <div class="table-title">
-                        Metadata
-                    </div>
-
+                <div class="modal-nbody row_scroll">
+                    <div class="table-title">Metadata</div>
                     <table class="table-nt">
                         <tr>
                             <th>Created</th>
-                            <td th:text="${#dates.format(persistentVolume?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <td th:text="${#dates.format(persistentVolume?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td th:text="${persistentVolume?.name}">CLAIM-XXXX</td>
+                            <td th:text="${persistentVolume?.name}"></td>
                         </tr>
                         <tr>
                             <th>Labels</th>
@@ -349,60 +321,51 @@
                         <tr>
                             <th>Finalizers</th>
                             <td>
-                                <div th:if="${persistentVolume?.finalizers}" th:each="finalizer : ${persistentVolume?.finalizers}" th:text="${finalizer}"> ///&nbsp;</div>
+                                <div th:if="${persistentVolume?.finalizers}" th:each="finalizer : ${persistentVolume?.finalizers}" th:text="${finalizer}"></div>
                                 <div th:unless="${persistentVolume?.finalizers}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Access Modes</th>
                             <td>
-                                <div th:if="${persistentVolume?.accessModes}" th:each="accessMode : ${persistentVolume?.accessModes}" th:text="${accessMode}">ReadWriteOnce</div>
+                                <div th:if="${persistentVolume?.accessModes}" th:each="accessMode : ${persistentVolume?.accessModes}" th:text="${accessMode}"></div>
                                 <div th:unless="${persistentVolume?.accessModes}">-</div>
-
                             </td>
-
                         </tr>
                         <tr>
                             <th>Reclaim Policy</th>
-                            <td th:text="${persistentVolume?.reclaimPolicy}">Delete</td>
+                            <td th:text="${persistentVolume?.reclaimPolicy}"></td>
                         </tr>
                         <tr>
                             <th>Storage Class Name</th>
-                            <td th:text="${#strings.isEmpty(persistentVolume?.storageClassName) ? '-' : persistentVolume?.storageClassName}">Standard</td>
+                            <td th:text="${#strings.isEmpty(persistentVolume?.storageClassName) ? '-' : persistentVolume?.storageClassName}"></td>
                         </tr>
                         <tr>
                             <th>Status</th>
                             <td th:switch="${persistentVolume?.status}">
-                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolume?.status}">Available</span>
-                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolume?.status}">Bound</span>
-                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolume?.status}">Pending</span>
-                                <span th:case="Released" class="madal_label" th:text="${persistentVolume?.status}">Released</span>
-                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolume?.status}">Failed</span>
+                                <span th:case="Available" class="madal_label_active" th:text="${persistentVolume?.status}"></span>
+                                <span th:case="Bound" class="madal_label_active" th:text="${persistentVolume?.status}"></span>
+                                <span th:case="Pending" class="madal_label_warning" th:text="${persistentVolume?.status}"></span>
+                                <span th:case="Released" class="madal_label" th:text="${persistentVolume?.status}"></span>
+                                <span th:case="Failed" class="madal_label_danger" th:text="${persistentVolume?.status}"></span>
                                 <span th:case="*" class="madal_label" th:text="${persistentVolume?.status}"></span>
                             </td>
                         </tr>
                     </table>
 
-                    <div class="table-title">
-                        Claim
-                    </div>
+                    <div class="table-title">Claim</div>
                     <table class="table-nt">
-<!--                        <tr>-->
-<!--                            <th>Type</th>-->
-<!--                            <td th:text="${persistentVolume?.claim}">PersistentVolumeClaim</td>-->
-<!--                        </tr>-->
                         <tr>
                             <th>Name</th>
-                            <td th:text="${persistentVolume?.claim?.name}">CLAIM-XXX</td>
+                            <td th:text="${persistentVolume?.claim?.name}"></td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td th:text="${persistentVolume?.claim?.namespace}">default</td>
+                            <td th:text="${persistentVolume?.claim?.namespace}"></td>
                         </tr>
                     </table>
-                    <div class="table-title">
-                        Events
-                    </div>
+
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
                         <tr>
@@ -418,11 +381,11 @@
                             <td colspan="5" class="text-center">No events</td>
                         </tr>
                         <tr th:if="${persistentVolume?.events}" th:each="event : ${persistentVolume?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
+                            <td th:text="${event?.type}"></td>
+                            <td th:text="${event?.source}"></td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                            <td th:text="${event?.lastSeen}"></td>
                         </tr>
                         <tbody>
                     </table>
@@ -430,35 +393,27 @@
             </div>
         </div>
     </div>
-    <!-- [Modal : persistentVolume] End -->
-    <!-- [Modal : storageClass] start -->
-    <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="storageModalContents" class="modal-dialog modal-lg" style="width:765px";>
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel3" th:text="|Storage Class : ${storageClass?.name}|">Storage Class : SC 명</span>
+                        <span id="myModalLabel3" th:text="|Storage Class : ${storageClass?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
-
+                    <div class="table-title">Metadata</div>
                     <table class="table-nt">
                         <tr>
                             <th>Created</th>
-                            <td th:text="${#dates.format(storageClass?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                            <td th:text="${#dates.format(storageClass?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td th:text="${storageClass?.name}">Standard</td>
+                            <td th:text="${storageClass?.name}"></td>
                         </tr>
-<!--                        <tr>-->
-<!--                            <th>Namespace</th>-->
-<!--                            <td>kube-system</td>-->
-<!--                        </tr>-->
                         <tr>
                             <th>Labels</th>
                             <td>
@@ -483,17 +438,15 @@
                         </tr>
                         <tr>
                             <th>Volume Binding Mode</th>
-                            <td th:text="${storageClass?.volumeBindingMode}">Immediate</td>
+                            <td th:text="${storageClass?.volumeBindingMode}"></td>
                         </tr>
                         <tr>
                             <th>Reclaim Policy</th>
-                            <td th:text="${storageClass?.reclaimPolicy}">Delete</td>
+                            <td th:text="${storageClass?.reclaimPolicy}"></td>
                         </tr>
                     </table>
 
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
                         <tr>
@@ -509,118 +462,66 @@
                             <td colspan="5" class="text-center">No events</td>
                         </tr>
                         <tr th:if="${storageClass?.events}" th:each="event : ${storageClass?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
+                            <td th:text="${event?.type}"></td>
+                            <td th:text="${event?.source}"></td>
+                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                            <td th:text="${event?.lastSeen}"></td>
                         </tr>
                         <tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal : storageClass] End -->
 
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
 
-    <input type="hidden" id="var-namespace" value=""/>
-    <input type="hidden" id="var-name" value=""/>
+    <input type="hidden" id="var-name" value="" />
+    <input type="hidden" id="var-namespace" value="" />
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let apiHost;
+        const linkUrl= [[${link}]];
+        /*]]>*/
 
-        var apiHost,
-            $namespace = $("#var-namespace"),
-            $name = $("#var-name"),
-            $contentList = $("#contentList"),
-            linkUrl= [[${link}]]
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
+            });
 
-        function persistentVolumesClaimDetail(namespace, name) {
-            $namespace.val(namespace);
-            $name.val(name);
+            $(document).on('click', 'a.claim-modal-link', function() {
+                const n = $(this).data('name'), ns = $(this).data('namespace');
+                const path = '/api/v1/monitoring/cluster/namespace/' + ns + '/persistent-volume-claims/' + n + '/metrics';
 
-            $.ajax({
-                url: "/api/v1/monitoring/cluster/namespace/" + namespace + "/persistent-volume-claims/" + name + "/metrics",
-                success: function (data) {
+                $('#var-name').val(n);
+                $('#var-namespace').val(ns);
 
+                kube.execute(path, function(data) {
                     apiHost = data.host;
-                    data.page.rows.forEach(row => row.pageRowPanels.forEach(panel =>  {
-                        commonChartsJs.removeChart(panel);
-                        commonChartsJs.createPanel(panel)
-                        }));
 
-                    $('#myModal').text("");
-                    $('#myModal').html(data.describe);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
-        }
-        function persistentVolumesDetail(name) {
-            $.ajax({
-                url: "/monitoring/cluster/persistent-volumes/" + name,
-                success: function (data) {
-                    $('#myModal2').text("");
-                    $('#myModal2').html(data);
-                    $('#myModal2').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
-        }
+                    data.page.rows.forEach(r => r['pageRowPanels'].forEach(p => {
+                        commonChartsJs.removeChart(p);
+                        commonChartsJs.createPanel(p);
+                    }));
 
-        function storageClassesDetail(name) {
-            $.ajax({
-                url: "/monitoring/cluster/storage-classes/" + name,
-                success: function (data) {
-                    $('#myModal3').text("");
-                    $('#myModal3').html(data);
-                    $('#myModal3').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
-        }
-
-        $(document).ready(function () {
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
+                    $('#myModal').text('').html(data['describe']).modal();
+                    $('.knob').knob();
                 });
+            });
+
+            $(document).on('click', 'a.storage-modal-link', function() {
+                kube.showModal('/monitoring/cluster/storage-classes/' + $(this).data('name'), undefined, '#myModal3');
+            });
+
+            $(document).on('click', 'a.volume-modal-link', function() {
+                kube.showModal('/monitoring/cluster/persistent-volumes/' + $(this).data('name'), undefined, '#myModal2');
             });
         });
     </script>
-
 </div>
 </body>
 </html>

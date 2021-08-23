@@ -1,7 +1,7 @@
 package com.kubeworks.watcher.cloud.container.controller.network;
 
-import com.kubeworks.watcher.cloud.container.controller.config.ConfigRestController;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
+import com.kubeworks.watcher.base.BaseController;
+import com.kubeworks.watcher.ecosystem.kubernetes.service.*;
 import com.kubeworks.watcher.preference.service.PageConstants;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
@@ -11,126 +11,126 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@AllArgsConstructor(onConstructor_ = {@Autowired})
-public class NetworkController {
+@RequestMapping(value="/cluster/network")
+@AllArgsConstructor(onConstructor_={@Autowired})
+public class NetworkController implements BaseController {
 
     private static final long SERVICE_MENU_ID = 310;
     private static final long INGRESS_MENU_ID = 311;
     private static final long ENDPOINT_MENU_ID = 312;
     private static final long POLICY_MENU_ID = 313;
 
+    private static final String VIEW_SERVICES = "services";
+    private static final String VIEW_INGRESS = "ingress";
+    private static final String VIEW_ENDPOINTS = "endpoints";
+    private static final String VIEW_POLICIES = "policies";
+
     private final PageViewService pageViewService;
-    private final NetworkRestController networkRestController;
-    private final ConfigRestController configRestController;
 
-    @GetMapping(value = "/cluster/network/services", produces = MediaType.TEXT_HTML_VALUE)
-    public String services(Model model) {
-        List<ServiceTable> services = networkRestController.services();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    private final ServiceKindService serviceKindService;
+    private final IngressService ingressService;
+    private final EndpointService endpointService;
+    private final NetworkPolicyService networkPolicyService;
 
-        model.addAttribute("services", services);
-        model.addAttribute("page", pageViewService.getPageView(SERVICE_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_SERVICES);
-        return "cluster/network/services";
+    private final NamespaceService namespaceService;
+
+    @GetMapping(value="/services")
+    public String services(final Model model) {
+
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_SERVICES);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(SERVICE_MENU_ID));
+        model.addAttribute(VIEW_SERVICES, serviceKindService.allNamespaceServiceTables());
+
+        return createViewName(VIEW_SERVICES);
     }
 
-    @GetMapping(value = "/cluster/network/namespace/{namespace}/services", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String services(Model model, @PathVariable String namespace) {
-        List<ServiceTable> services = networkRestController.services(namespace);
-        model.addAttribute("services", services);
-        return "cluster/network/services :: contentList";
+    @GetMapping(value="/namespace/{namespace}/services", produces=MediaType.APPLICATION_JSON_VALUE)
+    public String services(final Model model, @PathVariable final String namespace) {
+        model.addAttribute(VIEW_SERVICES, serviceKindService.services(namespace));
+        return createViewName(VIEW_SERVICES, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/cluster/network/services/namespace/{namespace}/service/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String service(Model model, @PathVariable String namespace, @PathVariable String name) {
-        ServiceDescribe serviceDescribe = networkRestController.service(namespace, name);
-        model.addAttribute("service", serviceDescribe);
-        return "cluster/network/services :: modalContents";
+    @GetMapping(value="/services/namespace/{namespace}/service/{name}")
+    public String service(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("service", serviceKindService.service(namespace, name).orElse(null));
+        return createViewName(VIEW_SERVICES, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/cluster/network/ingress", produces = MediaType.TEXT_HTML_VALUE)
-    public String ingresses(Model model) {
-        List<IngressTable> ingresses = networkRestController.ingresses();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/ingress")
+    public String ingresses(final Model model) {
 
-        model.addAttribute("ingresses", ingresses);
-        model.addAttribute("page", pageViewService.getPageView(INGRESS_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_INGRESS);
-        return "cluster/network/ingress";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_INGRESS);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(INGRESS_MENU_ID));
+        model.addAttribute("ingresses", ingressService.allNamespaceIngressTables());
+
+        return createViewName(VIEW_INGRESS);
     }
 
-    @GetMapping(value = "/cluster/network/namespace/{namespace}/ingress", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String ingresses(Model model, @PathVariable String namespace) {
-        List<IngressTable> ingresses = networkRestController.ingresses(namespace);
-        model.addAttribute("ingresses", ingresses);
-        return "cluster/network/ingress :: contentList";
+    @GetMapping(value="/namespace/{namespace}/ingress", produces=MediaType.APPLICATION_JSON_VALUE)
+    public String ingresses(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("ingresses", ingressService.ingresses(namespace));
+        return createViewName(VIEW_INGRESS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/cluster/network/ingress/namespace/{namespace}/ingresses/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String ingress(Model model, @PathVariable String namespace, @PathVariable String name) {
-        IngressDescribe ingressDescribe = networkRestController.ingress(namespace, name);
-        model.addAttribute("ingress", ingressDescribe);
-        return "cluster/network/ingress :: modalContents";
+    @GetMapping(value="/ingress/namespace/{namespace}/ingresses/{name}")
+    public String ingress(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute(VIEW_INGRESS, ingressService.ingress(namespace, name).orElse(null));
+        return createViewName(VIEW_INGRESS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/cluster/network/endpoints", produces = MediaType.TEXT_HTML_VALUE)
-    public String endpoints(Model model) {
-        List<EndpointTable> endpoints = networkRestController.endpoints();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/endpoints")
+    public String endpoints(final Model model) {
 
-        model.addAttribute("endpoints", endpoints);
-        model.addAttribute("page", pageViewService.getPageView(ENDPOINT_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_ENDPOINTS);
-        return "cluster/network/endpoints";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_ENDPOINTS);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(ENDPOINT_MENU_ID));
+        model.addAttribute(VIEW_ENDPOINTS, endpointService.allNamespaceEndpointTables());
+
+        return createViewName(VIEW_ENDPOINTS);
     }
 
-    @GetMapping(value = "/cluster/network/namespace/{namespace}/endpoints", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String endpoints(Model model, @PathVariable String namespace) {
-        List<EndpointTable> endpoints = networkRestController.endpoints(namespace);
-        model.addAttribute("endpoints", endpoints);
-        return "cluster/network/endpoints :: contentList";
+    @GetMapping(value="/namespace/{namespace}/endpoints", produces=MediaType.APPLICATION_JSON_VALUE)
+    public String endpoints(final Model model, @PathVariable final String namespace) {
+        model.addAttribute(VIEW_ENDPOINTS, endpointService.endpoints(namespace));
+        return createViewName(VIEW_ENDPOINTS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/cluster/network/endpoints/namespace/{namespace}/endpoint/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String endpoint(Model model, @PathVariable String namespace, @PathVariable String name) {
-        EndpointDescribe endpointDescribe = networkRestController.endpoint(namespace, name);
-        model.addAttribute("endpoint", endpointDescribe);
-        return "cluster/network/endpoints :: modalContents";
+    @GetMapping(value="/endpoints/namespace/{namespace}/endpoint/{name}")
+    public String endpoint(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("endpoint", endpointService.endpoint(namespace, name).orElse(null));
+        return createViewName(VIEW_ENDPOINTS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/cluster/network/policies", produces = MediaType.TEXT_HTML_VALUE)
-    public String policies(Model model) {
-        List<NetworkPolicyTable> policies = networkRestController.policies();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/policies")
+    public String policies(final Model model) {
 
-        model.addAttribute("policies", policies);
-        model.addAttribute("page", pageViewService.getPageView(POLICY_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_POLICIES);
-        return "cluster/network/policies";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_POLICIES);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(POLICY_MENU_ID));
+        model.addAttribute(VIEW_POLICIES, networkPolicyService.allNamespaceNetworkPolicyTables());
+
+        return createViewName(VIEW_POLICIES);
     }
 
-    @GetMapping(value = "/cluster/network/namespace/{namespace}/policies", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String policies(Model model, @PathVariable String namespace) {
-        List<NetworkPolicyTable> policies = networkRestController.policies(namespace);
-        model.addAttribute("policies", policies);
-        return "cluster/network/policies :: contentList";
+    @GetMapping(value="/namespace/{namespace}/policies", produces=MediaType.APPLICATION_JSON_VALUE)
+    public String policies(final Model model, @PathVariable final String namespace) {
+        model.addAttribute(VIEW_POLICIES, networkPolicyService.policies(namespace));
+        return createViewName(VIEW_POLICIES, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/cluster/network/policies/namespace/{namespace}/policy/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String policy(Model model, @PathVariable String namespace, @PathVariable String name) {
-        NetworkPolicyDescribe networkPolicyDescribe = networkRestController.policy(namespace, name);
-        model.addAttribute("policy", networkPolicyDescribe);
-        return "cluster/network/policies :: modalContents";
+    @GetMapping(value="/policies/namespace/{namespace}/policy/{name}")
+    public String policy(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("policy", networkPolicyService.networkPolicy(namespace, name).orElse(null));
+        return createViewName(VIEW_POLICIES, Props.MODAL_CONTENTS);
     }
 
-
-
+    @Override
+    public String retrieveViewNamePrefix() {
+        return "cluster/network/";
+    }
 }

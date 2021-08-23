@@ -21,6 +21,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -33,16 +34,15 @@ import java.util.stream.Collectors;
 @Service
 public class IngressServiceImpl implements IngressService {
 
-    private final ApiClient k8sApiClient;
     private final NetworkingV1beta1ApiExtendHandler networkingApi;
     private final EventService eventService;
     private final EndpointService endpointService;
     private final ServiceKindService serviceKindService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public IngressServiceImpl(ApiClient k8sApiClient, EventService eventService,
                               EndpointService endpointService, ServiceKindService serviceKindService, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.networkingApi = new NetworkingV1beta1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.endpointService = endpointService;
@@ -53,10 +53,10 @@ public class IngressServiceImpl implements IngressService {
     @SneakyThrows
     @Override
     public List<IngressTable> allNamespaceIngressTables() {
-        ApiResponse<NetworkingV1beta1IngressTableList> apiResponse = networkingApi.allNamespaceIngressAsTables("true");
+        ApiResponse<NetworkingV1beta1IngressTableList> apiResponse = networkingApi.searchIngressesTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             NetworkingV1beta1IngressTableList ingresses = apiResponse.getData();
-            List<IngressTable> dataTable = ingresses.getDataTable();
+            List<IngressTable> dataTable = ingresses.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -69,10 +69,10 @@ public class IngressServiceImpl implements IngressService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceIngressTables();
         }
-        ApiResponse<NetworkingV1beta1IngressTableList> apiResponse = networkingApi.namespaceIngressAsTables(namespace, "true");
+        ApiResponse<NetworkingV1beta1IngressTableList> apiResponse = networkingApi.searchIngressesTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             NetworkingV1beta1IngressTableList ingresses = apiResponse.getData();
-            return ingresses.getDataTable();
+            return ingresses.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -80,7 +80,7 @@ public class IngressServiceImpl implements IngressService {
     @SneakyThrows
     @Override
     public Optional<IngressDescribe> ingress(String namespace, String name) {
-        ApiResponse<NetworkingV1beta1Ingress> apiResponse = networkingApi.readNamespacedIngressWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<NetworkingV1beta1Ingress> apiResponse = networkingApi.readNamespacedIngressWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -96,7 +96,7 @@ public class IngressServiceImpl implements IngressService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Ingress",
             ingressDescribe.getNamespace(), ingressDescribe.getName(), ingressDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> ingressDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> ingressDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(ingressDescribe);
     }
@@ -144,7 +144,7 @@ public class IngressServiceImpl implements IngressService {
             .map(path -> IngressDescribe.IngressDescribeRule.builder()
                 .host(rule.getHost())
                 .path(path.getPath())
-                .backend(path.getBackend().getServiceName() + ":" + path.getBackend().getServicePort().toString())
+                .backend(path.getBackend().getServiceName() + ":" + path.getBackend().getServicePort())
                 .endpoints(getEndpoints(namespace, path.getBackend()))
                 .build()
             ).collect(Collectors.toList());
@@ -159,18 +159,15 @@ public class IngressServiceImpl implements IngressService {
             return Collections.emptyList();
         }
 
-        ServiceDescribe serviceDescribe = serviceKindService.serviceWithoutEvents(namespace, serviceName)
-            .orElseGet(null);
+        ServiceDescribe serviceDescribe = serviceKindService.serviceWithoutEvents(namespace, serviceName).orElse(null);
 
         if (serviceDescribe == null || CollectionUtils.isEmpty(serviceDescribe.getPorts())) {
             return Collections.emptyList();
         }
 
         String servicePortName = serviceDescribe.getPorts().stream()
-            .filter(v1ServicePort -> {
-                return (servicePort.isInteger() && servicePort.getIntValue().equals(v1ServicePort.getPort()))
-                    || (!servicePort.isInteger() && StringUtils.equalsAnyIgnoreCase(servicePort.getStrValue(), v1ServicePort.getName()));
-            }).map(v1ServicePort -> {
+            .filter(v1ServicePort -> (servicePort.isInteger() && servicePort.getIntValue().equals(v1ServicePort.getPort()))
+                || (!servicePort.isInteger() && StringUtils.equalsAnyIgnoreCase(servicePort.getStrValue(), v1ServicePort.getName()))).map(v1ServicePort -> {
                 if (v1ServicePort.getName() != null) {
                     return v1ServicePort.getName();
                 }
@@ -202,6 +199,4 @@ public class IngressServiceImpl implements IngressService {
                 }
             }).flatMap(Collection::stream).collect(Collectors.toList());
     }
-
-
 }

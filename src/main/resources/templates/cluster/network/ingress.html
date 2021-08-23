@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [Ingresses] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -32,76 +24,68 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(ingresses) ? '0' : ingresses.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(ingresses) ? '0' : ingresses.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Host</th>
-                            <th>Path</th>
-                            <th>Age</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>Host</th>
+                                <th>Path</th>
+                                <th>Age</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(ingresses)}">
-                            <td colspan="5" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(ingresses)}" th:each="ingress : ${ingresses}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:ingressDetail(&quot;' + ${ingress?.namespace} + '&quot;, &quot;'+ ${ingress?.name} + '&quot;)'"
-                                   th:utext="${ingress?.name}">Name</a>
-                            </td>
-                            <td th:text="${ingress?.namespace}"></td>
-                            <td th:text="${#strings.equals(ingress?.hosts, 'null') ? '<none>' : ingress?.hosts}">foo.bar.com</td>
-                            <td th:utext="${ingress?.getPathsHtml()}">path</td>
-                            <td th:text="${ingress?.age}">000d</td>
-                        </tr>
-
+                            <tr th:if="${#arrays.isEmpty(ingresses)}">
+                                <td colspan="5" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(ingresses)}" th:each="ingress : ${ingresses}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${ingress?.namespace}, data-name=${ingress?.name}" th:utext="${ingress?.name}"></a>
+                                </td>
+                                <td th:text="${ingress?.namespace}"></td>
+                                <td th:text="${#strings.equals(ingress?.hosts, 'null') ? '<none>' : ingress?.hosts}"></td>
+                                <td th:utext="${ingress?.getPathsHtml()}"></td>
+                                <td th:text="${ingress?.age}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [[ingress]] End-->
     </div>
 
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg"style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Ingress : ${ingress?.name}|">Ingress : Ingress 명</span>
+                        <span id="myModalLabel" th:text="|Ingress : ${ingress?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <table class="table-nt">
                         <tr>
                             <th>Created</th>
-                            <td th:text="${#dates.format(ingress?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08) </td>
+                            <td th:text="${#dates.format(ingress?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td th:text="${ingress?.name}">test</td>
+                            <td th:text="${ingress?.name}"></td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td th:text="${ingress?.namespace}">default</td>
+                            <td th:text="${ingress?.namespace}"></td>
                         </tr>
                         <tr>
                             <th>Address</th>
                             <td>
                                 <div th:if="${ingress?.loadBalancer}" th:each="load : ${ingress?.loadBalancer}">
-                                    <div th:if="${load?.ingress}" th:each="ingress : ${load?.ingress}"
-                                         th:text = "${ingress.ip}">
-                                    </div>
+                                    <div th:if="${load?.ingress}" th:each="ingress : ${load?.ingress}" th:text = "${ingress.ip}"></div>
                                 </div>
                             </td>
                         </tr>
@@ -116,106 +100,72 @@
                         </tr>
                     </table>
 
-                    <div class="table-title">
-                        Rules
-                    </div>
+                    <div class="table-title">Rules</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Host</th>
-                            <th>Path</th>
-                            <th>Backends</th>
-                            <th>Endpoints</th>
-                        </tr>
+                            <tr>
+                                <th>Host</th>
+                                <th>Path</th>
+                                <th>Backends</th>
+                                <th>Endpoints</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr th:each="describeRule : ${ingress?.describeRules}">
-                                <td th:text="${#strings.isEmpty(describeRule?.host) ? '-' : describeRule?.host}">Host</td>
-                                <td th:text="${#strings.isEmpty(describeRule?.path) ? '-' : describeRule?.path}">Path</td>
-                                <td th:text="${#strings.isEmpty(describeRule?.backend) ? '-' : describeRule?.backend}">Backends</td>
+                                <td th:text="${#strings.isEmpty(describeRule?.host) ? '-' : describeRule?.host}"></td>
+                                <td th:text="${#strings.isEmpty(describeRule?.path) ? '-' : describeRule?.path}"></td>
+                                <td th:text="${#strings.isEmpty(describeRule?.backend) ? '-' : describeRule?.backend}"></td>
                                 <td>
-                                    <div th:each="endpoint : ${describeRule?.endpoints}" th:text="${#strings.isEmpty(endpoint) ? '-' :endpoint}">Endpoint</div>
+                                    <div th:each="endpoint : ${describeRule?.endpoints}" th:text="${#strings.isEmpty(endpoint) ? '-' :endpoint}"></div>
                                 </td>
                             </tr>
                         <tbody>
                     </table>
 
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(ingress?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${ingress?.events}" th:each="event : ${ingress?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Object-name</td>
-                            <td th:text="${event?.lastSeen}">2020-05-22 12:41:05</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(ingress?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${ingress?.events}" th:each="event : ${ingress?.events}">
+                                <td th:text="${event?.type}"></td>
+                                <td th:text="${event?.source}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
                         <tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        const linkUrl= [[${link}]];
+        const pathPrefix = '/cluster/network/ingress/namespace/';
+        /*]]>*/
 
-        var $contentList = $("#contentList"),
-            linkUrl= [[${link}]];
-
-        function ingressDetail(namespace, name) {
-            $.ajax({
-                url: "/cluster/network/ingress/namespace/" + namespace + "/ingresses/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
             });
-        }
 
-        $(document).ready(function () {
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('namespace') + '/ingresses/' + $(this).data('name'));
             });
         });
-
     </script>
 </div>
 </body>

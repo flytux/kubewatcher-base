@@ -383,15 +383,15 @@ let commonChartsJs = (function () {
     }
 
     function SetDatas(dataArray) {
-         return dataArray.map(item => {
-             if (item.data.resultType === 'matrix') {
-                 console.warn("unsupported result type=" + item.data.data.resultType);
-                 return 0;
-             }
-               return item.data.result.map(resultItem =>
-                   parseInt(resultItem.value[1]));
-           });
-     }
+        return dataArray.map(item => {
+            if (item.data.resultType === 'matrix') {
+                console.warn("unsupported result type=" + item.data.data.resultType);
+                return 0;
+            }
+            return item.data.result.map(resultItem =>
+                parseInt(resultItem.value[1]));
+        });
+    }
 
     function legendFunction (chart) {
 
@@ -469,18 +469,23 @@ let commonChartsJs = (function () {
     }
 
     function getBoardItem(data, colSize) {
-        let displayName = data.code !== undefined ? data.code : data.name;
+        let displayName = data.displayName !== undefined ? data.displayName : data.code !== undefined ? data.code : data.name;
         let classColSize = parseInt(12 / colSize);
         let grade = "box_mini_d";
-        if (data.pods > 0) {
-            grade = data.avgResponseTime < 1000 ? "box_mini_g"
-                : data.avgResponseTime < 3000 ? "box_mini_y" : "box_mini_r";
+        let podsCnt = data.pods;
+        if (podsCnt > 0) {
+            grade = podsCnt < 5 ? "box_mini_green_A"
+                : podsCnt < 9 ? "box_mini_green_B" : "box_mini_green_C";
+            /*
+                grade = data.avgResponseTime < 1000 ? "box_mini_g"
+                    : data.avgResponseTime < 3000 ? "box_mini_y" : "box_mini_r";
+            */
         }
-        return `<td class="col-xs-${classColSize} col-lg-${classColSize}"><div class="${grade}">${displayName}</div></td>`;
+        return podsCnt < 3 ? `<td class="col-xs-${classColSize} col-lg-${classColSize}"><div class="${grade}">${displayName}</div></td>` : `<td class="col-xs-${classColSize} col-lg-${classColSize}"><div class="${grade}">${displayName} (${podsCnt})</div></td>`;
     }
 
     return {
-        createPanel: function (panel) {
+        createPanel: function (panel, errorCount) {
             if (panel.refreshIntervalMillis === undefined || panel.refreshIntervalMillis <= 0) {
                 panel.refreshIntervalMillis = defaultIntervalMillis;
             }
@@ -513,7 +518,7 @@ let commonChartsJs = (function () {
                     break;
                 case "BADGE":
                     this.getDataByPanel(panel, true)
-                        .then(value => this.createBadge(panel, value))
+                        .then(value => this.createBadge(panel, value, errorCount))
                         .then(panel => scheduleMap.set(panel.panelId,
                             setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel))
                         );
@@ -544,19 +549,19 @@ let commonChartsJs = (function () {
             }
         },
 
-       Boxversions: function (panel, dataArray) { //버전
+        Boxversions: function (panel, dataArray) { //버전
             const boxsData = boxsDatas(dataArray);
             $('#container-' + panel.panelId).text(boxsData);
             return panel;
         },
 
-       SetsSum: function (panel, dataArray) { //박스
+        SetsSum: function (panel, dataArray) { //박스
             const SetData = SetDatas(dataArray);
             $('#container-' + panel.panelId).text(SetData[0])+$('#container--' + panel.panelId).text(' '+'/'+' '+SetData[1]);
             return panel;
         },
 
-        createBadge: function (panel, dataArray) {
+        createBadge: function (panel, dataArray, errorCount) {
             // const badgeData = this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit);
             const badgeData = convertSumBadgeData(dataArray);
             if (panel.chartType === 'text') {
@@ -573,6 +578,19 @@ let commonChartsJs = (function () {
                 $('#container-' + panel.panelId).text(age);
             } else if(dataArray[0].data.result.length === 0) {
                 $('#container-' + panel.panelId).text('N/A');
+            } else if(String(panel.panelId).substr(String(panel.panelId).length-3, 3) == "160"){ // Loki Error Count
+                if(errorCount !== undefined){
+                    var application = panel.chartQueries[0].apiQuery;
+                    application = application.split('"');
+                    if(undefined ===  errorCount.get(application[3])){
+                        $('#container-' + panel.panelId).text(0);
+                    } else {
+                        $('#container-' + panel.panelId).text(errorCount.get(application[3]));
+                    }
+                }
+                if(errorCount === "") {
+                    $('#container-' + panel.panelId).text("N/A");
+                }
             } else {
                 $('#container-' + panel.panelId).text(this.convertValue(convertSumBadgeData(dataArray), panel.yaxisUnit));
             }
@@ -629,12 +647,11 @@ let commonChartsJs = (function () {
                 tableData = dataArray[0];
             }
 
-            //어플리케이션 현황판용 렌더링 기능 분기 추가.
-            if (panel.title == '보험코어 어플리케이션') {
-                renderAppTable(panel, tableData);
-            } else {
-                renderTable(panel, tableData);
-            }
+            // 어플리케이션 현황판용 렌더링 기능 분기 추가.
+            // 현재 데이터 기준 아래 조건은 항상 else
+            // renderAppTable 함수에서 다르게 처리하고자 한 내용의 의도 역시 정확히 파악이 어려움 20210730
+            ('보험코어 어플리케이션' === panel['title']) ? renderAppTable(panel, tableData) : renderTable(panel, tableData);
+
             return panel;
         },
 
@@ -659,7 +676,8 @@ let commonChartsJs = (function () {
                             name: applicationName,
                             avgResponseTime: isResponseTimeQuery ? metric : undefined,
                             pods: !isResponseTimeQuery ? metric : undefined,
-                            code: service !== undefined ? service.code : undefined
+                            code: service !== undefined ? service.code : undefined,
+                            displayName: service !== undefined ? service.displayName : undefined
                         });
                     } else {
                         if (isResponseTimeQuery) {
@@ -708,17 +726,24 @@ let commonChartsJs = (function () {
             services.forEach(value => {
                 summary.total++;
                 value.pods > 0 ? summary.up++ : {};
+                value.pods < 5 ? summary.normal++
+                    : value.pods < 9 ? summary.warn++ : summary.critical++;
+                /*
                 value.avgResponseTime < 1000 ? summary.normal++
                     : value.avgResponseTime < 3000 ? summary.warn++ : summary.critical++;
+                */
             });
 
             let tableBottomHtml = '<div class="row col-xs-12"><table class="table_mini"><tbody class="table_mini mt_10">';
             tableBottomHtml += '<td>전체 : ' + summary.total + '</td>';
+            /*
             tableBottomHtml += '<td>ON : ' + summary.up + '</td>';
             tableBottomHtml += '<td>OFF : ' + (summary.total - summary.up) + '</td>';
-            tableBottomHtml += '<td><div class="circle c_normal"></div> 정상 : ' + summary.normal + '</td>';
-            tableBottomHtml += '<td><div class="circle c_warning"></div> 느림 : ' + summary.warn + '</td>';
-            tableBottomHtml += '<td><div class="circle c_danger"></div> 지연 : ' + summary.critical + '</td>';
+            */
+            tableBottomHtml += '<td>ON / OFF : ' + summary.up + ' / ' + (summary.total - summary.up) + '</td>';
+            tableBottomHtml += '<td><div class="circle green_c_A"></div> Pod 1~4개 : ' + summary.normal + '</td>';
+            tableBottomHtml += '<td><div class="circle green_c_B"></div> Pod 5~8개 : ' + summary.warn + '</td>';
+            tableBottomHtml += '<td><div class="circle green_c_C"></div> Pod 9개 이상 : ' + summary.critical + '</td>';
             tableBottomHtml += '</tbody></table></div>';
             $('#container-' + panel.panelId).html(boardHtml + tableBottomHtml);
 
@@ -876,11 +901,17 @@ let commonChartsJs = (function () {
 
         convertCountTileMapChartSeries: function (panel, responses) {
             const dataArray = responses.flatMap(res => res.data.result.flatMap(result => {
-                    const target = result.metric.target;
-                    const count = parseInt(result.value[1]);
-                    return Array.from({length: count}, (_, index) => {
-                        return target === 'available' ? {value: 1} : {value: 0};
-                    });
+                    var $podName = result.metric.pod === undefined ? result.metric.instance.split('-') : result.metric.pod.split('-');
+                    var urlPinpoint = "";
+                    if(result.metric.container != undefined){
+                        urlPinpoint = result.metric.container.split('-');
+                    }
+                    var color = result.metric.application === undefined ? Highcharts.color('#0e51d6').get() : Highcharts.color('#7F6000').get();
+                    return {value: result.value[1] > 0 ? 1: 0,
+                        labelName: $podName.length === 1 ? "" : $podName[$podName.length-2] === "sts" ? $podName[$podName.length-3] +"-"+ $podName[$podName.length-1] : $podName[$podName.length-1],
+                        podName: $podName.length === 1 ? $podName : result.metric.pod,
+                        chartColor: color,
+                        urlPinpoint: urlPinpoint};
                 })
             ).filter(value => value !== undefined);
 
@@ -1417,7 +1448,7 @@ let commonChartsJs = (function () {
                 series: series
             }
         },
-        getTileMapChartData: function (panel, series) {
+        getTileMapChartData: function (panel, series, podMap, panelTitle) {
             return {
                 chart: {
                     type: 'tilemap',
@@ -1427,7 +1458,7 @@ let commonChartsJs = (function () {
                     events: {
                         load: function () {
                             scheduleMap.set(panel.panelId,
-                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel));
+                                setTimeout(commonChartsJs.refreshFunction, panel.refreshIntervalMillis, panel, podMap, panelTitle));
                         }
                     }
                 },
@@ -1454,7 +1485,7 @@ let commonChartsJs = (function () {
                     dataClasses: [{
                         from: 1,
                         to: 1,
-                        color: Highcharts.color('#0e51d6').get(),
+                        color: series[0].data[0].chartColor,
                         name: 'Available'
                     },{
                         from: 0,
@@ -1475,10 +1506,23 @@ let commonChartsJs = (function () {
                 //         }
                 //     }
                 // },
+                tooltip: {
+                    headerFormat: "<b>{point.title}</b><br/>",
+                    pointFormat: "<b>{point.title}</b><br/><b>{point.podName}</b>"
+                },
                 plotOptions: {
                     series: {
                         pointPadding: 1,
-                        pointRange: 0.5
+                        pointRange: 0.5,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.labelName}',
+                            color: '#ffffff',
+                            style:{
+                                textOutline: false
+                            }
+                        }
                     },
                     tilemap: {
                         animation:        true,
@@ -1629,6 +1673,38 @@ let commonChartsJs = (function () {
                     break;
             }
             return symbol;
+        },
+
+        convertErrorCount : function(resultData){ //DashBoard - Application - 보험코어어플리케이션 Error Count 항목에 적용되야함.
+            const objData = JSON.parse(resultData);
+            console.log(typeof(objData),objData);
+            dataArray = objData.data.result;
+            let data = new Map();
+            for (let i = 0; i < dataArray.length; i++) {
+                let item = dataArray[i];
+                // console.log(item);
+                item.values.forEach(value => {
+                    const key = Object.values(item.metric).toString();
+                    if(key ==""){ // value.metric 값이 없는 항목일경우  return;
+                        return;
+                    }
+                    let element = data.get(key);
+                    if (element === undefined) {
+                        element = {};
+                        for (const [key, entry] of Object.entries(item.metric)) { // key값 setting
+                            element[key] = entry;
+                        }
+                    }
+                    let valueCount = 0; //value 로 넘어오는 count 모두 sum
+                    for(let j=0; j< Object.values(item.values).length; j++){ //value sum
+                        count = Number(Object.values(item.values)[j][1]);
+                        valueCount += count;
+                    }
+
+                    data.set(key, valueCount);
+                });
+            }
+            return data;
         }
 
     }

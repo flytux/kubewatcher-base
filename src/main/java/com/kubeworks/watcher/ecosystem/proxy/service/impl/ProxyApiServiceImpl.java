@@ -39,7 +39,7 @@ public class ProxyApiServiceImpl implements ProxyApiService {
     @Override
     public String singleValueByQuery(final String query) {
 
-        final PrometheusApiResponse response = service.requestQuery(query);
+        final PrometheusApiResponse response = service.request(query);
         if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
             return ExternalConstants.NONE_STR;
         }
@@ -58,7 +58,7 @@ public class ProxyApiServiceImpl implements ProxyApiService {
         final String promQl = StringUtils.substring(query, query.indexOf("label_values(") + "label_values(".length(), query.lastIndexOf(',')).trim();
         final String metricName = StringUtils.substring(query, query.lastIndexOf(',') + 1, query.lastIndexOf(')')).trim();
 
-        final PrometheusApiResponse response = service.requestQuery(promQl);
+        final PrometheusApiResponse response = service.request(promQl);
 
         if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
             return Collections.singletonList(ExternalConstants.NONE_STR);
@@ -70,7 +70,7 @@ public class ProxyApiServiceImpl implements ProxyApiService {
     @Override
     public List<String> multiValuesQuery(final String query, final String metricName) {
 
-        final PrometheusApiResponse response = service.requestQuery(query);
+        final PrometheusApiResponse response = service.request(query);
         if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
             return Collections.singletonList(ExternalConstants.NONE_STR);
         }
@@ -82,7 +82,7 @@ public class ProxyApiServiceImpl implements ProxyApiService {
     public List<String> query(final PageVariable variable) {
 
         if (variable.getVariableType() == VariableType.METRIC_LABEL_VALUES) {
-            final PrometheusApiResponse response = service.requestQuery(variable.getApiQuery());
+            final PrometheusApiResponse response = service.request(variable.getApiQuery());
             if (!StringUtils.equalsIgnoreCase(response.getStatus(), ExternalConstants.SUCCESS_STATUS_STR)) {
                 return Collections.emptyList();
             }

@@ -1,7 +1,9 @@
 package com.kubeworks.watcher.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -9,7 +11,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @EntityListeners(value = AuditingEntityListener.class)
@@ -39,7 +40,7 @@ public class KwUser extends BaseEntity {
     List<KwUserRole> role;
 
     public void setRole(List<KwUserRole> role, String type) {
-        if (type.equals("modify")){
+        if ("modify".equals(type)){
             this.role.clear();
             this.role.addAll(role);
         } else {
@@ -53,25 +54,13 @@ public class KwUser extends BaseEntity {
     KwUserGroup kwUserGroup;
 
     public String getUserRole() {
-        List<String> rolenameList = new ArrayList<>();
-        KwUserRoleId roleId = new KwUserRoleId();
+
+        final List<String> rolenameList = new ArrayList<>();
 
         if (!role.isEmpty()) {
-            for (int i = 0; i < role.size(); i++) {
-                roleId = role.get(i).getRolename();
-                String rolename = roleId.getRolename();
-                rolenameList.add(rolename);
-            }
-        }
-        String roles;
-
-        if (CollectionUtils.isNotEmpty(rolenameList)) {
-            roles = rolenameList.stream().collect(Collectors.joining(", "));
-        } else {
-            roles = "-";
+            role.forEach(r -> rolenameList.add(r.getRolename().getRolename()));
         }
 
-        return roles;
+        return CollectionUtils.isNotEmpty(rolenameList) ? String.join(", ", rolenameList) : "-";
     }
-
 }

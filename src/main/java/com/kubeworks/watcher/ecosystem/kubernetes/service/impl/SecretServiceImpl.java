@@ -15,8 +15,10 @@ import io.kubernetes.client.openapi.models.V1SecretList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +29,11 @@ import java.util.stream.Collectors;
 @Service
 public class SecretServiceImpl implements SecretService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public SecretServiceImpl(ApiClient k8sApiClient, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.k8sObjectManager = k8sObjectManager;
     }
@@ -40,10 +41,10 @@ public class SecretServiceImpl implements SecretService {
     @SneakyThrows
     @Override
     public List<SecretTable> allNamespaceSecretTables() {
-        ApiResponse<V1SecretTableList> apiResponse = coreV1Api.allNamespaceSecretAsTable("true");
+        ApiResponse<V1SecretTableList> apiResponse = coreV1Api.searchSecretsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1SecretTableList secrets = apiResponse.getData();
-            List<SecretTable> dataTable = secrets.getDataTable();
+            List<SecretTable> dataTable = secrets.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -56,10 +57,10 @@ public class SecretServiceImpl implements SecretService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceSecretTables();
         }
-        ApiResponse<V1SecretTableList> apiResponse = coreV1Api.namespaceSecretAsTable(namespace, "true");
+        ApiResponse<V1SecretTableList> apiResponse = coreV1Api.searchSecretsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1SecretTableList secrets = apiResponse.getData();
-            return secrets.getDataTable();
+            return secrets.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -67,7 +68,7 @@ public class SecretServiceImpl implements SecretService {
     @SneakyThrows
     @Override
     public Optional<SecretDescribe> secret(String namespace, String name) {
-        ApiResponse<V1Secret> apiResponse = coreV1Api.readNamespacedSecretWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1Secret> apiResponse = coreV1Api.readNamespacedSecretWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -84,7 +85,7 @@ public class SecretServiceImpl implements SecretService {
     @SneakyThrows
     @Override
     public List<SecretDescribe> secretTable(String namespace) {
-        ApiResponse<V1SecretList> apiResponse = coreV1Api.listNamespacedSecretWithHttpInfo(namespace, "true", true, null,null,
+        ApiResponse<V1SecretList> apiResponse = coreV1Api.listNamespacedSecretWithHttpInfo(namespace, "true", Boolean.TRUE, null,null,
             null,null,null,null,null);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Collections.emptyList();
@@ -119,7 +120,7 @@ public class SecretServiceImpl implements SecretService {
         if (data.getData() != null) {
             Map<String, byte[]> secretData = data.getData();
             Map<String, String> stringConvertData = secretData.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> new String(entry.getValue())));
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> new String(entry.getValue(), StandardCharsets.UTF_8)));
             builder.data(stringConvertData);
         }
 
@@ -127,5 +128,4 @@ public class SecretServiceImpl implements SecretService {
             builder.stringData(data.getStringData());
         }
     }
-
 }

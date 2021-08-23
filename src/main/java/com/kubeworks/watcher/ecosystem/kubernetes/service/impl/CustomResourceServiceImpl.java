@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.YamlHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.CustomResourceDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.CustomResourceTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.ApiExtV1CustomResourceTableList;
@@ -14,6 +15,7 @@ import io.kubernetes.client.openapi.models.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -25,31 +27,30 @@ import java.util.stream.Collectors;
 @Service
 public class CustomResourceServiceImpl implements CustomResourceService {
 
-    private final ApiClient k8sApiClient;
+    private final EventService service;
     private final ApiExtensionsV1ApiExtendHandler apiExtensionsV1Api;
-    private final EventService eventService;
 
-    public CustomResourceServiceImpl(ApiClient k8sApiClient, EventService eventService) {
-        this.k8sApiClient = k8sApiClient;
-        this.apiExtensionsV1Api = new ApiExtensionsV1ApiExtendHandler(k8sApiClient);
-        this.eventService = eventService;
+    @Autowired
+    public CustomResourceServiceImpl(final ApiClient client, final EventService service) {
+        this.service = service;
+        this.apiExtensionsV1Api = new ApiExtensionsV1ApiExtendHandler(client);
     }
 
-    @SneakyThrows
     @Override
+    @SneakyThrows
     public List<CustomResourceTable> allCustomResourceTables() {
-        ApiResponse<ApiExtV1CustomResourceTableList> apiResponse = apiExtensionsV1Api.allCustomResourceAsTable("true");
+        ApiResponse<ApiExtV1CustomResourceTableList> apiResponse = apiExtensionsV1Api.searchCustomResourceDefinitionsList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             ApiExtV1CustomResourceTableList customResources = apiResponse.getData();
-            return customResources.getDataTable();
+            return customResources.createDataTableList();
         }
         return Collections.emptyList();
     }
 
-    @SneakyThrows
     @Override
+    @SneakyThrows
     public Optional<CustomResourceDescribe> customResource(String name) {
-        ApiResponse<V1CustomResourceDefinition> apiResponse = apiExtensionsV1Api.readCustomResourceDefinitionWithHttpInfo(name, "true", true, false);
+        ApiResponse<V1CustomResourceDefinition> apiResponse = apiExtensionsV1Api.readCustomResourceDefinitionWithHttpInfo(name, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -60,9 +61,9 @@ public class CustomResourceServiceImpl implements CustomResourceService {
 
         CustomResourceDescribe customResourceDescribe = builder.build();
 
-        Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("CustomResourceDefinition", "",
+        Optional<V1EventTableList> eventTableListOptional = service.eventTable("CustomResourceDefinition", "",
             customResourceDescribe.getName(), customResourceDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> customResourceDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> customResourceDescribe.setEvents(v1EventTableList.createDataTableList()));
 
 
         return Optional.of(customResourceDescribe);
@@ -108,11 +109,8 @@ public class CustomResourceServiceImpl implements CustomResourceService {
         }
         V1CustomResourceConversion conversion = spec.getConversion();
         builder.conversion(conversion.getStrategy());
-        if (StringUtils.equalsIgnoreCase("Webhook", conversion.getStrategy())
-            && conversion.getWebhook() != null) {
-            V1WebhookConversion webhook = conversion.getWebhook();
-            String webhookYaml = ExternalConstants.yamlDump(webhook);
-            builder.webhookYaml(webhookYaml);
+        if (StringUtils.equalsIgnoreCase("Webhook", conversion.getStrategy()) && conversion.getWebhook() != null) {
+            builder.webhookYaml(YamlHandler.serialize(conversion.getWebhook()));
         }
     }
 }

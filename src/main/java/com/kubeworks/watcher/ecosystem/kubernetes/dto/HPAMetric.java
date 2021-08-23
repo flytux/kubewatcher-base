@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -39,7 +40,6 @@ public class HPAMetric {
     @JsonIgnore
     public List<String> getMetricSelector() {
         // TODO selector 공통 적용(class reflection 방식으로...)
-        metric.getSelector();
-        return null;
+        return Collections.emptyList();
     }
 }

@@ -17,6 +17,7 @@ import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -27,13 +28,12 @@ import java.util.Optional;
 @Service
 public class EndpointServiceImpl implements EndpointService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EventService eventService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public EndpointServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.k8sObjectManager = k8sObjectManager;
@@ -42,10 +42,10 @@ public class EndpointServiceImpl implements EndpointService {
     @SneakyThrows
     @Override
     public List<EndpointTable> allNamespaceEndpointTables() {
-        ApiResponse<V1EndpointTableList> apiResponse = coreApi.allNamespaceEndpointAsTables("true");
+        ApiResponse<V1EndpointTableList> apiResponse = coreApi.searchEndpointsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EndpointTableList endpoints = apiResponse.getData();
-            List<EndpointTable> dataTable = endpoints.getDataTable();
+            List<EndpointTable> dataTable = endpoints.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -58,10 +58,10 @@ public class EndpointServiceImpl implements EndpointService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceEndpointTables();
         }
-        ApiResponse<V1EndpointTableList> apiResponse = coreApi.namespaceEndpointAsTables(namespace, "true");
+        ApiResponse<V1EndpointTableList> apiResponse = coreApi.searchEndpointsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EndpointTableList endpoints = apiResponse.getData();
-            return endpoints.getDataTable();
+            return endpoints.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -69,7 +69,7 @@ public class EndpointServiceImpl implements EndpointService {
     @SneakyThrows
     @Override
     public Optional<EndpointDescribe> endpointWithoutEvent(String namespace, String name) {
-        ApiResponse<V1Endpoints> apiResponse = coreApi.readNamespacedEndpointsWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1Endpoints> apiResponse = coreApi.readNamespacedEndpointsWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -91,7 +91,7 @@ public class EndpointServiceImpl implements EndpointService {
         endpointDescribeOptional.ifPresent(endpointDescribe -> {
             Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Endpoints",
                 endpointDescribe.getNamespace(), endpointDescribe.getName(), endpointDescribe.getUid());
-            eventTableListOptional.ifPresent(v1EventTableList -> endpointDescribe.setEvents(v1EventTableList.getDataTable()));
+            eventTableListOptional.ifPresent(v1EventTableList -> endpointDescribe.setEvents(v1EventTableList.createDataTableList()));
         });
 
         return endpointDescribeOptional;
@@ -100,15 +100,13 @@ public class EndpointServiceImpl implements EndpointService {
     @SneakyThrows
     @Override
     public List<EndpointTable> endpointTable(String namespace, String name) {
-        ApiResponse<V1EndpointTableList> apiResponse = coreApi.namespaceEndpointAsTable(name, namespace, "true");
+        ApiResponse<V1EndpointTableList> apiResponse = coreApi.searchEndpointsTableList(namespace, name);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1EndpointTableList endpoints = apiResponse.getData();
-            return endpoints.getDataTable();
+            return endpoints.createDataTableList();
         }
         return Collections.emptyList();
     }
-
-
 
     private void setService(EndpointDescribe.EndpointDescribeBuilder builder, V1Endpoints data) {
         if (data.getMetadata() != null) {
@@ -125,7 +123,5 @@ public class EndpointServiceImpl implements EndpointService {
             List<V1EndpointSubset> subsets = data.getSubsets();
             builder.subsets(subsets);
         }
-
     }
-
 }

@@ -1174,8 +1174,8 @@ textarea.form-control {
     font-size:20px;
     margin-bottom: 10px;
     border-radius: 6px;
-    background-color:#81c369;
-    color:#ffffff;
+    background-color:#bfbfbf;
+    color:#ff0000;
     font-weight:600;
     padding:10px 14px 10px 14px;
     float: right;
@@ -1186,8 +1186,8 @@ textarea.form-control {
     font-size:13px;
     margin-bottom: 4px;
     border-radius: 6px;
-    background-color:#81c369;
-    color:#ffffff;
+    background-color:#bfbfbf;
+    color:#ff0000;
     font-weight:600;
     padding:4px 6px 4px 6px;
     float: right;
@@ -1198,7 +1198,7 @@ textarea.form-control {
     font-size:20px;
     margin-bottom: 10px;
     border-radius: 6px;
-    background-color:#bebebe;
+    background-color:#575757;
     color:#ffffff;
     font-weight:600;
     padding:10px 14px 10px 14px;
@@ -1210,7 +1210,7 @@ textarea.form-control {
     font-size:13px;
     margin-bottom: 4px;
     border-radius: 6px;
-    background-color:#bebebe;
+    background-color:#575757;
     color:#ffffff;
     font-weight:600;
     padding:4px 6px 4px 6px;
@@ -1558,7 +1558,7 @@ textarea.form-control {
 }
 
 .box_panel-heading {
-    padding: 10px 15px;
+    padding: 6px 15px;
     font-size:18px;
     color:#bebebe;
     font-weight:600;
@@ -1800,7 +1800,6 @@ textarea.form-control {
     color:#888888;
     font-weight:600;
 }
-
 .box_mini_d{
     font-size:11px;
     height:23px;
@@ -1812,6 +1811,8 @@ textarea.form-control {
     padding:5px 0px 0px 0px;
     text-align:center;
 }
+
+/* default */
 .box_mini_g{
     font-size:11px;
     height:23px;
@@ -1819,11 +1820,10 @@ textarea.form-control {
     border-radius: 3px;
     background-color:#81c369;
     color:#ffffff;
-    font-weight:100;
+    font-weight:600;
     padding:5px 0px 0px 0px;
     text-align:center;
 }
-
 .box_mini_y{
     font-size:11px;
     height:23px;
@@ -1846,6 +1846,115 @@ textarea.form-control {
     padding:5px 0px 0px 0px;
     text-align:center;
 }
+/* default */
+
+/* green theme */
+.box_mini_green_A{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#99c789;
+    color:#444444;
+    font-weight:1000;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+.box_mini_green_B{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#63ce67;
+    color:#444444;
+    font-weight:600;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+.box_mini_green_C{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#27a92c;
+    color:#444444;
+    font-weight:600;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+/* green theme */
+
+/* orange theme */
+.box_mini_orange_A{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#ffcc00;
+    color:#444444;
+    font-weight:1000;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+.box_mini_orange_B{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#cc6600;
+    color:#ffffff;
+    font-weight:600;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+.box_mini_orange_C{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#993300;
+    color:#ffffff;
+    font-weight:600;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+/* orange theme */
+
+/* blue theme */
+.box_mini_blue_A{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#90caf9;
+    color:#444444;
+    font-weight:1000;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+.box_mini_blue_B{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#1565c0;
+    color:#ffffff;
+    font-weight:600;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+.box_mini_blue_C{
+    font-size:11px;
+    height:23px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+    background-color:#1a237e;
+    color:#ffffff;
+    font-weight:600;
+    padding:5px 0px 0px 0px;
+    text-align:center;
+}
+/* blue theme */
 
 .box_middle_d{
     font-size:13px;
@@ -3182,7 +3291,7 @@ textarea.form-control {
 .madal_label {
     display: inline;
     padding: .25em 6px;
-    font-size:80%;
+    font-size:90%;
     font-weight: 600;
     line-height: 1;
     color: #fff;
@@ -3196,7 +3305,7 @@ textarea.form-control {
 .madal_label_true {
     display: inline;
     padding: .25em 6px;
-    font-size:80%;
+    font-size:90%;
     font-weight: 600;
     line-height: 1;
     color: #fff;
@@ -3209,7 +3318,7 @@ textarea.form-control {
 .madal_label_false {
     display: inline;
     padding: .25em 6px;
-    font-size:80%;
+    font-size:90%;
     font-weight: 600;
     line-height: 1;
     color: #fff;
@@ -3224,7 +3333,7 @@ textarea.form-control {
 .madal_label_active {
     display: inline;
     padding: .25em 6px;
-    font-size:80%;
+    font-size:90%;
     font-weight: 600;
     line-height: 1;
     color: #fff;
@@ -3238,7 +3347,7 @@ textarea.form-control {
 .madal_label_danger {
     display: inline;
     padding: .25em 6px;
-    font-size:80%;
+    font-size:90%;
     font-weight: 600;
     line-height: 1;
     color: #fff;
@@ -3251,7 +3360,7 @@ textarea.form-control {
 .madal_label_warning{
     display: inline;
     padding: .25em 6px;
-    font-size:80%;
+    font-size:90%;
     font-weight: 600;
     line-height: 1;
     color: #fff;
@@ -3264,7 +3373,7 @@ textarea.form-control {
 .madal_label_normal {
     display: inline;
     padding: .25em 6px;
-    font-size:80%;
+    font-size:90%;
     font-weight: 600;
     line-height: 1;
     color: #fff;
@@ -4063,6 +4172,7 @@ span.multiselect-native-select select{
     display: inline-block;
 }
 
+/* default */
 .c_normal{
     background-color:#8bc34a;
 }
@@ -4074,6 +4184,49 @@ span.multiselect-native-select select{
 .c_danger{
     background-color:#e92020;
 }
+/* default */
+
+/* green theme */
+.green_c_A{
+    background-color:#99c789;
+}
+
+.green_c_B{
+    background-color:#63ce67;
+}
+
+.green_c_C{
+    background-color:#27a92c;
+}
+/* green theme */
+
+/* orange theme */
+.orange_c_A{
+    background-color:#ffcc00;
+}
+
+.orange_c_B{
+    background-color:#cc6600;
+}
+
+.orange_c_C{
+    background-color:#993300;
+}
+/* orange theme */
+
+/* blue theme */
+.blue_c_A{
+    background-color:#90caf9;
+}
+
+.blue_c_B{
+    background-color:#1565c0;
+}
+
+.blue_c_C{
+    background-color:#1a237e;
+}
+/* blue theme */
 
 .c_chart2{
     background-color:#37d8ae;
@@ -5733,8 +5886,6 @@ a.text-dark:hover, a.text-dark:focus {
 .search-input {
     background-color: #444444 !important;
     border: 0;
-    -webkit-box-shadow: inset 0 0px 0px rgb(0 0 0 / 8%) !important;
-    box-shadow: inset 0 0px 0px rgb(0 0 0 / 8%) !important;
     top: 1px;
     color: #bebebe;
     height: 25px;
@@ -5767,5 +5918,14 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     background-color: #555555;
     -webkit-box-shadow: 0 0 0 30px #222222 inset ;
+    -webkit-text-fill-color: #888888;
+}
+
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus,
+.form-group input:-webkit-autofill:active {
+    background-color: #555555;
+    -webkit-box-shadow: 0 0 0 30px #444444 inset ;
     -webkit-text-fill-color: #888888;
 }

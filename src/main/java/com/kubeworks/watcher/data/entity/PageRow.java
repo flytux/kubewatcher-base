@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -54,5 +53,4 @@ public class PageRow extends BaseEntity {
     @OneToMany(targetEntity = PageRowPanel.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "pageRow")
     @OrderBy("sort_order ASC")
     List<PageRowPanel> pageRowPanels;
-
 }

@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,16 +32,14 @@ import java.util.stream.Collectors;
 @Service
 public class DeploymentServiceImpl implements DeploymentService {
 
-    private final ApiClient k8sApiClient;
     private final AppsV1ApiExtendHandler appsV1Api;
     private final EventService eventService;
     private final PodService podService;
     private final K8sObjectManager k8sObjectManager;
 
-
+    @Autowired
     public DeploymentServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService,
                                  K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.appsV1Api = new AppsV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.podService = podService;
@@ -50,10 +49,10 @@ public class DeploymentServiceImpl implements DeploymentService {
     @SneakyThrows
     @Override
     public List<DeploymentTable> allNamespaceDeploymentTables() {
-        ApiResponse<AppsV1DeploymentTableList> apiResponse = appsV1Api.allNamespaceDeploymentAsTable("true");
+        ApiResponse<AppsV1DeploymentTableList> apiResponse = appsV1Api.searchAppsDeploymentsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AppsV1DeploymentTableList deployments = apiResponse.getData();
-            List<DeploymentTable> dataTable = deployments.getDataTable();
+            List<DeploymentTable> dataTable = deployments.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -66,10 +65,10 @@ public class DeploymentServiceImpl implements DeploymentService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceDeploymentTables();
         }
-        ApiResponse<AppsV1DeploymentTableList> apiResponse = appsV1Api.namespaceDeploymentAsTable(namespace, "true");
+        ApiResponse<AppsV1DeploymentTableList> apiResponse = appsV1Api.searchAppsDeploymentsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             AppsV1DeploymentTableList deployments = apiResponse.getData();
-            return deployments.getDataTable();
+            return deployments.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -77,7 +76,7 @@ public class DeploymentServiceImpl implements DeploymentService {
     @SneakyThrows
     @Override
     public Optional<DeploymentDescribe> deployment(String namespace, String deploymentName) {
-        ApiResponse<V1Deployment> apiResponse = appsV1Api.readNamespacedDeploymentWithHttpInfo(deploymentName, namespace, "true", true, false);
+        ApiResponse<V1Deployment> apiResponse = appsV1Api.readNamespacedDeploymentWithHttpInfo(deploymentName, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -95,7 +94,7 @@ public class DeploymentServiceImpl implements DeploymentService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Deployment",
             deploymentDescribe.getNamespace(), deploymentDescribe.getName(), deploymentDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> deploymentDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> deploymentDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(deploymentDescribe);
     }
@@ -184,12 +183,11 @@ public class DeploymentServiceImpl implements DeploymentService {
             String type = StringUtils.defaultString(spec.getStrategy().getType(), ExternalConstants.NONE);
             if (spec.getStrategy().getRollingUpdate() != null) {
                 type = type
-                    + " [maxSurge: " + spec.getStrategy().getRollingUpdate().getMaxSurge().toString()
-                    + ", maxUnavailable: " + spec.getStrategy().getRollingUpdate().getMaxUnavailable().toString()
+                    + " [maxSurge: " + spec.getStrategy().getRollingUpdate().getMaxSurge()
+                    + ", maxUnavailable: " + spec.getStrategy().getRollingUpdate().getMaxUnavailable()
                     + "]";
             }
             builder.strategy(type);
         }
     }
-
 }

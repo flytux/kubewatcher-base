@@ -48,11 +48,13 @@ public class V1ContainerExtends extends V1Container {
     @Override
     public boolean equals(Object o) {
 
-        if (o == null)
+        if (o == null) {
             return false;
+        }
 
-        if (this.getClass() != o.getClass())
+        if (this.getClass() != o.getClass()) {
             return false;
+        }
 
         V1ContainerExtends v1Container = (V1ContainerExtends) o;
         return super.equals(o) && Objects.equals(this.status, v1Container.status);

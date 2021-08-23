@@ -1,35 +1,26 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org" >
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="_csrf" th:content="${_csrf.token}">
-    <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="description" content="">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title layout:title-pattern="$LAYOUT_TITLE">한화생명 통합관리시스템</title>
 
-    <!-- lee -->
-    <!-- 부트스트랩 -->
-    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
-    <!-- 기본 -->
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).thymeleafCookieGetThemeCss(#httpServletRequest.cookies)}">
     <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
 
-    <!-- IE8 에서 HTML5 요소와 미디어 쿼리를 위한 HTML5 shim 와 Respond.js -->
-    <!-- WARNING: Respond.js 는 당신이 file:// 을 통해 페이지를 볼 때는 동작하지 않습니다. -->
-    <!-- [if lt IE 9]
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    [endif] -->
+    <!-- [if lt IE 9] <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script> [endif] -->
 
-    <!-- 좌측 메뉴 위해 필요합니다)-->
-    <script th:src="@{/assets/js/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{/assets/js/jquery-3.4.1.min.js}"></script>
     <script th:src="@{/assets/js/bootstrap-multiselect.js}"></script>
-    <script th:src="@{/assets/js/common.js}"></script>  <!--공통-->
-    <script th:src="@{/assets/js/panelTemplate.js}"></script>  <!--공통-->
+    <script th:src="@{/assets/js/common.js}"></script>
+    <script th:src="@{/assets/js/panelTemplate.js}"></script>
     <script th:src="@{/vendor/highcharts/highmaps.js}"></script>
     <script th:src="@{/vendor/highcharts/highcharts-more.js}"></script>
     <script th:src="@{/vendor/highcharts/solid-gauge.js}"></script>
@@ -37,243 +28,307 @@
     <script th:src="@{/vendor/highcharts/exporting.js}"></script>
     <script th:src="@{/vendor/highcharts/export-data.js}"></script>
     <script th:src="@{/vendor/highcharts/accessibility.js}"></script>
-    <!--<script name="chartDark" th:src="@{/vendor/highcharts/themes/dark-unica.js}"></script>-->
 
     <script>
-            let collapseKey = "collapsed=true;Path=/;";
-            //if(sessionStorage.getItem('sidebarStatus') === 'fold')   console.log('fold');
-            (function ($) {
+        let collapseKey = "collapsed=true;Path=/;";
 
-                let lnbUI = {
-                    click: function (target) {
-                        let _self = this,
-                            $target = $(target);
+        (function($) {
+            let lnbUI = {
+                click: function (target) {
+                    let $target = $(target);
 
-                        $target.each(function () {
-                            if (findChildren($(this))) {
-                                return;
-                            }
-                            $(this).addClass('noDepth');
-                        });
+                    $target.each(function() {
+                        if (findChildren($(this))) { return; }
+                        $(this).addClass('noDepth');
+                    });
 
-                        function findChildren(obj) {
-                            return obj.find('> ul').length > 0;
-                        }
-
-                        $target.on('click', 'a', function (e) {
-                            e.stopPropagation();
-                            fnAccordion($(this));
-                        })
+                    function findChildren(obj) {
+                        return obj.find('> ul').length > 0;
                     }
-                };
 
-                // Call lnbUI
-                $(function () {
-                    //1depth
-                    lnbUI.click('#lnb li');
-
-                    //2depth : dropdown func
-                    $('[data-toggle="side-dropdown"]').on('click', function (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        fnDropdown($(this));
+                    $target.on('click', 'a', function(e) {
+                        e.stopPropagation();
+                        fnAccordion($(this));
                     });
+                }
+            };
 
-                    //3depth : dropdown-accordion func
-                    $('.dropdown-accordion').on('click', function (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        fnDropdownAccordion($(this));
-                    });
+            // Call lnbUI
+            $(function() {
+                //1depth
+                lnbUI.click('#lnb li');
 
-                    //sidebar fold button click했을 때
-                    $("#sidebarToggle").on('click', function(e) {
-                        fnFold($(this));
-                    });
-
-                    //sidebar가 아닌 곳을 click했을 때
-                    $('#content').on('click', function(){
-                        $('.toggled #lnb li').removeClass('open'); //fold일 때 모든 1depth 닫기
-                        $('.dropdown-menu').removeClass('open');   //모든 2depth 닫기
-                    });
-
-                    //multiselect 동작
-                    $('#multi-select').multiselect({
-                        nonSelectedText: 'none checked',
-                        onChange: function(option, checked) {
-                                let values = [];
-                                $('#multi-select option').each(function() {
-                                    if ($(this).val() !== option.val())     values.push($(this).val());
-                                });
-                                $('#multi-select').multiselect('deselect', values);
-                        }
-                    });
-
-                    $('.modal-multi-select').multiselect();
+                //2depth : dropdown func
+                $('[data-toggle="side-dropdown"]').on('click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    fnDropdown($(this));
                 });
 
-            }(jQuery));
+                //3depth : dropdown-accordion func
+                $('.dropdown-accordion').on('click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    fnDropdownAccordion($(this));
+                });
 
-            // $(document).ready(function () {
-            //     if (getCookie("collapsed") === 'true') {
-            //         fnFold($("#sidebarToggle"));
-            //     }
-            // });
+                //sidebar fold button click했을 때
+                $("#sidebarToggle").on('click', function() {
+                    fnFold($(this));
+                });
 
-            function getCookie(name) {
-                let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-                return value? value[2] : null;
-            }
+                //sidebar가 아닌 곳을 click했을 때
+                $('#content').on('click', function() {
+                    $('.toggled #lnb li').removeClass('open'); //fold일 때 모든 1depth 닫기
+                    $('.dropdown-menu').removeClass('open'); //모든 2depth 닫기
+                });
 
-            //full : 1depth / fold : 1depth
-            function fnAccordion(target) {
-                let $this = $(target),
-                    $depthTarget = $this.next(),
-                    $siblings = $this.parent().siblings(),
-                    isToggled = $(".lef-nav").hasClass("toggled");
-
-                $siblings.removeClass('on').removeClass('open');
-                $('#lnb .dropdown-menu').removeClass('open');                  //모든 2depth 닫기
-                $('.dropdown-accordion').next().attr('aria-expanded', false);  //모든 4depth 닫기
-
-                if($depthTarget.css('display') === 'none') {
-                    $this.parent().addClass('on').addClass('open');
-                } else {
-                    $this.parent().removeClass('on').removeClass('open');
-                }
-                if(isToggled)   fnDropdown($this);              //fold 상태 체크
-            }
-
-            //full : 2depth / fold : 1depth
-            function fnDropdown(target) {
-                let $this = $(target),
-                    $menu = $('.dropdown-menu[aria-labelledby="' + $this.attr('id') + '"]');
-
-                $('#lnb .dropdown-accordion').next().attr('aria-expanded', false);  //모든 4depth 닫기
-
-                if($this.hasClass('fold-dropdown-button')) {    //fold 상태 체크
-                    fnDropdownAccordion($this);
-                } else {
-                    if($menu.css("display") === "none"){
-                        $('#lnb .dropdown-menu').removeClass('open');
-                        $menu.addClass('open');
-                    } else {
-                        $menu.removeClass('open');
+                //multiselect 동작
+                $('#multi-select').multiselect({
+                    nonSelectedText: 'none checked',
+                    onChange: function(option) {
+                        let values = [];
+                        $('#multi-select option').each(function() {
+                            if ($(this).val() !== option.val()) { values.push($(this).val()); }
+                        });
+                        $('#multi-select').multiselect('deselect', values);
                     }
-                }
-            }
+                });
 
-            //full : 3depth / fold : 2depth
-            function fnDropdownAccordion(target) {
-                let $this = $('#' + $(target).attr('aria-controls'));
-                $this.attr('aria-expanded', $this.css('display') == 'none');
-            }
-
-            function switchCollapseCookie() {
-                if ($("#lnb").hasClass("fold")) {
-                    let date = new Date();
-                    date.setTime(date.getTime() + 24*60*60*1000);
-                    document.cookie = collapseKey + "Expires=" + date.toUTCString() + ";";
-                } else {
-                    document.cookie = collapseKey + 'Expires=Thu, 01 Jan 1970 00:00:00 UTC;';
-                }
-            }
-
-            $(document).ready(function() {
-                theme();
+                $('.modal-multi-select').multiselect();
             });
 
-            function fnFold(target) {
-                $(".lef-nav").toggleClass("toggled");
-                $("#lnb").toggleClass("fold");
-                // switchCollapseCookie();
-                $(".lef-sidebar-brand-text").toggleClass("fold");
-                $(".lef-sidebar-brand-sub-text").toggleClass("fold");
+        }(jQuery));
 
-                $('#lnb ul li.open').removeClass('open')                //1depth 닫기
-                $(target).find('i').toggleClass('icon-chevrons-left').toggleClass('icon-chevrons-right');   //toggle fold 버튼 class 변경
+        function getCookie(name) {
+            let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+            return value? value[2] : null;
+        }
 
-                let isToggled = $(".lef-nav").hasClass("toggled"),
-                    homeTitle = $('.icon-home').next().text(),
-                    $menu;
-                if(isToggled) {
-                    localStorage.setItem("menu", 'close');
-                    $('.icon-home').attr('title', homeTitle);
-                    $('.icon-home').parent().attr('title', homeTitle);
+        //full : 1depth / fold : 1depth
+        function fnAccordion(target) {
+            let $this = $(target),
+                $depthTarget = $this.next(),
+                $siblings = $this.parent().siblings(),
+                isToggled = $(".lef-nav").hasClass("toggled");
 
-                    $menu = $('#lnb ul li:not(.noDepth, .dropright)').find('a:first:not(.dropdown-accordion)');
-                    $menu.each(function( idx ){
-                        $(this).parent('li').addClass('dropright');
+            $siblings.removeClass('on').removeClass('open');
+            $('#lnb .dropdown-menu').removeClass('open'); //모든 2depth 닫기
+            $('.dropdown-accordion').next().attr('aria-expanded', false); //모든 4depth 닫기
 
-                        $(this).attr('id', 'fold-dropdown-' + idx);
-                        $(this).attr('title', $(this).text());
-                        $(this).addClass('fold-dropdown-button');
+            if ($depthTarget.css('display') === 'none') {
+                $this.parent().addClass('on').addClass('open');
+            } else {
+                $this.parent().removeClass('on').removeClass('open');
+            }
+            if (isToggled) { fnDropdown($this); } //fold 상태 체크
+        }
 
-                        $(this).next().addClass('dropdown-menu');
-                        $(this).next().attr('aria-labelledby', 'fold-dropdown-' + idx);
-                    });
+        //full : 2depth / fold : 1depth
+        function fnDropdown(target) {
+            let $this = $(target),
+                $menu = $('.dropdown-menu[aria-labelledby="' + $this.attr('id') + '"]');
+
+            $('#lnb .dropdown-accordion').next().attr('aria-expanded', false); //모든 4depth 닫기
+
+            if ($this.hasClass('fold-dropdown-button')) { //fold 상태 체크
+                fnDropdownAccordion($this);
+            } else {
+                if ($menu.css("display") === "none"){
+                    $('#lnb .dropdown-menu').removeClass('open');
+                    $menu.addClass('open');
                 } else {
-                    localStorage.setItem("menu", 'open');
-                    $('.icon-home').removeAttr('title');
-                    $('.icon-home').parent().removeAttr('title');
-
-                    $menu = $('#lnb a[id^=fold-dropdown-]');
-                    $menu.each(function( idx ){
-                        $(this).parent('li').removeClass('dropright');
-
-                        $(this).removeAttr('id');
-                        $(this).removeAttr('title');
-                        $(this).removeClass('fold-dropdown-button');
-
-                        $(this).next().removeClass('dropdown-menu').removeClass('open');//open된 dropdown box 닫기
-                        $(this).next().removeAttr('aria-labelledby');
-                    });
+                    $menu.removeClass('open');
                 }
             }
+        }
 
-            function theme() {
-                if(localStorage.getItem("theme") === "dark" || localStorage.getItem("theme") === null){
-                    var scriptClose = "script>";
-                    $('head').append('<script name="chartDark" src="/vendor/highcharts/themes/dark-unica.js"></'+scriptClose);
-                }
+        //full : 3depth / fold : 2depth
+        function fnDropdownAccordion(target) {
+            let $this = $('#' + $(target).attr('aria-controls'));
+            $this.attr('aria-expanded', $this.css('display') === 'none');
+        }
+
+        function switchCollapseCookie() {
+            if ($("#lnb").hasClass("fold")) {
+                let date = new Date();
+                date.setTime(date.getTime() + 24*60*60*1000);
+                document.cookie = collapseKey + "Expires=" + date.toUTCString() + ";";
+            } else {
+                document.cookie = collapseKey + 'Expires=Thu, 01 Jan 1970 00:00:00 UTC;';
             }
+        }
+
+        function fnFold(target) {
+            $(".lef-nav").toggleClass("toggled");
+            $("#lnb").toggleClass("fold");
+
+            $(".lef-sidebar-brand-text").toggleClass("fold");
+            $(".lef-sidebar-brand-sub-text").toggleClass("fold");
+
+            $('#lnb ul li.open').removeClass('open'); //1depth 닫기
+            $(target).find('i').toggleClass('icon-chevrons-left').toggleClass('icon-chevrons-right'); //toggle fold 버튼 class 변경
+
+            let isToggled = $(".lef-nav").hasClass("toggled"),
+                homeTitle = $('.icon-home').next().text(),
+                $menu;
+            if (isToggled) {
+                localStorage.setItem("menu", 'close');
+                $('.icon-home').attr('title', homeTitle);
+                $('.icon-home').parent().attr('title', homeTitle);
+
+                $menu = $('#lnb ul li:not(.noDepth, .dropright)').find('a:first:not(.dropdown-accordion)');
+                $menu.each(function(idx) {
+                    $(this).parent('li').addClass('dropright');
+
+                    $(this).attr('id', 'fold-dropdown-' + idx);
+                    $(this).attr('title', $(this).text());
+                    $(this).addClass('fold-dropdown-button');
+
+                    $(this).next().addClass('dropdown-menu');
+                    $(this).next().attr('aria-labelledby', 'fold-dropdown-' + idx);
+                });
+            } else {
+                localStorage.setItem("menu", 'open');
+                $('.icon-home').removeAttr('title');
+                $('.icon-home').parent().removeAttr('title');
+
+                $menu = $('#lnb a[id^=fold-dropdown-]');
+                $menu.each(function( idx ){
+                    $(this).parent('li').removeClass('dropright');
+
+                    $(this).removeAttr('id');
+                    $(this).removeAttr('title');
+                    $(this).removeClass('fold-dropdown-button');
+
+                    $(this).next().removeClass('dropdown-menu').removeClass('open'); //open된 dropdown box 닫기
+                    $(this).next().removeAttr('aria-labelledby');
+                });
+            }
+        }
     </script>
 </head>
 <body>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (!!!theme || 'dark' === theme) {
+                $('head').append('<script src="/vendor/highcharts/themes/dark-unica.js"></' + 'script>');
+            }
+        })();
+    </script>
 <div id="wrapper">
     <th:block th:replace="layout/menu :: menu" />
+
     <script>
-        if(localStorage.getItem("menu") == "close"){
-            fnFold($("#sidebarToggle"));
-        }
+        if (localStorage.getItem("menu") === "close") { fnFold($("#sidebarToggle")); }
     </script>
 
-    <!-- Content Wrapper -->
+    <script>
+        const hiHigh = function() {
+            function decideCssClass(k) {
+                const prefix = 'language-';
+
+                if (k.endsWith('.sh')) { return prefix + 'bash'; }
+                if (k.endsWith('.json')) { return prefix + 'json'; }
+                if (k.endsWith('.yml') || k.endsWith('.yaml')) { return prefix + 'yaml'; }
+                if ('nginx.conf' === k || k.indexOf('nginx') > -1) { return prefix + 'nginx'; }
+
+                return 'nohighlight';
+            }
+
+            function highlight(h) {
+                $('div.scrollBoard').find('code.hljs').each(function() {
+                    $(this).addClass(decideCssClass($(this).data('kk')));
+                });
+                h.highlightAll();
+            }
+
+            return { highlight: highlight };
+        }();
+
+        const kube = function() {
+            function checkFunction(fn) {
+                return !!(fn && fn.constructor && fn.call && fn.apply);
+            }
+
+            function execute(path, fn, o) {
+                $.ajax({
+                    url: path,
+                    success: function(data) {
+                        fn(data);
+                        if (!!o) {
+                            if (checkFunction(o)) { o(); return; }
+                            if (checkFunction(o['fn'])) { o['arg'] ? o['fn'](o['arg']) : o['fn'](); }
+                        }
+                    }, error: function(e) {
+                        if (e.status === 401) {
+                            $(location).prop('href', '/login?logout');
+                        }
+                    }
+                });
+            }
+
+            function showModal(path, o, selector) {
+                execute(path, function(data) {
+                    $(selector || '#myModal').text('').html(data).modal();
+                    $('.knob').knob();
+                }, o);
+            }
+
+            function reloadList(path) {
+                execute(path, function(data) { $('#contentList').text('').html(data); });
+            }
+
+            return { showModal: showModal, reloadList: reloadList, execute: execute }
+        }();
+
+        const commonVariables = function() {
+            function init(commonVariablesJs, commonChartsJs, pageRows, variables) {
+                commonVariablesJs.createVariables(variables);
+                commonVariablesJs.generateVariable();
+
+                if (commonVariablesJs.isSelectedAllVariable()) {
+                    pageRows.forEach(r => r['pageRowPanels'].forEach(p => commonChartsJs.createPanel(p)));
+                }
+            }
+
+            function handleChangeEvent(commonVariablesJs, commonChartsJs, pageRows, id) {
+                commonVariablesJs.refreshEdgeVariableData(id);
+
+                if (commonVariablesJs.isSelectedAllVariable()) {
+                    commonChartsJs.resetReadyTimestamp();
+
+                    pageRows.forEach(r => r['pageRowPanels'].forEach(p => {
+                        commonChartsJs.removeChart(p);
+                        commonChartsJs.createPanel(p)
+                    }));
+                }
+            }
+
+            return { init: init, handleChangeEvent: handleChangeEvent }
+        }();
+
+    </script>
+
     <div id="content-wrapper" class="d-flex flex-column">
-        <!-- Main Content -->
         <div id="content">
             <th:block layout:fragment="content" />
         </div>
     </div>
 </div>
 
-<!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
 <script th:src="@{/assets/js/bootstrap.min.js}"></script>
-<!-- jQuery chart scripts (차트 그래프 위해 필요합니다)-->
 <script th:src="@{/assets/js/jquery.chart.min.js}"></script>
-<script th:src="@{/assets/js/jquery-chart.init.js}"></script>
 <script>
-<!--        테스트-->
-        const header = $("meta[name='_csrf_header']").attr("content"),
-            token = $("meta[name='_csrf']").attr("content"),
-            signOut = $('#sign-out'),
-            signOutForm = $('#sign-out-form');
+    $(function() { $(".knob").knob(); });
 
-        signOut.on('click', function (event) {
-            signOutForm.submit();
-        });
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
 
+    $('#sign-out').on('click', function() {
+        $('#sign-out-form').submit();
+    });
 </script>
-
 </body>
 </html>

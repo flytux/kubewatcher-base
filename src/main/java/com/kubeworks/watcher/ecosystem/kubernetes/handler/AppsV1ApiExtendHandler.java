@@ -1,131 +1,53 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.handler;
 
 import com.google.gson.reflect.TypeToken;
-import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.AppsV1DaemonSetTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.AppsV1DeploymentTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.AppsV1StatefulSetTableList;
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.base.BaseExtendHandler;
 import io.kubernetes.client.openapi.ApiClient;
-import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.ApiResponse;
-import io.kubernetes.client.openapi.Pair;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
-import lombok.extern.slf4j.Slf4j;
-import okhttp3.Call;
 
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Type;
 
-@Slf4j
 public class AppsV1ApiExtendHandler extends AppsV1Api implements BaseExtendHandler {
 
-    public AppsV1ApiExtendHandler(ApiClient apiClient) {
-        super(apiClient);
+    private static final String API_PREFIX = "/apis/apps/v1";
+    private static final Type TYPE_APPS_V1_DEPLOYMENT_TABLE_LIST = TypeToken.getParameterized(AppsV1DeploymentTableList.class).getType();
+    private static final Type TYPE_APPS_V1_DAEMON_SETS_TABLE_LIST = TypeToken.getParameterized(AppsV1DaemonSetTableList.class).getType();
+    private static final Type TYPE_APPS_V1_STATEFUL_SET_TABLE_LIST = TypeToken.getParameterized(AppsV1StatefulSetTableList.class).getType();
+
+    public AppsV1ApiExtendHandler(final ApiClient client) {
+        super(client);
     }
 
-    public ApiResponse<AppsV1DeploymentTableList> allNamespaceDeploymentAsTable(String pretty) throws ApiException {
-        Call call = listDeploymentAsTableAllNamespacesCall(pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1DeploymentTableList.class).getType());
+    public ApiResponse<AppsV1DeploymentTableList> searchAppsDeploymentsTableList() {
+        return execute(API_PREFIX + "/deployments", TYPE_APPS_V1_DEPLOYMENT_TABLE_LIST);
     }
 
-    public ApiResponse<AppsV1DeploymentTableList> namespaceDeploymentAsTable(String namespace, String pretty) throws ApiException {
-        Call call = listDeploymentAsTableNamespacesCall(namespace, pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1DeploymentTableList.class).getType());
+    public ApiResponse<AppsV1DeploymentTableList> searchAppsDeploymentsTableList(final String namespace) {
+        return execute(API_PREFIX + Consts.NAMESPACE_DOUBLE_SLASH_STR + escape(namespace) + "/deployments", TYPE_APPS_V1_DEPLOYMENT_TABLE_LIST);
     }
 
-    public ApiResponse<AppsV1DaemonSetTableList> allNamespaceDaemonSetAsTable(String pretty) throws ApiException {
-        Call call = listDaemonSetAsTablesForAllNamespacesCall(pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1DaemonSetTableList.class).getType());
+    public ApiResponse<AppsV1DaemonSetTableList> searchDaemonSetsTableList() {
+        return execute(API_PREFIX + "/daemonsets", TYPE_APPS_V1_DAEMON_SETS_TABLE_LIST);
     }
 
-    public ApiResponse<AppsV1DaemonSetTableList> namespaceDaemonSetAsTable(String namespace, String pretty) throws ApiException {
-        Call call = listDaemonSetAsTablesNamespacesCall(namespace, pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1DaemonSetTableList.class).getType());
+    public ApiResponse<AppsV1DaemonSetTableList> searchDaemonSetsTableList(final String namespace) {
+        return execute(API_PREFIX + Consts.NAMESPACE_DOUBLE_SLASH_STR + escape(namespace) + "/daemonsets", TYPE_APPS_V1_DAEMON_SETS_TABLE_LIST);
     }
 
-    public ApiResponse<AppsV1StatefulSetTableList> allNamespaceStatefulSetAsTable(String pretty) throws ApiException {
-        Call call = listStatefulSetAsTablesForAllNamespacesCall(pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1StatefulSetTableList.class).getType());
+    public ApiResponse<AppsV1StatefulSetTableList> searchStatefulSetsTableList() {
+        return execute(API_PREFIX + "/statefulsets", TYPE_APPS_V1_STATEFUL_SET_TABLE_LIST);
     }
 
-    public ApiResponse<AppsV1StatefulSetTableList> namespaceStatefulSetAsTable(String namespace, String pretty) throws ApiException {
-        Call call = listStatefulSetAsTablesNamespacesCall(namespace, pretty);
-        return super.getApiClient().execute(call, TypeToken.getParameterized(AppsV1StatefulSetTableList.class).getType());
+    public ApiResponse<AppsV1StatefulSetTableList> searchStatefulSetsTableList(final String namespace) {
+        return execute(API_PREFIX + Consts.NAMESPACE_DOUBLE_SLASH_STR + escape(namespace) + "/statefulsets", TYPE_APPS_V1_STATEFUL_SET_TABLE_LIST);
     }
 
-    public Call listDeploymentAsTableAllNamespacesCall(String pretty) throws ApiException {
-        String localVarPath = "/apis/apps/v1/deployments";
-        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
-
-        if (pretty != null) {
-            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
-        }
-
-        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
-        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
+    @Override
+    public ApiClient retrieveApiClient() {
+        return super.getApiClient();
     }
-
-    public Call listDeploymentAsTableNamespacesCall(String namespace, String pretty) throws ApiException {
-        String localVarPath = "/apis/apps/v1/namespaces/{namespace}/deployments".replaceAll("\\{" + "namespace" + "}", namespace);
-        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
-
-        if (pretty != null) {
-            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
-        }
-
-        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
-        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
-    }
-
-    public Call listDaemonSetAsTablesForAllNamespacesCall(String pretty) throws ApiException {
-        String localVarPath = "/apis/apps/v1/daemonsets";
-        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
-
-        if (pretty != null) {
-            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
-        }
-
-        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
-        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
-    }
-
-    public Call listDaemonSetAsTablesNamespacesCall(String namespace, String pretty) throws ApiException {
-        String localVarPath = "/apis/apps/v1/namespaces/{namespace}/daemonsets".replaceAll("\\{" + "namespace" + "}", namespace);
-        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
-
-        if (pretty != null) {
-            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
-        }
-
-        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
-        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
-    }
-
-    public Call listStatefulSetAsTablesForAllNamespacesCall(String pretty) throws ApiException {
-        String localVarPath = "/apis/apps/v1/statefulsets";
-        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
-
-        if (pretty != null) {
-            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
-        }
-
-        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
-        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
-    }
-
-    public Call listStatefulSetAsTablesNamespacesCall(String namespace, String pretty) throws ApiException {
-        String localVarPath = "apis/apps/v1/namespaces/{namespace}/statefulsets".replaceAll("\\{" + "namespace" + "}", namespace);
-        List<Pair> localVarQueryParams = getDefaultLocalVarQueryParams(super.getApiClient());
-
-        if (pretty != null) {
-            localVarQueryParams.addAll(super.getApiClient().parameterToPair("pretty", pretty));
-        }
-
-        String[] localVarAccepts = new String[]{ExternalConstants.REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE, "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"};
-        return getCall(super.getApiClient(), localVarPath, localVarQueryParams, Collections.emptyList(), null, localVarAccepts, null);
-    }
-
-
-
 }

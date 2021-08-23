@@ -9,7 +9,6 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1PersistentVolumeTabl
 import com.kubeworks.watcher.ecosystem.kubernetes.handler.CoreV1ApiExtendHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.EventService;
 import com.kubeworks.watcher.ecosystem.kubernetes.service.PersistentVolumeService;
-import com.kubeworks.watcher.ecosystem.kubernetes.service.PodService;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.*;
@@ -17,6 +16,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -27,17 +27,14 @@ import java.util.Optional;
 @Service
 public class PersistentVolumeServiceImpl implements PersistentVolumeService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1ApiExtendHandler;
-    private final PodService podService;
     private final EventService eventService;
     private final K8sObjectManager k8sObjectManager;
 
-    public PersistentVolumeServiceImpl(ApiClient k8sApiClient, PodService podService, EventService eventService,
+    @Autowired
+    public PersistentVolumeServiceImpl(ApiClient k8sApiClient, EventService eventService,
                                        K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreV1ApiExtendHandler = new CoreV1ApiExtendHandler(k8sApiClient);
-        this.podService = podService;
         this.eventService = eventService;
         this.k8sObjectManager = k8sObjectManager;
     }
@@ -45,7 +42,7 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
     @SneakyThrows
     @Override
     public List<PersistentVolumeTable> allPersistentVolumeTables() {
-        ApiResponse<V1PersistentVolumeTableList> apiResponse = coreV1ApiExtendHandler.allPersistentVolumeAsTable("true");
+        ApiResponse<V1PersistentVolumeTableList> apiResponse = coreV1ApiExtendHandler.searchPersistentVolumesTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PersistentVolumeTableList persistentVolumes = apiResponse.getData();
             return persistentVolumes.getDataTable();
@@ -56,7 +53,7 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
     @SneakyThrows
     @Override
     public Optional<PersistentVolumeDescribe> persistentVolume(String name) {
-        ApiResponse<V1PersistentVolume> apiResponse = coreV1ApiExtendHandler.readPersistentVolumeWithHttpInfo(name, "true", true, false);
+        ApiResponse<V1PersistentVolume> apiResponse = coreV1ApiExtendHandler.readPersistentVolumeWithHttpInfo(name, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -69,7 +66,7 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("PersistentVolume",
             "", persistentVolumeDescribe.getName(), persistentVolumeDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> persistentVolumeDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> persistentVolumeDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(persistentVolumeDescribe);
     }
@@ -77,10 +74,10 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
     @SneakyThrows
     @Override
     public List<PersistentVolumeClaimTable> allNamespacePersistentVolumeClaimTables() {
-        ApiResponse<V1PersistentVolumeClaimTableList> apiResponse = coreV1ApiExtendHandler.allNamespacePersistentVolumeClaimAsTable("true");
+        ApiResponse<V1PersistentVolumeClaimTableList> apiResponse = coreV1ApiExtendHandler.searchPersistentVolumeClaimsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PersistentVolumeClaimTableList persistentVolumeClaims = apiResponse.getData();
-            List<PersistentVolumeClaimTable> dataTable = persistentVolumeClaims.getDataTable();
+            List<PersistentVolumeClaimTable> dataTable = persistentVolumeClaims.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -93,10 +90,10 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespacePersistentVolumeClaimTables();
         }
-        ApiResponse<V1PersistentVolumeClaimTableList> apiResponse = coreV1ApiExtendHandler.namespacePersistentVolumeClaimAsTable(namespace, "true");
+        ApiResponse<V1PersistentVolumeClaimTableList> apiResponse = coreV1ApiExtendHandler.searchPersistentVolumeClaimsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1PersistentVolumeClaimTableList persistentVolumeClaims = apiResponse.getData();
-            return persistentVolumeClaims.getDataTable();
+            return persistentVolumeClaims.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -105,7 +102,7 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
     @Override
     public Optional<PersistentVolumeClaimDescribe> persistentVolumeClaim(String namespace, String name) {
         ApiResponse<V1PersistentVolumeClaim> apiResponse = coreV1ApiExtendHandler
-            .readNamespacedPersistentVolumeClaimWithHttpInfo(name, namespace, "true", true, false);
+            .readNamespacedPersistentVolumeClaimWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -119,7 +116,7 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
             persistentVolumeClaimDescribe.getNamespace(),
             persistentVolumeClaimDescribe.getName(),
             persistentVolumeClaimDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> persistentVolumeClaimDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> persistentVolumeClaimDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(persistentVolumeClaimDescribe);
     }
@@ -197,5 +194,4 @@ public class PersistentVolumeServiceImpl implements PersistentVolumeService {
             builder.status(status.getPhase());
         }
     }
-
 }

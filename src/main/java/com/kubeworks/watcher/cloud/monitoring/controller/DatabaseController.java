@@ -1,47 +1,57 @@
 package com.kubeworks.watcher.cloud.monitoring.controller;
 
-import com.kubeworks.watcher.data.entity.*;
+import com.kubeworks.watcher.base.BaseController;
+import com.kubeworks.watcher.config.properties.MonitoringProperties;
+import com.kubeworks.watcher.data.entity.ChartQuery;
+import com.kubeworks.watcher.data.entity.Page;
+import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
+import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Controller
-@AllArgsConstructor(onConstructor_ = {@Autowired})
-public class DatabaseController {
+@RequestMapping(value="/monitoring/database")
+@AllArgsConstructor(onConstructor_={@Autowired})
+public class DatabaseController implements BaseController {
 
-    private final MonitoringRestController monitoringRestController;
+    private static final long DATABASE_MENU_ID = 130;
+    private static final String QUERY_STR = "count(namedprocess_namegroup_states{zone=\"external\", state=\"Running\", groupname=~\"oracle.*\"}) by (instance)";
+
     private final ProxyApiService proxyApiService;
 
-    @GetMapping(value = "/monitoring/database", produces = MediaType.TEXT_HTML_VALUE)
-    public String database(Model model) {
-        Map<String, Object> response = monitoringRestController.database();
+    private final PageViewService pageViewService;
+    private final MonitoringProperties properties;
 
-        List<String> hostList = proxyApiService.multiValuesQuery("count(namedprocess_namegroup_states{zone=\"external\", state=\"Running\", groupname=~\"oracle.*\"}) by (instance)", "instance");
+    @GetMapping
+    public String database(final Model model) {
 
-        Page page = (Page) response.get("page");
-        List<PageRow> pageRows =  page.getRows();
+        final Page page = pageViewService.getPageView(DATABASE_MENU_ID);
 
-        List<PageRowPanel> dbHostPanels = pageRows.get(0).getPageRowPanels();
-        LinkedHashMap<String, List> dbPanels = new LinkedHashMap<>();
+        List<String> hostList = proxyApiService.multiValuesQuery(QUERY_STR, "instance");
 
-        List<PageRowPanel> dbPanel = new ArrayList<PageRowPanel>();
+        List<PageRowPanel> dbHostPanels = page.getRows().get(0).getPageRowPanels();
+        LinkedHashMap<String, List<PageRowPanel>> dbPanels = new LinkedHashMap<>();
+
+        List<PageRowPanel> dbPanel = new ArrayList<>();
         int cnt = 0;
         int dbCnt = 0;
         for (PageRowPanel pageRowPanel : dbHostPanels) {
-            if (pageRowPanel.getFragmentName().equals("head-card-db-panel")) {
+            if ("head-card-db-panel".equals(pageRowPanel.getFragmentName())) {
 
                 List<ChartQuery> dbPanelQueries = pageRowPanel.getChartQueries();
                 for (ChartQuery chartQuery : dbPanelQueries) {
-                    if (hostList.size() <= dbCnt ) break;
+                    if (hostList.size() <= dbCnt) { break; }
                     chartQuery.setApiQuery(changeVariable(chartQuery.getApiQuery(), hostList.get(dbCnt)));
                 }
-
 
                 dbPanel.add(pageRowPanel);
                 cnt++;
@@ -53,30 +63,28 @@ public class DatabaseController {
                         dbPanels.put(hostList.get(dbCnt), dbPanel);
                     }
                     dbCnt++;
-                    dbPanel = new ArrayList<PageRowPanel>();
+                    dbPanel = new ArrayList<>();
                 }
             }
         }
 
-        model.addAttribute("dbPanels",dbPanels);
-        model.addAllAttributes(response);
+        model.addAttribute("dbPanels", dbPanels);
+        model.addAttribute(Props.HOST, properties.getDefaultPrometheusUrl());
+        model.addAttribute(Props.PAGE, page);
 
-        return "monitoring/database/database";
+        return createViewName("database");
     }
 
-    private String changeVariable(String apiQuery, String host){
-        String variablQuery = null;
+    private String changeVariable(final String q, final String host) {
+
         // DB 노드 UP/DOWN 체크를 위해 프로세스 익스포터 노드에 노드 익스포터 포트로 변경
-        host = host.replace("9256", "9100");
-        if (apiQuery.indexOf("$Host") > -1) {
-            // $application 변수 교체
-            variablQuery = apiQuery.replace("$Host",host);
-        }
-        return variablQuery;
+        // $application 변수 교체
+
+        return q.contains("$Host") ? q.replace("$Host", host.replace("9256", "9100")) : q;
     }
 
-    public Map<Long, PageRowPanel> getPanels(Page page, long pageRowId, PageVariable defaultVariable) {
-
-        return Collections.emptyMap();
+    @Override
+    public String retrieveViewNamePrefix() {
+        return "monitoring/database/";
     }
 }

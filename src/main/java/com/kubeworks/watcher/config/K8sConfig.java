@@ -7,64 +7,49 @@ import io.kubernetes.client.util.credentials.AccessTokenAuthentication;
 import io.kubernetes.client.util.credentials.Authentication;
 import okhttp3.Interceptor;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Locale;
 
 @Configuration
+@EnableConfigurationProperties(value=MonitoringProperties.class)
 public class K8sConfig {
 
-    private final MonitoringProperties monitoringProperties;
+    private static final Long READ_TIMEOUT = 3L;
+    private static final Long CONNECT_TIMEOUT = 2L;
 
-    @Value("${logging.level.root}")
-    public LogLevel rootLogLevel;
+    private static final String LOG_PROPERTY = "logging.level.okhttp3";
 
-    public K8sConfig(MonitoringProperties monitoringProperties) {
-        this.monitoringProperties = monitoringProperties;
+    private final LogLevel rootLoggingLevel;
+    private final MonitoringProperties props;
+
+    @Autowired
+    public K8sConfig(final Environment env, final MonitoringProperties props) {
+        this.props = props;
+        this.rootLoggingLevel = Enum.valueOf(LogLevel.class, env.getProperty(LOG_PROPERTY, "INFO").toUpperCase(Locale.getDefault()));
     }
 
-    @Bean
-    public ApiClient k8sApiClient() throws IOException {
-
-        /*To-Do
-        Application.Yaml에 설정값을 이용하여 Rancher Cluster에 접속하는 경우 아래 로직을 이용하고
-        클러스터 내부에 배포될 때는 아래 InCluster 로직을 이용하도록 수정 필요
-         */
-        //ApiClient apiClient = ClientBuilder.standard(false)
-        //  .setBasePath(monitoringProperties.getDefaultK8sUrl())
-        //    .setVerifyingSsl(false)
-        //    .setAuthentication(getAuthentication()).build();
-
-        /* InCluster 배포시 ApiServer 접속
-           Namespace 내 default serviceaccount에 권한 부여 필요
-         */
-        ApiClient apiClient = io.kubernetes.client.util.Config.defaultClient();
-        io.kubernetes.client.openapi.Configuration.setDefaultApiClient(apiClient);
-
-        return apiClient.setHttpClient(apiClient.getHttpClient().newBuilder()
-            .addInterceptor(loggingInterceptor())
-            .connectTimeout(Duration.ofSeconds(2))
-            .readTimeout(Duration.ofSeconds(3)).build()
-        );
+    @Bean("k8sApiClient")
+    public ApiClient createApiClientFromConfig() throws IOException {
+        return createApiClient(ClientBuilder.standard(false).setBasePath(props.getDefaultK8sUrl()).setVerifyingSsl(false).setAuthentication(createAuthentication()).build());
     }
 
-    private Authentication getAuthentication() {
-        return new AccessTokenAuthentication(monitoringProperties.getDefaultK8sApiToken());
-//        return new AccessTokenAuthentication(new String(Base64.getEncoder().encode(token.getBytes()), StandardCharsets.UTF_8));
+    private Authentication createAuthentication() {
+        return new AccessTokenAuthentication(props.getDefaultK8sApiToken());
     }
 
-    private Interceptor loggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        if (rootLogLevel == LogLevel.DEBUG) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-        }
-        return logging;
+    private Interceptor createInterceptor() {
+        return new HttpLoggingInterceptor().setLevel(LogLevel.DEBUG == rootLoggingLevel ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.BASIC);
     }
 
+    private ApiClient createApiClient(final ApiClient client) {
+        return client.setHttpClient(client.getHttpClient().newBuilder().addInterceptor(createInterceptor()).connectTimeout(Duration.ofSeconds(CONNECT_TIMEOUT)).readTimeout(Duration.ofSeconds(READ_TIMEOUT)).build());
+    }
 }

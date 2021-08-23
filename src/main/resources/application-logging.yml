@@ -1,0 +1,14 @@
+logging.level.okhttp3: debug
+logging.level.com.squareup.okhttp3: debug
+logging.level.io.kubernetes.client.openapi: debug
+
+logging.level.org.apache.http: debug
+logging.level.org.springframework.web: debug
+logging.level.org.springframework.cloud.netflix.zuul: debug
+
+logging.level.com.kubeworks.watcher: debug
+
+logging.level.org.springframework.security: debug
+logging.level.org.springframework.web.filter: debug
+
+logging.level.org.springframework.cache: trace

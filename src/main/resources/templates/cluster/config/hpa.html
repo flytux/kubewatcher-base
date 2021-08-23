@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  xmlns:th="http://www.thymeleaf.org"
-	  layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
+    <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [hpa] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -32,72 +24,68 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(hpa) ? '0' : hpa.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(hpa) ? '0' : hpa.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Reference</th>
-                            <th>Targets</th>
-                            <th>Min Pods</th>
-                            <th>Max Pods</th>
-                            <th>Replicas</th>
-                            <th>Age</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>Reference</th>
+                                <th>Targets</th>
+                                <th>Min Pods</th>
+                                <th>Max Pods</th>
+                                <th>Replicas</th>
+                                <th>Age</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(hpa)}">
-                            <td colspan="8" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(hpa)}" th:each="hpas : ${hpa}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:hpaDetail(&quot;' + ${hpas?.namespace} + '&quot;, &quot;'+ ${hpas?.name} + '&quot;)'"
-                                   th:utext="${hpas?.name}">Name</a>
-                            </td>
-                            <td th:text="${hpas?.namespace}">Namespace</td>
-                            <td th:text="${hpas?.reference}">Metrics</td>
-                            <td th:text="${hpas?.targets}">Targets</td>
-                            <td th:text="${hpas?.minPods}">Min Pods</td>
-                            <td th:text="${hpas?.maxPods}">Max Pods</td>
-                            <td th:text="${hpas?.replicas}">Replicas</td>
-                            <td th:text="${hpas?.age}">Age</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(hpa)}">
+                                <td colspan="8" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(hpa)}" th:each="hpas : ${hpa}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${hpas?.namespace}, data-name=${hpas?.name}" th:utext="${hpas?.name}"></a>
+                                </td>
+                                <td th:text="${hpas?.namespace}"></td>
+                                <td th:text="${hpas?.reference}"></td>
+                                <td th:text="${hpas?.targets}"></td>
+                                <td th:text="${hpas?.minPods}"></td>
+                                <td th:text="${hpas?.maxPods}"></td>
+                                <td th:text="${hpas?.replicas}"></td>
+                                <td th:text="${hpas?.age}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [hpa] End-->
     </div>
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|HPA : ${hpas?.name}|" >HPA : HPA명</span>
+                        <span id="myModalLabel" th:text="|HPA : ${hpas?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <table class="table-nt">
                         <tr>
                             <th>Created</th>
-                            <td th:text="${#dates.format(hpas?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08) </td>
+                            <td th:text="${#dates.format(hpas?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td th:text="${hpas?.name}">nginx</td>
+                            <td th:text="${hpas?.name}"></td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td th:text="${hpas?.namespace}">default</td>
+                            <td th:text="${hpas?.namespace}"></td>
                         </tr>
                         <tr>
                             <th>Labels</th>
@@ -119,128 +107,91 @@
                         </tr>
                         <tr>
                             <th>Reference</th>
-                            <td th:text="${#strings.isEmpty(hpas?.reference) ? '-' : hpas?.reference}">Deployment/nginx</td>
+                            <td th:text="${#strings.isEmpty(hpas?.reference) ? '-' : hpas?.reference}"></td>
                         </tr>
                         <tr>
                             <th>Metrics</th>
                             <td>
                                 <div th:each="entry : ${hpas?.metrics}">
-                                    <div th:if="${entry?.value}" th:each="metric : ${entry?.value}"
-                                         th:text="|${metric.name} : ${#strings.isEmpty(metric.metric) ? '-' : metric.metric} /
-                                            ${#strings.isEmpty(metric.target.averageUtilization) ? '-' : metric.target.averageUtilization}|">
-                                    </div>
+                                    <div th:if="${entry?.value}" th:each="metric : ${entry?.value}" th:text="|${metric.name} : ${#strings.isEmpty(metric.metric) ? '-' : metric.metric} / ${#strings.isEmpty(metric.target.averageUtilization) ? '-' : metric.target.averageUtilization}|"></div>
                                     <div th:unless="${entry?.value}">-</div>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>Deployment Pods</th>
-                            <td th:text="|${hpas?.currentReplicas} current / ${hpas?.desiredReplicas} desired|">1 current / 1 desired</td>
+                            <td th:text="|${hpas?.currentReplicas} current / ${hpas?.desiredReplicas} desired|"></td>
                         </tr>
                     </table>
 
-                    <div class="table-title">
-                        Conditions
-                    </div>
+                    <div class="table-title">Conditions</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Reason</th>
-                            <th>Message</th>
-                        </tr>
+                            <tr>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Reason</th>
+                                <th>Message</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(hpas?.conditions)}">
-                            <td colspan="4" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(hpas?.conditions)}" th:each="condition : ${hpas?.conditions}">
-                            <td th:text="${condition?.type}">Type</td>
-                            <td th:text="${condition?.status}">Status</td>
-                            <td th:text="${condition?.reason}">Reason</td>
-                            <td th:text="${condition?.message}">Message</td>
-                        </tr>
-
+                            <tr th:if="${#arrays.isEmpty(hpas?.conditions)}">
+                                <td colspan="4" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(hpas?.conditions)}" th:each="condition : ${hpas?.conditions}">
+                                <td th:text="${condition?.type}"></td>
+                                <td th:text="${condition?.status}"></td>
+                                <td th:text="${condition?.reason}"></td>
+                                <td th:text="${condition?.message}"></td>
+                            </tr>
                         <tbody>
                     </table>
 
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(hpas?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${hpas?.events}" th:each="event : ${hpas?.events}">
-                            <td th:text="${event?.name}">Event</td>
-                            <td th:text="${event?.source}">Source</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(hpas?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${hpas?.events}" th:each="event : ${hpas?.events}">
+                                <td th:text="${event?.name}"></td>
+                                <td th:text="${event?.source}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
                         <tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
+
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        const linkUrl= [[${link}]];
+        const pathPrefix = '/cluster/config/hpa/namespace/';
+        /*]]>*/
 
-        var $contentList = $("#contentList"),
-            linkUrl= [[${link}]];
-
-        function hpaDetail(namespace, name) {
-            $.ajax({
-                url: "/cluster/config/hpa/namespace/" + namespace + "/hpas/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
             });
-        }
 
-        $(document).ready(function () {
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('namespace') + '/hpas/' + $(this).data('name'));
             });
         });
     </script>
-
 </div>
 </body>
 </html>

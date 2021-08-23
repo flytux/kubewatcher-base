@@ -10,11 +10,8 @@ public interface KwUserRoleRuleRepository extends JpaRepository<KwUserRoleRule, 
 
     List<KwUserRoleRule> findAllBy();
 
-    @Query(value="SELECT kw.rule_name FROM Kw_User_Role_Rule kw",nativeQuery = true)
+    @Query(value="SELECT kurr.rule_name FROM kw_user_role_rule kurr", nativeQuery=true)
     List<String> findByName();
 
     KwUserRoleRule findByRulename(String rulename);
-
-    KwUserRoleRule findByRuleId(Long ruleId);
-
 }

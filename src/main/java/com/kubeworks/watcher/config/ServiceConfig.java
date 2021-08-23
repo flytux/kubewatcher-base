@@ -2,62 +2,66 @@ package com.kubeworks.watcher.config;
 
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.kubeworks.watcher.ecosystem.kubernetes.ObjectMapperHolder;
 import com.kubeworks.watcher.ecosystem.kubernetes.serdes.IntOrStringModule;
-import io.kubernetes.client.openapi.models.V1Container;
-import io.kubernetes.client.openapi.models.V1EnvVar;
-import io.kubernetes.client.openapi.models.V1Probe;
-import io.kubernetes.client.openapi.models.V1VolumeMount;
+import feign.Logger;
+import org.apache.ibatis.annotations.Mapper;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.nodes.NodeTuple;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@EnableFeignClients(basePackages="com.kubeworks.watcher.ecosystem")
 public class ServiceConfig {
 
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
-        return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
-            .modules(new JavaTimeModule(), new JodaModule(), new IntOrStringModule());
+    public Logger.Level feignClientLoggerLevel() {
+        return Logger.Level.FULL;
     }
 
-    /**
-     * 참고 : https://github.com/spariev/snakeyaml/blob/master/src/test/java/org/yaml/snakeyaml/issues/issue60/SkipBeanTest.java
-     * TODO : Jackson yaml로 변경 여부 체크가 필요함.
-     * @return Yaml
-     */
     @Bean
-    public Yaml yaml() {
-        DumperOptions dumperOptions = new DumperOptions();
-        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        Representer representer = new SkipNullRepresenter();
-        representer.addClassTag(V1Container.class, Tag.MAP);
-        representer.addClassTag(V1EnvVar.class, Tag.MAP);
-        representer.addClassTag(V1VolumeMount.class, Tag.MAP);
-        representer.addClassTag(V1Probe.class, Tag.MAP);
-        representer.getPropertyUtils()
-            .setSkipMissingProperties(true);
-        return new Yaml(representer, dumperOptions);
+    public Jackson2ObjectMapperBuilderCustomizer objectMapperBuilderCustomizer() {
+        return builder -> builder.modules(new JavaTimeModule(), new JodaModule(), new IntOrStringModule());
     }
 
-    private static class SkipNullRepresenter extends Representer {
-        @Override
-        protected NodeTuple representJavaBeanProperty(Object javaBean, Property property,
-                                                      Object propertyValue, Tag customTag) {
-            if (propertyValue == null) {
-                return null;
-            } else {
-                return super
-                    .representJavaBeanProperty(javaBean, property, propertyValue, customTag);
-            }
+    @Configuration
+    @AutoConfigureAfter(name="org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration")
+    protected static class ObjectMapperAccessConfig {
+
+        protected ObjectMapperAccessConfig(final Jackson2ObjectMapperBuilder builder) {
+            ObjectMapperHolder.putObjectMapper(builder.build());
         }
     }
 
+    @Configuration
+    @EnableCaching(proxyTargetClass=true)
+    protected static class CacheConfig { /* Spring Configuration Class */ }
 
+    @Configuration
+    @EnableScheduling
+    protected static class SchedulingConfig { /* Spring configuration class */ }
 
+    @Configuration
+    @EnableJpaAuditing
+    @EntityScan(basePackages="com.kubeworks.watcher.data.entity")
+    @EnableJpaRepositories(basePackages="com.kubeworks.watcher.data.repository")
+    protected static class JpaConfig { /* Spring configuration class */ }
+
+    @Configuration
+    @MapperScan(basePackages={"com.kubeworks.watcher.data.mapper", "com.kubeworks.watcher.config"}, annotationClass= Mapper.class)
+    protected static class MybatisConfig { /* Spring configuration class */ }
+
+    @Configuration
+    @EnableTransactionManagement
+    protected static class TransactionConfig { /* Spring configuration class */ }
 }

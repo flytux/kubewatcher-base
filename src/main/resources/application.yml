@@ -1,124 +1,85 @@
-server:
-  port: 8080
+server.port: 8080
 
-spring:
-  application:
-    name: kube-watcher
-  jackson:
-    default-property-inclusion: non_null
-    serialization:
-      indent-output: false
-      write-dates-as-timestamps: false
-    deserialization:
-      fail-on-ignored-properties: false
-      fail-on-unknown-properties: false
-    property-naming-strategy: LOWER_CAMEL_CASE
-    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
-  thymeleaf:
-    cache: false
-  main:
-    allow-bean-definition-overriding: true
+server.shutdown: graceful
+spring.lifecycle.timeout-per-shutdown-phase: 30s
 
-  datasource:
-    initialization-mode: never
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:/opt/kube-watcher/data/kw-data;AUTO_SERVER=true;MODE=MySQL
-    username: admin
-    password: password
-    hikari:
-      connection-init-sql: ""
-      auto-commit: true
-      minimum-idle: 10
-      maximum-pool-size: 10
-      data-source-properties:
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-        useServerPrepStmts: true
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-      settings:
-        web-allow-others: true
-  jpa:
-    database: h2
-    generate-ddl: false # db schema 생성 여부
-    show-sql: true
-    hibernate:
-      ddl-auto: create
+spring.application.name: kube-watcher
+spring.main.allow-bean-definition-overriding: true
+spring.thymeleaf.cache: false
 
-    properties:
-      hibernate.format_sql: true
-      hibernate.use_sql_comments: true
-      hibernate.hbm2ddl.charset_name: UTF-8
-      hibernate.hbm2ddl.import_files: classpath:sql/common-import.sql,classpath:sql/default-import.sql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+spring.jackson.default-property-inclusion: non_null
+spring.jackson.serialization.indent-output: false
+spring.jackson.serialization.write-dates-as-timestamps: false
+spring.jackson.deserialization.fail-on-ignored-properties: false
+spring.jackson.deserialization.fail-on-unknown-properties: false
+spring.jackson.property-naming-strategy: LOWER_CAMEL_CASE
+spring.jackson.date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
-  task:
-    scheduling:
-      pool:
-        size: 10
-      shutdown:
-        await-termination: true
-        await-termination-period: 30s
+spring.datasource.initialization-mode: never
+spring.datasource.driver-class-name: org.h2.Driver
+spring.datasource.url: jdbc:h2:/opt/kube-watcher/data/kw-data;AUTO_SERVER=true;MODE=MySQL
+spring.datasource.username: admin
+spring.datasource.password: password
 
-mybatis:
-  executor-type: simple
-  configuration:
-    cache-enabled: false
-    lazy-loading-enabled: false
-    aggressive-lazy-loading: false
-    default-statement-timeout: 5
-    jdbc-type-for-null: NULL
-    call-setters-on-nulls: true
-    map-underscore-to-camel-case: true
-#  type-handlers-package: com.kubeworks.watcher.data.typehandler
+spring.datasource.hikari.connection-init-sql: ""
+spring.datasource.hikari.auto-commit: false
+spring.datasource.hikari.minimum-idle: 10
+spring.datasource.hikari.maximum-pool-size: 10
+spring.datasource.hikari.data-source-properties.cachePrepStmts: true
+spring.datasource.hikari.data-source-properties.prepStmtCacheSize: 250
+spring.datasource.hikari.data-source-properties.prepStmtCacheSqlLimit: 2048
+spring.datasource.hikari.data-source-properties.useServerPrepStmts: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, info, prometheus, routes
-  metrics:
-    export:
-      prometheus:
-        enabled: true
+spring.jpa.database: h2
+spring.jpa.generate-ddl: false
+spring.jpa.show-sql: true
+spring.jpa.hibernate.ddl-auto: create
+spring.jpa.properties.hibernate.format_sql: true
+spring.jpa.properties.hibernate.use_sql_comments: true
+spring.jpa.properties.hibernate.hbm2ddl.charset_name: UTF-8
+spring.jpa.properties.hibernate.hbm2ddl.import_files: classpath:sql/import.sql
+spring.jpa.database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
-zuul:
-  retryable: true
-  force-original-query-string-encoding: true
-  host:
-    connection-request-timeout-millis: 3000
-    connect-timeout-millis: 2000
-    max-per-route-connections: 20
-    max-total-connections: 500
+spring.h2.console.enabled: true
+spring.h2.console.path: /h2-console
+spring.h2.console.settings.web-allow-others: true
 
-ribbon:
-  okhttp:
-    enabled: true
+spring.task.scheduling.pool.size: 10
+spring.task.scheduling.shutdown.await-termination: true
+spring.task.scheduling.shutdown.await-termination-period: 30s
 
-application:
-  properties:
-    root-domain: ''
-    monitoring:
-      default-cluster-name: local
-      clusters:
-        local:
-          cluster-name: local
-          # modified to set k8s url and token from environment variables 
-          # initial value from configmap - kube-watcher-config
-          k8s:
-            url: ${KUBERNETES_SERVICE_URL}
-            api-token: ${KUBERNETES_SERVICE_TOKEN}
-          prometheus:
-            proxy: true
-            url: ${PROMETHEUS_SERVICE_URL}
-          loki:
-            proxy: true
-            url: ${LOKI_SERVICE_URL}
-logging:
-  level:
-    root: info
-    com.squareup.okhttp3: debug
-    com.kubeworks.watcher.ecosystem.prometheus.feign.PrometheusFeginClient: info
+mybatis.executor-type: simple
+mybatis.configuration.cache-enabled: false
+mybatis.configuration.lazy-loading-enabled: false
+mybatis.configuration.aggressive-lazy-loading: false
+mybatis.configuration.default-statement-timeout: 5
+mybatis.configuration.jdbc-type-for-null: NULL
+mybatis.configuration.call-setters-on-nulls: true
+mybatis.configuration.map-underscore-to-camel-case: true
+
+management.endpoints.web.exposure.include: health,info,prometheus,routes,beans
+management.metrics.export.prometheus.enabled: true
+
+zuul.retryable: true
+zuul.force-original-query-string-encoding: true
+zuul.host.connection-request-timeout-millis: 3000
+zuul.host.connect-timeout-millis: 2000
+zuul.host.max-per-route-connections: 20
+zuul.host.max-total-connections: 500
+
+ribbon.okhttp.enabled: true
+
+application.properties.monitoring.default-cluster-name: local
+application.properties.monitoring.clusters.local.cluster-name: local
+application.properties.monitoring.clusters.local.k8s.url: "https://rancher.kw01/k8s/clusters/local"
+application.properties.monitoring.clusters.local.k8s.api-token: "kubeconfig-user-6nz9n:mgrpqct6998ktclpfqp5ctlfmksmcjppvvd9sgwnwphn9vr97nckcw"
+application.properties.monitoring.clusters.local.prometheus.proxy: true
+application.properties.monitoring.clusters.local.prometheus.url: "http://prometheus.kw01"
+application.properties.monitoring.clusters.local.loki.proxy: true
+application.properties.monitoring.clusters.local.loki.url: "http://loki.kw01"
+
+logging.level.root: info
+
+spring.cache.type: CAFFEINE
+spring.cache.cache-names: app-names
+spring.cache.caffeine.spec: maximumSize=100,expireAfterWrite=604800s

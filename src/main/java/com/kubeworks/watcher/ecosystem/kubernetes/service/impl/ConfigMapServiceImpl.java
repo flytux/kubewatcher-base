@@ -16,6 +16,7 @@ import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,13 +25,12 @@ import java.util.*;
 @Service
 public class ConfigMapServiceImpl implements ConfigMapService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreV1Api;
     private final EventService eventService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public ConfigMapServiceImpl(ApiClient k8sApiClient, EventService eventService, K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
         this.coreV1Api = new CoreV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.k8sObjectManager = k8sObjectManager;
@@ -39,10 +39,10 @@ public class ConfigMapServiceImpl implements ConfigMapService {
     @SneakyThrows
     @Override
     public List<ConfigMapTable> allNamespaceConfigMapTables() {
-        ApiResponse<V1ConfigMapTableList> apiResponse = coreV1Api.allNamespaceConfigMapAsTable("true");
+        ApiResponse<V1ConfigMapTableList> apiResponse = coreV1Api.searchConfigMapsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ConfigMapTableList configMaps = apiResponse.getData();
-            List<ConfigMapTable> dataTable = configMaps.getDataTable();
+            List<ConfigMapTable> dataTable = configMaps.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -55,10 +55,10 @@ public class ConfigMapServiceImpl implements ConfigMapService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceConfigMapTables();
         }
-        ApiResponse<V1ConfigMapTableList> apiResponse = coreV1Api.namespaceConfigMapAsTable(namespace, "true");
+        ApiResponse<V1ConfigMapTableList> apiResponse = coreV1Api.searchConfigMapsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ConfigMapTableList configMaps = apiResponse.getData();
-            return configMaps.getDataTable();
+            return configMaps.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -67,7 +67,7 @@ public class ConfigMapServiceImpl implements ConfigMapService {
     @Override
     public Optional<ConfigMapDescribe> configMap(String namespace, String name) {
 
-        ApiResponse<V1ConfigMap> apiResponse = coreV1Api.readNamespacedConfigMapWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1ConfigMap> apiResponse = coreV1Api.readNamespacedConfigMapWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -79,7 +79,7 @@ public class ConfigMapServiceImpl implements ConfigMapService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("ConfigMap",
             configMapDescribe.getNamespace(), configMapDescribe.getName(), configMapDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> configMapDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> configMapDescribe.setEvents(v1EventTableList.createDataTableList()));
 
         return Optional.of(configMapDescribe);
     }

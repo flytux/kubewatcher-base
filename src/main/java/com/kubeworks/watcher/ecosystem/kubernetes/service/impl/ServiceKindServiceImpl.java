@@ -16,10 +16,10 @@ import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1ServiceSpec;
-import io.kubernetes.client.openapi.models.V1ServiceStatus;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -30,15 +30,14 @@ import java.util.Optional;
 @Service
 public class ServiceKindServiceImpl implements ServiceKindService {
 
-    private final ApiClient k8sApiClient;
     private final CoreV1ApiExtendHandler coreApi;
     private final EndpointService endpointService;
     private final EventService eventService;
     private final K8sObjectManager k8sObjectManager;
 
+    @Autowired
     public ServiceKindServiceImpl(ApiClient k8sApiClient, EndpointService endpointService, EventService eventService,
                                   K8sObjectManager k8sObjectManager){
-        this.k8sApiClient = k8sApiClient;
         this.coreApi = new CoreV1ApiExtendHandler(k8sApiClient);
         this.endpointService = endpointService;
         this.eventService = eventService;
@@ -48,10 +47,10 @@ public class ServiceKindServiceImpl implements ServiceKindService {
     @SneakyThrows
     @Override
     public List<ServiceTable> allNamespaceServiceTables() {
-        ApiResponse<V1ServiceTableList> apiResponse = coreApi.allNamespaceServiceAsTables("true");
+        ApiResponse<V1ServiceTableList> apiResponse = coreApi.searchServicesTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ServiceTableList services = apiResponse.getData();
-            List<ServiceTable> dataTable = services.getDataTable();
+            List<ServiceTable> dataTable = services.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -64,10 +63,10 @@ public class ServiceKindServiceImpl implements ServiceKindService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceServiceTables();
         }
-        ApiResponse<V1ServiceTableList> apiResponse = coreApi.namespaceServiceAsTables(namespace,"true");
+        ApiResponse<V1ServiceTableList> apiResponse = coreApi.searchServicesTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             V1ServiceTableList services = apiResponse.getData();
-            return services.getDataTable();
+            return services.createDataTableList();
         }
         return Collections.emptyList();
     }
@@ -75,7 +74,7 @@ public class ServiceKindServiceImpl implements ServiceKindService {
     @SneakyThrows
     @Override
     public Optional<ServiceDescribe> serviceWithoutEvents(String namespace, String name) {
-        ApiResponse<V1Service> apiResponse = coreApi.readNamespacedServiceWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1Service> apiResponse = coreApi.readNamespacedServiceWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -102,7 +101,7 @@ public class ServiceKindServiceImpl implements ServiceKindService {
 
             Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Service",
                 serviceDescribe.getNamespace(), serviceDescribe.getName(), serviceDescribe.getUid());
-            eventTableListOptional.ifPresent(v1EventTableList -> serviceDescribe.setEvents(v1EventTableList.getDataTable()));
+            eventTableListOptional.ifPresent(v1EventTableList -> serviceDescribe.setEvents(v1EventTableList.createDataTableList()));
         });
 
         return serviceDescribeOptional;
@@ -126,10 +125,5 @@ public class ServiceKindServiceImpl implements ServiceKindService {
             builder.ports(spec.getPorts());
             builder.selector(spec.getSelector());
         }
-
-        if (data.getStatus() != null) {
-            V1ServiceStatus status = data.getStatus();
-        }
     }
-
 }

@@ -4,74 +4,41 @@ import com.kubeworks.watcher.ecosystem.kubernetes.dto.StorageClassTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectAsTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
 import io.kubernetes.client.openapi.models.V1StorageClass;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Objects;
 
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter @Setter
 public class StorageV1StorageClassTableList extends V1ObjectTableList<StorageClassTable, V1StorageClass> {
 
     @Override
-    protected StorageClassTable getDataObject() {
+    protected StorageClassTable createInstance() {
         return new StorageClassTable();
     }
 
     @Override
-    protected void makeObject(StorageClassTable builder, String fieldName, String value) {
-        switch (fieldName) {
+    protected void putValueIntoField(final StorageClassTable builder, final String field, final String value) {
+
+        switch (field) {
             case "name" :
-                builder.setName(value);
-                break;
+                builder.setName(value); break;
             case "provisioner" :
-                builder.setProvisioner(value);
-                break;
+                builder.setProvisioner(value); break;
             case "reclaimpolicy" :
-                builder.setReclaimPolicy(value);
-                break;
+                builder.setReclaimPolicy(value); break;
             case "volumebindingmode" :
-                builder.setVolumeBindingMode(value);
-                break;
+                builder.setVolumeBindingMode(value); break;
             case "allowvolumeexpansion" :
-                builder.setAllowVolumeExpansion(value);
-                break;
+                builder.setAllowVolumeExpansion(value); break;
             case "age" :
-                builder.setAge(value);
-                break;
-            default:
-                break;
+                builder.setAge(value); break;
+            default: break;
         }
     }
 
     @Override
-    public List<StorageClassTable> getDataTable() {
-        if (super.getRows() == null || super.getColumnDefinitions() == null) {
-            return Collections.emptyList();
-        }
-
-        List<StorageClassTable> list = new ArrayList<>(super.getRows().size());
-        for (V1ObjectAsTable<V1StorageClass> row : super.getRows()) {
-            StorageClassTable data = getDataObject();
-            final List<String> cells = row.getCells();
-            IntStream.range(0, cells.size()).forEach(index -> {
-                String value = cells.get(index);
-                V1ObjectColumnDefinition columnDefinition = super.getColumnDefinitions().get(index);
-                String fieldName = columnDefinition.getName().toLowerCase();
-                makeObject(data, fieldName, value);
-            });
-            if (row.getObject().getMetadata() != null) {
-                data.setName(row.getObject().getMetadata().getName());
-            }
-            list.add(data);
-        }
-        return list;
+    protected void executeExtraProcess(final StorageClassTable data, final V1ObjectAsTable<V1StorageClass> row) {
+        if (Objects.nonNull(row.getObject().getMetadata())) { data.setName(row.getObject().getMetadata().getName()); }
     }
-
 }

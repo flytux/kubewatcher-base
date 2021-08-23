@@ -34,12 +34,12 @@ public class AlertRuleConfigServiceImpl implements AlertRuleConfigService {
     }
 
     @Override
-    public AlertRule alertRule(long ruleId) {
-        return alertRuleRepository.findById(ruleId).orElseGet(null);
+    public AlertRule alertRule(final Long ruleId) {
+        return alertRuleRepository.findById(ruleId).orElse(null);
     }
 
     @Override
-    public ApiResponse<String> registrationAlarmRule(AlertRule alertRule) {
+    public ApiResponse<String> registrationAlarmRule(final AlertRule alertRule) {
         ApiResponse<String> response = new ApiResponse<>();
 
         Optional<AlertRuleMetric> alertRuleMetricOptional = alertRuleMetricRepository.findById(alertRule.getAlertRuleId());
@@ -64,7 +64,7 @@ public class AlertRuleConfigServiceImpl implements AlertRuleConfigService {
 
     @Transactional
     @Override
-    public ApiResponse<String> updateAlarmRule(AlertRule alertRule) {
+    public ApiResponse<String> updateAlarmRule(final AlertRule alertRule) {
         ApiResponse<String> response = new ApiResponse<>();
         Optional<AlertRule> dbAlertRuleOptional = alertRuleRepository.findById(alertRule.getRuleId());
         if (!dbAlertRuleOptional.isPresent()) {
@@ -75,6 +75,21 @@ public class AlertRuleConfigServiceImpl implements AlertRuleConfigService {
         AlertRule dbAlertRule = dbAlertRuleOptional.get();
         dbAlertRule.update(alertRule);
         response.setSuccess(true);
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public ApiResponse<String> deleteAlarmRule(final AlertRule alertRule) {
+        ApiResponse<String> response = new ApiResponse<>();
+        try {
+            alertRuleRepository.delete(alertRule);
+            response.setSuccess(true);
+        } catch (Exception e) {
+            log.error("알람 삭제 실패 // ruleId={}", alertRule);
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+        }
         return response;
     }
 }

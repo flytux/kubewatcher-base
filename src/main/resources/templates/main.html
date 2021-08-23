@@ -1,38 +1,32 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <style>
-        .application-board-height {
-            min-height: 185px;
-            max-height: 185px;
-        }
+        .application-board-height { min-height: 174px; max-height: 175px; }
     </style>
     <div id="main_contents">
         <div th:each="pageRows : ${page?.rows}">
             <div class="row">
                 <th:block th:if="${pageRows?.pageRowId == 32}">
                     <div class="row">
-                        <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
+                        <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})" />
                     </div>
                     <div class="col-lg-6" style="padding-right: 0px; min-height: 200px;">
                         <th:block th:each="panel : ${pageRows?.pageRowPanels}">
                             <th:block  th:if="${panel?.fragmentName} == 'head-charts-panel'">
-                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                             </th:block>
                         </th:block>
                     </div>
                     <div class="col-lg-6" style="padding-left: 0px;">
                         <th:block th:each="panel : ${pageRows?.pageRowPanels}">
                             <th:block  th:if="${panel?.fragmentName} == 'count-card-panel' or ${panel?.fragmentName} == 'count-card-sets-panel'">
-                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                                <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                             </th:block>
                         </th:block>
                     </div>
@@ -41,97 +35,77 @@
         </div>
         <div th:each="pageRows : ${page?.rows}">
             <th:block th:if="${pageRows?.pageRowId == 33}">
-                <div class="col-lg-4" style="padding-right: 0px;">
+                <div class="col-lg-12" style="padding-right: 0px;">
                     <div class="row">
-                        <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
+                        <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})" />
                     </div>
                     <div class="row">
                         <th:block th:if="${pageRows?.pageRowId == 33}">
                             <th:block th:each="panel : ${pageRows?.pageRowPanels}">
                                 <th:block  th:if="${panel?.fragmentName} == 'mini-table-panel'">
-                                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                                 </th:block>
                             </th:block>
-                            <div class="col-lg-12 col-lg-4">
-                                <th:block th:each="panel : ${pageRows?.pageRowPanels}">
-                                    <th:block  th:unless="${panel?.fragmentName} == 'mini-table-panel'">
-                                        <div class="row">
-                                            <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
-                                        </div>
-                                    </th:block>
+                            <th:block th:each="panel : ${pageRows?.pageRowPanels}">
+                                <th:block  th:unless="${panel?.fragmentName} == 'mini-table-panel'">
+                                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                                 </th:block>
-                            </div>
+                            </th:block>
                         </th:block>
                     </div>
                 </div>
             </th:block>
             <th:block th:if="${pageRows?.pageRowId == 34}">
-                <div class="col-lg-8" style="padding-left: 0px;">
+                <div class="col-lg-12" style="padding-left: 0px;">
                     <div class="row">
-                        <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
+                        <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})" />
                     </div>
                     <div class="row">
                         <th:block th:each="panel : ${pageRows?.pageRowPanels}">
-                            <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
+                            <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                         </th:block>
                     </div>
                 </div>
             </th:block>
             <th:block th:if="${pageRows?.pageRowId == 35}">
                 <div class="row">
-                    <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})"/>
+                    <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})" />
                 </div>
                 <div class="row">
-<!--                    <th:block th:each="panel : ${pageRows?.pageRowPanels}">-->
-<!--                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>-->
-<!--                    </th:block>-->
                     <div class="box_panel">
                         <div class="box_panel-heading2">
-                            <div class="circle c_normal"></div>Normal&nbsp;&nbsp;&nbsp;&nbsp;
-                            <div class="circle c_warning"></div>Warning&nbsp;&nbsp;&nbsp;&nbsp;
+                            <div class="circle c_warning"></div>Warning
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <div class="circle c_danger"></div>Danger
                         </div>
                         <div class="box_table-body">
-                            <table class="list_system">
+                            <table class="list_table70vh">
                                 <thead>
-                                <tr>
-                                    <th>Alarm명</th>
-                                    <th>Message</th>
-                                    <th>Severity</th>
-                                    <th>Category</th>
-                                    <th>System</th>
-                                    <th>Time</th>
-                                    <th>Check</th>
-                                </tr>
+                                    <tr>
+                                        <th>Alarm명</th>
+                                        <th>Message</th>
+                                        <th>Severity</th>
+                                        <th>Category</th>
+                                        <th>System</th>
+                                        <th>Time</th>
+                                        <th>Check</th>
+                                    </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                    <td>CPU High</td>
-                                    <td>HLI1000 CPU 80%</td>
-                                    <td><div class="circle c_normal"></div></td>
-                                    <td>VM</td>
-                                    <td>HLI1000</td>
-                                    <td>2020-03-24   12:34:05</td>
-                                    <td><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> Check</button></td>
-                                </tr>
-                                <tr>
-                                    <td>CPU High</td>
-                                    <td>HLI1000 CPU 80%</td>
-                                    <td><div class="circle c_warning"></div></td>
-                                    <td>VM</td>
-                                    <td>HLI1000</td>
-                                    <td>2020-03-24   12:34:05</td>
-                                    <td><button class="btn btn-md btn-outline-white"><i class="feather icon-check-circle"></i> 확&nbsp;&nbsp;&nbsp;인</button></td>
-                                </tr>
-                                <tr>
-                                    <td>CPU High</td>
-                                    <td>HLI1000 CPU 80%</td>
-                                    <td><div class="circle c_danger"></div></td>
-                                    <td>VM</td>
-                                    <td>HLI1000</td>
-                                    <td>2020-03-24   12:34:05</td>
-                                    <td><button class="btn btn-md btn-outline-white"><i class="feather icon-file-text"></i> Check</button></td>
-                                </tr>
+                                <tbody style="height: 130px;">
+                                    <tr th:if="${#arrays.isEmpty(alertHistoryList)}">
+                                        <td colspan="6" class="text-center">No results</td>
+                                    </tr>
+                                    <tr th:id="${alertHistory?.historyId}" th:unless="${#arrays.isEmpty(alertHistoryList)}" th:each="alertHistory : ${alertHistoryList.histories}">
+                                        <td th:text="|${alertHistory?.alertRuleId?.category} - ${alertHistory?.alertRuleId?.resource} - ${alertHistory?.severity}|"></td>
+                                        <td th:text="${alertHistory?.message}"></td>
+                                        <td th:if="${alertHistory?.severity.toString().equals('WARN')}"><span class="madal_label_warning">경고</span></td>
+                                        <td th:if="${alertHistory?.severity.toString().equals('DANGER')}"><span class="madal_label_danger">심각</span></td>
+                                        <td th:if="${alertHistory?.severity.toString().equals('INFO')}"><span class="madal_label_normal">일반</span></td>
+                                        <td th:text="${alertHistory?.alertRuleId?.category}"></td>
+                                        <td th:text="${alertHistory?.target}"></td>
+                                        <td th:text="${#temporals.format(alertHistory?.updateTime,'yyyy-MM-dd hh:mm a')}"></td>
+                                        <td><button class="btn btn-md btn-outline-white btn-noti-check-button" th:attr="data-id=${alertHistory?.historyId}"><i class="feather icon-file-text"></i>&nbsp;Check</button></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -140,67 +114,87 @@
             </th:block>
         </div>
     </div>
-    <input type="hidden" id="var-services" th:value="${services?.serviceNamesOfPromQL}">
+
+    <input type="hidden" id="var-services" th:value="${@applicationService.getServiceNamesOfPromQL()}" />
+
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
+
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        let pageRows = [[${page?.rows}]],
-            apiHost = [[${host}]],
-            serviceMap = [[${services?.serviceMap}]];;
+        const apiHost = [[${host}]];
+        const pageRows = [[${page?.rows}]];
+        const serviceMap = [[${@applicationService.getServiceMap()}]];
         /*]]>*/
-        $(document).ready(function () {
-            pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
-            $("#headerText").css("margin-top", "3px");
-            if(localStorage.getItem("theme") === "white"){
-                $("#tvIcon").attr("src", "/assets/img/tv.png");
-            }
-            $("#btnTv").css("display", "block");
+
+        $(document).ready(function() {
+            (function() {
+                pageRows.forEach(row => row.pageRowPanels.forEach(panel => commonChartsJs.createPanel(panel)));
+                $("#headerText").css("margin-top", "3px");
+                if (localStorage.getItem("theme") === "white") {
+                    $("#tvIcon").attr("src", "/assets/img/tv.png");
+                }
+                $("#btnTv").css("display", "block");
+            })();
+
+            $(document).on('click', 'button.btn-noti-check-button', function() {
+                const id = $(this).data('id');
+
+                $.ajax({
+                    type: 'PUT',
+                    url: "/api/v1/list/alarm/Check",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token);
+                    }, data: {
+                        historyId : id
+                    }, success: function (data) {
+                        if(data.success) {
+                            $('#' + id).remove();
+                        } else {
+                            alert(data.message); return false;
+                        }
+                    }, error: function (e) {
+                        if (e.status === 401) { $(location).attr('href', '/login?logout'); }
+                    }
+                });
+            });
         });
 
-        function screen(){
-            if(localStorage.getItem("screen") == "full") {
+        function screen() {
+            if (localStorage.getItem("screen") === "full") {
                 localStorage.setItem("screen", "cancel");
                 $("#fullScreen").removeClass("active");
             } else {
                 localStorage.setItem("screen", "full");
                 $("#fullScreen").addClass("active");
             }
-            screenCheck();
+
+            localStorage.getItem("screen") === "full" ? fullScreen() : cancelFullScreen();
         }
 
-        function screenCheck(){
-            var screen = localStorage.getItem("screen");
-            if(screen === "full"){
-                fullScreen();
-            } else {
-                cancelFullScreen();
-            }
-        }
-
-        function fullScreen() { // 풀스크린 실행
-            if(localStorage.getItem("menu") !== "close"){ // 좌측 메뉴 닫기
+        function fullScreen() {
+            if (localStorage.getItem("menu") !== "close") {
                 $("#sidebarToggle").trigger("click");
             }
 
-            var el = document.documentElement;
-            var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+            const el = document.documentElement;
+            const requestMethod = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
 
-            if (requestMethod) { // Native full screen.
+            if (requestMethod) {
                 requestMethod.call(el);
             }
+
             return false;
         }
 
-        function cancelFullScreen() { // 풀스크린 종료
-            var el = document;
-            var requestMethod = el.cancelFullScreen||el.webkitCancelFullScreen||el.mozCancelFullScreen||el.exitFullscreen||el.webkitExitFullscreen;
-            if (requestMethod) { // cancel full screen.
+        function cancelFullScreen() {
+            const el = document;
+            const requestMethod = el.cancelFullScreen || el.webkitCancelFullScreen || el.mozCancelFullScreen || el.exitFullscreen || el.webkitExitFullscreen;
+            if (requestMethod) {
                 requestMethod.call(el);
             }
         }
-
     </script>
 </div>
 </body>

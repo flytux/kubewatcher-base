@@ -1,91 +1,150 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Alarm<i class=&quot;feather icon-chevron-right&quot; ></i>List')"/>
+    <th:block th:replace="layout/header :: header(navTitle='Home<i class=&quot;feather icon-chevron-right&quot; ></i>Alarm<i class=&quot;feather icon-chevron-right&quot; ></i>List')" />
     <div id="main_contents">
-
-        <!-- [보험코어 Alarm List] start -->
-        <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> 보험코어 Alarm List
-                <div class="f_r">
-                    <div class=" d_ib">
-                        <div class="form-group has-feedback d_ib">
-                            <input type="text" placeholder="Search" class="search_table">
-                            <i class="feather icon-search form-control-feedback search_topbar_i" ></i>
+        <form id="alarmSearch" th:action="@{/monitoring/alarm/list/search}" method="get">
+            <div class="row">
+                <div class="main_title_top">
+                    <i class="feather icon-chevrons-right"></i>&nbsp;보험코어 Alarm List
+                    <div class="f_r">
+                        <div class="dropdown d_ib">
+                            <select id="severity" name="severity" class="custom-select" style="width: 100px;">
+                                <option value="" selected >Severity(All)</option>
+                                <option value="Info">Info</option>
+                                <option value="Warning">Warning</option>
+                                <option value="Danger">Danger</option>
+                            </select>
+                        </div>
+                        <div class="dropdown d_ib">
+                            <select id="category" name="category" class="custom-select" style="width: 100px;">
+                                <option value="" selected >Category(All)</option>
+                                <option value="NODE">NODE</option>
+                                <option value="POD">POD</option>
+                                <option value="EVENT">EVENT</option>
+                                <option value="LOG">LOG</option>
+                            </select>
+                        </div>
+                        <div class="dropdown d_ib">
+                            <select id="resource" name="resource" class="custom-select" style="width: 100px;">
+                                <option value="" selected >Resource(All)</option>
+                                <option value="CPU">CPU</option>
+                                <option value="MEMORY">MEMORY</option>
+                                <option value="DISK">DISK</option>
+                                <option value="STRING">STRING</option>
+                            </select>
+                        </div>
+                        <div class="d_ib">
+                            <div class="form-group">
+                                <div class="input-group date d_ib" id="datetimepicker1">
+                                    <input th:value="${#temporals.format(searchDate,'yyyy-MM-dd')}" id="startDate" name="startDate" placeholder="Start Date" type="text" class="form-control search-input" style="font-size: 12px; width: 155px !important;" readonly />
+                                    <span class="input-group-addon glyphicon search-span align-middle">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <span> ~ </span>
+                        <div class="d_ib">
+                            <div class="form-group">
+                                <div class="input-group date d_ib" id="datetimepicker2">
+                                    <input th:value="${#temporals.format(searchDate,'yyyy-MM-dd')}" id="endDate" name="endDate" placeholder="End Date" type="text" class="form-control search-input" style="font-size: 12px; width: 155px !important;" readonly />
+                                    <span class="input-group-addon glyphicon search-span align-middle">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d_ib">
+                            <div class="form-group has-feedback d_ib">
+                                <input id="system" name="system" type="text" placeholder="System" class="form-control search-input" style="font-size: 12px; width: 155px! important;">
+                            </div>
+                        </div>
+                        <div class="dropdown d_ib">
+                            <button type="submit" class="btn btn-md btn-outline-white"><i class="feather icon-search"></i></button>
+                            <button onclick="inputReset()" class="btn btn-md btn-outline-white"><i class="feather icon-rotate-ccw"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
 
-        <div class="row">
+        <div class="row" th:fragment="alarmList" id="alramList">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span class="point pr_10">3</span>  Page : <span class="point">1</span>/1
+                    <div class="circle c_warning"></div>Warning
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="circle c_danger"></div>Danger
+                    Total : <span th:text="${pageList?.totalPostCount}" class="point pr_10"></span>  Page : <span th:text="|${pageList?.currentPageNum} / ${pageList?.totalListPageNum}|" class="point"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Alarm명</th>
-                            <th>Message</th>
-                            <th>Severity</th>
-                            <th>Category</th>
-                            <th>System</th>
-                            <th>Time</th>
-                        </tr>
+                            <tr>
+                                <th>Alarm명</th>
+                                <th>Message</th>
+                                <th>Severity</th>
+                                <th>Category</th>
+                                <th>Resource</th>
+                                <th>System</th>
+                                <th>Time</th>
+                                <th>Check</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>CPU High</td>
-                            <td>HLI000 CPU 80%</td>
-                            <td><span class="madal_label_danger">경고</span></td>
-                            <td>VM</td>
-                            <td>HLI000</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>File system full</td>
-                            <td>Root file system 95%</td>
-                            <td><span class="madal_label_warning">심각</span></td>
-                            <td>VM</td>
-                            <td>HLI001</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
-                        <tr>
-                            <td>HPA Autosacale</td>
-                            <td>ReplicaSet scaling</td>
-                            <td><span class="madal_label_normal">정보</span></td>
-                            <td>CLUSTER</td>
-                            <td>HLI002</td>
-                            <td>2020-06-29 14:21:05</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(alertHistoryList)}">
+                                <td colspan="6" class="text-center">No results</td>
+                            </tr>
+                            <tr th:id="${alertHistory?.historyId}" th:unless="${#arrays.isEmpty(alertHistoryList)}" th:each="alertHistory : ${alertHistoryList}">
+                                <td th:text="|${alertHistory?.alertRuleId?.category} - ${alertHistory?.alertRuleId?.resource} - ${alertHistory?.severity}|"></td>
+                                <td th:text="${alertHistory?.message}"></td>
+                                <td th:if="${alertHistory?.severity.toString().equals('WARN')}"><span class="madal_label_warning">경고</span></td>
+                                <td th:if="${alertHistory?.severity.toString().equals('DANGER')}"><span class="madal_label_danger">위험</span></td>
+                                <td th:if="${alertHistory?.severity.toString().equals('INFO')}"><span class="madal_label_normal">일반</span></td>
+                                <td th:text="${alertHistory?.alertRuleId?.category}"></td>
+                                <td th:text="${alertHistory?.alertRuleId?.resource}"></td>
+                                <td th:text="${alertHistory?.target}"></td>
+                                <td th:text="${#temporals.format(alertHistory?.updateTime,'yyyy-MM-dd hh:mm a')}"></td>
+                                <td><button class="btn btn-md btn-outline-white" th:onclick="|alramCheck(${alertHistory?.historyId})|"><i class="feather icon-check-circle"></i> 확&nbsp;&nbsp;&nbsp;인</button></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="text-center"><!-- 페이지넘버 -->
+            <div class="text-center">
                 <nav>
-                    <ul class="pagination" >
-                        <li>
-                            <a href="#" aria-label="Previous">
+                    <ul class="pagination" th:if="${pageList != null}">
+                        <li th:if="${pageList?.currentPageNum != pageList?.blockFirstPageNum}">
+                            <a th:href="'javascript:alarmPageMove(1)'" aria-label="Previous">
+                                <span aria-hidden="true"  class="feather icon-chevrons-left"></span>
+                            </a>
+                        </li>
+                        <li th:if="${pageList?.currentPageNum != pageList?.blockFirstPageNum}">
+                            <a th:href="'javascript:alarmPageMove(&quot;' + ${pageList?.currentPageNum - 1} + '&quot;)'" aria-label="Previous">
                                 <span aria-hidden="true"  class="feather icon-chevron-left"></span>
                             </a>
                         </li>
-                        <li class="active"><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li>
-                            <a href="#" aria-label="Next">
-                                <span aria-hidden="true"  class="feather icon-chevron-right"></span>
+                        <th:block th:each="pageNumber : ${pageList?.pageList}">
+                            <li th:if="${pageList?.currentPageNum} == ${pageNumber}" class="active">
+                                <a th:text="${pageNumber}"></a>
+                            </li>
+                            <li th:unless="${pageList?.currentPageNum} == ${pageNumber}">
+                                <a th:href="'javascript:alarmPageMove(&quot;' + ${pageNumber} + '&quot;)'" th:text="${pageNumber}"></a>
+                            </li>
+                        </th:block>
+                        <li th:if="${pageList?.currentPageNum != pageList?.totalListPageNum}">
+                            <a th:href="'javascript:alarmPageMove(&quot;' + ${pageList?.currentPageNum + 1} + '&quot;)'" aria-label="Next">
+                                <span aria-hidden="true" class="feather icon-chevron-right"></span>
+                            </a>
+                        </li>
+                        <li th:if="${pageList?.currentPageNum != pageList?.totalListPageNum}">
+                            <a th:href="'javascript:alarmPageMove(&quot;' + ${pageList?.totalListPageNum} + '&quot;)'" aria-label="Next">
+                                <span aria-hidden="true"  class="feather icon-chevrons-right"></span>
                             </a>
                         </li>
                     </ul>
@@ -94,6 +153,132 @@
         </div>
     </div>
 
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap-datetimepicker.css}">
+
+    <script th:src="@{/assets/js/moment.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function() {
+            renderDatepicker();
+
+            if(JSON.parse(sessionStorage.getItem("alarm")) != null){
+                var alarm = JSON.parse(sessionStorage.getItem("alarm"));
+                $("#startDate").val(alarm.startDate);
+                $("#endDate").val(alarm.endDate);
+                $("#severity").val(alarm.severity);
+                $("#category").val(alarm.category);
+                $("#resource").val(alarm.resource);
+                $("#system").val(alarm.system);
+
+                alarmPageMove(alarm.page);
+            }
+
+            $("#alarmSearch").submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: form.serialize(),
+                    success: function(data){
+                        $("#alramList").text("");
+                        $("#alramList").html(data);
+
+                        var alarmData = {
+                            page : 1,
+                            startDate : $("#startDate").val(),
+                            endDate : $("#endDate").val(),
+                            severity : $("#severity").val(),
+                            category : $("#category").val(),
+                            resource : $("#resource").val(),
+                            target : $("#system").val()
+                        };
+                        sessionStorage.setItem("alarm", JSON.stringify(alarmData));
+                    }
+                })
+            });
+        });
+
+        function renderDatepicker() {
+            $('#datetimepicker1').datetimepicker({
+                showTimeSelect: true, format: "YYYY-MM-DD hh:mm A", timepickerLeftMargin: "160px", ignoreReadonly: true, useCurrent: true
+            });
+            $('#datetimepicker2').datetimepicker({
+                showTimeSelect: true, format: "YYYY-MM-DD hh:mm A", timepickerLeftMargin: "160px", ignoreReadonly: true, useCurrent: true
+            });
+
+            $("#datetimepicker1").on("dp.change", function (e) {
+                $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+            });
+            $("#datetimepicker2").on("dp.change", function (e) {
+                $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+            });
+        }
+
+        function alarmPageMove(currentPageNum) {
+            var alarmData = {
+                page : currentPageNum,
+                startDate : $("#startDate").val(),
+                endDate : $("#endDate").val(),
+                severity : $("#severity").val(),
+                category : $("#category").val(),
+                resource : $("#resource").val(),
+                target : $("#system").val()
+            };
+            $.ajax({
+                url: "/monitoring/alarm/list/pageMove",
+                data: alarmData,
+                success: function (data) {
+                    $("#alramList").text("");
+                    $("#alramList").html(data);
+                    sessionStorage.setItem("alarm", JSON.stringify(alarmData));
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr("href", "/login?logout")
+                    }
+                }
+            });
+        }
+
+        function alramCheck(historyId){
+            $.ajax({
+                type: "PUT",
+                url: "/api/v1/list/alarm/Check",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                data: {
+                    historyId : historyId
+                },
+                success: function (data) {
+                    if(data.success){
+                        $("#"+historyId).remove();
+                    } else {
+                        alert(data.message);
+                        return false;
+                    }
+                },
+                error: function (e) {
+                    if (e.status === 401) {
+                        $(location).attr("href", "/login?logout")
+                    }
+                }
+            });
+        }
+
+        function inputReset(){
+            $("#startDate").val('');
+            $("#endDate").val('');
+            $("#severity").val('');
+            $("#category").val('');
+            $("#resource").val('');
+            $("#system").val('');
+        }
+
+    </script>
+    <script th:src="@{/assets/js/bootstrap-datetimepicker.js}"></script>
 </div>
 </body>
 </html>

@@ -2,93 +2,74 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.kubernetes.ObjectMapperHolder;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.JobTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectAsTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1ObjectTableList;
 import io.kubernetes.client.openapi.models.V1Job;
 import io.kubernetes.client.openapi.models.V1ManagedFieldsEntry;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 public class BatchV1JobTableList extends V1ObjectTableList<JobTable, V1Job> {
 
     @Override
-    protected JobTable getDataObject() {
+    protected JobTable createInstance() {
         return new JobTable();
     }
 
     @Override
-    protected void makeObject(JobTable builder, String fieldName, String value) {
+    protected void putValueIntoField(final JobTable builder, final String field, final String value) {
 
-        switch (fieldName) {
+        switch (field) {
             case "name" :
-                builder.setName(value);
-                break;
+                builder.setName(value); break;
             case "completions" :
-                builder.setCompletions(value);
-                break;
+                builder.setCompletions(value); break;
             case "duration" :
-                builder.setDuration(value);
-                break;
+                builder.setDuration(value); break;
             case "age" :
-                builder.setAge(value);
-                break;
+                builder.setAge(value); break;
             case "containers" :
-                builder.setContainers(value);
-                break;
+                builder.setContainers(value); break;
             case "images" :
-                builder.setImages(value);
-                break;
+                builder.setImages(value); break;
             case "selector" :
-                builder.setSelector(value);
-                break;
-            default:
-                break;
+                builder.setSelector(value); break;
+            default: break;
         }
     }
 
     @Override
-    public List<JobTable> getDataTable() {
-        if (super.getRows() == null || super.getColumnDefinitions() == null) {
-            return Collections.emptyList();
-        }
+    protected void executeExtraProcess(final JobTable data, final V1ObjectAsTable<V1Job> row) {
 
-        List<JobTable> list = new ArrayList<>(super.getRows().size());
-        for (V1ObjectAsTable<V1Job> row : super.getRows()) {
-            JobTable data = getDataObject();
-            final List<String> cells = row.getCells();
-            IntStream.range(0, cells.size()).forEach(index -> {
-                String value = cells.get(index);
-                V1ObjectColumnDefinition columnDefinition = super.getColumnDefinitions().get(index);
-                String fieldName = columnDefinition.getName().toLowerCase();
-                makeObject(data, fieldName, value);
-            });
-            if (row.getObject().getMetadata() != null) {
-                data.setNamespace(row.getObject().getMetadata().getNamespace());
-            }
-            if (row.getObject().getMetadata().getManagedFields() != null) {
-                List<V1ManagedFieldsEntry> managedFields = row.getObject().getMetadata().getManagedFields();
-                String statusStr = managedFields.stream()
-                    .filter(field -> StringUtils.equalsIgnoreCase("kube-controller-manager", field.getManager())
-                        && field.getFieldsV1() != null)
-                    .map(field -> {
-                        ObjectNode jsonNode = ExternalConstants.OBJECT_MAPPER.convertValue(field.getFieldsV1(), ObjectNode.class);
-                        for (Iterator<String> fieldNames = jsonNode.at("/f:status/f:conditions").fieldNames(); fieldNames.hasNext(); ) {
-                            String fieldName = fieldNames.next();
-                            if (!StringUtils.equalsIgnoreCase(".", fieldName)) {
-                                fieldName = StringUtils.substring(fieldName, 11, fieldName.lastIndexOf("\"}"));
-                                return fieldName;
-                            }
-                        }
-                        return null;
-                    }).filter(Objects::nonNull).findFirst().orElse(ExternalConstants.NONE);
-                data.setStatusCondition(statusStr);
-            }
+        if (Objects.nonNull(row.getObject().getMetadata())) {
+            final List<V1ManagedFieldsEntry> fields = row.getObject().getMetadata().getManagedFields();
 
-            list.add(data);
+            if (!CollectionUtils.isEmpty(fields)) {
+                data.setStatusCondition(extractStatusFrom(fields));
+            }
         }
-        return list;
+    }
+
+    private String extractStatusFrom(final List<V1ManagedFieldsEntry> source) {
+
+        return source.stream()
+            .filter(e -> StringUtils.equalsIgnoreCase("kube-controller-manager", e.getManager()) && Objects.nonNull(e.getFieldsV1()))
+            .map(e -> {
+                final ObjectNode node = ObjectMapperHolder.retrieveObjectMapper().convertValue(e.getFieldsV1(), ObjectNode.class);
+                for (Iterator<String> names = node.at("/f:status/f:conditions").fieldNames(); names.hasNext();) {
+                    final String name = names.next();
+                    if (!StringUtils.equalsIgnoreCase(".", name)) {
+                        return StringUtils.substring(name, 11, name.lastIndexOf("\"}"));
+                    }
+                }
+
+                return null;
+            }).filter(Objects::nonNull).findFirst().orElse(ExternalConstants.NONE);
     }
 }

@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [Endpoints] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All </option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value</option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -32,66 +24,61 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(endpoints) ? '0' : endpoints.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(endpoints) ? '0' : endpoints.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Namespace</th>
-                            <th>Endpoints</th>
-                            <th>Age</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Namespace</th>
+                                <th>Endpoints</th>
+                                <th>Age</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(endpoints)}">
-                            <td colspan="4" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(endpoints)}" th:each="endpoint : ${endpoints}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:endpointDetail(&quot;' + ${endpoint?.namespace} + '&quot;, &quot;'+ ${endpoint?.name} + '&quot;)'"
-                                   th:utext="${endpoint?.name}">Name</a>
-                            </td>
-                            <td th:text="${endpoint?.namespace}">Namespace</td>
-
-                            <td th:if ="${#strings.contains(endpoint?.endpoints,',')}" th:text = "|${#strings.substringBefore(endpoint?.endpoints,',')}...|" ></td>
-                            <td th:unless ="${#strings.contains(endpoint?.endpoints,',')}" th:text ="${endpoint?.endpoints}"></td>
-                            <td th:text="${endpoint?.age}">000d</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(endpoints)}">
+                                <td colspan="4" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(endpoints)}" th:each="endpoint : ${endpoints}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-namespace=${endpoint?.namespace}, data-name=${endpoint?.name}" th:utext="${endpoint?.name}"></a>
+                                </td>
+                                <td th:text="${endpoint?.namespace}"></td>
+                                <td th:if="${#strings.contains(endpoint?.endpoints,',')}" th:text="|${#strings.substringBefore(endpoint?.endpoints,',')}...|"></td>
+                                <td th:unless="${#strings.contains(endpoint?.endpoints,',')}" th:text="${endpoint?.endpoints}"></td>
+                                <td th:text="${endpoint?.age}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [[Endpoints]] End-->
     </div>
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-        <div th:fragment="modalContents" class="modal-dialog modal-lg"style="width:765px;">
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Endpoint : ${endpoint?.name}|">Endpoints : Endpoints 명</span>
+                        <span id="myModalLabel" th:text="|Endpoint : ${endpoint?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                    <div class="table-title">Metadata</div>
                     <table class="table-nt">
                         <tr>
                             <th>Created</th>
-                            <td th:text="${#dates.format(endpoint?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08) </td>
+                            <td th:text="${#dates.format(endpoint?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td th:text="${endpoint?.name}">test</td>
+                            <td th:text="${endpoint?.name}"></td>
                         </tr>
                         <tr>
                             <th>Namespace</th>
-                            <td th:text="${endpoint?.namespace}">default</td>
+                            <td th:text="${endpoint?.namespace}"></td>
                         </tr>
                         <tr>
                             <th>Labels</th>
@@ -114,128 +101,95 @@
                     </table>
 
                     <div>
-                    <div class="table-title">
-                        Subsets
+                        <div class="table-title">Subsets</div>
+                        <table class="list_mtable_100">
+                            <thead>
+                                <tr>
+                                    <th>IP</th>
+                                    <th>Hostname</th>
+                                    <th>Target</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#arrays.isEmpty(endpoint?.subsets)}">
+                                    <td colspan="3" class="text-center">No results</td>
+                                </tr>
+                                <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
+                                    <tr th:each="address : ${subset.addresses}">
+                                        <td th:text="${#strings.isEmpty(address.ip)? '-' : address.ip}"></td>
+                                        <td th:text="${#strings.isEmpty(address.hostname)? '-' : address.hostname}"></td>
+                                        <td th:if="${address.targetRef}" th:each="target : ${address.targetRef}" th:text="|${target.kind} / ${target.name}|"></td>
+                                        <td th:unless="${address.targetRef}">-</td>
+                                    </tr>
+                                </div>
+                            <tbody>
+                        </table>
                     </div>
-                    <table class="list_mtable_100">
-                        <thead>
-                        <tr>
-                            <th>IP</th>
-                            <th>Hostname</th>
-                            <th>Target</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:if="${#arrays.isEmpty(endpoint?.subsets)}">
-                            <td colspan="3" class="text-center">No results</td>
-                        </tr>
-                        <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
-                            <tr th:each=" address : ${subset.addresses}">
-                                <td th:text = "${#strings.isEmpty(address.ip)? '-' : address.ip}"></td>
-                                <td th:text = "${#strings.isEmpty(address.hostname)? '-' : address.hostname}"></td>
-                                <td th:if = "${address.targetRef}" th:each = "target : ${address.targetRef}" th:text = "|${target.kind} / ${target.name}|"> Target </td>
-                                <td th:unless = "${address.targetRef}">-</td>
-                            </tr>
-                        </div>
-                        <tbody>
-                    </table>
-                        </div>
                     <div style="padding: 2px 2px 2px 2px;"></div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Port</th>
-                            <th>Name</th>
-                            <th>Protocol</th>
-                        </tr>
+                            <tr>
+                                <th>Port</th>
+                                <th>Name</th>
+                                <th>Protocol</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(endpoint?.subsets)}">
-                            <td colspan="3" class="text-center">No results</td>
-                        </tr>
-                        <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
-                            <tr th:each=" port : ${subset.ports}">
-                                <td th:text = "${#strings.isEmpty(port.port)? '-' : port?.port}"></td>
-                                <td th:text = "${#strings.isEmpty(port.name)? '-' : port?.name}"></td>
-                                <td th:text = "${#strings.isEmpty(port.protocol)? '-' : port?.protocol}"></td>
-                             </tr>
-                        </div>
+                            <tr th:if="${#arrays.isEmpty(endpoint?.subsets)}">
+                                <td colspan="3" class="text-center">No results</td>
+                            </tr>
+                            <div th:if="${endpoint?.subsets}" th:each="subset :${endpoint?.subsets}">
+                                <tr th:each="port : ${subset.ports}">
+                                    <td th:text="${#strings.isEmpty(port.port)? '-' : port?.port}"></td>
+                                    <td th:text="${#strings.isEmpty(port.name)? '-' : port?.name}"></td>
+                                    <td th:text="${#strings.isEmpty(port.protocol)? '-' : port?.protocol}"></td>
+                                 </tr>
+                            </div>
                         <tbody>
                     </table>
 
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(endpoint?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${endpoint?.events}" th:each="event : ${endpoint?.events}">
-                            <td th:text="${event?.type}">Event Message</td>
-                            <td th:text="${event?.source}">///</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">00</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Object-name</td>
-                            <td th:text="${event?.lastSeen}">2020-05-22 12:41:05</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(endpoint?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${endpoint?.events}" th:each="event : ${endpoint?.events}">
+                                <td th:text="${event?.type}"></td>
+                                <td th:text="${event?.source}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
                         <tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        const linkUrl= [[${link}]];
+        const pathPrefix = '/cluster/network/endpoints/namespace/';
+        /*]]>*/
 
-        var $contentList = $("#contentList"),
-        linkUrl= [[${link}]];
-
-        function endpointDetail(namespace, name) {
-            $.ajax({
-                url: "/cluster/network/endpoints/namespace/" + namespace + "/endpoint/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        $(document).ready(function() {
+            $(document).on('change', '#namespace', function() {
+                kube.reloadList(linkUrl.replace('{namespace}', $.trim($(this).val())));
             });
-        }
 
-        $(document).ready(function () {
-            $("#namespace").on("change", function () {
-                const $namespace = $(this);
-                const selectedNamespace = $namespace.val();
-                let url = linkUrl.replace(new RegExp('{namespace}', 'g'), selectedNamespace);
-                console.log("url=", url);
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        $contentList.text("");
-                        $contentList.html(data);
-                    },
-                    error: function (e) {
-                        if (e.status === 401) {
-                            $(location).attr('href', '/login?logout')
-                        }
-                    }
-                });
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('namespace') + '/endpoint/' + $(this).data('name'));
             });
         });
     </script>

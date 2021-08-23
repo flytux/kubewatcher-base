@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.service.impl;
 
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
+import com.kubeworks.watcher.ecosystem.YamlHandler;
 import com.kubeworks.watcher.ecosystem.kubernetes.K8sObjectManager;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.JobDescribe;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.JobTable;
@@ -19,8 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Seconds;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,31 +30,26 @@ import java.util.stream.Collectors;
 @Service
 public class JobServiceImpl implements JobService {
 
-    private final ApiClient k8sApiClient;
     private final BatchV1ApiExtendHandler batchV1Api;
     private final EventService eventService;
     private final PodService podService;
-    private final Yaml yaml;
     private final K8sObjectManager k8sObjectManager;
 
-    public JobServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService, Yaml yaml,
-                          K8sObjectManager k8sObjectManager) {
-        this.k8sApiClient = k8sApiClient;
+    @Autowired
+    public JobServiceImpl(ApiClient k8sApiClient, EventService eventService, PodService podService, K8sObjectManager k8sObjectManager) {
         this.batchV1Api = new BatchV1ApiExtendHandler(k8sApiClient);
         this.eventService = eventService;
         this.podService = podService;
-        this.yaml = yaml;
         this.k8sObjectManager = k8sObjectManager;
     }
-
 
     @SneakyThrows
     @Override
     public List<JobTable> allNamespaceJobTables() {
-        ApiResponse<BatchV1JobTableList> apiResponse = batchV1Api.allNamespaceJobAsTable("true");
+        ApiResponse<BatchV1JobTableList> apiResponse = batchV1Api.searchBatchJobsTableList();
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             BatchV1JobTableList statefulSets = apiResponse.getData();
-            List<JobTable> dataTable = statefulSets.getDataTable();
+            List<JobTable> dataTable = statefulSets.createDataTableList();
             dataTable.sort((o1, o2) -> k8sObjectManager.compareByNamespace(o1.getNamespace(), o2.getNamespace()));
             return dataTable;
         }
@@ -66,10 +62,10 @@ public class JobServiceImpl implements JobService {
         if (StringUtils.isBlank(namespace) || StringUtils.equalsIgnoreCase(namespace, "all")) {
             return allNamespaceJobTables();
         }
-        ApiResponse<BatchV1JobTableList> apiResponse = batchV1Api.namespaceJobAsTable(namespace, "true");
+        ApiResponse<BatchV1JobTableList> apiResponse = batchV1Api.searchBatchJobsTableList(namespace);
         if (ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             BatchV1JobTableList statefulSets = apiResponse.getData();
-            return statefulSets.getDataTable();
+            return statefulSets.createDataTableList();
         }
         return Collections.emptyList();
 
@@ -79,7 +75,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public Optional<JobDescribe> job(String namespace, String name) {
 
-        ApiResponse<V1Job> apiResponse = batchV1Api.readNamespacedJobWithHttpInfo(name, namespace, "true", true, false);
+        ApiResponse<V1Job> apiResponse = batchV1Api.readNamespacedJobWithHttpInfo(name, namespace, "true", Boolean.TRUE, Boolean.FALSE);
         if (!ExternalConstants.isSuccessful(apiResponse.getStatusCode())) {
             return Optional.empty();
         }
@@ -96,7 +92,7 @@ public class JobServiceImpl implements JobService {
 
         Optional<V1EventTableList> eventTableListOptional = eventService.eventTable("Job",
             jobDescribe.getNamespace(), jobDescribe.getName(), jobDescribe.getUid());
-        eventTableListOptional.ifPresent(v1EventTableList -> jobDescribe.setEvents(v1EventTableList.getDataTable()));
+        eventTableListOptional.ifPresent(v1EventTableList -> jobDescribe.setEvents(v1EventTableList.createDataTableList()));
 
 
         return Optional.of(jobDescribe);
@@ -143,8 +139,7 @@ public class JobServiceImpl implements JobService {
     private void setTemplate(JobDescribe.JobDescribeBuilder builder, V1PodTemplateSpec template) {
         if (template.getSpec() != null && template.getSpec().getContainers() != null) {
             List<V1Container> containers = template.getSpec().getContainers();
-            String dump = yaml.dump(containers);
-            builder.podTemplate(Collections.singletonList(dump));
+            builder.podTemplate(Collections.singletonList(YamlHandler.serialize(containers)));
         }
     }
 

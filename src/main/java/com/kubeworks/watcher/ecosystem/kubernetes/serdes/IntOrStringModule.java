@@ -2,7 +2,6 @@ package com.kubeworks.watcher.ecosystem.kubernetes.serdes;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -11,7 +10,9 @@ import io.kubernetes.client.custom.IntOrString;
 
 import java.io.IOException;
 
-public class IntOrStringModule extends SimpleModule {
+public final class IntOrStringModule extends SimpleModule {
+
+    private static final long serialVersionUID = 1L;
 
     public IntOrStringModule() {
         super(PackageVersion.VERSION);
@@ -24,7 +25,7 @@ public class IntOrStringModule extends SimpleModule {
         public static final IntOrStringSerializer INSTANCE = new IntOrStringSerializer();
 
         @Override
-        public void serialize(IntOrString value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+        public void serialize(IntOrString value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
             if (value == null) {
                 jgen.writeNull();
             } else {
@@ -44,7 +45,7 @@ public class IntOrStringModule extends SimpleModule {
 
         @Override
         public IntOrString deserialize(JsonParser jsonParser, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
             ObjectCodec oc = jsonParser.getCodec();
             JsonNode node = oc.readTree(jsonParser);
             IntOrString intOrString;
@@ -55,6 +56,5 @@ public class IntOrStringModule extends SimpleModule {
             }
             return intOrString;
         }
-
     }
 }

@@ -8,15 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface KwUserRoleRepository extends JpaRepository<KwUserRole, KwUserRoleId> {
-    List<KwUserRole> findAllBy();
 
     @Query(value="SELECT DISTINCT kw.rolename FROM Kw_User_Role kw",nativeQuery = true)
     List<String> findDistinctAllBy();
-
-//    @Transactional
-//    void deleteById (KwUserRoleId kwUserRoleId);
-//
-
-
-
 }

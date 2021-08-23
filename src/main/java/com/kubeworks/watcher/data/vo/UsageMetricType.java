@@ -5,6 +5,5 @@ public enum UsageMetricType {
     ALL,
     POD,
     CPU,
-    MEMORY,
-
+    MEMORY
 }

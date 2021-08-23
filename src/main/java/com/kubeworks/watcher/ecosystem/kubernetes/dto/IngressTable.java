@@ -3,16 +3,15 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 import com.kubeworks.watcher.ecosystem.ExternalConstants;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 
-@Getter
-@Setter
+import java.util.Locale;
+
+@Getter @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
-public class IngressTable {
+public class IngressTable implements NamespaceSettable {
 
     String name;
     String namespace;
@@ -24,9 +23,6 @@ public class IngressTable {
     String age;
 
     public String getPathsHtml() {
-        if (StringUtils.isEmpty(paths)) {
-            return ExternalConstants.NONE_STR.toLowerCase();
-        }
-        return String.join("</br>", StringUtils.split(paths, ","));
+        return StringUtils.isEmpty(paths) ? ExternalConstants.NONE_STR.toLowerCase(Locale.getDefault()) : String.join("<br />", StringUtils.split(paths, ","));
     }
 }

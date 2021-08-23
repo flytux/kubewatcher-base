@@ -1,32 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
-
-    <script th:src="@{/assets/js/jquery-ui-1.9.2.custom.js}"></script>
-    <link rel="stylesheet" th:href="@{/assets/css/jquery-ui-1.9.2.custom.css}" />
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [클러스터 Pods] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> <span
-                th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 <div class="f_r">
                     <div class="dropdown d_ib">
-                        <select th:disabled="${namespaces == null ? 'true' : 'false'}"
-                                class="custom-select" id="namespace">
+                        <select th:disabled="${namespaces == null ? 'true' : 'false'}" class="custom-select" id="namespace">
                             <option value="all" selected> All</option>
-                            <option th:each="value : ${namespaces}"
-                                    th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}"
-                                    th:value="${value?.name}" th:text="${value?.name}">value
-                            </option>
+                            <option th:each="value : ${namespaces}" th:if="${!#strings.equalsIgnoreCase(namespace?.status, 'Active')}" th:value="${value?.name}" th:text="${value?.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -36,113 +24,89 @@
         <div id="contentList" class="row">
             <div th:fragment="contentList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(pods) ? '0' : pods.size()}" class="point pr_10">20</span>
+                    Total : <span th:text="${#arrays.isEmpty(pods) ? '0' : pods.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Application</th>
-                            <th>Namespace</th>
-                            <th>Container</th>
-                            <th>Controlled</th>
-                            <th>Age</th>
-                            <th>Status</th>
-                            <th>View Log</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Application</th>
+                                <th>Namespace</th>
+                                <th>Container</th>
+                                <th>Controlled</th>
+                                <th>Age</th>
+                                <th>Status</th>
+                                <th>View Log</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(pods)}">
-                            <td colspan="7" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(pods)}" th:each="pod : ${pods}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:podDetail(&quot;' + ${pod?.namespace} + '&quot;, &quot;'+ ${pod?.name} + '&quot;)'"
-                                   th:utext="${pod?.name}">Name</a>
-                            </td>
-                            <td th:text="${@managementService.managementService(pod?.namespace, pod?.name)?.displayName}">Application</td>
-                            <td th:text="${pod?.namespace}">Namespace</td>
-                            <td th:text="${pod?.ready}">Container</td>
-                            <td th:text="${pod?.node}">Controlled</td>
-                            <td th:text="${pod?.age}">Age</td>
-                            <td th:switch="${pod?.status}">
-                                <span th:case="Running" class="madal_label_active">Running</span>
-                                <span th:case="Completed" class="madal_label_active">Completed</span>
-                                <span th:case="Pending" class="madal_label_warning">Pending</span>
-                                <span th:case="Succeeded" class="madal_label_active">Succeeded</span>
-                                <span th:case="Failed" class="madal_label_danger">Failed</span>
-                                <span th:case="Unknown" class="madal_label">Unknown</span>
-                            </td>
-                            <td class="text-center">
-                                <a th:href="'javascript:logShow(&quot;' + ${pod?.namespace} + '&quot;, &quot;'+ ${pod?.name} + '&quot;)'">
-                                    <span class="glyphicon glyphicon-list-alt" style="font-size: 150%;"></span>
-                                </a>
-                            </td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(pods)}">
+                                <td colspan="7" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(pods)}" th:each="pod : ${pods}">
+                                <td>
+                                    <a class="table2-link" th:href="'javascript:podDetail(&quot;' + ${pod?.namespace} + '&quot;, &quot;'+ ${pod?.name} + '&quot;)'" th:utext="${pod?.name}"></a>
+                                </td>
+                                <td th:text="${@managementService.managementService(pod?.namespace, pod?.name)?.displayName}"></td>
+                                <td th:text="${pod?.namespace}"></td>
+                                <td th:text="${pod?.ready}"></td>
+                                <td th:text="${pod?.node}"></td>
+                                <td th:text="${pod?.age}"></td>
+                                <td th:switch="${pod?.status}">
+                                    <span th:case="Running" class="madal_label_active">Running</span>
+                                    <span th:case="Completed" class="madal_label_active">Completed</span>
+                                    <span th:case="Pending" class="madal_label_warning">Pending</span>
+                                    <span th:case="Succeeded" class="madal_label_active">Succeeded</span>
+                                    <span th:case="Failed" class="madal_label_danger">Failed</span>
+                                    <span th:case="Unknown" class="madal_label">Unknown</span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="'javascript:logShow(&quot;' + ${pod?.namespace} + '&quot;, &quot;'+ ${pod?.name} + '&quot;)'">
+                                        <span class="glyphicon glyphicon-list-alt" style="font-size: 150%;"></span>
+                                    </a>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-<!--        <div class="text-center">&lt;!&ndash; 페이지넘버 &ndash;&gt;-->
-<!--            <nav>-->
-<!--                <ul class="pagination" >-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Previous">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-left"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                    <li class="active"><a href="#">1</a></li>-->
-<!--                    <li><a href="#">2</a></li>-->
-<!--                    <li>-->
-<!--                        <a href="#" aria-label="Next">-->
-<!--                            <span aria-hidden="true"  class="feather icon-chevron-right"></span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </nav>-->
-<!--        </div>-->
-        <!-- [클러스터 Pods] End-->
     </div>
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Pod : ${pod?.name}|">Pod : Pod명+보험코어 어플리케이션 명</span>
+                        <span id="myModalLabel" th:text="|Pod : ${pod?.name}|"></span>
                     </div>
                 </div>
                 <div class="modal-nbody row_scroll">
-                    <div class="table-title">
-                        Metrics
-                    </div>
+                    <div class="table-title">Metrics</div>
                     <div class="row" th:each="panelRow : ${page?.rows}">
                         <div th:if= "${panelRow.title == 'pop-up (per POD)'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">
                             <div class="box_panel">
-                                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                <div class="box_panel-heading" th:text="${panel?.title}"></div>
                                 <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="table-title">
-                            Metadata
-                        </div>
+                        <div class="table-title">Metadata</div>
                         <table class="table-nt">
                             <tr>
                                 <th>Created</th>
-                                <td th:text="${#dates.format(pod?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                <td th:text="${#dates.format(pod?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
                             <tr>
                                 <th>Name</th>
-                                <td th:text="${pod?.name}">kube-apiserver</td>
+                                <td th:text="${pod?.name}"></td>
                             </tr>
                             <tr>
                                 <th>Namespace</th>
-                                <td th:text="${pod?.namespace}">default</td>
+                                <td th:text="${pod?.namespace}"></td>
                             </tr>
                             <tr>
                                 <th>Labels</th>
@@ -165,58 +129,51 @@
                             <tr>
                                 <th>Status</th>
                                 <td th:switch="${pod?.status}">
-                                    <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
-                                    <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>
-                                    <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}">Pending</span>
-                                    <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}">Succeeded</span>
-                                    <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}">Failed</span>
-                                    <span th:case="Unknown" class="madal_label" th:text="${pod?.status}">Unknown</span>
+                                    <span th:case="Running" class="madal_label_active" th:text="${pod?.status}"></span>
+                                    <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}"></span>
+                                    <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}"></span>
+                                    <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}"></span>
+                                    <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}"></span>
+                                    <span th:case="Unknown" class="madal_label" th:text="${pod?.status}"></span>
                                     <span th:case="*" class="madal_label" th:text="${pod?.status}"></span>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Node</th>
-                                <td th:text="${#strings.isEmpty(pod?.node) ? '-' : pod?.node}">Node 명</td>
+                                <td th:text="${#strings.isEmpty(pod?.node) ? '-' : pod?.node}"></td>
                             </tr>
                             <tr>
                                 <th>POP IP</th>
-                                <td th:text="${#strings.isEmpty(pod?.podIp) ? '-' : pod?.podIp}">000.000.000.000</td>
+                                <td th:text="${#strings.isEmpty(pod?.podIp) ? '-' : pod?.podIp}"></td>
                             </tr>
                             <tr>
                                 <th>Priority Class</th>
-                                <td th:text="${#strings.isEmpty(pod?.priority) ? '-' : pod?.priority}">system-cluster-critical</td>
+                                <td th:text="${#strings.isEmpty(pod?.priority) ? '-' : pod?.priority}"></td>
                             </tr>
                             <tr>
                                 <th>Tolerations</th>
                                 <td>
                                     <div th:if="${#arrays.isEmpty(pod?.tolerations)}">-</div>
-                                    <div class="row" th:unless="${#arrays.isEmpty(pod?.tolerations)}" th:each="item : ${pod?.tolerations}" >
-                                        <span class="madal_label"
-                                              th:text="|Key : ${item?.key}, Operator : ${item?.operator}, Effect : ${item?.effect}|">
-                                            Key : [], Operator : [], Effect : []
-                                        </span>
+                                    <div class="row" th:unless="${#arrays.isEmpty(pod?.tolerations)}" th:each="item : ${pod?.tolerations}">
+                                        <span class="madal_label" th:text="|Key : ${item?.key}, Operator : ${item?.operator}, Effect : ${item?.effect}|"></span>
                                     </div>
                                 </td>
                             </tr>
                         </table>
                     </div>
 
-                    <div class="table-title" th:unless="${#arrays.isEmpty(pod?.containers)}">
-                        Containers
-                    </div>
-
-                    <div class="row" th:unless="${#arrays.isEmpty(pod?.containers)}"
-                         th:each="container : ${pod?.containers}">
-                        <input th:id="|modal-answer-${container?.name}|" type="checkbox" name="accordion" id="modal-answer" >
+                    <div class="table-title" th:unless="${#arrays.isEmpty(pod?.containers)}">Containers</div>
+                    <div class="row" th:unless="${#arrays.isEmpty(pod?.containers)}" th:each="container : ${pod?.containers}">
+                        <input th:id="|modal-answer-${container?.name}|" type="checkbox" name="accordion" id="modal-answer">
                         <label th:for="|modal-answer-${container?.name}|" for="modal-answer" style="color:#bebebe">
-                            <span th:text="${container?.name}">kube-state-metrics</span><em></em>
+                            <span th:text="${container?.name}"></span><em></em>
                         </label>
                         <div>
                             <div class="row">
                                 <div class="row" th:each="panelRow : ${page?.rows}">
                                     <div th:if= "${panelRow.title == 'Pop-up (per Container)'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-4">
                                         <div class="box_panel">
-                                            <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                            <div class="box_panel-heading" th:text="${panel?.title}"></div>
                                             <div th:id="|container-${container?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
                                         </div>
                                     </div>
@@ -227,108 +184,90 @@
                                     <tr>
                                         <th>Status</th>
                                         <td th:switch="${container?.status}">
-                                            <span th:case="running" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}">running</span>
-                                            <span th:case="terminated" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}">terminated</span>
-                                            <span th:case="completed" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}">completed</span>
-                                            <span th:case="waiting" class="madal_label_warning" th:text="${#strings.capitalize(container?.status)}">waiting</span>
+                                            <span th:case="running" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}"></span>
+                                            <span th:case="terminated" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}"></span>
+                                            <span th:case="completed" class="madal_label_active" th:text="${#strings.capitalize(container?.status)}"></span>
+                                            <span th:case="waiting" class="madal_label_warning" th:text="${#strings.capitalize(container?.status)}"></span>
                                             <span th:case="*" class="madal_label" th:text="${container?.status}"></span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Image</th>
-                                        <td th:text="${#strings.isEmpty(container?.image) ? '-' : container?.image}">Image</td>
+                                        <td th:text="${#strings.isEmpty(container?.image) ? '-' : container?.image}"></td>
                                     </tr>
                                     <tr>
                                         <th>Environment</th>
-                                        <td>
-                                            <div th:if="${container?.env != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.env)}"> </div>
-                                            <div th:if="${container?.env == null}">-</div>
-                                        </td>
+                                        <td><div th:utext="${T(com.kubeworks.watcher.ecosystem.YamlHandler).serializeIntoHtml(container?.env, '-')}"></div></td>
                                     </tr>
                                     <tr>
                                         <th>Mounts</th>
-                                        <td>
-                                            <div th:if="${container?.volumeMounts != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.volumeMounts)}"> </div>
-                                            <div th:if="${container?.volumeMounts == null}">-</div>
-                                        </td>
-
+                                        <td><div th:utext="${T(com.kubeworks.watcher.ecosystem.YamlHandler).serializeIntoHtml(container?.volumeMounts, '-')}"></div></td>
                                     </tr>
                                     <tr>
                                         <th>Liveness</th>
-                                        <td>
-                                            <div th:if="${container?.livenessProbe != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.livenessProbe)}"> </div>
-                                            <div th:if="${container?.livenessProbe == null}"> - </div>
-                                        </td>
+                                        <td><div th:utext="${T(com.kubeworks.watcher.ecosystem.YamlHandler).serializeIntoHtml(container?.livenessProbe, '-')}"></div></td>
                                     </tr>
                                     <tr>
                                         <th>Readness</th>
-                                        <td>
-                                            <div th:if="${container?.readinessProbe != null}" th:utext="${T(com.kubeworks.watcher.ecosystem.ExternalConstants).yamlDumpHtml(container?.readinessProbe)}"> </div>
-                                            <div th:if="${container?.readinessProbe == null}"> - </div>
-                                        </td>
+                                        <td><div th:utext="${T(com.kubeworks.watcher.ecosystem.YamlHandler).serializeIntoHtml(container?.readinessProbe, '-')}"></div></td>
                                     </tr>
                                     <tr>
                                         <th>Command</th>
                                         <td>
                                             <div th:if="${container?.command != null}" th:text="${#strings.arrayJoin(container?.command,', ')}"></div>
-                                            <div th:if="${container?.command == null}"> - </div>
+                                            <div th:if="${container?.command == null}">-</div>
                                         </td>
                                     </tr>
                                 </table>
-
                             </div>
                         </div>
                     </div>
 
-                    <div class="table-title">
-                        Volumes
-                    </div>
+                    <div class="table-title">Volumes</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Value</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Value</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(pod?.volumes)}">
-                            <td colspan="3" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(pod?.volumes)}" th:each="volume : ${pod?.volumes}">
-                            <td th:text="${#strings.isEmpty(volume?.name) ? '-' : volume?.name}">Name</td>
-                            <td th:text="${#strings.isEmpty(volume?.type) ? '-' : volume?.type}">Type</td>
-                            <td>
-                                <div th:if= "${volume?.values}" th:each="value : ${volume?.values}" th:text="${value}">Value</div>
-                                <div th:unless= "${volume?.values}" th:text="|-|">Value</div>
-                            </td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(pod?.volumes)}">
+                                <td colspan="3" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(pod?.volumes)}" th:each="volume : ${pod?.volumes}">
+                                <td th:text="${#strings.isEmpty(volume?.name) ? '-' : volume?.name}"></td>
+                                <td th:text="${#strings.isEmpty(volume?.type) ? '-' : volume?.type}"></td>
+                                <td>
+                                    <div th:if= "${volume?.values}" th:each="value : ${volume?.values}" th:text="${value}"></div>
+                                    <div th:unless= "${volume?.values}" th:text="|-|"></div>
+                                </td>
+                            </tr>
                         <tbody>
                     </table>
-                    <div class="table-title">
-                        Events
-                    </div>
+                    <div class="table-title">Events</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Source</th>
-                            <th>Count</th>
-                            <th>Sub-Object</th>
-                            <th>Last</th>
-                        </tr>
+                            <tr>
+                                <th>Event</th>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Sub-Object</th>
+                                <th>Last</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(pod?.events)}">
-                            <td colspan="5" class="text-center">No events</td>
-                        </tr>
-                        <tr th:if="${pod?.events}" th:each="event : ${pod?.events}">
-                            <td th:text="${event?.type}">Type</td>
-                            <td th:text="${event?.reason}">Reason</td>
-                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">Count</td>
-                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                            <td th:text="${event?.lastSeen}">Last</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(pod?.events)}">
+                                <td colspan="5" class="text-center">No events</td>
+                            </tr>
+                            <tr th:if="${pod?.events}" th:each="event : ${pod?.events}">
+                                <td th:text="${event?.type}"></td>
+                                <td th:text="${event?.reason}"></td>
+                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                <td th:text="${event?.lastSeen}"></td>
+                            </tr>
                         <tbody>
                     </table>
                 </div>
@@ -336,16 +275,13 @@
         </div>
     </div>
 
-    <div id="logDiv" class="modal-title_box"
-         style="display: none; width: 100%; height: 500px; position: fixed; left: 0; bottom: 0; z-index: 1;
+    <div id="logDiv" class="modal-title_box" style="display: none; width: 100%; height: 500px; position: fixed; left: 0; bottom: 0; z-index: 1;
          background-color: rgb(24, 24, 24); text-align: left;  padding: 20px; border-top: 3px solid #444444;">
-
         <div class="table-title_box" style="padding-left: 10px; ">
             <div class="modal-title" style="margin-bottom: 10px;">
-                <span id="podLogLabel" style="margin-right: 10px;"> Pod : Pod명+보험코어 어플리케이션 명</span>
+                <span id="podLogLabel" style="margin-right: 10px;"></span>
                 <span class="table-title" style="font-weight: bold;">Container</span>
-                <select class="custom-select" id="selectContainer">
-                </select>
+                <select class="custom-select" id="selectContainer"></select>
                 <a href="javascript:logRefresh();" title="1min auto refresh" style="font-size:13px; width: 3rem; height: 3rem;" role="status">
                     <span id="refreshSpan" class="glyphicon glyphicon-refresh" style="color: #ff7200; margin: 2px 10px;"></span>
                 </a>
@@ -359,7 +295,9 @@
         </div>
     </div>
 
+    <link rel="stylesheet" th:href="@{/assets/css/jquery-ui-1.9.2.custom.css}" />
 
+    <script th:src="@{/assets/js/jquery-ui-1.9.2.custom.js}"></script>
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
@@ -369,13 +307,10 @@
     <input type="hidden" id="var-containerName" value=""/>
 
     <script type="text/javascript" th:inline="javascript">
-
-    /*<![CDATA[*/
+        /*<![CDATA[*/
         let pageRows = [[${page?.rows}]];
         let containerPanel = new Map();
-
         /*]]>*/
-
 
         var apiHost,
             $namespace = $("#var-namespace"),
@@ -431,7 +366,7 @@
                 error: function (e) {
                     if (e.status === 401) {
                         $(location).attr('href',
-                        '/login?logout')
+                            '/login?logout')
                     }
                 }
             });
@@ -472,7 +407,7 @@
                     error: function (e) {
                         if (e.status === 401) {
                             $(location).attr('href',
-                            '/login?logout')
+                                '/login?logout')
                         }
                     }
                 });
@@ -525,7 +460,7 @@
                 error: function (e) {
                     if (e.status === 401) {
                         $(location).attr('href',
-                        '/login?logout')
+                            '/login?logout')
                     }
                 }
             });

@@ -1,188 +1,176 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  xmlns:th="http://www.thymeleaf.org"
-	  layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
+    <title>psp</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
+    <th:block th:with="page=${@pageViewService.getPageView(323)}">
+        <th:block th:replace="layout/header :: header(${page?.nav})" />
 
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
-    <div id="main_contents">
-        <!-- [Pod Security policy 헤더] start -->
-        <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span> </div>
-        </div>
-        <!-- [Pod Security policy 헤더] end -->
-
-        <!-- [Pod Security policy 리스트] start -->
-        <div class="row">
-            <div class="box_panel">
-                <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(podSecurityPolicies) ? '0' : podSecurityPolicies.size()}" class="point pr_10">6</span>
+        <div id="main_contents">
+            <div class="row">
+                <div class="main_title_top">
+                    <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
                 </div>
-                <div class="box_table-body">
-                    <table class="list_table70vh">
-                        <thead>
-                            <tr>
-                                <th width="20%">Name</th>
-                                <th width="20%">Privileged</th>
-                                <th width="40%">Volumes</th>
-                                <th width="20%">Age</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:if="${#arrays.isEmpty(podSecurityPolicies)}">
-                                <td colspan="4" class="text-center">No results</td>
-                            </tr>
-                            <tr th:unless="${#arrays.isEmpty(podSecurityPolicies)}" th:each="podSecurityPolicy : ${podSecurityPolicies}">
-                                <td width="20%">
-                                    <a class="table2-link" th:href="'javascript:policyDetail(&quot;' + ${podSecurityPolicy?.name} + '&quot;)'"
-                                       th:utext="${podSecurityPolicy?.name}"></a>
-                                </td>
-                                <td th:text="${podSecurityPolicy?.privileged}" width="20%"></td>
-                                <td th:text="${podSecurityPolicy?.volumes}" width="40%"></td>
-                                <td th:text="${podSecurityPolicy?.age}" width="20%"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+            </div>
+
+            <div class="row">
+                <div class="box_panel">
+                    <div class="box_panel-total">
+                        Total : <span th:text="${#arrays.isEmpty(podSecurityPolicies) ? '0' : podSecurityPolicies.size()}" class="point pr_10"></span>
+                    </div>
+                    <div class="box_table-body">
+                        <table class="list_table70vh">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Name</th>
+                                    <th width="20%">Privileged</th>
+                                    <th width="40%">Volumes</th>
+                                    <th width="20%">Age</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#arrays.isEmpty(podSecurityPolicies)}">
+                                    <td colspan="4" class="text-center">No results</td>
+                                </tr>
+                                <tr th:unless="${#arrays.isEmpty(podSecurityPolicies)}" th:each="podSecurityPolicy : ${podSecurityPolicies}">
+                                    <td width="20%">
+                                        <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${podSecurityPolicy?.name}" th:utext="${podSecurityPolicy?.name}"></a>
+                                    </td>
+                                    <td th:text="${podSecurityPolicy?.privileged}" width="20%"></td>
+                                    <td th:text="${podSecurityPolicy?.volumes}" width="40%"></td>
+                                    <td th:text="${podSecurityPolicy?.age}" width="20%"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- [Pod Security policy 리스트] end -->
+    </th:block>
 
-        <!-- [Modal] start -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-            <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
-                <div class="modal-content" >
-                    <div class="modal-title_box">
-                        <div class="modal-title">
-                            <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <span id="myModalLabel" th:text="|Pod Security Policy : ${policyDescribe?.name}|"></span>
-                        </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
+            <div class="modal-content">
+                <div class="modal-title_box">
+                    <div class="modal-title">
+                        <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span id="myModalLabel" th:text="|Pod Security Policy : ${policyDescribe?.name}|"></span>
                     </div>
-                    <div class="modal-nbody row_scroll">
-                        <div class="table-title">
-                            Metadata
-                        </div>
-                        <div class="row">
-                            <table class="table-nt">
-                                <tr>
-                                    <th>Created</th>
-                                    <td th:text="${#dates.format(policyDescribe?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">
-                                        24일 15시 32분 (2020-05-24 15:32:08)</td>
-                                </tr>
-                                <tr>
-                                    <th>Name</th>
-                                    <td th:text="${policyDescribe?.name}"></td>
-                                </tr>
-                                <tr>
-                                    <th>Labels</th>
-                                    <td>
-                                        <div class="row" th:if="${policyDescribe?.labels}" th:each="entry : ${policyDescribe?.labels}">
-                                            <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
-                                        </div>
-                                        <div th:unless="${policyDescribe?.labels}">-</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Volumes</th>
-                                     <td th:if="${policyDescribe?.specs?.volumes}" th:text ="${#strings.arrayJoin(policyDescribe?.specs?.volumes,', ')}"> </td>
-                                </tr>
-                                <tr>
-                                    <th>Allow Privilege Escalation</th>
-                                    <td th:if="${policyDescribe?.specs?.allowPrivilegeEscalation} == true" th:text="Yes"></td>
-                                    <td th:unless="${policyDescribe?.specs?.allowPrivilegeEscalation} == true" th:text="No"></td>
-                                </tr>
-                                <tr>
-                                    <th>Privileged</th>
-                                    <td th:if="${policyDescribe?.specs?.privileged} == true" th:text="Yes"></td>
-                                    <td th:unless="${policyDescribe?.specs?.privileged} == true" th:text="No"></td>
-                                </tr>
-                                <tr>
-                                    <th>Read-only Root Filesystem</th>
-                                    <td th:if="${policyDescribe?.specs?.readOnlyRootFilesystem} == true" th:text="Yes"></td>
-                                    <td th:unless="${policyDescribe?.specs?.readOnlyRootFilesystem} == true" th:text="No"></td>
-                                </tr>
-                                <tr>
-                                    <th>Required Drop Capabilities</th>
-                                    <td>
-                                        <div class="row" th:if="${policyDescribe?.specs?.requiredDropCapabilities}"
-                                             th:each="entry : ${policyDescribe?.specs?.requiredDropCapabilities}" th:text="|${entry}|">
-                                        </div>
-                                        <div class="row" th:unless="${policyDescribe?.specs?.requiredDropCapabilities}">-</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Host IPC</th>
-                                    <td th:if="${policyDescribe?.specs?.hostIPC} == true" th:text="Yes"></td>
-                                    <td th:unless="${policyDescribe?.specs?.hostIPC} == true" th:text="No"></td>
-                                </tr>
-                                <tr>
-                                    <th>Host Network</th>
-                                    <td th:if="${policyDescribe?.specs?.hostNetwork} == true" th:text="Yes"></td>
-                                    <td th:unless="${policyDescribe?.specs?.hostNetwork} == true" th:text="No"></td>
-                                </tr>
-                                <tr>
-                                    <th>Host PID</th>
-                                    <td th:if="${policyDescribe?.specs?.hostPID} == true" th:text="Yes"></td>
-                                    <td th:unless="${policyDescribe?.specs?.hostPID} == true" th:text="No"></td>
-                                </tr>
-                                <tr>
-                                    <th>Host Ports (Min-Max)</th>
-                                    <div th:if="${#arrays.isEmpty(policyDescribe?.specs?.hostPorts)}">
-                                        <td>-</td>
+                </div>
+                <div class="modal-nbody row_scroll">
+                    <div class="table-title">Metadata</div>
+                    <div class="row">
+                        <table class="table-nt">
+                            <tr>
+                                <th>Created</th>
+                                <td th:text="${#dates.format(policyDescribe?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            </tr>
+                            <tr>
+                                <th>Name</th>
+                                <td th:text="${policyDescribe?.name}"></td>
+                            </tr>
+                            <tr>
+                                <th>Labels</th>
+                                <td>
+                                    <div class="row" th:if="${policyDescribe?.labels}" th:each="entry : ${policyDescribe?.labels}">
+                                        <span class="madal_label" th:text="|${entry.key} : ${#strings.abbreviate(entry.value,60)}|"></span>
                                     </div>
-                                    <div th:unless="${#arrays.isEmpty(policyDescribe?.specs?.hostPorts)}">
-                                        <td>
-                                            <div class="row" th:each="entry : ${policyDescribe?.specs?.hostPorts}" >
-                                                <span class="madal_label" th:text="|${entry.min} - ${entry.max}|"></span>
-                                            </div>
+                                    <div th:unless="${policyDescribe?.labels}">-</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Volumes</th>
+                                <td th:if="${policyDescribe?.specs?.volumes}" th:text ="${#strings.arrayJoin(policyDescribe?.specs?.volumes,', ')}"></td>
+                            </tr>
+                            <tr>
+                                <th>Allow Privilege Escalation</th>
+                                <td th:if="${policyDescribe?.specs?.allowPrivilegeEscalation} == true" th:text="Yes"></td>
+                                <td th:unless="${policyDescribe?.specs?.allowPrivilegeEscalation} == true" th:text="No"></td>
+                            </tr>
+                            <tr>
+                                <th>Privileged</th>
+                                <td th:if="${policyDescribe?.specs?.privileged} == true" th:text="Yes"></td>
+                                <td th:unless="${policyDescribe?.specs?.privileged} == true" th:text="No"></td>
+                            </tr>
+                            <tr>
+                                <th>Read-only Root Filesystem</th>
+                                <td th:if="${policyDescribe?.specs?.readOnlyRootFilesystem} == true" th:text="Yes"></td>
+                                <td th:unless="${policyDescribe?.specs?.readOnlyRootFilesystem} == true" th:text="No"></td>
+                            </tr>
+                            <tr>
+                                <th>Required Drop Capabilities</th>
+                                <td>
+                                    <div class="row" th:if="${policyDescribe?.specs?.requiredDropCapabilities}" th:each="entry : ${policyDescribe?.specs?.requiredDropCapabilities}" th:text="|${entry}|">
+                                    </div>
+                                    <div class="row" th:unless="${policyDescribe?.specs?.requiredDropCapabilities}">-</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Host IPC</th>
+                                <td th:if="${policyDescribe?.specs?.hostIPC} == true" th:text="Yes"></td>
+                                <td th:unless="${policyDescribe?.specs?.hostIPC} == true" th:text="No"></td>
+                            </tr>
+                            <tr>
+                                <th>Host Network</th>
+                                <td th:if="${policyDescribe?.specs?.hostNetwork} == true" th:text="Yes"></td>
+                                <td th:unless="${policyDescribe?.specs?.hostNetwork} == true" th:text="No"></td>
+                            </tr>
+                            <tr>
+                                <th>Host PID</th>
+                                <td th:if="${policyDescribe?.specs?.hostPID} == true" th:text="Yes"></td>
+                                <td th:unless="${policyDescribe?.specs?.hostPID} == true" th:text="No"></td>
+                            </tr>
+                            <tr>
+                                <th>Host Ports (Min-Max)</th>
+                                <div th:if="${#arrays.isEmpty(policyDescribe?.specs?.hostPorts)}">
+                                    <td>-</td>
+                                </div>
+                                <div th:unless="${#arrays.isEmpty(policyDescribe?.specs?.hostPorts)}">
+                                    <td>
+                                        <div class="row" th:each="entry : ${policyDescribe?.specs?.hostPorts}">
+                                            <span class="madal_label" th:text="|${entry.min} - ${entry.max}|"></span>
+                                        </div>
+                                    </td>
+                                </div>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="table-title">Allowed Host Path</div>
+                    <div class="row">
+                        <table class="list_mtable_100">
+                            <thead>
+                                <tr>
+                                    <th>Path Prefix</th>
+                                    <th>Read-only</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#arrays.isEmpty(policyDescribe?.specs?.allowedHostPaths)}">
+                                    <td colspan="2" class="text-center">No configs</td>
+                                </tr>
+                                <tr>
+                                    <div class="row" th:each="entry : ${policyDescribe?.specs?.allowedHostPaths}">
+                                        <td><span th:text="|${entry.getPathPrefix()}|"></span></td>
+                                        <td><span th:if="${entry.getReadOnly() == true}" th:text="Yes"></span>
+                                            <span th:unless="${entry.getReadOnly() == true}" th:text="No"></span>
                                         </td>
                                     </div>
                                 </tr>
-                            </table>
-                        </div>
-                        <div class="table-title">
-                            Allowed Host Path
-                        </div>
-                        <div class="row">
-                            <table class="list_mtable_100">
-                                <thead>
-                                    <tr>
-                                        <th>Path Prefix</th>
-                                        <th>Read-only</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:if="${#arrays.isEmpty(policyDescribe?.specs?.allowedHostPaths)}">
-                                        <td colspan="2" class="text-center">No configs</td>
-                                    </tr>
-                                    <tr>
-                                        <div class="row" th:each="entry : ${policyDescribe?.specs?.allowedHostPaths}">
-                                            <td><span th:text="|${entry.getPathPrefix()}|"></span></td>
-                                            <td><span th:if="${entry.getReadOnly() == true}" th:text="Yes"></span>
-                                                <span th:unless="${entry.getReadOnly() == true}" th:text="No"></span>
-                                            </td>
-                                        </div>
-                                    </tr>
-                                <tbody>
-                            </table>
-                        </div>
-                        <div class="table-title">
-                            Fs Group
-                        </div>
-                        <div class="row">
-                            <table class="list_mtable_100">
-                                <thead>
+                            <tbody>
+                        </table>
+                    </div>
+                    <div class="table-title">Fs Group</div>
+                    <div class="row">
+                        <table class="list_mtable_100">
+                            <thead>
                                 <tr>
                                     <th>Rule</th>
                                     <th>Range (Min-Max)</th>
                                 </tr>
-                                </thead>
-                                <tbody>
+                            </thead>
+                            <tbody>
                                 <tr>
                                     <div class="row">
                                         <td><span th:text="${policyDescribe?.specs?.fsGroup?.rule}"></span></td>
@@ -191,28 +179,26 @@
                                         </div>
                                         <div th:unless="${#arrays.isEmpty(policyDescribe?.specs?.fsGroup?.ranges)}">
                                             <td>
-                                                <div class="row" th:each="entry : ${policyDescribe?.specs?.fsGroup?.ranges}" >
+                                                <div class="row" th:each="entry : ${policyDescribe?.specs?.fsGroup?.ranges}">
                                                     <span class="madal_label" th:text="|${entry.min} - ${entry.max}|"></span>
                                                 </div>
                                             </td>
                                         </div>
                                     </div>
                                 </tr>
-                                <tbody>
-                            </table>
-                        </div>
-                        <div class="table-title">
-                            Run As User
-                        </div>
-                        <div class="row">
-                            <table class="list_mtable_100">
-                                <thead>
+                            <tbody>
+                        </table>
+                    </div>
+                    <div class="table-title">Run As User</div>
+                    <div class="row">
+                        <table class="list_mtable_100">
+                            <thead>
                                 <tr>
                                     <th>Rule</th>
                                     <th>Range (Min-Max)</th>
                                 </tr>
-                                </thead>
-                                <tbody>
+                            </thead>
+                            <tbody>
                                 <tr>
                                     <div class="row">
                                         <td><span th:text="${policyDescribe?.specs?.runAsUser?.rule}"></span></td>
@@ -221,28 +207,26 @@
                                         </div>
                                         <div th:unless="${#arrays.isEmpty(policyDescribe?.specs?.runAsUser?.ranges)}">
                                             <td>
-                                                <div class="row" th:each="entry : ${policyDescribe?.specs?.runAsUser?.ranges}" >
+                                                <div class="row" th:each="entry : ${policyDescribe?.specs?.runAsUser?.ranges}">
                                                     <span class="madal_label" th:text="|${entry.min} - ${entry.max}|"></span>
                                                 </div>
                                             </td>
                                         </div>
                                     </div>
                                 </tr>
-                                <tbody>
-                            </table>
-                        </div>
-                        <div class="table-title">
-                            Supplemental Groups
-                        </div>
-                        <div class="row">
-                            <table class="list_mtable_100">
-                                <thead>
+                            <tbody>
+                        </table>
+                    </div>
+                    <div class="table-title">Supplemental Groups</div>
+                    <div class="row">
+                        <table class="list_mtable_100">
+                            <thead>
                                 <tr>
                                     <th>Rule</th>
                                     <th>Range (Min-Max)</th>
                                 </tr>
-                                </thead>
-                                <tbody>
+                            </thead>
+                            <tbody>
                                 <tr>
                                     <div class="row">
                                         <td><span th:text="${policyDescribe?.specs?.supplementalGroups?.rule}"></span></td>
@@ -251,65 +235,50 @@
                                         </div>
                                         <div th:unless="${#arrays.isEmpty(policyDescribe?.specs?.supplementalGroups?.ranges)}">
                                             <td>
-                                                <div class="row" th:each="entry : ${policyDescribe?.specs?.supplementalGroups?.ranges}" >
+                                                <div class="row" th:each="entry : ${policyDescribe?.specs?.supplementalGroups?.ranges}">
                                                     <span class="madal_label" th:text="|${entry.min} - ${entry.max}|"></span>
                                                 </div>
                                             </td>
                                         </div>
                                     </div>
                                 </tr>
-                                <tbody>
-                            </table>
-                        </div>
-                        <div class="table-title">
-                            Se Linux
-                        </div>
-                        <div class="row">
-                            <table class="list_mtable_100">
-                                <thead>
+                            <tbody>
+                        </table>
+                    </div>
+                    <div class="table-title">Se Linux</div>
+                    <div class="row">
+                        <table class="list_mtable_100">
+                            <thead>
                                 <tr>
                                     <th>Rule</th>
                                     <th>Options</th>
                                 </tr>
-                                </thead>
-                                <tbody>
+                            </thead>
+                            <tbody>
                                 <tr>
                                     <div class="row">
                                         <td><span th:text="${policyDescribe?.specs?.seLinux?.rule}"></span></td>
                                         <td>
                                             <span th:text="|${#strings.isEmpty(policyDescribe?.specs?.seLinux?.seLinuxOptions) ? '-' : policyDescribe?.specs?.seLinux?.seLinuxOptions?.level}|"></span>
-<!--                                            <span class="madal_label" th:text="|${policyDescribe?.specs?.seLinux?.seLinuxOptions?.role}|"></span>-->
-<!--                                            <span class="madal_label" th:text="|${policyDescribe?.specs?.seLinux?.seLinuxOptions?.type}|"></span>-->
-<!--                                            <span class="madal_label" th:text="|${policyDescribe?.specs?.seLinux?.seLinuxOptions?.user}|"></span>-->
                                         </td>
                                     </div>
                                 </tr>
-                                <tbody>
-                            </table>
-                        </div>
+                            <tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- [Modal] End -->
     </div>
+
     <script type="text/javascript" th:inline="javascript">
-        function policyDetail(name) {
-            $.ajax({
-                url: "/cluster/acl/pod-security-policies/" + name,
-                success: function (data) {
-                    $('#myModal').text("");
-                    $('#myModal').html(data);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+        const pathPrefix = '/cluster/acl/pod-security-policies/';
+
+        $(document).ready(function() {
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('name'));
             });
-        }
+        });
     </script>
 </div>
 </body>

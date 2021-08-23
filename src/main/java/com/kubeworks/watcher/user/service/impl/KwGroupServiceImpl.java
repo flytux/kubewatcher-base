@@ -22,18 +22,13 @@ public class KwGroupServiceImpl implements KwGroupService {
         this.kwUserGroupRepository = kwUserGroupRepository;
     }
 
-    /*
-      KwUserGroup을 그룹명으로 조회한다.
-    */
+    // KwUserGroup을 그룹명으로 조회한다.
     @Override
     public KwUserGroup getKwUserGroup(String groupname) {
-        Optional<KwUserGroup> kwUserGroup = kwUserGroupRepository.findById(groupname);
-        return kwUserGroup.get();
+        return kwUserGroupRepository.findById(groupname).orElse(null);
     }
 
-    /*
-         KwUser 그룹 목록을 조회한다.
-    */
+    // KwUser 그룹 목록을 조회한다.
     @Override
     public List<KwUserGroup> getKwUserGroupList() {
         return kwUserGroupRepository.findAllBy();

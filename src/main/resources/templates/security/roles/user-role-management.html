@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-        <!-- [Roles] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> Roles
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;Roles
                 <div class="dropdown d_ib f_r">
-                        <button class="btn btn-md btn-outline-white" id="btnModify"><i class="feather icon-file-text"></i> 저장 </button>
-                        <button class="btn btn-md btn-outline-white" id="btnNew"><i class="feather icon-file-text"></i> NEW </button>
+                    <button class="btn btn-md btn-outline-white" id="btnModify"><i class="feather icon-file-text"></i>&nbsp;저장&nbsp;</button>
+                    <button class="btn btn-md btn-outline-white" id="btnNew"><i class="feather icon-file-text"></i>&nbsp;NEW&nbsp;</button>
                 </div>
             </div>
         </div>
@@ -30,6 +27,7 @@
                             <tr>
                                 <th>Page ID</th>
                                 <th>화면명</th>
+                                <th style="width: 25%;">메뉴 경로</th>
                                 <th:block th:each="rule : ${ruleList}">
                                     <th th:text="${rule.rulename}" id="ruleList"></th>
                                 </th:block>
@@ -40,10 +38,8 @@
                     </table>
             </div>
         </div>
-        <!-- [Roles] End-->
 
-        <!-- [Modal] start -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" style="width:765px;">
                     <div class="modal-content">
                         <div class="modal-title_box">
@@ -54,21 +50,19 @@
                             </div>
                         </div>
                         <div class="modal-nbody">
-                            <div class="table-title">
-
-                            </div>
+                            <div class="table-title"></div>
                             <div class="row">
                                 <table class="table-nt">
                                     <tr>
                                         <th>Role Name</th>
                                         <td>
-                                            <input type="text" id="rolename" name="rolename" style="width:100%;" >
+                                            <input type="text" id="rolename" name="rolename" style="width:100%;">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Description</th>
                                         <td>
-                                            <input type="text" id="description" name="description" style="width:100%;" >
+                                            <input type="text" id="description" name="description" style="width:100%;">
                                         </td>
                                     </tr>
                                 </table>
@@ -77,12 +71,13 @@
                     </div>
             </div>
         </div>
-        <!-- [Modal] End -->
     </div>
-    <script type="text/javascript" th:inline="javascript">
 
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
         let pageRuleList = [[${pageRuleList}]],
             ruleList = [[${ruleList}]];
+        /*]]>*/
 
         $(document).ready(function () {
             var html = "";
@@ -92,11 +87,11 @@
             for (var i = 0; i < pageList.length; i++) {
                 html += '<tr>';
                 html += '   <td>'+pageList[i]+'</td>';
-                html += '   <td>'+pageRuleList[0][pageList[i]]+'</td>';
-                for (var j = 1; j <= ruleList.length; j++){
-                    var ruleListName = 'ruleList-' + ruleList[j-1].rulename;
-                    html += ' <td><input name="' + ruleList[j-1].rulename + '" type="checkbox" ';
-                    if(pageRuleList[j][pageList[i]] === '1') {
+                html += '   <td style="text-align: left;">'+pageRuleList[0][pageList[i]]+'</td>';
+                html += '   <td style="text-align: left; width: 25%;">'+pageRuleList[1][pageList[i]]+'</td>'
+                for (var j = 0; j < ruleList.length; j++){
+                    html += ' <td><input name="' + ruleList[j].rulename + '" type="checkbox" ';
+                    if(pageRuleList[j+2][pageList[i]] === '1') {
                         html += 'checked="checked"';
                     }
                     html += '>';

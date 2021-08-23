@@ -36,8 +36,6 @@ public class PrometheusApiResponse {
             Map<String, String> metric = Collections.emptyMap();
             List<Object> value = Collections.emptyList();
             List<Object> values = Collections.emptyList();
-
         }
-
     }
 }

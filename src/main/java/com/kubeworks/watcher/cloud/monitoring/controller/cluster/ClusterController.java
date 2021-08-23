@@ -1,327 +1,312 @@
 package com.kubeworks.watcher.cloud.monitoring.controller.cluster;
 
-import com.kubeworks.watcher.cloud.container.controller.config.ConfigRestController;
-import com.kubeworks.watcher.cloud.monitoring.controller.MonitoringRestController;
+import com.kubeworks.watcher.base.BaseController;
 import com.kubeworks.watcher.config.properties.MonitoringProperties;
-import com.kubeworks.watcher.data.entity.Page;
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
+import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.V1EventTableList;
+import com.kubeworks.watcher.ecosystem.kubernetes.service.*;
 import com.kubeworks.watcher.preference.service.PageConstants;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@AllArgsConstructor(onConstructor_ = {@Autowired})
-public class ClusterController {
+@AllArgsConstructor(onConstructor_={@Autowired})
+@RequestMapping(value="/monitoring/cluster", produces=MediaType.APPLICATION_JSON_VALUE)
+public class ClusterController implements BaseController {
 
+    private static final long JOB_MENU_ID = 1125;
     private static final long NODE_MENU_ID = 112;
     private static final long POD_MENU_ID  = 1121;
-    private static final long DEPLOYMENT_MENU_ID = 1122;
-    private static final long DAEMONSET_MENU_ID = 1123;
-    private static final long STATEFULSET_MENU_ID = 1124;
-    private static final long JOB_MENU_ID = 1125;
-    private static final long CRONJOB_MENU_ID = 1126;
-    private static final long STORAGE_MENU_ID = 113;
     private static final long EVENT_MENU_ID = 114;
+    private static final long STORAGE_MENU_ID = 113;
+    private static final long CRONJOB_MENU_ID = 1126;
+    private static final long DEPLOYMENT_MENU_ID = 1122;
+    private static final long DAEMON_SET_MENU_ID = 1123;
+    private static final long STATEFUL_SET_MENU_ID = 1124;
+    private static final long CLUSTER_OVERVIEW_MENU_ID = 111;
+    private static final long CLUSTER_WORKLOADS_OVERVIEW_MENU_ID = 1120;
 
-    private final ClusterRestController clusterRestController;
+    private static final String WORKLOADS = "workloads";
+    private static final String DEPLOYMENTS = "deployments";
+    private static final String WORKLOADS_PREFIX = WORKLOADS + "/";
+
+    private static final String VIEW_NODES = "nodes";
+    private static final String VIEW_EVENTS = "events";
+    private static final String VIEW_STORAGES = "storages";
+    private static final String VIEW_JOBS = WORKLOADS_PREFIX + "jobs";
+    private static final String VIEW_PODS = WORKLOADS_PREFIX + "pods";
+    private static final String VIEW_CRONJOBS = WORKLOADS_PREFIX + "cronjobs";
+    private static final String VIEW_WORKLOADS = WORKLOADS_PREFIX + WORKLOADS;
+    private static final String VIEW_DAEMONSETS = WORKLOADS_PREFIX + "daemonsets";
+    private static final String VIEW_DEPLOYMENTS = WORKLOADS_PREFIX + DEPLOYMENTS;
+    private static final String VIEW_STATEFULSETS = WORKLOADS_PREFIX + "statefulsets";
+
     private final PageViewService pageViewService;
-    private final MonitoringRestController monitoringRestController;
     private final MonitoringProperties monitoringProperties;
-    private final ConfigRestController configRestController;
 
-    @GetMapping(value = "/monitoring/cluster/overview", produces = MediaType.TEXT_HTML_VALUE)
-    public String clusterOverview(Model model) {
-        Map<String, Object> response = monitoringRestController.clusterOverview();
-        model.addAllAttributes(response);
-        return "monitoring/cluster/overview";
+    private final PodService podService;
+    private final NodeService nodeService;
+    private final NamespaceService namespaceService;
+    private final DeploymentService deploymentService;
+    private final StatefulSetService statefulSetService;
+    private final DaemonSetService daemonSetService;
+    private final JobService jobService;
+    private final CronJobService cronJobService;
+    private final PersistentVolumeService persistentVolumeService;
+    private final StorageService storageService;
+    private final EventService eventService;
+
+    @GetMapping(value="/overview", produces=MediaType.TEXT_HTML_VALUE)
+    public String clusterOverview(final Model model) {
+
+        model.addAttribute(Props.HOST, monitoringProperties.getDefaultPrometheusUrl());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(CLUSTER_OVERVIEW_MENU_ID));
+
+        return createViewName("overview");
     }
 
-    @GetMapping(value = "/monitoring/cluster/nodes", produces = MediaType.TEXT_HTML_VALUE)
-    public String nodes(Model model) {
+    @GetMapping(value="/nodes", produces=MediaType.TEXT_HTML_VALUE)
+    public String nodes(final Model model) {
 
-        List<NodeTable> nodes = clusterRestController.nodes();
+        model.addAttribute(Props.HOST, monitoringProperties.getDefaultPrometheusUrl());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(NODE_MENU_ID));
+        model.addAttribute(VIEW_NODES, nodeService.nodes());
 
-        Map<String, Object> response = new HashMap<>();
-        Page pageView = pageViewService.getPageView(NODE_MENU_ID);
-        response.put("page", pageView);
-        response.put("user", getUser());
-        response.put("host", monitoringProperties.getDefaultPrometheusUrl());
-
-        model.addAttribute("nodes", nodes);
-        model.addAllAttributes(response);
-
-        return "monitoring/cluster/nodes";
+        return createViewName(VIEW_NODES);
     }
 
-    @GetMapping(value = "/monitoring/cluster/nodes/{nodeName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String nodeModal(Model model, @PathVariable String nodeName) {
-        NodeDescribe node = clusterRestController.node(nodeName);
-        model.addAttribute("node", node);
-        return "monitoring/cluster/nodes :: modalContents";
+    @GetMapping(value="/nodes/{nodeName}")
+    public String nodeModal(final Model model, @PathVariable final String nodeName) {
+        model.addAttribute("node", nodeService.nodeDescribe(nodeName));
+        return createViewName(VIEW_NODES, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/overview", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String workloadsOverview(Model model) {
-        Map<String, Object> response = monitoringRestController.clusterWorkloadsOverview();
-        model.addAllAttributes(response);
-        return "monitoring/cluster/workloads/workloads";
+    @GetMapping(value="/workloads/overview")
+    public String workloadsOverview(final Model model) {
+
+        model.addAttribute(Props.HOST, monitoringProperties.getDefaultPrometheusUrl());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(CLUSTER_WORKLOADS_OVERVIEW_MENU_ID));
+
+        return createViewName(VIEW_WORKLOADS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/pods", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String pods(Model model) {
+    @GetMapping(value="/workloads/pods")
+    public String pods(final Model model) {
 
-        List<PodTable> pods = clusterRestController.pods();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.HOST, monitoringProperties.getDefaultPrometheusUrl());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(POD_MENU_ID));
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_PODS);
+        model.addAttribute("pods", podService.allNamespacePodTables());
 
-        Map<String, Object> response = new HashMap<>();
-        Page pageView = pageViewService.getPageView(POD_MENU_ID);
-        response.put("page", pageView);
-        response.put("user", getUser());
-        response.put("host", monitoringProperties.getDefaultPrometheusUrl());
-        response.put("namespaces", namespaces);
-        response.put("link", PageConstants.API_URL_BY_NAMESPACED_PODS);
-
-        model.addAttribute("pods", pods);
-        model.addAllAttributes(response);
-        return "monitoring/cluster/workloads/pods";
+        return createViewName(VIEW_PODS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/pods", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String pods(Model model, @PathVariable String namespace) {
-        List<PodTable> pods = clusterRestController.pods(namespace);
-        model.addAttribute("pods", pods);
-        return "monitoring/cluster/workloads/pods :: contentList";
+    @GetMapping(value="/workloads/namespace/{namespace}/pods")
+    public String pods(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("pods", podService.podTables(namespace));
+        return createViewName(VIEW_PODS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/pods/{podName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String pod(Model model, @PathVariable String namespace, @PathVariable String podName) {
-        PodDescribe podDescribe = clusterRestController.pod(namespace, podName);
-        model.addAttribute("pod", podDescribe);
-        return "monitoring/cluster/workloads/pods :: modalContents";
+    @GetMapping(value="/workloads/namespace/{namespace}/pods/{podName}")
+    public String pod(final Model model, @PathVariable final String namespace, @PathVariable final String podName) {
+        model.addAttribute("pod", podService.pod(namespace, podName).orElse(null));
+        return createViewName(VIEW_PODS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deployments(Model model) {
-        List<DeploymentTable> deployments = clusterRestController.deployments();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/workloads/deployments")
+    public String deployments(final Model model) {
 
-        model.addAttribute("deployments", deployments);
-        model.addAttribute("page", pageViewService.getPageView(DEPLOYMENT_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_DEPLOYMENTS);
-        return "monitoring/cluster/workloads/deployments";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(DEPLOYMENT_MENU_ID));
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_DEPLOYMENTS);
+        model.addAttribute(DEPLOYMENTS, deploymentService.allNamespaceDeploymentTables());
+
+        return createViewName(VIEW_DEPLOYMENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deployments(Model model, @PathVariable String namespace) {
-        List<DeploymentTable> deployments = clusterRestController.deployments(namespace);
-        model.addAttribute("deployments", deployments);
-        return "monitoring/cluster/workloads/deployments :: contentList";
+    @GetMapping(value="/workloads/namespace/{namespace}/deployments")
+    public String deployments(final Model model, @PathVariable final String namespace) {
+        model.addAttribute(DEPLOYMENTS, deploymentService.deployments(namespace));
+        return createViewName(VIEW_DEPLOYMENTS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/deployments/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deployment(Model model, @PathVariable String namespace, @PathVariable String name) {
-        DeploymentDescribe deployment = clusterRestController.deployment(namespace, name);
-        model.addAttribute("deployment", deployment);
-        return "monitoring/cluster/workloads/deployments :: modalContents";
+    @GetMapping(value="/workloads/namespace/{namespace}/deployments/{name}")
+    public String deployment(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("deployment", deploymentService.deployment(namespace, name).orElse(null));
+        return createViewName(VIEW_DEPLOYMENTS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String statefulSets(Model model) {
-        List<StatefulSetTable> statefulSets = clusterRestController.statefulSets();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/workloads/statefulsets")
+    public String statefulSets(final Model model) {
 
-        model.addAttribute("statefulSets", statefulSets);
-        model.addAttribute("page", pageViewService.getPageView(STATEFULSET_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_STATEFULSETS);
-        return "monitoring/cluster/workloads/statefulsets";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(STATEFUL_SET_MENU_ID));
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_STATEFULSETS);
+        model.addAttribute("statefulSets", statefulSetService.allNamespaceStatefulSetTables());
+
+        return createViewName(VIEW_STATEFULSETS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String statefulSets(Model model, @PathVariable String namespace) {
-        List<StatefulSetTable> statefulSets = clusterRestController.statefulSets(namespace);
-        model.addAttribute("statefulSets", statefulSets);
-        return "monitoring/cluster/workloads/statefulsets :: contentList";
+    @GetMapping(value="/workloads/namespace/{namespace}/statefulsets")
+    public String statefulSets(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("statefulSets", statefulSetService.statefulSets(namespace));
+        return createViewName(VIEW_STATEFULSETS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/statefulsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String statefulSet(Model model, @PathVariable String namespace, @PathVariable String name) {
-        StatefulSetDescribe statefulSetDescribe = clusterRestController.statefulSet(namespace, name);
-        model.addAttribute("statefulSet", statefulSetDescribe);
-        return "monitoring/cluster/workloads/statefulsets :: modalContents";
+    @GetMapping(value="/workloads/namespace/{namespace}/statefulsets/{name}")
+    public String statefulSet(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("statefulSet", statefulSetService.statefulSet(namespace, name).orElse(null));
+        return createViewName(VIEW_STATEFULSETS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String daemonSets(Model model) {
-        List<DaemonSetTable> daemonSets = clusterRestController.daemonSets();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/workloads/daemonsets")
+    public String daemonSets(final Model model) {
 
-        model.addAttribute("daemonSets", daemonSets);
-        model.addAttribute("page", pageViewService.getPageView(DAEMONSET_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_DAEMONSETS);
-        return "monitoring/cluster/workloads/daemonsets";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(DAEMON_SET_MENU_ID));
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_DAEMONSETS);
+        model.addAttribute("daemonSets", daemonSetService.allNamespaceDaemonSetTables());
+
+        return createViewName(VIEW_DAEMONSETS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String daemonSets(Model model, @PathVariable String namespace) {
-        List<DaemonSetTable> daemonSets = clusterRestController.daemonSets(namespace);
-        model.addAttribute("daemonSets", daemonSets);
-        return "monitoring/cluster/workloads/daemonsets :: contentList";
+    @GetMapping(value="/workloads/namespace/{namespace}/daemonsets")
+    public String daemonSets(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("daemonSets", daemonSetService.daemonSets(namespace));
+        return createViewName(VIEW_DAEMONSETS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/daemonsets/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String daemonSet(Model model, @PathVariable String namespace, @PathVariable String name) {
-        DaemonSetDescribe daemonSetDescribe = clusterRestController.daemonSet(namespace, name);
-        model.addAttribute("daemonSet", daemonSetDescribe);
-        return "monitoring/cluster/workloads/daemonsets :: modalContents";
+    @GetMapping(value="/workloads/namespace/{namespace}/daemonsets/{name}")
+    public String daemonSet(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("daemonSet", daemonSetService.daemonSet(namespace, name).orElse(null));
+        return createViewName(VIEW_DAEMONSETS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/jobs", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String jobs(Model model) {
-        List<JobTable> jobs = clusterRestController.jobs();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/workloads/jobs")
+    public String jobs(final Model model) {
 
-        model.addAttribute("jobs", jobs);
-        model.addAttribute("page", pageViewService.getPageView(JOB_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_JOBS);
-        return "monitoring/cluster/workloads/jobs";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(JOB_MENU_ID));
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_JOBS);
+        model.addAttribute("jobs", jobService.allNamespaceJobTables());
+
+        return createViewName(VIEW_JOBS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/jobs", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String jobs(Model model, @PathVariable String namespace) {
-        List<JobTable> jobs = clusterRestController.jobs(namespace);
-        model.addAttribute("jobs", jobs);
-        return "monitoring/cluster/workloads/jobs :: contentList";
+    @GetMapping(value="/workloads/namespace/{namespace}/jobs")
+    public String jobs(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("jobs", jobService.jobs(namespace));
+        return createViewName(VIEW_JOBS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/jobs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String job(Model model, @PathVariable String namespace, @PathVariable String name) {
-        JobDescribe jobDescribe = clusterRestController.job(namespace, name);
-        model.addAttribute("job", jobDescribe);
-        return "monitoring/cluster/workloads/jobs :: modalContents";
+    @GetMapping(value="/workloads/namespace/{namespace}/jobs/{name}")
+    public String job(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("job", jobService.job(namespace, name).orElse(null));
+        return createViewName(VIEW_JOBS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/cronjobs", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String cronJobs(Model model) {
-        List<CronJobTable> cronJobs = clusterRestController.cronJobs();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/workloads/cronjobs")
+    public String cronJobs(final Model model) {
 
-        model.addAttribute("cronJobs", cronJobs);
-        model.addAttribute("page", pageViewService.getPageView(CRONJOB_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_CRONJOBS);
-        return "monitoring/cluster/workloads/cronjobs";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(CRONJOB_MENU_ID));
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_CRONJOBS);
+        model.addAttribute("cronJobs", cronJobService.allNamespaceCronJobTables());
+
+        return createViewName(VIEW_CRONJOBS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/cronjobs", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String cronJobs(Model model, @PathVariable String namespace) {
-        List<CronJobTable> cronJobs = clusterRestController.cronJobs(namespace);
-        model.addAttribute("cronJobs", cronJobs);
-        return "monitoring/cluster/workloads/cronjobs :: contentList";
+    @GetMapping(value="/workloads/namespace/{namespace}/cronjobs")
+    public String cronJobs(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("cronJobs", cronJobService.cronJobs(namespace));
+        return createViewName(VIEW_CRONJOBS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/monitoring/cluster/workloads/namespace/{namespace}/cronjobs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String cronJob(Model model, @PathVariable String namespace, @PathVariable String name) {
-        CronJobDescribe cronJobDescribe = clusterRestController.cronJob(namespace, name);
-        model.addAttribute("cronJob", cronJobDescribe);
-        return "monitoring/cluster/workloads/cronjobs :: modalContents";
+    @GetMapping(value="/workloads/namespace/{namespace}/cronjobs/{name}")
+    public String cronJob(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("cronJob", cronJobService.cronJob(namespace, name).orElse(null));
+        return createViewName(VIEW_CRONJOBS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/storages", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String storages(Model model) {
-        Map<String, Object> storages = clusterRestController.storages();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/storages")
+    public String storages(final Model model) {
 
-        model.addAllAttributes(storages);
-        model.addAttribute("page", pageViewService.getPageView(STORAGE_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_PVC);
-        return "monitoring/cluster/storages";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(STORAGE_MENU_ID));
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_PVC);
+        model.addAttribute(VIEW_STORAGES, storageService.allStorageClassClaimTables());
+        model.addAttribute("persistentVolumes", persistentVolumeService.allPersistentVolumeTables());
+        model.addAttribute("persistentVolumeClaims", persistentVolumeService.allNamespacePersistentVolumeClaimTables());
+
+        return createViewName(VIEW_STORAGES);
     }
 
-    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/storages", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String storages(Model model, @PathVariable String namespace) {
-        Map<String, Object> storages = clusterRestController.storages(namespace);
-        model.addAllAttributes(storages);
-        return "monitoring/cluster/storages :: contentList";
+    @GetMapping(value="/namespace/{namespace}/storages")
+    public String storages(final Model model, @PathVariable final String namespace) {
+
+        model.addAttribute(VIEW_STORAGES, storageService.allStorageClassClaimTables());
+        model.addAttribute("persistentVolumes", persistentVolumeService.allPersistentVolumeTables());
+        model.addAttribute("persistentVolumeClaims", persistentVolumeService.persistentVolumeClaims(namespace));
+
+        return createViewName(VIEW_STORAGES, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/persistent-volume-claims/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String persistentVolumeClaim(Model model, @PathVariable String namespace, @PathVariable String name) {
-        PersistentVolumeClaimDescribe persistentVolumeClaimDescribe = clusterRestController.persistentVolumeClaim(namespace, name);
-        model.addAttribute("persistentVolumeClaim", persistentVolumeClaimDescribe);
-        return "monitoring/cluster/storages :: pvcModalContents";
+    @GetMapping(value="/namespace/{namespace}/persistent-volume-claims/{name}")
+    public String persistentVolumeClaim(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("persistentVolumeClaim", persistentVolumeService.persistentVolumeClaim(namespace, name).orElse(null));
+        return createViewName(VIEW_STORAGES, " :: pvcModalContents");
     }
 
-    @GetMapping(value = "/monitoring/cluster/persistent-volumes/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String persistentVolume(Model model, @PathVariable String name) {
-        PersistentVolumeDescribe persistentVolumeDescribe = clusterRestController.persistentVolume(name);
-        model.addAttribute("persistentVolume", persistentVolumeDescribe);
-        return "monitoring/cluster/storages :: pvModalContents";
+    @GetMapping(value="/persistent-volumes/{name}")
+    public String persistentVolume(final Model model, @PathVariable final String name) {
+        model.addAttribute("persistentVolume", persistentVolumeService.persistentVolume(name).orElse(null));
+        return createViewName(VIEW_STORAGES, " :: pvModalContents");
     }
 
-    @GetMapping(value = "/monitoring/cluster/storage-classes/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String storageClass(Model model, @PathVariable String name) {
-        StorageClassDescribe storageClassDescribe = clusterRestController.storageClass(name);
-        model.addAttribute("storageClass", storageClassDescribe);
-        return "monitoring/cluster/storages :: storageModalContents";
+    @GetMapping(value="/storage-classes/{name}")
+    public String storageClass(final Model model, @PathVariable final String name) {
+        model.addAttribute("storageClass", storageService.storageClass(name).orElse(null));
+        return createViewName(VIEW_STORAGES, " :: storageModalContents");
     }
 
-    @GetMapping(value = "/monitoring/cluster/events", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String events(Model model) {
-        List<EventTable> events = clusterRestController.events();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/events")
+    public String events(final Model model) {
 
-        model.addAttribute("events", events);
-        model.addAttribute("page", pageViewService.getPageView(EVENT_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_EVENTS);
-        return "monitoring/cluster/events";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(EVENT_MENU_ID));
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_EVENTS);
+        model.addAttribute(VIEW_EVENTS, eventService.allNamespaceEventTables());
+
+        return createViewName(VIEW_EVENTS);
     }
 
-    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events/contentList", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String events(Model model, @PathVariable String namespace, String contentList) {
-        List<EventTable> events = clusterRestController.events(namespace, contentList);
-        model.addAttribute("events", events);
-        return "monitoring/cluster/events :: contentList";
+    @GetMapping(value="/namespace/{namespace}/events/contentList")
+    public String eventsContentList(final Model model, @PathVariable final String namespace) {
+        model.addAttribute(VIEW_EVENTS, eventService.events(namespace));
+        return createViewName(VIEW_EVENTS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events", produces = MediaType.TEXT_HTML_VALUE)
-    public String events(Model model, @PathVariable String namespace) {
-        List<EventTable> events = clusterRestController.events(namespace);
-        model.addAttribute("events", events);
-        return "monitoring/cluster/events :: listContents";
+    @GetMapping(value="/namespace/{namespace}/events", produces=MediaType.TEXT_HTML_VALUE)
+    public String events(final Model model, @PathVariable final String namespace) {
+        model.addAttribute(VIEW_EVENTS, eventService.eventTable(null, namespace, null, null).map(V1EventTableList::createDataTableList).orElse(null));
+        return createViewName(VIEW_EVENTS, " :: listContents");
     }
 
-    @GetMapping(value = "/monitoring/cluster/namespace/{namespace}/events/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String event(Model model, @PathVariable String namespace, @PathVariable String name) {
-        EventDescribe event = clusterRestController.event(namespace, name);
-        model.addAttribute("event", event);
-        return "monitoring/cluster/events :: modalContents";
+    @GetMapping(value="/namespace/{namespace}/events/{name}")
+    public String event(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("event", eventService.event(namespace, name).orElse(null));
+        return createViewName(VIEW_EVENTS, Props.MODAL_CONTENTS);
     }
 
-    protected User getUser() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated() && authentication.getPrincipal() instanceof User) {
-            return (User) authentication.getPrincipal();
-        }
-        return null;
+    @Override
+    public String retrieveViewNamePrefix() {
+        return "monitoring/cluster/";
     }
-
 }

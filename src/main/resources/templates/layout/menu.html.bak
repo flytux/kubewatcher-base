@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <th:block th:fragment="menu">
+        <div class="lef-nav bg-gradient-hanwha">
+            <div class="row d-flex lef-sidebar-brand">
+                <div class="logo-img"><img src="" alt=""></div>
+                <div class="lef-sidebar-brand-text">한화생명<br>통합관리시스템</div>
+            </div>
+            <th:block th:with="menuAuthorities=${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).retrieveAuthorities()}">
+                <div id="lnb">
+                    <ul>
+                        <li class="heading lef-sidebar-brand-sub-text">
+                            <div class="row">
+                                <div th:text="${@environment.getProperty('application.properties.monitoring.default-cluster-name')}" class="col-lg-12 h5 font-weight-bold text-light text-uppercase">cluster</div>
+                                <div class="col-lg-12">
+                                    <div class="circle c_normal"></div>
+                                    <span>Connected</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(#httpServletRequest.requestURI,
+                                '/main',
+                                '/monitoring/application/overview',
+                                '/monitoring/cluster/overview',
+                                '/monitoring/vm/overview',
+                                '/monitoring/vm/monitoring',
+                                '/monitoring/jvm/overview',
+                                '/monitoring/jvm/application',
+                                '/monitoring/database'
+                                ) ? 'on open' : ''}">
+                            <a href="#none" role="button">
+                                <i class="feather icon-bar-chart-2"></i><span class="lef-sidebar-brand-sub-text">Dashboard</span>
+                            </a>
+                            <ul>
+                                <li th:if="${#sets.contains(menuAuthorities, 0L)}"><a th:href="@{/main}">Overview</a></li>
+                                <li th:if="${#sets.contains(menuAuthorities, 100L)}"><a th:href="@{/monitoring/application/overview}">Application</a></li>
+                                <li th:if="${#sets.contains(menuAuthorities, 111L)}"><a th:href="@{/monitoring/cluster/overview}">K8s Detail</a></li>
+                                <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 140L, 141L)}" class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownNode">Cluster Node</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownNode">
+                                        <li th:if="${#sets.contains(menuAuthorities, 140L)}"><a th:href="@{/monitoring/vm/overview}">Overview</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 141L)}"><a th:href="@{/monitoring/vm/monitoring}">Detail</a></li>
+                                    </ul>
+                                </li>
+                                <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 120L, 121L)}" class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownJvm">Pod JVM</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownJvm">
+                                        <li th:if="${#sets.contains(menuAuthorities, 120L)}"><a th:href="@{/monitoring/jvm/overview}">Overview</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 121L)}"><a th:href="@{/monitoring/jvm/application}">Detail</a></li>
+                                    </ul>
+                                </li>
+                                <li th:if="${#sets.contains(menuAuthorities, 130L)}"><a th:href="@{/monitoring/database}">Database</a></li>
+                            </ul>
+                        </li>
+                        <li th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(#httpServletRequest.requestURI,
+                                '/monitoring/cluster/nodes',
+                                '/monitoring/cluster/workloads/overview',
+                                '/monitoring/cluster/workloads/pods',
+                                '/monitoring/cluster/workloads/deployments',
+                                '/monitoring/cluster/workloads/statefulsets',
+                                '/monitoring/cluster/workloads/daemonsets',
+                                '/monitoring/cluster/workloads/jobs',
+                                '/monitoring/cluster/workloads/cronjobs',
+                                '/monitoring/cluster/storages',
+                                '/cluster/config/configmaps',
+                                '/cluster/config/resource-quotas',
+                                '/cluster/config/hpa',
+                                '/cluster/config/namespaces',
+                                '/cluster/config/custom-resources',
+                                '/cluster/network/services',
+                                '/cluster/network/ingress',
+                                '/cluster/network/endpoints',
+                                '/cluster/network/policies',
+                                '/cluster/acl/service-accounts',
+                                '/cluster/acl/role-bindings',
+                                '/cluster/acl/roles',
+                                '/cluster/config/secrets',
+                                '/cluster/acl/pod-security-policies',
+                                '/monitoring/cluster/events'
+                                ) ? 'on open' : ''}">
+                            <a href="#none" role="button">
+                                <i class="feather icon-box"></i> <span class="lef-sidebar-brand-sub-text">K8s Cluster</span>
+                            </a>
+                            <ul>
+                                <li th:if="${#sets.contains(menuAuthorities, 112L)}"><a th:href="@{/monitoring/cluster/nodes}">Nodes</a></li>
+                                <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 1120L, 1121L, 1122L, 1124L, 1123L, 1125L, 1126L)}" class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownWorkload">Workloads</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownWorkload">
+                                        <li th:if="${#sets.contains(menuAuthorities, 1120L)}"><a th:href="@{/monitoring/cluster/workloads/overview}">Overview</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 1121L)}"><a th:href="@{/monitoring/cluster/workloads/pods}">Pods</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 1122L)}"><a th:href="@{/monitoring/cluster/workloads/deployments}">Deployments</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 1124L)}"><a th:href="@{/monitoring/cluster/workloads/statefulsets}">StatefulSets</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 1123L)}"><a th:href="@{/monitoring/cluster/workloads/daemonsets}">DaemonSets</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 1125L)}"><a th:href="@{/monitoring/cluster/workloads/jobs}">Jobs</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 1126L)}"><a th:href="@{/monitoring/cluster/workloads/cronjobs}">CronJobs</a></li>
+                                    </ul>
+                                </li>
+                                <li th:if="${#sets.contains(menuAuthorities, 113L)}"><a th:href="@{/monitoring/cluster/storages}">Storages</a></li>
+                                <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 300L, 302L, 303L, 304L, 305L)}" class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownConfig">Configuration</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownConfig">
+                                        <li th:if="${#sets.contains(menuAuthorities, 300L)}"><a th:href="@{/cluster/config/configmaps}">Configmaps</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 302L)}"><a th:href="@{/cluster/config/resource-quotas}">Resource Quotas</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 303L)}"><a th:href="@{/cluster/config/hpa}">HPA</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 304L)}"><a th:href="@{/cluster/config/namespaces}">Namespaces</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 305L)}"><a th:href="@{/cluster/config/custom-resources}">Custom Resources</a></li>
+                                    </ul>
+                                </li>
+                                <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 310L, 311L, 312L, 313L)}" class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownNetwork">Network</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownNetwork">
+                                        <li th:if="${#sets.contains(menuAuthorities, 310L)}"><a th:href="@{/cluster/network/services}">Services</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 311L)}"><a th:href="@{/cluster/network/ingress}">Ingresses</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 312L)}"><a th:href="@{/cluster/network/endpoints}">Endpoints</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 313L)}"><a th:href="@{/cluster/network/policies}">Network Policies</a></li>
+                                    </ul>
+                                </li>
+                                <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 320L, 321L, 322L, 301L, 323L)}" class="dropright">
+                                    <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownAccess">Access Control</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownAccess">
+                                        <li th:if="${#sets.contains(menuAuthorities, 320L)}"><a th:href="@{/cluster/acl/service-accounts}">Service Accounts</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 321L)}"><a th:href="@{/cluster/acl/role-bindings}">Role Bindings</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 322L)}"><a th:href="@{/cluster/acl/roles}">Roles</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 301L)}"><a th:href="@{/cluster/config/secrets}">Secrets</a></li>
+                                        <li th:if="${#sets.contains(menuAuthorities, 323L)}"><a th:href="@{/cluster/acl/pod-security-policies}">Pod Security Policies</a></li>
+                                    </ul>
+                                </li>
+                                <li th:if="${#sets.contains(menuAuthorities, 114L)}"><a th:href="@{/monitoring/cluster/events}">Events</a></li>
+                            </ul>
+                        </li>
+                        <li th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(#httpServletRequest.requestURI,
+                                '/monitoring/alarm/list', '/setting/alarm/list') ? 'on open' : ''}">
+                            <a href="#none" role="button">
+                                <i class="feather icon-bell"></i> <span class="lef-sidebar-brand-sub-text">Alarm</span>
+                            </a>
+                            <ul>
+                                <li th:if="${#sets.contains(menuAuthorities, 150L)}"><a th:href="@{/monitoring/alarm/list}">List</a></li>
+                                <li th:if="${#sets.contains(menuAuthorities, 500L)}"><a th:href="@{/setting/alarm/list}">Config</a></li>
+                            </ul>
+                        </li>
+                        <li th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(#httpServletRequest.requestURI,
+                                '/security/groups', '/security/users', '/security/roles/user-role-management') ? 'on open' : ''}">
+                            <a href="#none" role="button">
+                                <i class="feather icon-user"></i> <span class="lef-sidebar-brand-sub-text">Users</span>
+                            </a>
+                            <ul>
+                                <li th:if="${#sets.contains(menuAuthorities, 400L)}"><a th:href="@{/security/groups}">Groups</a></li>
+                                <li th:if="${#sets.contains(menuAuthorities, 410L)}"><a th:href="@{/security/users}">Users</a></li>
+                                <li th:if="${#sets.contains(menuAuthorities, 420L)}"><a th:href="@{/security/roles/user-role-management}">Roles</a></li>
+                            </ul>
+                        </li>
+                        <li th:if="${#sets.contains(menuAuthorities, 210L)}" class="off" th:class="${T(org.apache.commons.lang3.StringUtils).containsIgnoreCase(#httpServletRequest.requestURI, '/application/usage/usage-overview') ? 'noDepth on' : ''}">
+                            <a th:href="@{/application/usage/usage-overview}"><i class="feather icon-pie-chart"></i><span class="lef-sidebar-brand-sub-text">Cluster Usage</span></a>
+                        </li>
+                        <li th:if="${#sets.contains(menuAuthorities, 520L)}" class="off" th:class="${T(org.apache.commons.lang3.StringUtils).containsIgnoreCase(#httpServletRequest.requestURI, '/setting/preference') ? 'noDepth on' : ''}">
+                            <a th:href="@{/setting/preference}"><i class="feather icon-settings"></i> <span class="lef-sidebar-brand-sub-text">Preference</span></a>
+                        </li>
+                        <li th:if="${#sets.contains(menuAuthorities, 1128L)}" class="off" th:class="${T(org.apache.commons.lang3.StringUtils).containsIgnoreCase(#httpServletRequest.requestURI, '/monitoring/logging') ? 'noDepth on' : ''}">
+                            <a th:href="@{/monitoring/logging}"><i class="feather icon-settings"></i> <span class="lef-sidebar-brand-sub-text">Application Log</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </th:block>
+            <div class="text-center d-none d-md-inline">
+                <button id="sidebarToggle" class="rounded-circle_l border-0"><i class="feather icon-chevrons-left"></i></button>
+            </div>
+        </div>
+    </th:block>
+</body>
+</html>

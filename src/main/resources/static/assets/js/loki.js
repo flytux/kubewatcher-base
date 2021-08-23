@@ -2,12 +2,11 @@
     //var LOG_ATTR;
     var TARGET_OBJ = {},TARGET_ID; // 에러로그 대상 app , appId
 $("#searchBtn").click(function(){
-    var sDate = document.getElementById('startDate').value; //날짜
-    var eDate = document.getElementById('endDate').value; //날짜
-    var stime = document.getElementById('startTime').value; //시작시간
-    var etime = document.getElementById('endTime').value; //종료시간
-    var sDT = sDate +" "+ stime;
-    var eDT = eDate +" "+ etime;
+    var toDay = $("#toDay").text(); // 날짜
+    var stime = document.getElementById('startDate').value; //시작시간
+    var etime = document.getElementById('endDate').value; //종료시간
+    var sDT = toDay +" "+ stime;
+    var eDT = toDay +" "+ etime;
     var startT = new Date(sDT).getTime();
     var endT = new Date(eDT).getTime();
     var startTime = startT.toString();
@@ -37,6 +36,10 @@ $(document).on("click", ".errtd", function(){ //에러 버튼 클릭
     console.log("에러버튼 :",uri)
     TARGET_OBJ.chartQueries[0].apiQuery = uri; //panel과 container를 전역변수에 대입
     TARGET_ID = typeColId; //에러로그를 조회할 app
+
+    $("#appName").text("AppName : " + TARGET_ID);
+    $("#startDate").val("");
+    $("#endDate").val("");
 
    switch (TARGET_OBJ.panelType) {
         case "LOG_METRIC_TABLE":
@@ -86,7 +89,7 @@ $(document).on("click", ".logbtn", function(){ //.logbtn     modal log 버튼 �
               .html('<thead><tr><th>No Result</th></tr></thead>')
           return ;
     }
-    const tableBodyHtml = String.prototype.concat('<tbody style="text-align:start;">', '<td style="font-weight:1000;">' + logContents  + '</td>','</tbody>');
+    const tableBodyHtml = String.prototype.concat('<tbody style="text-align:start;">', '<td style="color: #f37320;">' + logContents  + '</td>','</tbody>');
     $('#logModalTable').html(tableBodyHtml);
 
     var later_Time = new Date(requestTime);
@@ -143,6 +146,11 @@ function logModalTable(key,tableData){
             dataArray.push(data[i].values[j]);
          }
       }
+
+      dataArray.sort(function(a, b){
+          return a[0] > b[0] ? -1 : a[0] > b[0] ? 1 : 0
+      });
+
       const tableBodyHtml = String.prototype.concat(
           dataArray.map(item => {
               let trAppend = '';
@@ -189,23 +197,29 @@ let lokiJs = (function () {
         const tableHeaderHtml = String.prototype.concat('<thead>',
               headers.map(value =>{
               let trAppend = '';
-              if(value == "ServiceId" || value == "ClientIP" || value == "RequestTime" || value == "ElapsedTime" || value == "Log"){
+              if(value == "ServiceId" || value == "ClientIP" || value == "ElapsedTime"){
                 trAppend += '<th>' + value + '</th>';
+              } else if(value == "Log"){
+                  trAppend += '<th style="width: 10%;">' + value + '</th>';
+              } else if(value == "RequestTime"){
+                  trAppend += '<th style="width: 25%;">' + value + '</th>';
               }else{
                 trAppend += '<th style="display:none;">' + value + '</th>';
               }
               return String.prototype.concat(trAppend);
               }).join(''),'</thead>');
 
-        const tableBodyHtml = String.prototype.concat('<tbody>',
+        const tableBodyHtml = String.prototype.concat('<tbody style="max-height: 650px;">',
             dataArray.map(item => {
                 let trAppend = '';
                 for (let header of headers) {
                     if(header == "Log"){
-                        trAppend += '<td>' + '<input type="button" class="logbtn btn btn-md btn-outline-white" value="Log">' + '</td>';
-                    }else if(header == "ServiceId" || header == "ClientIP" || header == "RequestTime" || header == "ElapsedTime"){
+                        trAppend += '<td style="width: 10%;">' + '<input type="button" class="logbtn btn btn-md btn-outline-white" value="Log">' + '</td>';
+                    }else if(header == "ServiceId" || header == "ClientIP" || header == "ElapsedTime"){
                         trAppend += '<td name="'+ header +'">' + item[header]  + '</td>';
-                    }else{
+                    } else if(header == "RequestTime"){
+                        trAppend += '<td name="'+ header +'" style="width: 25%;">' + item[header]  + '</td>';
+                    } else{
                         trAppend += '<td style="display:none;" name="'+ header +'">' + item[header]  + '</td>';
                     }
                 }
@@ -262,7 +276,7 @@ let lokiJs = (function () {
             const tableHeaderHtml = String.prototype.concat('<thead><tr>',
                 headers.map(value => '<th>' + value + '</th>').join(''), //모든요소들을 연결해 하나의 문자열로 만듬.
                 '</tr></thead>');
-            const tableBodyHtml = String.prototype.concat('<tbody>',
+            const tableBodyHtml = String.prototype.concat('<tbody style="max-height: 650px;">',
                 dataArray.map(item => {
                     let trAppend = '';
 
@@ -282,10 +296,10 @@ let lokiJs = (function () {
                                  '<td><span class="success_percent_red">' + item[header] +" %"+ '</span></td>';
                                  nomalAvg += Number(item[header]);
                         }else if(header == "에러"){
-                            trAppend += '<td class="errtd">' + item[header] + '<button class="errbtn btn btn-md btn-outline-white" id='+ item.app +'><i class="feather icon-search "></i></button> </td>';
+                            trAppend += '<td style="text-align: right; padding-right: 20px;">' + item[header] + '</td>';
                             errorSum += Number(item[header]);
                         }else if(header == "에러율"){
-                            trAppend += '<td>' + item[header] +" %"+'</td>';
+                            trAppend += '<td style="text-align: right; padding-right: 20px;">' + item[header] +" %"+'</td>';
                             errorAvg += Number(item[header]);
                         }
                         else if(header =="응답시간"){
@@ -293,18 +307,19 @@ let lokiJs = (function () {
                             elapsedAvg += Number(item[header]);
                         }
                         else{
-                            trAppend += '<td>' + item[header] + '</td>';
+                            trAppend += '<td id=' + item[header] + '>' + item[header] + '</td>';
                         }
                     }
-                    return String.prototype.concat('<tr>', trAppend, '</tr>');
+                    return String.prototype.concat('<tr class="errtd">', trAppend, '</tr>');
 
                 }), '</tbody>');
                 nomalAvg = parseFloat(nomalAvg / rowCount).toFixed(1) ;
                 errorAvg = parseFloat(errorAvg / rowCount).toFixed(1) ;
                 //elapsedAvg = parseFloat(elapsedAvg / rowCount).toFixed(1) ;
                 const tableFootHtml = String.prototype.concat('<tfoot><tr>'
-                    + '<th>집계</th>' + '<th>'+ totalSum +'</th>' + '<th>'+nomalSum+'</th>' + '<th>'+nomalAvg+" %"+'</th>' + '<th>'+errorSum+'</th>' + '<th>'+errorAvg+" %"+'</th>' +
+                    + '<th>집계</th>' + '<th>'+ totalSum +'</th>' + '<th>'+nomalSum+'</th>' + '<th>'+nomalAvg+" %"+'</th>' + '<th style="text-align: right; padding-right: 20px;">'+errorSum+'</th>' + '<th style="text-align: right; padding-right: 20px;">'+errorAvg+" %"+'</th>' +
                     '</tr></tfoot>'); //'<th>'+elapsedAvg+" ms"+'</th>' +
+            $('#container-' + panel.panelId).addClass("list_table");
             $('#container-' + panel.panelId).html(tableHeaderHtml + tableBodyHtml + tableFootHtml);
         }
 
@@ -322,6 +337,9 @@ let lokiJs = (function () {
          result.headers = Object.keys(data[0]);
          result.headers.push("Log");
          result.data = data.map(value => value);
+         result.data.sort(function(a, b){
+             return a.RequestTime > b.RequestTime ? -1 : a.RequestTime > b.RequestTime ? 1 : 0
+         });
          return result;
      }
 
@@ -487,6 +505,7 @@ let lokiJs = (function () {
 
                     let resultLength = item.data.result;
                     let values;
+                    var index = 0;
                     for(let z=0; z<resultLength.length; z++){
                         values = resultLength[z];
                         const appName = values.stream.app;
@@ -498,34 +517,39 @@ let lokiJs = (function () {
                         var requestTime , contents, ts;
                         for(let j=0; j<values.values.length; j++){ //TODO task 0225 여기서 j로 하게되면 Caas 환경에서 카운트가 안맞는다 - for문 한번더 사용 해야함 .=> 사용했으며 Caas환경에서 테스트 필요.
                             element = {};
-                            myDate = new Date(values.values[j][0]/1000000);
-                            requestTime =myDate.getFullYear() +'-'+('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();  //TODO Caas환경: RequestTime
-
                             ts = values.values[j][0];
                             contents = values.values[j][1]; //Log 전체내용
                             splitWord = values.values[j][1].split(" ");
 
-                            uniqueId = splitWord[4]; //local용
-                            serviceId = splitWord[3]; //local용
-                            clientIP = splitWord[5]; //local용
-                            elpasedTime = splitWord.pop(); //local용
+                            requestTime = splitWord[0] + " " + splitWord[1];
 
-//                           uniqueId = splitWord[7] // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
-//                           uniqueId = uniqueId.replace(/\[/,"");
-//                           uniqueId = uniqueId.replace(/\]/,"");
-//
-//                           serviceId = splitWord[7]; //TODO Caas환경용: serviceId
-//                           serviceId = serviceId.replace(/\[/,"");
-//                           serviceId = serviceId.replace(/\]/,"");
-//
-//                           clientIP = splitWord[8]; //TODO Caas환경용: clientIP
-//                           clientIP = clientIP.replace(/\[/,"");
-//                           clientIP = clientIP.replace(/\]/,"");
-//
-//                           elpasedTime = splitWord[26]; //TODO Caas환경용: ElpsedTime 값
-//                           elpasedTime = elpasedTime.split("=");
-//                           elpasedTime2 = elpasedTime[1].replace(/\]/,"");
-//                           elpasedTime2 = elpasedTime2 + "ms";
+//                            uniqueId = splitWord[4]; //local용
+//                            serviceId = splitWord[3]; //local용
+//                            clientIP = splitWord[5]; //local용
+//                            elpasedTime = splitWord.pop(); //local용
+
+                            uniqueId = values.stream.serviceId // 유니크아이디로 설정하여 이 값으로 로그 값 추출하는 쿼리 만들기. TODO Caas환경용 - 에러로그 테이블에 보여질 컬럼값 가공
+                            uniqueId = uniqueId.replace(/\[/,"");
+                            uniqueId = uniqueId.replace(/\]/,"");
+
+                            serviceId = values.stream.serviceId; //TODO Caas환경용: serviceId
+                            serviceId = serviceId.replace(/\[/,"");
+                            serviceId = serviceId.replace(/\]/,"");
+
+                            if(values.values[j][1].indexOf("ClientIP=") > -1){
+                                clientIP = values.values[j][1].substring(values.values[j][1].indexOf("ClientIP=")+9, values.values[j][1].indexOf("ClientIP=") + 30);
+                                clientIP = clientIP.split(",")[0];
+                            } else {
+                                clientIP = "";
+                            }
+
+                            if(values.values[j][1].indexOf("currentElapsedTime=") > -1){
+                                elpasedTime = values.values[j][1].substring(values.values[j][1].indexOf("currentElapsedTime=")+19, values.values[j][1].indexOf("currentElapsedTime=")+30);
+                                elpasedTime = elpasedTime.split("]")[0];
+                                elpasedTime += "ms";
+                            } else {
+                                elpasedTime = "";
+                            }
 
                             element["ServiceId"] = serviceId;
                             element["ClientIP"] = clientIP;
@@ -541,8 +565,8 @@ let lokiJs = (function () {
                             element["contents"] = contents; //log 전체 내용
                             element["timestamp"] = ts;
 
-                            data.set(j,element);
-
+                            data.set(index,element);
+                            index += 1;
                         }
                         console.log(data);
                     }

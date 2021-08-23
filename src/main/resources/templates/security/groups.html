@@ -1,61 +1,55 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [Groups] start -->
         <div class="row">
-            <div class="main_title_top" ><i class="feather icon-chevrons-right"></i> Groups
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;Groups
                 <div class="dropdown d_ib f_r">
-                        <button class="btn btn-md btn-outline-white" id="btnNew" ><i class="feather icon-file-text"></i> NEW</button>
+                    <button class="btn btn-md btn-outline-white" id="btnNew" ><i class="feather icon-file-text"></i>&nbsp;NEW&nbsp;</button>
                 </div>
             </div>
         </div>
         <div id="groupList" class="row">
             <div th:fragment="groupList" class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(groupList) ? '0' : groupList.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(groupList) ? '0' : groupList.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table">
                         <thead>
-                        <tr>
-                            <th>그룹명</th>
-                            <th>사용자</th>
-                            <th>등록일</th>
-                        </tr>
+                            <tr>
+                                <th>그룹명</th>
+                                <th>사용자</th>
+                                <th>등록일</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(groupList)}">
-                            <td colspan="3" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(groupList)}" th:each="group : ${groupList}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:groupDetail(&quot;'+ ${group?.groupname} + '&quot;)'"
-                                   th:utext="${group?.groupname}"></a>
-                            </td>
-                            <td>
-                                <div class="row" th:if="${group?.users}" th:text="${group?.users.size()}"></div>
-                                <div class="row" th:unless="${group?.users}">0</div>
-                            </td>
-                            <td th:text="${#temporals.format(group?.createTime, 'yyyy-MM-dd hh:mm:ss')}"> </td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(groupList)}">
+                                <td colspan="3" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(groupList)}" th:each="group : ${groupList}">
+                                <td>
+                                    <a class="table2-link" th:href="'javascript:groupDetail(&quot;'+ ${group?.groupname} + '&quot;)'" th:utext="${group?.groupname}"></a>
+                                </td>
+                                <td>
+                                    <div class="row" th:if="${group?.users}" th:text="${group?.users.size()}"></div>
+                                    <div class="row" th:unless="${group?.users}">0</div>
+                                </td>
+                                <td th:text="${#temporals.format(group?.createTime, 'yyyy-MM-dd hh:mm:ss')}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [Modal] start -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
                 <div class="modal-content">
                     <div class="modal-title_box">
@@ -67,23 +61,20 @@
                         </div>
                     </div>
                     <div class="modal-nbody">
-                        <div class="table-title">
-
-                        </div>
+                        <div class="table-title"></div>
                         <div class="row">
                             <table class="table-nt">
                                 <tr>
                                     <th>그룹명</th>
                                     <td id="groupnameTd">
-                                        <input type="text" id="groupname" minlength="5" maxlength="40" style="width:100%;"
-                                               th:value="${group?.groupname}">
+                                        <input type="text" id="groupname" minlength="5" maxlength="40" style="width:100%;" th:value="${group?.groupname}">
                                     </td>
                                 </tr>
                                 <tr id="usernameTr">
                                     <th>그룹 사용자</th>
                                     <td>
                                         <div class="row" th:if="${group?.users}" th:each="user : ${group?.users}">
-                                            <div th:text="|${user.username} [${user.name}]|"/>
+                                            <div th:text="|${user.username} [${user.name}]|" />
                                         </div>
                                         <div class="row" th:if="${#arrays.isEmpty(group?.users)}">-</div>
                                     </td>
@@ -91,14 +82,13 @@
                                 <tr>
                                     <th>설명</th>
                                     <td id="descriptionTd">
-                                        <input type="text" style="width:100%;" maxlength="200" id="description"
-                                               th:value="${group?.description}">
+                                        <input type="text" style="width:100%;" maxlength="200" id="description" th:value="${group?.description}">
                                     </td>
                                 </tr>
                                 <tr id="updateTimeTr">
                                     <th>최종변경일</th>
                                     <td>
-                                        <div id="updateTime" th:text="${#temporals.format(group?.updateTime, 'yyyy-MM-dd hh:mm:ss')}"> </div>
+                                        <div id="updateTime" th:text="${#temporals.format(group?.updateTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
                                     </td>
                                 </tr>
                             </table>
@@ -107,11 +97,11 @@
                 </div>
             </div>
         </div>
-        <!-- [Modal] End -->
-        <!-- [Groups] End-->
     </div>
-    <input type="hidden" id="var-groupname" value=""/>
-    <input type="hidden" id="var-description" value=""/>
+
+    <input type="hidden" id="var-groupname" value="" />
+    <input type="hidden" id="var-description" value="" />
+
     <script type="text/javascript" th:inline="javascript">
 
         var $groupName = $("#var-groupname");

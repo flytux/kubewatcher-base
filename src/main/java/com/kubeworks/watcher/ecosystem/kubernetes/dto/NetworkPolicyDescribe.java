@@ -1,7 +1,9 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.kubernetes.client.openapi.models.*;
+import io.kubernetes.client.openapi.models.V1NetworkPolicyEgressRule;
+import io.kubernetes.client.openapi.models.V1NetworkPolicyIngressRule;
+import io.kubernetes.client.openapi.models.V1NetworkPolicySpec;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,8 +11,6 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +62,4 @@ public class NetworkPolicyDescribe {
 
     Map<String, String> egressNamespace;
     Map<String, String> egressPod;
-
-
 }

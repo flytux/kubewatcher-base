@@ -1,20 +1,18 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
+import com.google.common.collect.ImmutableList;
 import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter @Setter
+@FieldDefaults(level=AccessLevel.PRIVATE)
 public class PodMetrics implements KubernetesObject {
 
     String apiVersion;
@@ -24,11 +22,7 @@ public class PodMetrics implements KubernetesObject {
     String window;
     List<ContainerMetrics> containers;
 
-    public void setContainers(List<ContainerMetrics> containers) {
-        if (containers == null) {
-            this.containers = Collections.emptyList();
-        } else {
-            this.containers = containers;
-        }
+    public void setContainers(final List<ContainerMetrics> containers) {
+        this.containers = Objects.nonNull(containers) ? containers : ImmutableList.of();
     }
 }

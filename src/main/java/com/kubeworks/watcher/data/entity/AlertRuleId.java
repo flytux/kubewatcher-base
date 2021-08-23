@@ -1,16 +1,15 @@
 package com.kubeworks.watcher.data.entity;
 
+import com.kubeworks.watcher.data.converter.AlertCategoryConverter;
 import com.kubeworks.watcher.data.vo.AlertCategory;
 import com.kubeworks.watcher.data.vo.AlertResource;
 import com.kubeworks.watcher.data.vo.AlertType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Embeddable
@@ -18,6 +17,8 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 public class AlertRuleId implements Serializable {
+
+    private static final long serialVersionUID = -8472345303069653722L;
 
     public AlertRuleId(AlertType type, AlertCategory category, AlertResource resource) {
         this.type = type;
@@ -29,8 +30,9 @@ public class AlertRuleId implements Serializable {
     @Enumerated(EnumType.STRING)
     AlertType type;
 
-    @Column(name = "category", length = 20, nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Column(name = "category", length = 20)
+    @ColumnDefault("''")
+    @Convert(converter=AlertCategoryConverter.class)
     AlertCategory category;
 
     @Column(name = "resource", length = 20, nullable = false)

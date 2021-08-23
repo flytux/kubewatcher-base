@@ -1,27 +1,21 @@
 package com.kubeworks.watcher.ecosystem;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.ecosystem.kubernetes.serdes.CustomQuantityFormatter;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.custom.QuantityFormatter;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.RegExUtils;
 import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.springframework.http.HttpStatus;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.Cookie;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,38 +23,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ExternalConstants {
 
-    public ObjectMapper OBJECT_MAPPER;
-
-    public static void setObjectMapper(ObjectMapper objectMapper) {
-        ExternalConstants.OBJECT_MAPPER = objectMapper;
-    }
-
-    private Yaml yaml;
-
-    public static void setSnakeyaml(Yaml yaml) {
-        ExternalConstants.yaml = yaml;
-    }
-
-    public String yamlDump(Object data) {
-        if (data == null) {
-            return "";
-        }
-        return yaml.dump(data);
-    }
-
-    public String yamlDumpHtml(Object data) {
-        String yamlDump = ExternalConstants.yamlDump(data);
-        return RegExUtils.replaceAll(
-            RegExUtils.replaceAll(yamlDump, " ", "&nbsp;"),
-            "\n", "<br/>");
-    }
-
     public final String GRAFANA_API_PREFIX = "/api";
 
     public final String PROMETHEUS_QUERY_STRING_PREFIX = "?query=";
     public final String PROMETHEUS_QUERY_API_URI = GRAFANA_API_PREFIX + "/v1/query" + PROMETHEUS_QUERY_STRING_PREFIX;
     public final String PROMETHEUS_RANGE_QUERY_API_URI = GRAFANA_API_PREFIX + "/v1/query_range" + PROMETHEUS_QUERY_STRING_PREFIX;
-
 
     public final Pattern GRAFANA_TEMPLATE_VARIABLE_PATTERN = Pattern.compile("\\$\\w+");
     public final String SUCCESS_STATUS_STR = "success";
@@ -72,7 +39,6 @@ public class ExternalConstants {
     public final String NODE_ROLE_KUBERNETES_IO = "node-role.kubernetes.io/";
     public final String KUBERNETES_IO_ROLE = "kubernetes.io/role";
 
-    public final String REQUEST_HEADERS_BY_ACCEPT_TABLE_VALUE = "application/json;as=Table;v=v1;g=meta.k8s.io,application/json;as=Table;v=v1beta1;g=meta.k8s.io,application/json";
     public final int DEFAULT_K8S_CLIENT_TIMEOUT_SECONDS = 3;
     public final int DEFAULT_K8S_OBJECT_LIMIT = 500;
 
@@ -126,11 +92,11 @@ public class ExternalConstants {
         return days + "d";
     }
 
-    public Map<String, PageRowPanel> thymeleafConvertList2Map(List<PageRowPanel> list) {
+    public Map<String, PageRowPanel> thymeleafConvertList2Map(Collection<PageRowPanel> list) {
         if (CollectionUtils.isEmpty(list)) {
             return Collections.emptyMap();
         }
-        return list.stream().collect(Collectors.toMap(PageRowPanel::getTitle, panel -> panel));
+        return list.stream().collect(Collectors.toMap(PageRowPanel::getTitle, Function.identity()));
     }
 
     private final CustomQuantityFormatter QUANTITY_FORMATTER = new CustomQuantityFormatter();
@@ -145,21 +111,22 @@ public class ExternalConstants {
     }
 
     public Quantity addQuantity(Quantity quantity1, Quantity quantity2) {
-        BigDecimal add = quantity1.getNumber().add(quantity2.getNumber());
-        return new Quantity(add, quantity1.getFormat());
+        return new Quantity(quantity1.getNumber().add(quantity2.getNumber()), quantity1.getFormat());
     }
 
     public String thymeleafCookieGetThemeCss(Cookie[] list) {
+
         String theme = "/assets/css/style_dark.css";
-        for(int i = 0; i < list.length; i++) {
-            if (list[i].getName().equals("theme")) {
-                if(list[i].getValue().equals("white")) {
+
+        for (final Cookie cookie : list) {
+            if ("theme".equals(cookie.getName())) {
+                if ("white".equals(cookie.getValue())) {
                     theme = "/assets/css/style.css";
                 }
                 break;
             }
         }
+
         return theme;
     }
-
 }

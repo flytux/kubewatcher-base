@@ -60,7 +60,6 @@ public class NodeDescribe {
     DateTime creationTimestamp;
     Map<String, String> taints;
     boolean unSchedulable;
-    // optional // V1Lease lease;
     List<V1NodeCondition> conditions;
     List<V1NodeAddress> addresses;
     Map<String, Quantity> capacity;
@@ -88,7 +87,6 @@ public class NodeDescribe {
         if (requestMetric == null) {
             return new BigDecimal(0);
         }
-
 
         return requestMetric.getNumber()
             .divide(allocatableMetric.getNumber(), 3, RoundingMode.HALF_UP)

@@ -1,6 +1,7 @@
 package com.kubeworks.watcher.cloud.container.controller.config;
 
-import com.kubeworks.watcher.ecosystem.kubernetes.dto.*;
+import com.kubeworks.watcher.base.BaseController;
+import com.kubeworks.watcher.ecosystem.kubernetes.service.*;
 import com.kubeworks.watcher.preference.service.PageConstants;
 import com.kubeworks.watcher.preference.service.PageViewService;
 import lombok.AllArgsConstructor;
@@ -10,157 +11,159 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@AllArgsConstructor(onConstructor_ = {@Autowired})
-public class ConfigController {
+@RequestMapping(value="/cluster/config")
+@AllArgsConstructor(onConstructor_={@Autowired})
+public class ConfigController implements BaseController {
 
-    private static final long CONFIGMAP_MENU_ID = 300;
-    private static final long SECRET_MENU_ID = 301;
-    private static final long RESOURCEQUOTA_MENU_ID = 302;
     private static final long HPA_MENU_ID = 303;
+    private static final long SECRET_MENU_ID = 301;
+    private static final long CONFIGMAP_MENU_ID = 300;
     private static final long NAMESPACE_MENU_ID = 304;
-    private static final long CUSTOMRESOURCE_MENU_ID = 305;
+    private static final long RESOURCE_QUOTA_MENU_ID = 302;
+    private static final long CUSTOM_RESOURCE_MENU_ID = 305;
+
+    private static final String VIEW_HPA = "hpa";
+    private static final String VIEW_SECRETS = "secrets";
+    private static final String VIEW_CONFIGMAPS = "configmaps";
+    private static final String VIEW_RESOURCE_QUOTAS = "resource-quotas";
+    private static final String VIEW_CUSTOM_RESOURCES = "custom-resources";
 
     private final PageViewService pageViewService;
-    private final ConfigRestController configRestController;
 
-    @GetMapping(value = "/cluster/config/configmaps", produces = MediaType.TEXT_HTML_VALUE)
-    public String configMaps(Model model) {
-        List<ConfigMapTable> configMaps = configRestController.configMaps();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    private final ConfigMapService configMapService;
+    private final SecretService secretService;
+    private final ResourceQuotaService resourceQuotaService;
+    private final HPAService hpaService;
+    private final NamespaceService namespaceService;
+    private final CustomResourceService customResourceService;
 
-        model.addAttribute("configMaps", configMaps);
-        model.addAttribute("page", pageViewService.getPageView(CONFIGMAP_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_CONFIGMAPS);
-        return "cluster/config/configmaps";
+    @GetMapping(value="/configmaps")
+    public String configMaps(final Model model) {
+
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_CONFIGMAPS);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(CONFIGMAP_MENU_ID));
+        model.addAttribute("configMaps", configMapService.allNamespaceConfigMapTables());
+
+        return createViewName(VIEW_CONFIGMAPS);
     }
 
-    @GetMapping(value = "/cluster/config/namespace/{namespace}/configmaps", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String configMaps(Model model, @PathVariable String namespace) {
-        List<ConfigMapTable> configMaps = configRestController.configMaps(namespace);
-        model.addAttribute("configMaps", configMaps);
-        return "cluster/config/configmaps :: contentList";
+    @GetMapping(value="/namespace/{namespace}/configmaps", produces=MediaType.APPLICATION_JSON_VALUE)
+    public String configMaps(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("configMaps", configMapService.configMaps(namespace));
+        return createViewName(VIEW_CONFIGMAPS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/cluster/config/configmaps/namespace/{namespace}/configmap/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String configMap(Model model, @PathVariable String namespace, @PathVariable String name) {
-        ConfigMapDescribe configMapDescribe = configRestController.configMap(namespace, name);
-        model.addAttribute("configMap", configMapDescribe);
-        return "cluster/config/configmaps :: modalContents";
+    @GetMapping(value="/configmaps/namespace/{namespace}/configmap/{name}")
+    public String configMap(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("configMap", configMapService.configMap(namespace, name).orElse(null));
+        return createViewName(VIEW_CONFIGMAPS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/cluster/config/secrets", produces = MediaType.TEXT_HTML_VALUE)
-    public String secrets(Model model) {
-        List<SecretTable> secrets = configRestController.secrets();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/secrets")
+    public String secrets(final Model model) {
 
-        model.addAttribute("secrets", secrets);
-        model.addAttribute("page", pageViewService.getPageView(SECRET_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_SECRETS);
-        return "cluster/config/secrets";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_SECRETS);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(SECRET_MENU_ID));
+        model.addAttribute(VIEW_SECRETS, secretService.allNamespaceSecretTables());
+
+        return createViewName(VIEW_SECRETS);
     }
 
-    @GetMapping(value = "/cluster/config/namespace/{namespace}/secrets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String secrets(Model model, @PathVariable String namespace) {
-        List<SecretTable> secrets = configRestController.secrets(namespace);
-        model.addAttribute("secrets", secrets);
-        return "cluster/config/secrets :: contentList";
+    @GetMapping(value="/namespace/{namespace}/secrets", produces=MediaType.APPLICATION_JSON_VALUE)
+    public String secrets(final Model model, @PathVariable final String namespace) {
+        model.addAttribute(VIEW_SECRETS, secretService.secrets(namespace));
+        return createViewName(VIEW_SECRETS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/cluster/config/secrets/namespace/{namespace}/secret/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String secret(Model model, @PathVariable String namespace, @PathVariable String name) {
-        SecretDescribe secretDescribe = configRestController.secret(namespace, name);
-        model.addAttribute("secret", secretDescribe);
-        return "cluster/config/secrets :: modalContents";
+    @GetMapping(value="/secrets/namespace/{namespace}/secret/{name}")
+    public String secret(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("secret", secretService.secret(namespace, name).orElse(null));
+        return createViewName(VIEW_SECRETS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/cluster/config/resource-quotas", produces = MediaType.TEXT_HTML_VALUE)
-    public String resourceQuotas(Model model) {
-        List<ResourceQuotaTable> resourceQuotas = configRestController.resourceQuotas();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/resource-quotas")
+    public String resourceQuotas(final Model model) {
 
-        model.addAttribute("resourceQuotas", resourceQuotas);
-        model.addAttribute("page", pageViewService.getPageView(RESOURCEQUOTA_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_RESOURCEQUOTAS);
-        return "cluster/config/resource-quotas";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_RESOURCEQUOTAS);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(RESOURCE_QUOTA_MENU_ID));
+        model.addAttribute("resourceQuotas", resourceQuotaService.allNamespaceResourceQuotaTables());
+
+        return createViewName(VIEW_RESOURCE_QUOTAS);
     }
 
-    @GetMapping(value = "/cluster/config/namespace/{namespace}/resource-quotas", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String resourceQuotas(Model model, @PathVariable String namespace) {
-        List<ResourceQuotaTable> resourceQuotas = configRestController.resourceQuotas(namespace);
-        model.addAttribute("resourceQuotas", resourceQuotas);
-        return "cluster/config/resource-quotas :: contentList";
+    @GetMapping(value="/namespace/{namespace}/resource-quotas", produces=MediaType.APPLICATION_JSON_VALUE)
+    public String resourceQuotas(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("resourceQuotas", resourceQuotaService.resourceQuotas(namespace));
+        return createViewName(VIEW_RESOURCE_QUOTAS, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/cluster/config/resource-quotas/namespace/{namespace}/resourceQuota/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String resourceQuota(Model model, @PathVariable String namespace, @PathVariable String name) {
-        ResourceQuotaDescribe resourceQuotaDescribe = configRestController.resourceQuota(namespace, name);
-        model.addAttribute("resourceQuota", resourceQuotaDescribe);
-        return "cluster/config/resource-quotas :: modalContents";
+    @GetMapping(value="/resource-quotas/namespace/{namespace}/resourceQuota/{name}")
+    public String resourceQuota(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("resourceQuota", resourceQuotaService.resourceQuota(namespace, name).orElse(null));
+        return createViewName(VIEW_RESOURCE_QUOTAS, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/cluster/config/hpa", produces = MediaType.TEXT_HTML_VALUE)
-    public String hpa(Model model) {
-        List<HPATable> hpa = configRestController.hpa();
-        List<NamespaceTable> namespaces = configRestController.namespaces();
+    @GetMapping(value="/hpa")
+    public String hpa(final Model model) {
 
-        model.addAttribute("hpa", hpa);
-        model.addAttribute("page", pageViewService.getPageView(HPA_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        model.addAttribute("link", PageConstants.API_URL_BY_NAMESPACED_HPA);
-        return "cluster/config/hpa";
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.LINK, PageConstants.API_URL_BY_NAMESPACED_HPA);
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(HPA_MENU_ID));
+        model.addAttribute("hpa", hpaService.allNamespaceHPATables());
+
+        return createViewName(VIEW_HPA);
     }
 
-    @GetMapping(value = "/cluster/config/namespace/{namespace}/hpa", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String hpa(Model model, @PathVariable String namespace) {
-        List<HPATable> hpa = configRestController.hpa(namespace);
-        model.addAttribute("hpa", hpa);
-        return "cluster/config/hpa :: contentList";
+    @GetMapping(value="/namespace/{namespace}/hpa", produces=MediaType.APPLICATION_JSON_VALUE)
+    public String hpa(final Model model, @PathVariable final String namespace) {
+        model.addAttribute("hpa", hpaService.hpa(namespace));
+        return createViewName(VIEW_HPA, Props.CONTENT_LIST);
     }
 
-    @GetMapping(value = "/cluster/config/hpa/namespace/{namespace}/hpas/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String hpas(Model model, @PathVariable String namespace, @PathVariable String name) {
-        HPADescribe hpaDescribe = configRestController.hpas(namespace, name);
-        model.addAttribute("hpas", hpaDescribe);
-        return "cluster/config/hpa :: modalContents";
+    @GetMapping(value="/hpa/namespace/{namespace}/hpas/{name}")
+    public String hpas(final Model model, @PathVariable final String namespace, @PathVariable final String name) {
+        model.addAttribute("hpas", hpaService.hpa(namespace, name).orElse(null));
+        return createViewName(VIEW_HPA, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/cluster/config/namespaces", produces = MediaType.TEXT_HTML_VALUE)
-    public String namespaces(Model model) {
-        List<NamespaceTable> namespaces = configRestController.namespaces();
-        model.addAttribute("page", pageViewService.getPageView(NAMESPACE_MENU_ID));
-        model.addAttribute("namespaces", namespaces);
-        return "cluster/config/namespaces";
+    @GetMapping(value="/namespaces")
+    public String namespaces(final Model model) {
+
+        model.addAttribute(Props.NAMESPACES, namespaceService.allNamespaceTables());
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(NAMESPACE_MENU_ID));
+
+        return createViewName(Props.NAMESPACES);
     }
 
-    @GetMapping(value = "/cluster/config/namespaces/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String namespace(Model model, @PathVariable String name) {
-        NamespaceDescribe namespaceDescribe = configRestController.namespace(name);
-        model.addAttribute("namespace", namespaceDescribe);
-        return "cluster/config/namespaces :: modalContents";
+    @GetMapping(value="/namespaces/{name}")
+    public String namespace(final Model model, @PathVariable final String name) {
+        model.addAttribute("namespace", namespaceService.namespace(name).orElse(null));
+        return createViewName(Props.NAMESPACES, Props.MODAL_CONTENTS);
     }
 
-    @GetMapping(value = "/cluster/config/custom-resources", produces = MediaType.TEXT_HTML_VALUE)
-    public String customResources(Model model) {
-        List<CustomResourceTable> customResources = configRestController.customResources();
-        model.addAttribute("page", pageViewService.getPageView(CUSTOMRESOURCE_MENU_ID));
-        model.addAttribute("customResources", customResources);
-        return "cluster/config/custom-resources";
+    @GetMapping(value="/custom-resources")
+    public String customResources(final Model model) {
+
+        model.addAttribute(Props.PAGE, pageViewService.getPageView(CUSTOM_RESOURCE_MENU_ID));
+        model.addAttribute("customResources", customResourceService.allCustomResourceTables());
+
+        return createViewName(VIEW_CUSTOM_RESOURCES);
     }
 
-    @GetMapping(value = "/cluster/config/custom-resources/{name}", produces = MediaType.TEXT_HTML_VALUE)
-    public String customResource(Model model, @PathVariable String name) {
-        CustomResourceDescribe customResourceDescribe = configRestController.customResource(name);
-        model.addAttribute("customResource", customResourceDescribe);
-        return "cluster/config/custom-resources :: modalContents";
+    @GetMapping(value="/custom-resources/{name}")
+    public String customResource(final Model model, @PathVariable final String name) {
+        model.addAttribute("customResource", customResourceService.customResource(name).orElse(null));
+        return createViewName(VIEW_CUSTOM_RESOURCES, Props.MODAL_CONTENTS);
     }
 
-
-
+    @Override
+    public String retrieveViewNamePrefix() {
+        return "cluster/config/";
+    }
 }

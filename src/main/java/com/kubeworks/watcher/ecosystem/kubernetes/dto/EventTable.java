@@ -3,11 +3,10 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter @Setter
 @NoArgsConstructor
-public class EventTable {
+@FieldDefaults(level=AccessLevel.PRIVATE)
+public class EventTable implements NamespaceSettable {
 
     @Builder
     private EventTable(String lastSeen, String type, String reason, String object,
@@ -37,5 +36,4 @@ public class EventTable {
     String count;
     String name;
     String namespace;
-
 }

@@ -1,122 +1,110 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [Nodes] start -->
         <div class="row">
-            <div class="main_title_top"><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title_top">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
             </div>
         </div>
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(nodes) ? '0' : nodes.size()}" class="point pr_10">8</span>
+                    Total : <span th:text="${#arrays.isEmpty(nodes) ? '0' : nodes.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>CPU</th>
-                            <th>Memory</th>
-                            <th>Disk</th>
-                            <th>Role</th>
-                            <th>Version</th>
-                            <th>Age</th>
-                            <th>Condition</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>CPU</th>
+                                <th>Memory</th>
+                                <th>Disk</th>
+                                <th>Role</th>
+                                <th>Version</th>
+                                <th>Age</th>
+                                <th>Condition</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(nodes)}">
-                            <td colspan="8" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(nodes)}" th:each="node : ${nodes}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:nodeDetail(&quot;' + ${node?.name} + '&quot;)'"
-                                   th:utext="${node?.name}">Name</a>
-                            </td>
-
-                            <td>
-                                <th:block class="row" th:each="panelRow : ${page?.rows}">
-                                    <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
-                                        <th:block th:if ="${panel.title} == 'CPU'">
-                                            <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                            <tr th:if="${#arrays.isEmpty(nodes)}">
+                                <td colspan="8" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(nodes)}" th:each="node : ${nodes}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${node?.name}" th:utext="${node?.name}"></a>
+                                </td>
+                                <td>
+                                    <th:block class="row" th:each="panelRow : ${page?.rows}">
+                                        <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                            <th:block th:if ="${panel.title} == 'CPU'">
+                                                <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                            </th:block>
                                         </th:block>
                                     </th:block>
-                                </th:block>
-                            </td>
-                            <td>
-                                <th:block class="row" th:each="panelRow : ${page?.rows}">
-                                    <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
-                                        <th:block th:if ="${panel.title} == 'Memory'">
-                                            <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                </td>
+                                <td>
+                                    <th:block class="row" th:each="panelRow : ${page?.rows}">
+                                        <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                            <th:block th:if ="${panel.title} == 'Memory'">
+                                                <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                            </th:block>
                                         </th:block>
                                     </th:block>
-                                </th:block>
-                            </td>
-                            <td>
-                                <th:block th:each="panelRow : ${page?.rows}">
-                                    <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
-                                        <th:block th:if ="${panel.title} == 'Disk'">
-                                            <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                </td>
+                                <td>
+                                    <th:block th:each="panelRow : ${page?.rows}">
+                                        <th:block th:if= "${panelRow.title == 'node list'}" th:each="panel : ${panelRow?.pageRowPanels}">
+                                            <th:block th:if ="${panel.title} == 'Disk'">
+                                                <div th:id="|container-${node?.name}-${panel?.panelId}|" style="min-height: 160px;"></div>
+                                            </th:block>
                                         </th:block>
                                     </th:block>
-                                </th:block>
-                            </td>
-                            <td th:text="${node?.roles}">Role</td>
-                            <td th:text="${node?.version}">Version</td>
-                            <td th:text="${node?.age}">Age</td>
-                            <td>
-                                <span th:class="${#strings.contains(node?.status, 'Ready') ? 'madal_label_active' : 'madal_label_warning'}"
-                                      th:text="${node?.status}">UP</span>
-                            </td>
-                        </tr>
+                                </td>
+                                <td th:text="${node?.roles}"></td>
+                                <td th:text="${node?.version}"></td>
+                                <td th:text="${node?.age}"></td>
+                                <td>
+                                    <span th:class="${#strings.contains(node?.status, 'Ready') ? 'madal_label_active' : 'madal_label_warning'}" th:text="${node?.status}"></span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
-                    <!-- [Modal] start -->
-                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-                         aria-labelledby="myModalLabel" aria-hidden="true" >
+
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div th:fragment="modalContents" class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-title_box">
                                     <div class="modal-title">
                                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <span th:text="|Node : ${node?.name}|" id="myModalLabel">Node : XXX [신계약]</span>
+                                        <span th:text="|Node : ${node?.name}|" id="myModalLabel"></span>
                                     </div>
                                 </div>
                                 <div class="modal-nbody row_scroll">
-                                    <div class="table-title">
-                                        Metrics
-                                    </div>
+                                    <div class="table-title">Metrics</div>
                                     <div class="row" th:each="panelRow : ${page?.rows}">
-                                        <div th:if= "${panelRow.title == 'pop-up'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">
+                                        <div th:if="${panelRow.title == 'pop-up'}" th:each="panel : ${panelRow?.pageRowPanels}" class="col-md-12 col-lg-3">
                                             <div class="box_panel">
-                                                <div class="box_panel-heading" th:text="${panel?.title}">Panel Title</div>
+                                                <div class="box_panel-heading" th:text="${panel?.title}"></div>
                                                 <div th:id="|container-${panel?.panelId}|" style="min-height: 160px;"></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="table-title">
-                                            Metadata
-                                        </div>
+                                        <div class="table-title">Metadata</div>
                                         <table class="table-nt">
                                             <tr>
                                                 <th>Created</th>
-                                                <td th:text="${#dates.format(node?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08)</td>
+                                                <td th:text="${#dates.format(node?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                                             </tr>
                                             <tr>
                                                 <th>Name</th>
-                                                <td th:text="${node?.name}">Event ID</td>
+                                                <td th:text="${node?.name}"></td>
                                             </tr>
                                             <tr>
                                                 <th>Capacity</th>
@@ -144,27 +132,23 @@
                                             </tr>
                                             <tr>
                                                 <th>OS (Image)</th>
-                                                <td th:text="${node?.systemInfo?.osImage}">kubelet</td>
+                                                <td th:text="${node?.systemInfo?.osImage}"></td>
                                             </tr>
                                             <tr>
                                                 <th>Container Runtime</th>
-                                                <td th:text="${node?.systemInfo?.containerRuntimeVersion}">00d ago(2020-05-20 15:23:11)</td>
+                                                <td th:text="${node?.systemInfo?.containerRuntimeVersion}"></td>
                                             </tr>
                                             <tr>
                                                 <th>Kubelet Version</th>
-                                                <td th:text="${node?.systemInfo?.kubeletVersion}">00d ago(2020-05-20 15:23:11)</td>
+                                                <td th:text="${node?.systemInfo?.kubeletVersion}"></td>
                                             </tr>
                                             <tr>
                                                 <th>Labels</th>
                                                 <td>
                                                     <div class="row" th:if="${node?.labels}" th:each="entry : ${node?.labels}" >
                                                         <div class="col-md-4">
-                                                            <span class="madal_label"
-                                                                th:if = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|">
-                                                            </span>
-                                                            <span class="madal_label"
-                                                                  th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|">
-                                                            </span>
+                                                            <span class="madal_label" th:if="${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${#strings.substring(entry.value,0,70)}...|"></span>
+                                                            <span class="madal_label" th:unless = "${#strings.length(entry.value)>70}" th:text="|${entry.key} : ${entry.value}|"></span>
                                                         </div>
                                                     </div>
                                                     <div th:unless="${node?.labels}">-</div>
@@ -175,8 +159,7 @@
                                                 <td>
                                                     <div th:if="${node?.annotations}" th:each="entry : ${node?.annotations}">
                                                         <div class="col-md-4">
-                                                            <span  class="madal_label"
-                                                                   th:text="|${entry.key} : ${entry.value}|">label</span>
+                                                            <span class="madal_label" th:text="|${entry.key} : ${entry.value}|"></span>
                                                         </div>
                                                     </div>
                                                     <div th:unless="${node?.annotations}">-</div>
@@ -184,146 +167,136 @@
                                             </tr>
                                         </table>
                                     </div>
-                                    <div class="table-title">
-                                        Pods
-                                    </div>
+                                    <div class="table-title">Pods</div>
                                     <table class="list_mtable_100">
                                         <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Namespace</th>
-                                            <th>Status</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Namespace</th>
+                                                <th>Status</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:if="${#arrays.isEmpty(node?.pods)}">
-                                            <td colspan="3" class="text-center">No pods</td>
-                                        </tr>
-                                        <tr th:if="${node?.pods}" th:each="pod : ${node?.pods}">
-                                            <td th:text="${pod?.name}">Name</td>
-                                            <td th:text="${pod?.namespace}">Namespace</td>
-                                            <td th:switch="${pod?.status}">
-                                                <span th:case="Running" class="madal_label_active" th:text="${pod?.status}">Running</span>
-                                                <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}">Completed</span>
-                                                <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}">Pending</span>
-                                                <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}">Succeeded</span>
-                                                <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}">Failed</span>
-                                                <span th:case="Unknown" class="madal_label" th:text="${pod?.status}">Unknown</span>
-                                                <span th:case="*" class="madal_label" th:text="${pod?.status}"></span>
-                                            </td>
-                                        </tr>
+                                            <tr th:if="${#arrays.isEmpty(node?.pods)}">
+                                                <td colspan="3" class="text-center">No pods</td>
+                                            </tr>
+                                            <tr th:if="${node?.pods}" th:each="pod : ${node?.pods}">
+                                                <td th:text="${pod?.name}"></td>
+                                                <td th:text="${pod?.namespace}"></td>
+                                                <td th:switch="${pod?.status}">
+                                                    <span th:case="Running" class="madal_label_active" th:text="${pod?.status}"></span>
+                                                    <span th:case="Completed" class="madal_label_active" th:text="${pod?.status}"></span>
+                                                    <span th:case="Pending" class="madal_label_warning" th:text="${pod?.status}"></span>
+                                                    <span th:case="Succeeded" class="madal_label_active" th:text="${pod?.status}"></span>
+                                                    <span th:case="Failed" class="madal_label_danger" th:text="${pod?.status}"></span>
+                                                    <span th:case="Unknown" class="madal_label" th:text="${pod?.status}"></span>
+                                                    <span th:case="*" class="madal_label" th:text="${pod?.status}"></span>
+                                                </td>
+                                            </tr>
                                         <tbody>
                                     </table>
-                                    <div class="table-title">
-                                        Events
-                                    </div>
+                                    <div class="table-title">Events</div>
                                     <table class="list_mtable_100">
                                         <thead>
-                                        <tr>
-                                            <th>Type</th>
-                                            <th>Reason</th>
-                                            <th>Count</th>
-                                            <th>Sub-Object</th>
-                                            <th>Last</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Reason</th>
+                                                <th>Count</th>
+                                                <th>Sub-Object</th>
+                                                <th>Last</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:if="${#arrays.isEmpty(node?.events)}">
-                                            <td colspan="5" class="text-center">No events</td>
-                                        </tr>
-                                        <tr th:if="${node?.events}" th:each="event : ${node?.events}">
-                                            <td th:text="${event?.type}">Type</td>
-                                            <td th:text="${event?.reason}">Reason</td>
-                                            <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}">Count</td>
-                                            <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}">Sub-Object</td>
-                                            <td th:text="${event?.lastSeen}">Last</td>
-                                        </tr>
+                                            <tr th:if="${#arrays.isEmpty(node?.events)}">
+                                                <td colspan="5" class="text-center">No events</td>
+                                            </tr>
+                                            <tr th:if="${node?.events}" th:each="event : ${node?.events}">
+                                                <td th:text="${event?.type}"></td>
+                                                <td th:text="${event?.reason}"></td>
+                                                <td th:text="${#numbers.formatInteger(event?.count, 0, 'COMMA')}"></td>
+                                                <td th:text="${#strings.isEmpty(event?.subObject) ? '-' : event?.subObject}"></td>
+                                                <td th:text="${event?.lastSeen}"></td>
+                                            </tr>
                                         <tbody>
                                     </table>
-
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- [Modal] End -->
                 </div>
             </div>
         </div>
-        <!-- [Events] End-->
     </div>
+
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
 
-    <input type="hidden" id="var-node" value=""/>
+    <input type="hidden" id="var-node" value="" />
 
     <script type="text/javascript" th:inline="javascript">
-
         /*<![CDATA[*/
-        let pageRows = [[${page?.rows}]],
-            node = [[${nodes}]],
-            apiHost = [[${host}]];
-            let nodePanel = new Map();
+        let apiHost = [[${host}]];
+        const node = [[${nodes}]];
+        const pageRows = [[${page?.rows}]];
+        const pathPrefix = '/api/v1/monitoring/cluster/nodes/';
+
+        const nodePanels = {};
         /*]]>*/
 
-        var $node = $("#var-node");
+        const init = function() {
+            if (!!!node) { return; }
 
-       $(document).ready(function () {
-            for (var i = 0; i < node.length; i++) {
-                let nodeName = node[i].name;
-                for (var j=0; j < pageRows.length; j++) {
-                    if ( pageRows[j].title == 'node list' ) {
-                        let panels = JSON.parse(JSON.stringify(pageRows[j].pageRowPanels));
-                        panels.forEach(panel =>  {
-                            panel.panelId = nodeName + "-" + panel.panelId;
-                            panel.chartQueries.forEach(query => {
-                                query.apiQuery = query.apiQuery.replace(new RegExp('\\$node', 'g'), nodeName);
-                            });
-                            return panel;
-                        });
-                        nodePanel.set(nodeName, panels);
-                    }
-                }
+            node.forEach(n => {
+                const name = n['name'];
 
-                let nodePanels = nodePanel.get(nodeName);
-                nodePanels.forEach(panel => {
-                    commonChartsJs.createPanel(panel);
+                pageRows.forEach(r => {
+                   if ('node list' === r['title']) {
+                       const prp = JSON.parse(JSON.stringify(r['pageRowPanels']));
+                       prp.forEach(p => {
+                           p['panelId'] = name + '-' + p['panelId'];
+                           p['chartQueries'].forEach(q => {
+                               q['apiQuery'] = q['apiQuery'].replace(/\$node/g, name);
+                           });
+
+                           return p;
+                       });
+
+                       nodePanels[name] = prp;
+                   }
                 });
-            }
-        });
 
-        function nodeDetail(nodeName) {
-            $node.val(nodeName);
-            $.ajax({
-                url: "/api/v1/monitoring/cluster/nodes/" + nodeName + "/metrics",
-                success: function (data) {
+                nodePanels[name].forEach(p => commonChartsJs.createPanel(p));
+            });
+        };
 
+        $(document).ready(function() {
+            init();
+
+            $(document).on('click', 'a.table2-link', function() {
+                const n = $(this).data('name');
+                const path = pathPrefix + n + '/metrics';
+
+                $('#var-node').val(n);
+
+                kube.execute(path, function(data) {
                     apiHost = data.host;
-                    var row = data.page.rows;
-                    for (var i=0; i<row.length; i++) {
-                        if ( row[i].title ==  'pop-up' ) {
-                            row[i].pageRowPanels.forEach(panel => {
-                                commonChartsJs.removeChart(panel);
-                                commonChartsJs.createPanel(panel);
+
+                    data.page.rows.forEach(r => {
+                        if ('pop-up' === r['title']) {
+                            r['pageRowPanels'].forEach(p => {
+                                commonChartsJs.removeChart(p);
+                                commonChartsJs.createPanel(p);
                             });
                         }
-                    }
+                    });
 
-                    $('#myModal').text("");
-                    $('#myModal').html(data.describe);
-                    $('#myModal').modal();
-                    $(".knob").knob();
-                    // $('#myModal').modal('open');
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
+                    $('#myModal').text('').html(data['describe']).modal();
+                    $('.knob').knob();
+                });
             });
-        }
+        });
     </script>
-
 </div>
 </body>
 </html>

@@ -1,152 +1,137 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  xmlns:th="http://www.thymeleaf.org"
-	  layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
+    <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
-
-        <!-- [customResources] start -->
         <div class="row">
-            <div class="main_title" ><i class="feather icon-chevrons-right"></i> <span th:text="${page?.title}"></span>
+            <div class="main_title">
+                <i class="feather icon-chevrons-right"></i>&nbsp;<span th:text="${page?.title}"></span>
             </div>
         </div>
 
         <div class="row">
             <div class="box_panel">
                 <div class="box_panel-total">
-                    Total : <span th:text="${#arrays.isEmpty(customResources) ? '0' : customResources.size()}" class="point pr_10">6</span>
+                    Total : <span th:text="${#arrays.isEmpty(customResources) ? '0' : customResources.size()}" class="point pr_10"></span>
                 </div>
                 <div class="box_table-body">
                     <table class="list_table70vh">
                         <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Group</th>
-                            <th>Version</th>
-                            <th>Scope</th>
-                            <th>Age</th>
-                        </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Group</th>
+                                <th>Version</th>
+                                <th>Scope</th>
+                                <th>Age</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#arrays.isEmpty(customResources)}">
-                            <td colspan="5" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(customResources)}" th:each="customResource : ${customResources}">
-                            <td>
-                                <a class="table2-link" th:href="'javascript:groupDetail(&quot;'+ ${customResource?.name} + '&quot;)'"
-                                   th:utext="${customResource?.name}">Name</a>
-                            </td>
-                            <td th:text="${customResource?.group}">Group</td>
-                            <td th:text="${customResource?.version}">Version</td>
-                            <td th:text="${customResource?.scope}">Scope</td>
-                            <td th:text="${customResource?.age}">Age</td>
-                        </tr>
+                            <tr th:if="${#arrays.isEmpty(customResources)}">
+                                <td colspan="5" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(customResources)}" th:each="customResource : ${customResources}">
+                                <td>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${customResource?.name}" th:utext="${customResource?.name}"></a>
+                                </td>
+                                <td th:text="${customResource?.group}"></td>
+                                <td th:text="${customResource?.version}"></td>
+                                <td th:text="${customResource?.scope}"></td>
+                                <td th:text="${customResource?.age}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- [[customResources]] End-->
     </div>
 
-    <!-- [Modal] start -->
-    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div th:fragment="modalContents" class="modal-dialog modal-lg" style="width:765px;">
             <div class="modal-content">
                 <div class="modal-title_box">
                     <div class="modal-title">
                         <button type="button" class="close px-3" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <span id="myModalLabel" th:text="|Custom Resource : ${customResource?.name}|">Custom Resources : Custom Resources 명</span>
+                        <span id="myModalLabel" th:text="|Custom Resource : ${customResource?.name}|"></span>
                     </div>
                 </div>
-                <div class="modal-nbody row_scroll" >
-                    <div class="table-title">
-                        Metadata
-                    </div>
+                <div class="modal-nbody row_scroll">
+                    <div class="table-title">Metadata</div>
                     <table class="table-nt">
                         <tr>
                             <th>Created</th>
-                            <td th:text="${#dates.format(customResource?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}">24일 15시 32분 (2020-05-24 15:32:08) </td>
+                            <td th:text="${#dates.format(customResource?.creationTimestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
                         </tr>
                         <tr>
                             <th>Name</th>
-                            <td th:text="${customResource?.name}">example</td>
+                            <td th:text="${customResource?.name}"></td>
                         </tr>
                         <tr>
                             <th>Group</th>
-                            <td th:text="${customResource?.group}">example.crd.com</td>
+                            <td th:text="${customResource?.group}"></td>
                         </tr>
                         <tr>
                             <th>Version</th>
                             <td>
-                                <div th:if="${customResource?.versions}" th:text = "${#strings.arrayJoin(customResource?.versions, ', ')}">
-                                </div>
+                                <div th:if="${customResource?.versions}" th:text="${#strings.arrayJoin(customResource?.versions, ', ')}"></div>
                                 <div th:unless="${customResource?.versions}">-</div>
                             </td>
                         </tr>
                         <tr>
                             <th>Scope</th>
-                            <td th:text="${#strings.isEmpty(customResource?.scope) ? '-' : customResource?.scope}">Cluster</td>
+                            <td th:text="${#strings.isEmpty(customResource?.scope) ? '-' : customResource?.scope}"></td>
                         </tr>
                         <tr>
                             <th>Conversion</th>
-                            <td th:text="${#strings.isEmpty(customResource?.conversion) ? '-' : customResource?.conversion}">{"strategy","None"}</td>
+                            <td th:text="${#strings.isEmpty(customResource?.conversion) ? '-' : customResource?.conversion}"></td>
                         </tr>
                     </table>
 
-                <div class="table-title">
-                    Conditions
-                </div>
-                <table class="list_mtable_100_no">
-                    <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Reason</th>
-                        <th>Last Time</th>
-                        <th>Message</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:if="${#arrays.isEmpty(customResource?.conditions)}">
-                            <td colspan="4" class="text-center">No results</td>
-                        </tr>
-                        <tr th:unless="${#arrays.isEmpty(customResource?.conditions)}" th:each="condition : ${customResource?.conditions}">
-                            <td th:text="${condition?.type}">Type</td>
-                            <td th:text="${condition?.reason}">Reason</td>
-                            <td th:text="${#dates.format(condition?.lastTransitionTime, 'yyyy-MM-dd HH:mm:ss')}">LastTime</td>
-                            <td th:text="${condition?.message}">Message</td>
-                        </tr>
-                    <tbody>
-                </table>
-                    <div class="table-title">
-                        Names
-                    </div>
+                    <div class="table-title">Conditions</div>
+                    <table class="list_mtable_100_no">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Reason</th>
+                                <th>Last Time</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#arrays.isEmpty(customResource?.conditions)}">
+                                <td colspan="4" class="text-center">No results</td>
+                            </tr>
+                            <tr th:unless="${#arrays.isEmpty(customResource?.conditions)}" th:each="condition : ${customResource?.conditions}">
+                                <td th:text="${condition?.type}"></td>
+                                <td th:text="${condition?.reason}"></td>
+                                <td th:text="${#dates.format(condition?.lastTransitionTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${condition?.message}"></td>
+                            </tr>
+                        <tbody>
+                    </table>
 
+                    <div class="table-title">Names</div>
                     <table class="list_mtable_100">
                         <thead>
-                        <tr>
-                            <th>Plural</th>
-                            <th>Singular</th>
-                            <th>Kind</th>
-                            <th>listKind</th>
-                        </tr>
+                            <tr>
+                                <th>Plural</th>
+                                <th>Singular</th>
+                                <th>Kind</th>
+                                <th>listKind</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr th:if="${#arrays.isEmpty(customResource?.acceptedNames)}">
                                 <td colspan="4" class="text-center">No results</td>
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(customResource?.acceptedNames)}" th:each="name : ${customResource?.acceptedNames}">
-                                <td th:text="${name?.plural}">Type</td>
-                                <td th:text="${name?.singular}">Status</td>
-                                <td th:text="${name?.kind}">Reason</td>
-                                <td th:text="${name?.listKind}">Message</td>
+                                <td th:text="${name?.plural}"></td>
+                                <td th:text="${name?.singular}"></td>
+                                <td th:text="${name?.kind}"></td>
+                                <td th:text="${name?.listKind}"></td>
                             </tr>
                         <tbody>
                     </table>
@@ -154,26 +139,16 @@
             </div>
         </div>
     </div>
-    <!-- [Modal] End -->
-    <script type="text/javascript" th:inline="javascript">
-        function groupDetail(name) {
-            $.ajax({
-                url: "/cluster/config/custom-resources/" + name,
-                success: function (data) {
-                    $('#myModal2').text("");
-                    $('#myModal2').html(data);
-                    $('#myModal2').modal();
-                    $(".knob").knob();
-                },
-                error: function (e) {
-                    if (e.status === 401) {
-                        $(location).attr('href', '/login?logout')
-                    }
-                }
-            });
-        }
-    </script>
 
+    <script type="text/javascript" th:inline="javascript">
+        const pathPrefix = '/cluster/config/custom-resources/';
+
+        $(document).ready(function() {
+            $(document).on('click', 'a.table2-link', function() {
+                kube.showModal(pathPrefix + $(this).data('name'));
+            });
+        });
+    </script>
 </div>
 </body>
 </html>

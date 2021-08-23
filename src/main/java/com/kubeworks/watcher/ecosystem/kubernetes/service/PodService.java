@@ -12,14 +12,14 @@ public interface PodService {
 
     List<PodTable> allNamespacePodTables();
 
-    List<PodTable> podTables(String namespace);
+    List<PodTable> podTables(final String namespace);
 
-    List<PodTable> podTables(String namespace, Map<String, String> selector);
+    List<PodTable> podTables(final String namespace, final Map<String, String> selector);
 
-    Optional<PodDescribe> pod(String namespace, String podName);
+    Optional<PodDescribe> pod(final String namespace, final String podName);
 
-    Optional<V1PodList> nodePods(String nodeName);
+    Optional<V1PodList> nodePods(final String nodeName);
 
-    List<String> containers(String namespace, String podName);
+    List<String> containers(final String namespace, final String podName);
 
 }

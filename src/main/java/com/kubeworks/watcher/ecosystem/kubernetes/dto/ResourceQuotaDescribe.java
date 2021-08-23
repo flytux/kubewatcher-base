@@ -1,6 +1,8 @@
 package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import io.kubernetes.client.custom.Quantity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,8 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.joda.time.DateTime;
+import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,21 +54,26 @@ public class ResourceQuotaDescribe {
     Map<String, String> scopeSelector;
 
     public Map<String, Resource> getUsedHard() {
-        Map <String, Resource> usedHard = new HashMap<>();
-        for (String key : hard.keySet()) {
-            Resource resource = new Resource(hard.get(key));
-            resource.setUsed(used.get(key));
-            usedHard.put(key, resource);
+
+        if (CollectionUtils.isEmpty(hard)) { return ImmutableMap.of(); }
+
+        final Map <String, Resource> usedHard = Maps.newHashMapWithExpectedSize(hard.size());
+        for (final Map.Entry<String, Quantity> e : hard.entrySet()) {
+            usedHard.put(e.getKey(), new Resource(e.getValue(), used.get(e.getKey())));
         }
+
         return usedHard;
     }
 
     @Getter
     @Setter
     public static class Resource {
-        public Resource(Quantity hard) { this.hard = hard; }
-        Quantity hard;
-        Quantity used;
-    }
 
+        public Resource(Quantity hard, Quantity used) {
+            this.hard = hard; this.used = used;
+        }
+
+        private Quantity hard;
+        private Quantity used;
     }
+}

@@ -2,15 +2,12 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
-public class ServiceTable {
+@Getter @Setter
+@FieldDefaults(level=AccessLevel.PRIVATE)
+public class ServiceTable implements NamespaceSettable {
 
     String name;
     String namespace;
@@ -20,5 +17,4 @@ public class ServiceTable {
     String ports;
     String age;
     String selector;
-
 }

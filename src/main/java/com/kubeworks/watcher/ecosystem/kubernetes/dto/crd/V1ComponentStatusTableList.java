@@ -2,14 +2,10 @@ package com.kubeworks.watcher.ecosystem.kubernetes.dto.crd;
 
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.ComponentStatusTable;
 import com.kubeworks.watcher.ecosystem.kubernetes.dto.crd.base.V1CellTableList;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter @Setter
 public class V1ComponentStatusTableList extends V1CellTableList<ComponentStatusTable> {
 
     @Override
@@ -18,23 +14,18 @@ public class V1ComponentStatusTableList extends V1CellTableList<ComponentStatusT
     }
 
     @Override
-    protected void makeObject(ComponentStatusTable builder, String fieldName, String value) {
-        switch (fieldName) {
+    protected void makeObject(final ComponentStatusTable builder, final String field, final String value) {
+
+        switch (field) {
             case "name":
-                builder.setName(value);
-                break;
+                builder.setName(value); break;
             case "status":
-                builder.setStatus(value);
-                break;
+                builder.setStatus(value); break;
             case "message":
-                builder.setMessage(value);
-                break;
+                builder.setMessage(value); break;
             case "error":
-                builder.setError(value);
-                break;
-            default:
-                break;
+                builder.setError(value); break;
+            default: break;
         }
     }
-
 }

@@ -1,41 +1,29 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
     <style>
-        .application-board-height {
-            min-height: 174px;
-            max-height: 175px;
-        }
+        .application-board-height { min-height: 174px; max-height: 175px; }
     </style>
-    <th:block th:replace="layout/header :: header(${page?.nav})"/>
+    <th:block th:replace="layout/header :: header(${page?.nav})" />
     <div id="main_contents">
         <div th:each="panelRow : ${page?.rows}">
             <div class="row">
-                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})"/>
+                <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${panelRow?.title})" />
             </div>
             <div class="row">
                 <th:block th:each="panel : ${panelRow?.pageRowPanels}">
-                    <th:block th:if="${#strings.equalsIgnoreCase(panel.panelType, 'PANEL_GROUP')}">
-                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel}, ${services})"/>
-                    </th:block>
-
-                    <th:block th:unless="${#strings.equalsIgnoreCase(panel.panelType, 'PANEL_GROUP')}">
-                        <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})"/>
-                    </th:block>
-
+                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                 </th:block>
             </div>
         </div>
     </div>
 
-    <input type="hidden" id="var-services" th:value="${services?.serviceNamesOfPromQL}">
+    <input type="hidden" id="var-services" th:value="${@applicationService.getServiceNamesOfPromQL()}" />
+
     <script th:src="@{/assets/js/common-charts.js}"></script>
     <script th:src="@{/assets/js/common-variables.js}"></script>
     <script th:src="@{/vendor/axios/axios.min.js}"></script>
@@ -43,22 +31,20 @@
 
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        let pageRows = [[${page?.rows}]],
-            apiHost = [[${host}]],
-            serviceMap = [[${services?.serviceMap}]];
+        const apiHost = [[${host}]];
+        const pageRows = [[${page?.rows}]];
+        const serviceMap = [[${@applicationService.getServiceMap()}]];
         /*]]>*/
 
-        $(document).ready(function () {
-            pageRows.forEach(row => row.pageRowPanels.forEach(panel => {
-                commonChartsJs.createPanel(panel);
-                if (panel.subPanel !== null) {
-                    panel.subPanel.forEach(sPanel => commonChartsJs.createPanel(sPanel));
+        $(document).ready(function() {
+            pageRows.forEach(row => row['pageRowPanels'].forEach(p => {
+                commonChartsJs.createPanel(p);
+                if (!!p['subPanel']) {
+                    p.subPanel.forEach(sp => commonChartsJs.createPanel(sp));
                 }
             }));
         });
-
     </script>
-
 </div>
 </body>
 </html>

@@ -62,5 +62,4 @@ public class CustomResourceDescribe {
     V1CustomResourceDefinitionNames acceptedNames;
 
     List<EventTable> events;
-
 }
