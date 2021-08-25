@@ -36,7 +36,7 @@
                             <i class="feather icon-bar-chart-2"></i>&nbsp;<span class="lef-sidebar-brand-sub-text">Dashboard</span>
                         </a>
                         <ul>
-                            <li th:if="${#sets.contains(menuAuthorities, 0L)}"><a th:href="@{/main}">Overview</a></li>
+                            <li th:if="${#sets.contains(menuAuthorities, 99L)}"><a th:href="@{/main}">Overview</a></li>
                             <li th:if="${#sets.contains(menuAuthorities, 100L)}"><a th:href="@{/monitoring/application/overview}">Application (K8s)</a></li>
                             <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 111L, 140L, 141L, 120L, 121L)}" class="dropright">
                                 <a href="#none" role="button" data-toggle="side-dropdown" id="dropdownNode">K8s Boards</a>

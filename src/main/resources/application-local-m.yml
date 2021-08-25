@@ -1,9 +1,5 @@
 spring.datasource.data: classpath:sql/import.sql
-spring.datasource.data-username: ${spring.datasource.username}
-spring.datasource.data-password: ${spring.datasource.password}
 spring.datasource.schema: classpath:sql/schema.sql
-spring.datasource.schema-username: ${spring.datasource.username}
-spring.datasource.schema-password: ${spring.datasource.password}
 
 spring.datasource.initialization-mode: always
 spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver

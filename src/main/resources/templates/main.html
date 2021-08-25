@@ -40,17 +40,8 @@
                         <th:block th:replace="layout/fragments/panelTypes :: page-row-header(${pageRows?.title})" />
                     </div>
                     <div class="row">
-                        <th:block th:if="${pageRows?.pageRowId == 33}">
-                            <th:block th:each="panel : ${pageRows?.pageRowPanels}">
-                                <th:block  th:if="${panel?.fragmentName} == 'mini-table-panel'">
-                                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
-                                </th:block>
-                            </th:block>
-                            <th:block th:each="panel : ${pageRows?.pageRowPanels}">
-                                <th:block  th:unless="${panel?.fragmentName} == 'mini-table-panel'">
-                                    <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
-                                </th:block>
-                            </th:block>
+                        <th:block th:each="panel : ${pageRows?.pageRowPanels}">
+                            <th:block th:replace="layout/fragments/panelTypes :: ${panel?.fragmentName}(${panel})" />
                         </th:block>
                     </div>
                 </div>

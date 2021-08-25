@@ -1,13 +1,9 @@
 spring.datasource.data: classpath:sql/import.sql
-spring.datasource.data-username: ${spring.datasource.username}
-spring.datasource.data-password: ${spring.datasource.password}
 spring.datasource.schema: classpath:sql/schema.sql
-spring.datasource.schema-username: ${spring.datasource.username}
-spring.datasource.schema-password: ${spring.datasource.password}
 
 spring.datasource.initialization-mode: always
 spring.datasource.driver-class-name: org.h2.Driver
-spring.datasource.url: jdbc:h2:file:${H2_DB_PATH};AUTO_SERVER=TRUE;IFEXISTS=false;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;MODE=MySQL;
+spring.datasource.url: jdbc:h2:${H2_DB_PATH};AUTO_SERVER=FALSE;IFEXISTS=false;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;MODE=MySQL;
 spring.datasource.username: sa
 spring.datasource.password:
 
