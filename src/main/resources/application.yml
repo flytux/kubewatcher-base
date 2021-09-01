@@ -83,3 +83,7 @@ logging.level.root: info
 spring.cache.type: CAFFEINE
 spring.cache.cache-names: app-names
 spring.cache.caffeine.spec: maximumSize=100,expireAfterWrite=604800s
+
+logging.file.path: ${TEST_HOME:${java.io.tmpdir:/tmp}}/logs/
+spring.pid.fail-on-write-error: true
+spring.pid.file: ${TEST_HOME:${java.io.tmpdir:/tmp}}/kube-watcher.pid
