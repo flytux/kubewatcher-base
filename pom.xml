@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.kubeworks</groupId>
     <artifactId>kube-watcher</artifactId>
-    <version>0.1.0-minimum</version>
+    <version>0.1.0</version>
     <name>kube-watcher</name>
     <description>cloud native cluster monitoring</description>
 

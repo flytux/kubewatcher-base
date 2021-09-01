@@ -1,8 +1,13 @@
-# Kubewatcher
+# Kube-Watcher
 
 ### Cloud Native Cluster Management Application
 
-- h2 : profile local-h with ${H2_DB_PATH}
-- mysql (local) : profile local-m with ${MYSQL_DB_PATH}
-- mysql (remote) : profile local-m-remote with ${MYSQL_DB_PATH}
-
+- default profile (Inmemory H2 DB)
+  - DDL & DML operation executed by default
+- local-m profile (Mysql DB)
+  - DDL & DML operation executed by default
+  - ${MYSQL_DB_PATH} (default 127.0.0.1:3306/kubeworksdb)
+  - ${MYSQL_DB_USERNAME} (default root), ${MYSQL_DB_PASSWORD} (default root)
+- local-m-remote profile (Mysql DB)
+  - ${MYSQL_DB_PATH} (default 127.0.0.1:3306/kubeworksdb)
+  - ${MYSQL_DB_USERNAME} (default root), ${MYSQL_DB_PASSWORD} (default root)
