@@ -1,0 +1,2 @@
+spring.datasource.data: classpath:sql/import.sql,classpath:sql/import-exporter.sql
+spring.datasource.schema: classpath:sql/schema.sql

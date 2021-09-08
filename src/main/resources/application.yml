@@ -22,7 +22,7 @@ spring.datasource.url: "jdbc:h2:mem:kubeworksdb;AUTO_SERVER=FALSE;IFEXISTS=false
 spring.datasource.username: sa
 spring.datasource.password:
 
-spring.datasource.data: classpath:sql/import.sql
+spring.datasource.data: classpath:sql/import.sql,classpath:sql/import-actuator.sql
 spring.datasource.schema: classpath:sql/schema.sql
 
 spring.datasource.hikari.connection-init-sql: ""

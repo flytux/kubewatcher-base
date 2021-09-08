@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Locale;
 
@@ -37,8 +36,14 @@ public class K8sConfig {
     }
 
     @Bean("k8sApiClient")
-    public ApiClient createApiClientFromConfig() throws IOException {
-        return createApiClient(ClientBuilder.standard(false).setBasePath(props.getDefaultK8sUrl()).setVerifyingSsl(false).setAuthentication(createAuthentication()).build());
+    public ApiClient createApiClientFromConfig() {
+        // ClientBuilder.standard(false)로 생성시
+        // $KUBECONFIG
+        // $HOME/.kube/config
+        // /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        // 상기 순서대로 설정 파일을 탐색하고 없을 경우 디폴트로 localhost:8080 설정하는데
+        // 현 상태에서는 불필요하고 로컬 실행시 관련 설정이 있을 경우 꼬일수 있어 변경
+        return createApiClient(new ClientBuilder().setBasePath(props.getDefaultK8sUrl()).setVerifyingSsl(false).setAuthentication(createAuthentication()).build());
     }
 
     private Authentication createAuthentication() {
