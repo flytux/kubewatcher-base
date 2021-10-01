@@ -221,12 +221,19 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.4</version>
                 <configuration>
-                    <to>
-                        <image>kw/kube-watcher:dev</image>
-                    </to>
+                    <container>
+                        <jvmFlags>-Dfile.encoding=UTF-8</jvmFlags>
+                    </container>
                     <allowInsecureRegistries>true</allowInsecureRegistries>
+                    <to>
+                        <auth>
+                            <username>admin</username>
+                            <password>1</password>
+                        </auth>
+                        <image>15.164.96.2:30105/kw/kube-watcher:1.0.0</image>
+                    </to>
                 </configuration>
             </plugin>
 
