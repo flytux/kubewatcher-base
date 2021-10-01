@@ -1,0 +1,50 @@
+Namespace -> container Resource Limit : CPU Limit 설정 필요
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: actuator-metrics
+  namespace: dev
+spec:
+  endpoints:
+  - interval: 30s
+    path: /actuator/prometheus
+    port: web
+    relabelings:
+    - sourceLabels:
+      - __meta_kubernetes_endpoints_label_serviceMonitor_type_01
+      targetLabel: job
+  selector:
+    matchLabels:
+      serviceMonitor-type-01: actuator-metrics
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: exporter-metrics
+  namespace: dev
+spec:
+  endpoints:
+  - interval: 30s
+    path: /metrics
+    port: exporter
+    relabelings:
+    - sourceLabels:
+      - __meta_kubernetes_endpoints_label_serviceMonitor_type_02
+      targetLabel: job
+  selector:
+    matchLabels:
+      serviceMonitor-type-02: exporter-metrics
+
+없는 Metric 목록
+- namedprocess_namegroup_cpu_seconds_total : 패널 사용 안하기로 함
+- java_lang_operatingsystem_systemcpuload
+- java_lang_operatingsystem_processcpuload
+- kubelet_volume_stats_capacity_bytes
+- kube_node_status_capacity_cpu_cores
+- kube_pod_container_resource_requests_cpu_cores
+- kube_node_status_capacity_memory_bytes
+- kube_pod_container_resource_requests_memory_bytes
+- kube_cronjob_spec_suspend
+- kube_node_status_allocatable_cpu_cores
+- kube_node_status_allocatable_memory_bytes

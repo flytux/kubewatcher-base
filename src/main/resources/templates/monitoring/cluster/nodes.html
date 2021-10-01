@@ -37,7 +37,7 @@
                             </tr>
                             <tr th:unless="${#arrays.isEmpty(nodes)}" th:each="node : ${nodes}">
                                 <td>
-                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${node?.name}" th:utext="${node?.name}"></a>
+                                    <a class="table2-link" style="color: #f37320; cursor: pointer;" th:attr="data-name=${node?.name}, data-instance=${node?.internalIp}" th:utext="${node?.name}"></a>
                                 </td>
                                 <td>
                                     <th:block class="row" th:each="panelRow : ${page?.rows}">
@@ -233,6 +233,7 @@
     <script th:src="@{/vendor/mustache/mustache.min.js}"></script>
 
     <input type="hidden" id="var-node" value="" />
+    <input type="hidden" id="var-instance" value="" />
 
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
@@ -249,6 +250,7 @@
 
             node.forEach(n => {
                 const name = n['name'];
+                const address = n['internalIp'];
 
                 pageRows.forEach(r => {
                    if ('node list' === r['title']) {
@@ -256,7 +258,7 @@
                        prp.forEach(p => {
                            p['panelId'] = name + '-' + p['panelId'];
                            p['chartQueries'].forEach(q => {
-                               q['apiQuery'] = q['apiQuery'].replace(/\$node/g, name);
+                               q['apiQuery'] = q['apiQuery'].replace(/\$instance/g, address); // q['apiQuery'].replace(/\$node/g, name);
                            });
 
                            return p;
@@ -278,6 +280,7 @@
                 const path = pathPrefix + n + '/metrics';
 
                 $('#var-node').val(n);
+                $('#var-instance').val(n);
 
                 kube.execute(path, function(data) {
                     apiHost = data.host;
