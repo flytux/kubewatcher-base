@@ -1,5 +1,6 @@
 server.port: 8080
 server.servlet.session.cookie.name: default
+server.servlet.session.timeout: 60m
 
 server.shutdown: graceful
 spring.lifecycle.timeout-per-shutdown-phase: 30s
