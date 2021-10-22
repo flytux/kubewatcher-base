@@ -76,10 +76,10 @@ ribbon.okhttp.enabled: true
 
 application.properties.monitoring.default-cluster-name: local
 application.properties.monitoring.clusters.local.cluster-name: local
-application.properties.monitoring.clusters.local.k8s.url: "https://15.164.96.2:30443/k8s/clusters/local"
+application.properties.monitoring.clusters.local.k8s.url: "https://3.37.118.122:30443/k8s/clusters/local"
 application.properties.monitoring.clusters.local.k8s.api-token: "kubeconfig-user-5b8f96thrg:ctjmd9qszj4n66flkrthfgpv6wjtv4ps6r422d7f9j4dlhw4m2tnzb"
 application.properties.monitoring.clusters.local.prometheus.proxy: true
-application.properties.monitoring.clusters.local.prometheus.url: "http://15.164.96.2:30099"
+application.properties.monitoring.clusters.local.prometheus.url: "http://3.37.118.122:30099"
 application.properties.monitoring.clusters.local.loki.proxy: true
 application.properties.monitoring.clusters.local.loki.url: "http://loki.cattle-prometheus"
 
