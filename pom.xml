@@ -232,7 +232,7 @@
                             <username>admin</username>
                             <password>1</password>
                         </auth>
-                        <image>33.36.163.133:30105/kw/kube-watcher:1.0.0</image>
+                        <image>3.36.163.133:30105/kw/kube-watcher:1.0.0</image>
                     </to>
                 </configuration>
             </plugin>
