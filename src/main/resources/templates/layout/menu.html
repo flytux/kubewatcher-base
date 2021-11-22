@@ -127,7 +127,7 @@
                             <li th:if="${#sets.contains(menuAuthorities, 114L)}"><a th:href="@{/monitoring/cluster/events}">Events</a></li>
                         </ul>
                     </li>
-                    <li th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(#httpServletRequest.requestURI, '/monitoring/alarm/list', '/setting/alarm/list') ? 'on open' : ''}">
+                    <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 150L, 500L)}" th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(#httpServletRequest.requestURI, '/monitoring/alarm/list', '/setting/alarm/list') ? 'on open' : ''}">
                         <a href="#none" role="button">
                             <i class="feather icon-bell"></i>&nbsp;<span class="lef-sidebar-brand-sub-text">Alarm</span>
                         </a>
@@ -136,7 +136,7 @@
                             <li th:if="${#sets.contains(menuAuthorities, 500L)}"><a th:href="@{/setting/alarm/list}">Config</a></li>
                         </ul>
                     </li>
-                    <li th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(#httpServletRequest.requestURI, '/security/groups', '/security/users', '/security/roles/user-role-management') ? 'on open' : ''}">
+                    <li th:if="${T(com.kubeworks.watcher.config.SecurityNativeConfig.MenuAuthoritiesChecker).containsAnyMenuId(menuAuthorities, 400L, 410L, 420L)}" th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(#httpServletRequest.requestURI, '/security/groups', '/security/users', '/security/roles/user-role-management') ? 'on open' : ''}">
                         <a href="#none" role="button">
                             <i class="feather icon-user"></i>&nbsp;<span class="lef-sidebar-brand-sub-text">Users</span>
                         </a>
