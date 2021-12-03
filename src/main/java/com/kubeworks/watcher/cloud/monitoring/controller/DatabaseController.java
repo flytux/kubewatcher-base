@@ -7,8 +7,8 @@ import com.kubeworks.watcher.data.entity.Page;
 import com.kubeworks.watcher.data.entity.PageRowPanel;
 import com.kubeworks.watcher.ecosystem.proxy.service.ProxyApiService;
 import com.kubeworks.watcher.preference.service.PageViewService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,23 +20,36 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value="/monitoring/database")
-@AllArgsConstructor(onConstructor_={@Autowired})
 public class DatabaseController implements BaseController {
 
     private static final long DATABASE_MENU_ID = 130;
-    private static final String QUERY_STR = "count(namedprocess_namegroup_states{zone=\"external\", state=\"Running\", groupname=~\"oracle.*\"}) by (instance)";
+    private static final String EXPRESSION_PROPERTY = "kube.prometheus.expression.database.instance";
+    private static final String DEFAULT_EXPRESSION = "count(namedprocess_namegroup_states{zone=\"external\", state=\"Running\", groupname=~\"oracle.*\"}) by (instance)";
 
     private final ProxyApiService proxyApiService;
 
     private final PageViewService pageViewService;
     private final MonitoringProperties properties;
 
+    private final String prometheusExpression;
+
+    @Autowired
+    public DatabaseController(final Environment env,
+            final ProxyApiService proxyApiService, final PageViewService pageViewService, final MonitoringProperties properties) {
+
+        this.proxyApiService = proxyApiService;
+        this.pageViewService = pageViewService;
+        this.properties = properties;
+
+        this.prometheusExpression = env.getProperty(EXPRESSION_PROPERTY, DEFAULT_EXPRESSION);
+    }
+
     @GetMapping
     public String database(final Model model) {
 
         final Page page = pageViewService.getPageView(DATABASE_MENU_ID);
 
-        List<String> hostList = proxyApiService.multiValuesQuery(QUERY_STR, "instance");
+        List<String> hostList = proxyApiService.multiValuesQuery(prometheusExpression, "instance");
 
         List<PageRowPanel> dbHostPanels = page.getRows().get(0).getPageRowPanels();
         LinkedHashMap<String, List<PageRowPanel>> dbPanels = new LinkedHashMap<>();
