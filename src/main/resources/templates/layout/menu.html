@@ -152,9 +152,6 @@
                     <li th:if="${#sets.contains(menuAuthorities, 520L)}" class="off" th:class="${T(org.apache.commons.lang3.StringUtils).containsIgnoreCase(#httpServletRequest.requestURI, '/setting/preference') ? 'noDepth on' : ''}">
                         <a th:href="@{/setting/preference}"><i class="feather icon-settings"></i>&nbsp;<span class="lef-sidebar-brand-sub-text">Preference</span></a>
                     </li>
-                    <li th:if="${#sets.contains(menuAuthorities, 1128L)}" class="off" th:class="${T(org.apache.commons.lang3.StringUtils).containsIgnoreCase(#httpServletRequest.requestURI, '/monitoring/logging') ? 'noDepth on' : ''}">
-                        <a th:href="@{/monitoring/logging}"><i class="feather icon-settings"></i>&nbsp;<span class="lef-sidebar-brand-sub-text">Application Log</span></a>
-                    </li>
                 </ul>
             </div>
         </th:block>
