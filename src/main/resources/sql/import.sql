@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `cluster_pod_usage` (`application` varchar(255) NOT NULL, `namespace` varchar(255) NOT NULL, `pod_count` int(10) unsigned NOT NULL DEFAULT 0, `max_cpu` decimal(27,9) unsigned NOT NULL DEFAULT 0.000000000, `avg_cpu` decimal(27,9) unsigned NOT NULL DEFAULT 0.000000000, `max_memory` decimal(18,0) unsigned NOT NULL DEFAULT 0, `avg_memory` decimal(18,0) unsigned NOT NULL DEFAULT 0, `create_time` timestamp NOT NULL DEFAULT current_timestamp(), PRIMARY KEY (`application`,`namespace`,`create_time`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO application_management (CODE, NAME, NAMESPACE, DISPLAY_NAME) VALUES ('LOO', 'loona', 'dev', '샘플앱');
+INSERT INTO application_management (CODE, NAME, NAMESPACE, DISPLAY_NAME) VALUES ('DMA', 'demoapp', 'demo', '데모앱');
 
 INSERT INTO alert_rule_metric (CATEGORY, RESOURCE, `TYPE`, CREATE_TIME, UPDATE_TIME, EXPRESSION, MESSAGE_TEMPLATE, METRIC_NAME) VALUES ('EVENT', 'STRING', 'LOG', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), 'NOOP', '%s', '');
 INSERT INTO alert_rule_metric (CATEGORY, RESOURCE, `TYPE`, CREATE_TIME, UPDATE_TIME, EXPRESSION, MESSAGE_TEMPLATE, METRIC_NAME) VALUES ('LOG', 'STRING', 'LOG', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), '/loki/api/v1/query_range?direction=BACKWARD&query={app=~".*"}|~"%s"', '%s', '');
