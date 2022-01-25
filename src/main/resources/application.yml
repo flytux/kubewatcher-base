@@ -19,7 +19,7 @@ spring.jackson.date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
 spring.datasource.initialization-mode: ALWAYS
 spring.datasource.driver-class-name: org.h2.Driver
-spring.datasource.url: "jdbc:h2:mem:kubeworksdb;AUTO_SERVER=FALSE;IFEXISTS=false;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;MODE=MySQL;"
+spring.datasource.url: "jdbc:h2:mem:kwdb;AUTO_SERVER=FALSE;IFEXISTS=false;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;MODE=MySQL;"
 spring.datasource.username: sa
 spring.datasource.password:
 
@@ -76,12 +76,12 @@ ribbon.okhttp.enabled: true
 
 application.properties.monitoring.default-cluster-name: local
 application.properties.monitoring.clusters.local.cluster-name: local
-application.properties.monitoring.clusters.local.k8s.url: "https://3.36.163.133:30443/k8s/clusters/local"
-application.properties.monitoring.clusters.local.k8s.api-token: "kubeconfig-user-hbx6tq9gns:ll5xhbxbrzwld7n59c7lph978lbtxp4xk5lhpq96rf9w78hbnlj5bp"
+application.properties.monitoring.clusters.local.k8s.url: "https://rancher.kubeworks.net/k8s/clusters/local"
+application.properties.monitoring.clusters.local.k8s.api-token: "kubeconfig-user-jpqn7:rgczcb4bhmvphxpr6kmg4qjn8x28lv4vbhnxp8b4hqh89v7nswsfck"
 application.properties.monitoring.clusters.local.prometheus.proxy: true
-application.properties.monitoring.clusters.local.prometheus.url: "http://3.36.163.133:30099"
+application.properties.monitoring.clusters.local.prometheus.url: "http://prometheus.kubeworks.net"
 application.properties.monitoring.clusters.local.loki.proxy: true
-application.properties.monitoring.clusters.local.loki.url: "http://loki.cattle-prometheus"
+application.properties.monitoring.clusters.local.loki.url: "loki"
 
 logging.level.root: info
 
