@@ -1,6 +1,4 @@
-Namespace -> container Resource Limit : CPU Limit 설정 필요
-
-Monitoring -> Monitors -> Service Monitors
+container Resource Limit : CPU Limit
 
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -14,29 +12,11 @@ spec:
     port: web
     relabelings:
     - sourceLabels:
-      - __meta_kubernetes_endpoints_label_serviceMonitor_type_01
+      - __meta_kubernetes_service_label_serviceMonitor_type
       targetLabel: job
   selector:
     matchLabels:
-      serviceMonitor-type-01: actuator-metrics
-
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: exporter-metrics
-  namespace: dev
-spec:
-  endpoints:
-  - interval: 30s
-    path: /metrics
-    port: exporter
-    relabelings:
-    - sourceLabels:
-      - __meta_kubernetes_endpoints_label_serviceMonitor_type_02
-      targetLabel: job
-  selector:
-    matchLabels:
-      serviceMonitor-type-02: exporter-metrics
+      serviceMonitor-type: actuator-metrics
 
 없는 Metric 목록
 - namedprocess_namegroup_cpu_seconds_total : 패널 사용 안하기로 함
