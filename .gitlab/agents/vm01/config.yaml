@@ -1,5 +1,5 @@
 gitops:
   manifest_projects:
-  - id: "path-to/your-manifest-project-1"
+  - id: "vm01"
     paths:
     - glob: '/**/*.{yaml,yml,json}'
